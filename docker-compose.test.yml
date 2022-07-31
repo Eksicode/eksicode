@@ -1,0 +1,56 @@
+version: "3.8"
+services:
+  # backend:
+  #   container_name: eksicodeBackend
+  #   build: ./Backend
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./Backend:/app/
+  #   networks:
+  #     - eksicode_nw
+
+  frontend:
+    container_name: eksicodeFrontend
+    build: ./Frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./Frontend:/app/
+    networks:
+      - eksicode_nw
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    environment:
+      - TZ=Europe/Istanbul
+      - PROTOCOL=HTTP
+    privileged: true
+    volumes:
+      - ./Nginx/nginx-test.conf:/etc/nginx/nginx.conf
+      - ./Nginx/eksicode.crt:/etc/nginx/eksicode.crt
+      - ./Nginx/eksicode.key:/etc/nginx/eksicode.key
+      - ./Nginx/logs/:/etc/nginx/logs/
+      - ./Nginx/mime.types:/etc/nginx/mime.types
+      - ./Nginx/cache/:/etc/nginx/cache/
+    depends_on:
+      - backend
+    restart: on-failure
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - eksicode_nw
+
+volumes:
+  # backend:
+  frontend:
+  nginx:
+
+networks:
+  eksicode_nw:
