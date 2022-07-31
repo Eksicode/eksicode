@@ -14,25 +14,25 @@ type Data = {
     link: string;
 };
 
-export const getStaticProps = async () => {
-  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/telegrams');
-  const telegrams: Data = await res.json();
+// export const getStaticProps = async () => {
+//   const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/telegrams');
+//   const telegrams: Data = await res.json();
 
-  console.log(res);
+//   console.log(res);
 
-  return {
-    props: {
-      telegrams,
-    },
-  };
-};
+//   return {
+//     props: {
+//       telegrams,
+//     },
+//   };
+// };
 
-
-const Nav =  ({ telegrams }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Nav =  () => {
+// const Nav =  ({ telegrams }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [isOpen, setIsOpen] = useState(false)
   const [nav, setNav] = useState(false)
 
-  console.log(process.env.NEXT_PUBLIC_API_URL + '/telegrams');
+  // console.log(process.env.NEXT_PUBLIC_API_URL + '/telegrams');
 
   const handleNav=()=>{
     setNav(!nav)
