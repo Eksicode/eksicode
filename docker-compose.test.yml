@@ -21,6 +21,7 @@ services:
       - ./Frontend/.env
     volumes:
       - ./Frontend:/app/
+    restart: on-failure
     networks:
       - eksicode_nw
 
