@@ -41,7 +41,7 @@ const telegramGrupları: NextPage  = () => {
           </div>
           <div className='grid justify-center mb-10'>
             <div className='grid grid-cols-4 gap-4 sm:grid sm:grid-cols-1 lg:grid lg:grid-cols-2 xl:grid xl:grid-cols-3'>
-              {eksis.map(eksi=>{
+              {/* {eksis.map(eksi=>{
                 return(
                   <div className='w-80 hover:scale-[1.009] hover:shadow-2xl duration-150 shadow-dark'> 
                     <div className='border border-dark flex flex-col justify-center items-center p-6'>
@@ -57,7 +57,7 @@ const telegramGrupları: NextPage  = () => {
                     </div>
                   </div>
                 )
-              })}
+              })} */}
             </div>
           </div>
           <Footer />
