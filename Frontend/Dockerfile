@@ -23,7 +23,7 @@ COPY . /app
 RUN npm install
 
 # Generate the build of the application
-RUN next build
+RUN npm run build
 
 # Production image, copy all the files and run next
 FROM node:18-alpine AS runner
