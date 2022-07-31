@@ -38,8 +38,6 @@ services:
       - ./Nginx/logs/:/etc/nginx/logs/
       - ./Nginx/mime.types:/etc/nginx/mime.types
       - ./Nginx/cache/:/etc/nginx/cache/
-    depends_on:
-      - backend
     restart: on-failure
     ports:
       - "80:80"
