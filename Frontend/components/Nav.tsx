@@ -5,6 +5,7 @@ import { AiOutlineClose, AiOutlineMenu, AiOutlineSearch, AiOutlineBell } from 'r
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
 import Logo from '../public/assets/eksi-code-logo.png'
 import { InferGetStaticPropsType } from 'next'
+import UserMenu from './UserMenu'
 
 type Data = {
     id: string;
@@ -68,20 +69,21 @@ const Nav =  () => {
         <div className="flex items-center justify-end w-1/3">
           {/*  Desktop menu */}
           <div className="flex flex-nowrap sm:hidden">
-            <Link href="/">
-              <a className="p-2 text-base ml-3 hover:text-eksiCode text-dark">Üye Girişi</a>
+            <Link href="/uye-giris">
+              <a className="p-2 text-base ml-3 border border-white hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark">Üye Girişi</a>
             </Link>
-            <Link href="/">
+            <Link href="/uye-ol">
               <a className=" border rounded-lg p-2 text-base ml-3 hover:bg-white hover:text-eksiCode bg-eksiCode text-gray-50">Üye Ol</a>
             </Link>
 
             <AiOutlineBell className=' text-dark text-4xl mx-2'/>
 
-            <div className="relative w-10 h-10 ml-2 overflow-hidden ring-2 ring-gray-300 bg-gray-100 rounded-full dark:bg-gray-600">
+            {/* <div className="relative w-10 h-10 ml-2 overflow-hidden ring-2 ring-gray-300 bg-gray-100 rounded-full dark:bg-gray-600">
                 <svg className="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                   <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                 </svg>
-            </div>
+            </div> */}
+            <UserMenu />
           </div>
 
           {/*  Hamburger Menu Icon */}
@@ -91,12 +93,9 @@ const Nav =  () => {
         </div>
       </div>
       <hr className="h-1 w-full"></hr>
-      <div className="flex items-center sm:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-center">
-        Telegram Grupları
-
-
-
-      </div>
+        <div className="flex items-center sm:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-center">
+          Telegram Grupları
+        </div>
       
       {/*  Mobile menu */}
       <div className={nav ? "md:hidden fixed left-0 top-0 w-full h-full bg-dark/70": " "}>
