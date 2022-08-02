@@ -109,7 +109,8 @@ const Page = () => {
             <div className="flex w-3/12 sm:hidden md:hidden">
                 <aside className="w-full" aria-label="Sidebar-right">
                     <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
-                        Açık Ofis Saati
+                        <span className="w-full flex"><strong>Açık Ofis Saati Projesi</strong></span>
+                        <span>Lise ve üniversite öğrencilerinin akademisyenler ile kolayca iletişime geçebilmelerini amaçlar. </span>
                     </div>
                 </aside>
             </div>
