@@ -8,7 +8,7 @@ import { AiOutlineHome,
         AiOutlineBook,
         AiOutlinePhone
     } from "react-icons/ai";
-
+import Link from 'next/link'
 
 
 const SideMenu = () => {
@@ -17,10 +17,12 @@ const SideMenu = () => {
     <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
         <ul className="space-y-2">
             <li>
+            <Link href="/">
                 <a href="#" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100">
                     <AiOutlineHome className="text-lg mb-1" />
                     <span className="ml-3">Home</span>
                 </a>
+            </Link>
             </li>
             <li>
                 <a href="#" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 ">
