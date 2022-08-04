@@ -11,7 +11,7 @@ const Page = () => {
 
         <div className="flex flex-wrap w-full justify-center pt-5 font-eksifont bg-eksiContent">
 
-        <div className="flex sm:basis-full basis-3/4 sm:mx-2 justify-between">
+        <div className="flex sm:basis-full md:basis-full lg:basis-full basis-3/4 sm:mx-2 justify-between">
 
             <div className="flex w-2/12 sm:hidden md:hidden">
                 <SideMenu />

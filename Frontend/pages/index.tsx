@@ -11,6 +11,7 @@ const Home: NextPage = () => {
       <Head>
         <title>Ekşicode - Yazılımcı Geliştirme Platformu</title>
         <meta name='description' content='Ekşicode - Yazılımcı Geliştirme Platformu'/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
       </Head>
       <Nav />
       <Page />
