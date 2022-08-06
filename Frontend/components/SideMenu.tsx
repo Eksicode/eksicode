@@ -13,7 +13,7 @@ import Link from 'next/link'
 
 const SideMenu = () => {
     return (
-    <aside className="w-64" aria-label="Sidebar">
+    <aside className="w-64 " aria-label="Sidebar">
     <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
         <ul className="space-y-2">
             <li>
