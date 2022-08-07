@@ -18,3 +18,5 @@ From terminal run:
 To start Docker in production mode run
 
 docker-compose -f docker-compose.test.yml up --build
+
+-
