@@ -1,5 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
+import dynamic from "next/dynamic"
+const RichTextEditor = dynamic(() => import("./RichTextEditor"), {
+  ssr:false
+})
 
 const NewPost = ( {modalClose}: any ) => {
   let [modalOpen, setModalOpen] = useState(true)
@@ -22,6 +26,7 @@ const NewPost = ( {modalClose}: any ) => {
 
           <div className="fixed bg-gray-500 inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center text-center">
+              
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -31,26 +36,35 @@ const NewPost = ( {modalClose}: any ) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full h-screen transform overflow-hidden bg-white p-6 text-left align-middle transition-all">
-                <div className="text-right">
+                <Dialog.Panel className="flex justify-center w-full h-screen transform overflow-hidden bg-white p-6 text-left align-middle transition-all">
+                 
+                    <button
+                      type="button"
+                      className="absolute right-4 top-4 rounded-md border border-transparent bg-eksiCode px-4 py-2 text-sm font-medium text-white hover:bg-eksiCodeDark focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      onClick={() => { modalClose(false) }}
+                    >
+                      Kapat X
+                    </button>
+                  <div className="w-6/12 mt-2">
+
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg text-center font-medium leading-6 text-gray-900"
+                    >
+                      Yeni Gönderi Oluştur
+                    </Dialog.Title>
+
+                    <RichTextEditor />
+
+                    <div className="text-right">
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-eksiCode px-4 py-2 text-sm font-medium text-white hover:bg-eksiCodeDark focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                       onClick={() => { modalClose(false) }}
                     >
-                      Kapat X
+                      Kaydet
                     </button>
                   </div>
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg text-center font-medium leading-6 text-gray-900"
-                  >
-                    Yeni Gönderi Oluştur
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Post form
-                    </p>
                   </div>
 
                   

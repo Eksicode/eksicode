@@ -2,15 +2,12 @@
 import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
-import NewPost from './NewPost'
 
 const classNames = (...classes) => {
   return classes.filter(Boolean).join(' ')
 }
 
 const UserMenu = (props) => {
-
-  let [modalOpen, setModalOpen] = useState(false)
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -52,12 +49,11 @@ const UserMenu = (props) => {
             </Menu.Item>
             <Menu.Item>
                 {({ active }) => (
-                  <a onClick={()=> setModalOpen(true)} className={classNames(active ? 'modal-open bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm')}>
+                  <a onClick={()=> props.setModalOpen(true)} className={classNames(active ? 'modal-open bg-gray-100 text-gray-900 cursor-pointer' : 'text-gray-700', 'block px-4 py-2 text-sm')}>
                     Yeni Gönderi
                   </a>
                 )}
             </Menu.Item>
-            { modalOpen && <NewPost modalClose={setModalOpen}/>}
             <Menu.Item>
               {({ active }) => (
                 <a href="#" className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm')}>

@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { AiOutlineClose, AiOutlineMenu, AiOutlineSearch } from 'react-icons/ai'
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
 import Logo from '../public/assets/eksi-code-logo.png'
-import { InferGetStaticPropsType } from 'next'
 import UserMenu from './UserMenu'
 import NewPost from './NewPost'
 
@@ -74,7 +73,7 @@ const Nav =  () => {
                   <span className="animate-ping absolute top-1 right-0.5 block h-1 w-1 rounded-full ring-2 ring-green-800 bg-eksiCode"></span>
               </a>
             </Link>
-            <UserMenu />
+            <UserMenu setModalOpen={setModalOpen}/>
           </div>
 
           {/*  Hamburger Menu Icon */}
