@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\Tag;
@@ -20,9 +21,11 @@ class PostFactory extends Factory
      */
     public function definition()
     {
+        $title = $this->faker->word;
         return [
-            'title' => $this->faker->word,
+            'title' => $title,
             'post'  => $this->faker->text,
+            'slug'  => Str::slug($title),
             'user_id' => function() {
                 return User::all()->random();
             },
