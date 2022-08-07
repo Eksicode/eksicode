@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { AiOutlineClose, AiOutlineMenu, AiOutlineSearch } from 'react-icons/ai'
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
 import Logo from '../public/assets/eksi-code-logo.png'
-import { InferGetStaticPropsType } from 'next'
 import UserMenu from './UserMenu'
+import NewPost from './NewPost'
+
 
 type Data = {
     id: string;
@@ -15,25 +16,12 @@ type Data = {
     link: string;
 };
 
-// export const getStaticProps = async () => {
-//   const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/telegrams');
-//   const telegrams: Data = await res.json();
-
-//   console.log(res);
-
-//   return {
-//     props: {
-//       telegrams,
-//     },
-//   };
-// };
 
 const Nav =  () => {
-// const Nav =  ({ telegrams }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [isOpen, setIsOpen] = useState(false)
   const [nav, setNav] = useState(false)
 
-  // console.log(process.env.NEXT_PUBLIC_API_URL + '/telegrams');
+  let [modalOpen, setModalOpen] = useState(false)
 
   const handleNav=()=>{
     setNav(!nav)
@@ -69,6 +57,8 @@ const Nav =  () => {
         <div className="flex items-center justify-end w-1/3">
           {/*  Desktop menu */}
           <div className="flex flex-nowrap sm:hidden text-center md:text-sm lg:text-sm">
+            <button className=" border rounded-lg p-2 ml-3 bg-white text-eksiCode hover:bg-eksiCode hover:text-white" onClick={()=> setModalOpen(true)}>Yeni Gönderi</button>
+            { modalOpen && <NewPost modalClose={setModalOpen}/>}
             <Link href="/uye-giris">
               <a className="p-2 ml-3 border border-white hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark">Üye Girişi</a>
             </Link>
@@ -78,12 +68,12 @@ const Nav =  () => {
             <Link href="/bildirimler">
               <a className="inline-block relative mx-3 ">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 hover:text-eksiCode text-dark text-4xl" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
                   <span className="animate-ping absolute top-1 right-0.5 block h-1 w-1 rounded-full ring-2 ring-green-800 bg-eksiCode"></span>
               </a>
             </Link>
-            <UserMenu />
+            <UserMenu setModalOpen={setModalOpen}/>
           </div>
 
           {/*  Hamburger Menu Icon */}
@@ -131,25 +121,6 @@ const Nav =  () => {
 
     </nav>
   )
-}
-
-// This gets called on every request
-export async function getServerSideProps() {
-  const url = process.env.NEXT_PUBLIC_API_URL + '/telegrams';
-  const res = await fetch(url, {
-    headers: {
-      Accept: 'application/json',
-    },
-  });
-  const data = await res.json();
-
-  console.log('data' + data);
-
-  return {
-    props: {
-      telegrams: data.telegrams,
-    },
-  };
 }
 
 export default Nav
