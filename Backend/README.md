@@ -1,64 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## POST CRUD islemleri
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Tum postlari listelemek icin:
 
-## About Laravel
+    Endpoint : http://127.0.0.1:8000/api/post/
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+    METHOD : GET
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+    return :
+        "data": [
+            {
+                "id": 18,
+                "title": "this is new new title",
+                "path": "http://127.0.0.1:8000/post/this-is-new-new-title",
+                "body": "this is title of post",
+                "user_id": 1,
+                "user": "Jamaal Walker",
+                "status": false,
+                "tag_id": 1,
+                "category_id": 1,
+                "category": "ea",
+                "created_at": "1 hour ago"
+            },
+            {
+                "id": 10,
+                "title": "velit",
+                "path": "http://127.0.0.1:8000/post/velit",
+                "body": "Nobis et et iure excepturi eos nemo culpa. Esse rerum eaque laudantium sint. Beatae quod aut tempore voluptate eos molestias. Veniam qui id deleniti facere.",
+                "user_id": 7,
+                "user": "Mr. Wilford Blanda DVM",
+                "status": false,
+                "tag_id": 5,
+                "category_id": 5,
+                "category": "quod",
+                "created_at": "3 hours ago"
+            },
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+    
 
-## Learning Laravel
+# Tek bir postu listelemek icin
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    METHOD : GET
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    Endpoint : http://127.0.0.1:8000/api/post/{:id}
 
-## Laravel Sponsors
+    {:id} => post id
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+    return :
+        {
+            "data": {
+                "id": 18,
+                "title": "this is new new title",
+                "path": "http://127.0.0.1:8000/post/this-is-new-new-title",
+                "body": "this is title of post",
+                "user_id": 1,
+                "user": "Jamaal Walker",
+                "status": false,
+                "tag_id": 1,
+                "category_id": 1,
+                "category": "ea",
+                "created_at": "43 minutes ago"
+            }
+        }
 
-### Premium Partners
+# Post Create Etmek icin
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+    Endpoint : http://127.0.0.1:8000/api/post/
 
-## Contributing
+    METHOD : POST
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    params :
+        {
+            "title":"this is title",
+            "slug":"this-is-title",
+            "post":"this is title of post",
+            "user_id":"1",
+            "status":"false",
+            "comment_id":"1",
+            "tag_id":"1",
+            "category_id":"1"
+        }
 
-## Code of Conduct
+# Post Update Etmek icin
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    METHOD : PUT
 
-## Security Vulnerabilities
+    Endpoint : http://127.0.0.1:8000/api/post/{:id}
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    {:id} => post id
 
-## License
+    params:
+    {
+        "title":"this is new new title ",
+        "slug":"this-is-new-new-title"
+    }
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Post Delete Etmek icin
+
+    METHOD : DELETE
+
+    Endpoint : http://127.0.0.1:8000/api/post/{:id}
+
+    {:id} => post id
