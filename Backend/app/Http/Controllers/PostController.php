@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
@@ -14,18 +16,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        return PostResource::collection(Post::latest()->paginate(5));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +28,9 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //auth()->user()->post()->create($request->all());
+        Post::create($request->all());
+        return response('Created', Response::HTTP_CREATED);
     }
 
     /**
@@ -46,19 +41,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return new PostResource($post);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -69,7 +54,8 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $post->update($request->all());
+        return response("Updated", Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -80,6 +66,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
