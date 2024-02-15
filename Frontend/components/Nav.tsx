@@ -101,7 +101,7 @@ const Nav = () => {
       </div>
       <hr className="h-1 w-full"></hr>
       
-      <TelegramGroups groups={undefined} />
+      <TelegramGroups />
 
       {/*  Mobile menu */}
       <div
