@@ -1,34 +1,35 @@
 {
-  "name": "eksicode-frontend",
+  "name": "frontend",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@headlessui/react": "^1.6.6",
-    "@heroicons/react": "^1.0.6",
-    "@popperjs/core": "^2.11.5",
-    "cssnano": "^5.1.12",
-    "eslint-config-next": "^14.1.0",
-    "next": "^14.1.0",
-    "react": "^18.2.0",
-    "react-countup": "^6.3.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^4.4.0",
+    "@headlessui/react": "^1.7.18",
+    "@heroicons/react": "^2.1.1",
+    "@popperjs/core": "^2.11.8",
+    "cssnano": "^6.0.3",
+    "next": "14.1.0",
+    "react": "^18",
+    "react-countup": "^6.5.0",
+    "react-dom": "^18",
+    "react-icons": "^5.0.1",
     "react-quill": "^2.0.0",
     "react-waypoint": "^10.3.0",
-    "swiper": "^8.2.4"
+    "swiper": "^11.0.6"
   },
   "devDependencies": {
-    "@types/node": "17.0.35",
-    "@types/react": "18.0.9",
-    "@types/react-dom": "18.0.5",
-    "autoprefixer": "^10.4.7",
-    "postcss": "^8.4.14",
-    "tailwindcss": "^3.1.3",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
     "tailwindcss-debug-screens": "^2.2.1",
-    "typescript": "4.7.2"
+    "typescript": "^5"
   }
 }
