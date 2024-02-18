@@ -3,20 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { AiOutlineClose, AiOutlineMenu, AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa";
-import Logo from "../public/assets/eksi-code-logo.png";
-import UserMenu from "./UserMenu";
-import NewPost from "./NewPost";
-import TelegramGroups from "./TelegramGroups";
-
-type Data = {
-  id: string;
-  name: string;
-  logo: string;
-  members: string;
-  link: string;
-};
+import Logo from "@public/assets/eksi-code-logo.png";
+import UserMenu from "@components/Nav/UserMenu";
+import NewPost from "@components/NewPost";
+import TelegramGroups from "@components/TelegramGroups";
+import Search from "@components/Nav/Search"
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,20 +36,7 @@ const Nav = () => {
           </Link>
         </div>
 
-        {/*  Search Console */}
-        <div className="flex justify-center w-1/3 sm:w-full">
-          <div className="relative text-gray-600 w-full">
-            <input
-              className="border-2 w-full border-gray-300 bg-white h-10 pl-2 pr-8 focus:ring-eksiCode focus:border-eksiCode rounded-lg text-sm focus:outline-none"
-              name="search"
-              placeholder="Ara..."
-              required
-            />
-            <button type="submit" className="absolute right-0 top-0 w-8 h-10">
-              <AiOutlineSearch />
-            </button>
-          </div>
-        </div>
+        <Search />
 
         <div className="flex items-center justify-end w-1/3">
           {/*  Desktop menu */}
@@ -80,6 +60,7 @@ const Nav = () => {
             >
               Üye Ol
             </Link>
+            
             <Link className="inline-block relative mx-3 " href="/bildirimler">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +73,9 @@ const Nav = () => {
               </svg>
               <span className="animate-ping absolute top-1 right-0.5 block h-1 w-1 rounded-full ring-2 ring-green-800 bg-eksiCode"></span>
             </Link>
+
             <UserMenu setModalOpen={setModalOpen} />
+            
           </div>
 
           {/*  Hamburger Menu Icon */}

@@ -19,6 +19,7 @@
     "react-dom": "^18",
     "react-icons": "^5.0.1",
     "react-quill": "^2.0.0",
+    "react-tooltip": "^5.26.2",
     "react-waypoint": "^10.3.0",
     "swiper": "^11.0.6"
   },

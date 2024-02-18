@@ -1,13 +1,12 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 
-const classNames = (...classes) => {
+const classNames = (...classes: string[]) => {
   return classes.filter(Boolean).join(' ')
 }
 
-const UserMenu = (props) => {
+const UserMenu = (props: any) => {
 
   return (
     <Menu as="div" className="relative inline-block text-left">
