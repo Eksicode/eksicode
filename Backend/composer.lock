@@ -5398,7 +5398,6 @@
             "support": {
                 "issues": "https://github.com/tijsverkoyen/CssToInlineStyles/issues",
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.2.7"
-
         },
         {
             "name": "vlucas/phpdotenv",
