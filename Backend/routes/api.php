@@ -5,7 +5,7 @@ use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
-
+use App\Http\Controllers\GroupController;
 
 
 /*
@@ -37,3 +37,5 @@ Route::group([
 Route::apiResource('/post', PostController::class);
 
 Route::apiResource('/category', CategoryController::class);
+
+Route::apiResource('/group', GroupController::class);
