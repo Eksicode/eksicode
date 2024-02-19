@@ -16,11 +16,10 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->text('post');
             $table->unsignedInteger('user_id');
             $table->boolean('status');
-            $table->unsignedInteger('comment_id');
             $table->unsignedInteger('tag_id');
             $table->unsignedInteger('category_id');
             $table->timestamps();

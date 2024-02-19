@@ -30,7 +30,6 @@ class PostFactory extends Factory
                 return User::all()->random();
             },
             'status'  => $this->faker->boolean,
-            'comment_id' => $this->faker->randomDigit,
             'tag_id' => function() {
                 return Tag::all()->random();
             },

@@ -6,6 +6,8 @@ use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\GroupController;
+
 
 
 
@@ -39,4 +41,4 @@ Route::apiResource('/post', PostController::class);
 
 Route::apiResource('/category', CategoryController::class);
 
-Route::apiResource('/{post}/comment', CommentController::class);
+

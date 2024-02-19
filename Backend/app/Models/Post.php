@@ -4,17 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    //protected $guarded = [];
 
-    /*public function getRouteKeyName()
+    protected $fillable = ['title', 'slug', 'post', 'user_id', 'category_id', 'status', 'tag_id'];
+   
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function($post) {
+            $post->slug = Str::slug($post->title);
+        });
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
     {
         return 'slug';
-    }*/
+    }
 
     public function user() 
     {
@@ -36,6 +53,11 @@ class Post extends Model
         return $this->hasMany(Tag::class);
     }
 
+    /**
+     * Get the path attribute for the model.
+     *
+     * @return string
+     */
     public function getPathAttribute()
     {
         return asset("post/$this->slug");
