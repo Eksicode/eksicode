@@ -10,13 +10,24 @@ use Symfony\Component\HttpFoundation\Response;
 class PostController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('JWT', ['except' => ['index', 'show']]);
+    }
+
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return PostResource::collection(Post::latest()->paginate(5));
+        return PostResource::collection(Post::latest()->get());
     }
 
 
@@ -28,7 +39,6 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //auth()->user()->post()->create($request->all());
         Post::create($request->all());
         return response('Created', Response::HTTP_CREATED);
     }
