@@ -6,6 +6,8 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Str;
+use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
@@ -37,7 +39,7 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         Post::create($request->all());
         return response('Created', Response::HTTP_CREATED);
@@ -62,9 +64,17 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
-        $post->update($request->all());
+        $post->update([
+            'title'=>$request->title,
+            'slug' => Str::slug($request->title),
+            'post' => $request->post,
+            'user_id' => $request->user_id,
+            'status' => $request->status,
+            'tag_id' => $request->tag_id,
+            'category_id' => $request->category_id
+        ]);
         return response("Updated", Response::HTTP_ACCEPTED);
     }
 

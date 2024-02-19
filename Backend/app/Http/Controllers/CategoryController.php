@@ -7,6 +7,8 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\CategoryResource;
+use Illuminate\Support\Str;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -26,4 +28,4 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   
+
