@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\CategoryResource;
 use Illuminate\Support\Str;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -38,7 +39,7 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         Category::create($request->all());
         return response('Created', Response::HTTP_CREATED);
@@ -63,7 +64,7 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
         $category->update(['name'=>$request->name, 'slug' => Str::slug($request->name), 'main' => $request->main]);
         return response("Updated", Response::HTTP_ACCEPTED);
