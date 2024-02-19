@@ -17,20 +17,18 @@ const Nav = () => {
     <nav className="flex h-22 w-full bg-dark z-10 font-eksifont sticky top-0 nav-sahdow">
       <div className='flex items-center h-16 w-full ml-10 mr-10 justify-between'>
         <Link href="/corporate">
-          <a>
             <Image 
               src={Logo}
               alt='eksi-code-logo'
-              width="53,313"
+              width="53"
               height="30">
             </Image>
-          </a>
         </Link>
           <div className='sm:hidden md:hidden'>
             {menuItems.map((menu, index)=>{
               return(
-                <Link key={index} href={menu.id}>
-                  <a className='px-4 text-sm text-white hover:text-eksiCode'>{menu.title}</a>
+                <Link className='px-4 text-sm text-white hover:text-eksiCode' key={index} href={menu.id}>
+                  {menu.title}
                 </Link>
               )
             })}
@@ -52,8 +50,8 @@ const Nav = () => {
           <div className='flex flex-col mt-10 py-4 font-eksifont'>
             {menuItems.map((menu, index)=>{
               return(
-                <Link key={index} href={menu.id}>
-                  <a className='flex py-4 text-sm text-dark hover:text-eksi'>{menu.title}</a>
+                <Link className='flex py-4 text-sm text-dark hover:text-eksi' key={index} href={menu.id}>
+                  {menu.title}
                 </Link>
               )
             })}
