@@ -16,7 +16,13 @@ return new class extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug');
+            $table->string('logo');
+            $table->string('icon')->nullable();
+            $table->integer('members');
+            $table->string('link');
+            $table->string('channel_id');
+            $table->integer('list_order');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

@@ -4,9 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\GroupResource;
 
 class GroupController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('JWT', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,18 +26,9 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //
+        return GroupResource::collection(Group::latest()->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +38,8 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Group::create($request->all());
+        return response('Created', Response::HTTP_CREATED);
     }
 
     /**
@@ -46,19 +50,9 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        //
+        return new GroupResource($group);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Group $group)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -69,7 +63,8 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
-        //
+        $group->update($request->all());
+        return response("Updated", Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -80,6 +75,7 @@ class GroupController extends Controller
      */
     public function destroy(Group $group)
     {
-        //
+        $group->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

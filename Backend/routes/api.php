@@ -6,6 +6,7 @@ use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\GroupController;
 
 
 
@@ -27,6 +28,7 @@ Route::group([
 
 ], function ($router) {
 
+    Route::post('signup', [AuthController::class, 'signup']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
@@ -38,4 +40,4 @@ Route::apiResource('/post', PostController::class);
 
 Route::apiResource('/category', CategoryController::class);
 
-Route::apiResource('/{post}/comment', CommentController::class);
+

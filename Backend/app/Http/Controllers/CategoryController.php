@@ -6,6 +6,8 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\CategoryResource;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -27,7 +29,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CategoryResource::collection(Category::latest()->paginate(5));
+
     }
 
 
@@ -64,7 +66,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $category->update($request->all());
+        $category->update(['name'=>$request->name, 'slug' => Str::slug($request->name), 'main' => $request->main]);
         return response("Updated", Response::HTTP_ACCEPTED);
     }
 
