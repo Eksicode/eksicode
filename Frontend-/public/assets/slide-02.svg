@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.3.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1920 840" style="enable-background:new 0 0 1920 840;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#SVGID_1_);}
+	.st1{fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
+	.st2{fill:#FFFFFF;}
+	.st3{fill:#808080;}
+	.st4{fill:#666666;}
+	.st5{fill:#82BD4E;}
+	.st6{fill:url(#SVGID_00000091735064711371951780000002728575454287388311_);}
+	.st7{fill:#333333;}
+	.st8{fill:none;stroke:#000000;stroke-width:3;stroke-miterlimit:10;}
+	.st9{fill:url(#SVGID_00000070799536720866108610000015020399405823025026_);}
+	.st10{fill:#D6F9DD;}
+	.st11{fill:#1A1A1A;}
+	.st12{fill:#EFFDF1;}
+	.st13{fill:url(#SVGID_00000039124328880491665630000009295938992270879672_);}
+	.st14{fill:#C2FACD;}
+	.st15{fill:#99F7AB;}
+	.st16{fill:url(#SVGID_00000157285075603818605560000006644120542756291987_);}
+	.st17{fill:none;}
+	.st18{fill:url(#);}
+	.st19{fill:#628E3B;}
+	.st20{fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+	.st21{fill:#60695C;}
+	.st22{font-family:'Montserrat-Bold';}
+	.st23{font-size:37px;}
+	.st24{font-family:'Montserrat-Regular';}
+	.st25{font-size:30px;}
+	.st26{font-family:'Montserrat-Medium';}
+	.st27{font-size:22px;}
+</style>
+<g>
+	
+		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="960" y1="830.3661" x2="960" y2="14.151" gradientTransform="matrix(1 0 0 -1 0 842)">
+		<stop  offset="7.521792e-02" style="stop-color:#FFFFFF"/>
+		<stop  offset="0.4276" style="stop-color:#FEFEFD"/>
+		<stop  offset="0.5545" style="stop-color:#F9FBF6"/>
+		<stop  offset="0.645" style="stop-color:#F0F6EB"/>
+		<stop  offset="0.7182" style="stop-color:#E4EFDA"/>
+		<stop  offset="0.7808" style="stop-color:#D4E5C4"/>
+		<stop  offset="0.8363" style="stop-color:#C0DAA8"/>
+		<stop  offset="0.8865" style="stop-color:#A8CC88"/>
+		<stop  offset="0.9311" style="stop-color:#8DBC64"/>
+		<stop  offset="0.9559" style="stop-color:#7CB24C"/>
+	</linearGradient>
+	<rect class="st0" width="1920" height="840"/>
+	<g id="Layer_2_00000183218364991669070270000016478687303751504015_">
+		<g id="Layer_2-2">
+			<path class="st1" d="M1576.2,546.7L1363.6,620c-158.3,49.9-224.9,58.7-330.9-78.5S859.5,474.3,680,562.8S83.2,959.4,320,477
+				C485.5,142.5,0,407,0,407"/>
+		</g>
+		<g id="Layer_3">
+			<polygon class="st2" points="1847.1,407.4 1717.5,532.2 1677.1,504.4 1653.2,488 1782.8,431.4 1616.8,463.1 1562,425.6 			"/>
+			<polygon class="st3" points="1782.8,431.4 1653.2,488 1652.7,488.2 1628.3,539.9 1616.8,463.1 			"/>
+			<polygon class="st4" points="1677.1,504.4 1628.3,539.9 1652.7,488.2 1653.2,488 			"/>
+			<polyline class="st1" points="1677.1,504.4 1628.3,539.9 1616.8,463.1 			"/>
+			<polygon class="st1" points="1653.2,488 1782.8,431.4 1616.8,463.1 1562,425.6 1847.1,407.4 1717.5,532.2 1677.1,504.4 			"/>
+			<line class="st1" x1="1652.7" y1="488.2" x2="1628.3" y2="539.9"/>
+		</g>
+	</g>
+</g>
+<path class="st5" d="M656.4,372.9H501.8c-6.6,0-12-5.4-12-12v-21.4c0-6.6,5.4-12,12-12h154.6c6.6,0,12,5.4,12,12v21.4
+	C668.4,367.5,663,372.9,656.4,372.9z"/>
+<text transform="matrix(1 0 0 1 490.8314 257.2857)" class="st22 st23">Telegram Grupları</text>
+<text transform="matrix(1 0 0 1 490.8312 303.2808)" class="st24 st25">Telegram gruplarına katılıp öğrenirken öğretebilirsin.</text>
+<text transform="matrix(1 0 0 1 499.004 356.6367)" class="st2 st26 st27">Hemen Katılın</text>
+</svg>
