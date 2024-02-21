@@ -12,7 +12,6 @@ class Post extends Model
 
     //protected $guarded = [];
 
-    
    
     protected static function boot()
     {
@@ -23,11 +22,10 @@ class Post extends Model
         });
     }
 
+
     protected $fillable = ['title', 'slug', 'post', 'user_id', 'category_id', 'status', 'tag_id'];
 
     protected $with = ['comments'];
-
-
 
     /**
      * Get the route key for the model.
