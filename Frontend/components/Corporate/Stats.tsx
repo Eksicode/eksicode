@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import CountUp from "react-countup";
 import { Waypoint } from "react-waypoint";
