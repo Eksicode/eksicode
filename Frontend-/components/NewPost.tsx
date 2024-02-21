@@ -1,9 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import dynamic from "next/dynamic"
-// const RichTextEditor = dynamic(() => import("./RichTextEditor"), {
-//   ssr:false
-// })
+const RichTextEditor = dynamic(() => import("./RichTextEditor"), {
+  ssr:false
+})
 
 const NewPost = ( {modalClose}: any ) => {
   let [modalOpen, setModalOpen] = useState(true)
@@ -54,7 +54,7 @@ const NewPost = ( {modalClose}: any ) => {
                       Yeni Gönderi Oluştur
                     </Dialog.Title>
 
-                    {/* <RichTextEditor /> */}
+                    <RichTextEditor />
 
                     <div className="text-right">
                     <button
