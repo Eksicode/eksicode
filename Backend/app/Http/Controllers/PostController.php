@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
 use App\Http\Requests\PostRequest;
 
+
 class PostController extends Controller
 {
     /**

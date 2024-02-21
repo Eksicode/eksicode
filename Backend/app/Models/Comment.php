@@ -9,6 +9,15 @@ class Comment extends Model
 {
     use HasFactory;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function($reply) {
+            $reply->user_id = auth()->id();
+        });
+    }
+
     protected $guarded = [];
 
     public function post()
@@ -21,8 +30,4 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function like()
-    {
-        return $this->hasMany(Like::class);
-    }
 }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('content');
             $table->unsignedInteger('user_id');
             $table->foreignId('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->integer('like')->nullable();
             $table->timestamps();
         });
     }
