@@ -21,12 +21,13 @@ class PostResource extends JsonResource
             'body' => $this->post,
             'slug' => $this->slug,
             'user_id' => $this->user_id,
-            'user'   => $this->user->name,
+            'user' => $this->user->name,
             'status' => $this->status,
             'tag_id' => $this->tag_id,
             'category_id' => $this->category_id,
             'category' => $this->category->name,
-            'created_at' => $this->created_at->diffForHumans()
+            'created_at' => $this->created_at->diffForHumans(),
+            'comments' => CommentResource::collection($this->comments),
         ];
     }
 }

@@ -11,6 +11,16 @@ use Symfony\Component\HttpFoundation\Response;
 class CommentController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('JWT', ['except' => ['index', 'show']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -55,7 +65,7 @@ class CommentController extends Controller
     public function update(Post $post, Request $request, Comment $comment)
     {
         $comment->update($request->all());
-        return response("Updated", Response::HTTP_ACCEPTED);
+        return response(['comment' => new CommentResource($comment)], Response::HTTP_ACCEPTED);
     }
 
     /**
