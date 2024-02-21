@@ -31,9 +31,9 @@ export default async function TelegramGroups() {
   return (
     <div className="flex items-center sm:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-center">
       {popularGroups?.map((group: Group) => (
-        <>
+        <div key={group.id}>
           <div className="my-anchor-element" data-tooltip-place="bottom" data-tooltip-content={group.name} key={group.name}>
-          <Link key={group.id} href={`${group.link}`} target="_blank">
+          <Link  key={group.id} href={`${group.link}`} target="_blank">
             <div className="flex items-center m-4 opacity-60 hover:opacity-100">
               <img
                 src={group.logo}
@@ -44,7 +44,7 @@ export default async function TelegramGroups() {
             </div>
           </Link>
           </div>
-        </>
+        </div>
       ))}
       <Link href="/groups">Bütün Gruplar</Link>
     </div>
