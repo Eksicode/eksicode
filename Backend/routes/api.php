@@ -37,8 +37,9 @@ Route::group([
 
 });
 
-Route::apiResource('/post', PostController::class);
-
-Route::apiResource('/category', CategoryController::class);
+Route::apiResource('/posts', PostController::class);
+Route::apiResource('/categories', CategoryController::class);
+Route::apiResource('/groups', GroupController::class);
+Route::apiResource('/post/{post}/comments', CommentController::class);
 
 

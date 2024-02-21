@@ -12,7 +12,7 @@ class Post extends Model
 
     //protected $guarded = [];
 
-    protected $fillable = ['title', 'slug', 'post', 'user_id', 'category_id', 'status', 'tag_id'];
+    
    
     protected static function boot()
     {
@@ -22,6 +22,12 @@ class Post extends Model
             $post->slug = Str::slug($post->title);
         });
     }
+
+    protected $fillable = ['title', 'slug', 'post', 'user_id', 'category_id', 'status', 'tag_id'];
+
+    protected $with = ['comments'];
+
+
 
     /**
      * Get the route key for the model.
