@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('post');
+            $table->string('image')->nullable();
             $table->unsignedInteger('user_id');
             $table->boolean('status');
             $table->unsignedInteger('tag_id');

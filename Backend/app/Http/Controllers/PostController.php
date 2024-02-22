@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
 use App\Http\Requests\PostRequest;
+use Illuminate\Support\Facades\Storage;
 
 
 class PostController extends Controller
@@ -42,8 +43,26 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        Post::create($request->all());
-        return response('Created', Response::HTTP_CREATED);
+        $post = new Post;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            if ($file->isValid()) {
+                $extension = $file->getClientOriginalExtension();
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $fileName = $originalName . '-' . uniqid() . '.' . $extension;
+                Storage::disk('s3')->put($fileName, file_get_contents($file), 'public');
+                $path = "https://eksicode-images.s3.eu-central-1.amazonaws.com/".$fileName;
+            }
+        }
+        $post->title = $request->title;
+        $post->post = $request->post;
+        $post->tag_id = $request->tag_id;
+        $post->category_id = $request->category_id;
+        $post->user_id = $request->user_id;
+        $post->status = $request->status;
+        $post->image = $path;
+        $post->save();
+        return response(['post' => new PostResource($post)], Response::HTTP_CREATED);
     }
 
     /**
@@ -76,7 +95,7 @@ class PostController extends Controller
             'tag_id' => $request->tag_id,
             'category_id' => $request->category_id
         ]);
-        return response("Updated", Response::HTTP_ACCEPTED);
+        return response(['post' => new PostResource($post)], Response::HTTP_ACCEPTED);
     }
 
     /**
