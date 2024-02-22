@@ -57,6 +57,7 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 .env.backup
+.env*.local
 
 # vercel
 .vercel
@@ -81,3 +82,13 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# dependencies
+.yarn/install-state.gz
+
+# next.js
+/.next/
