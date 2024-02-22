@@ -1,4 +1,6 @@
 /vendor/
+/vendor
+/vendor/*
 node_modules/
 npm-debug.log
 yarn-error.log
@@ -52,6 +54,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.backup
 
 # vercel
 .vercel
@@ -60,3 +63,19 @@ yarn-error.log*
 *.tsbuildinfo
 
 composer.lock
+
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+
+
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
