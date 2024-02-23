@@ -1,46 +1,36 @@
 # Node version
-FROM node:18-alpine as build
+FROM node:20-alpine AS deps
 
-RUN apk update
-RUN apk --no-cache --virtual build-dependencies add \
-    jpeg-dev \
-    cairo-dev \
-    giflib-dev \
-    pango-dev \
-    python3 \
-    make \
-    g++ 
+RUN apk add --no-cache libc6-compat
 
-
-# Set the working directory
 WORKDIR /app
 
-# Add the source code to app
-COPY . /app
+COPY package.json package-lock.json ./
+RUN  npm install --production
 
-# Install all the dependencies
-# RUN yarn install --frozen-lockfile
-RUN npm install
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Generate the build of the application
-RUN npm run build
-
-# Production image, copy all the files and run next
 FROM node:18-alpine AS runner
 WORKDIR /app
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Copy the build output to replace the default nginx contents.
-# COPY --from=build /app/next.config.js ./
-COPY --from=build /app/public ./public
-COPY --from=build --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package.json ./package.json
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
-USER root
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+USER nextjs
 
 EXPOSE 3000
+
+ENV PORT 3000
 
 CMD ["npm", "run", "start"]

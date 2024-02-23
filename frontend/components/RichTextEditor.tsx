@@ -63,7 +63,8 @@ class RichTextEditor extends Component {
 						</div>
 						<ReactQuill theme="snow"  className="h-full" modules={this.modules}
 							formats={this.formats} onChange={this.rteChange}
-						value={this.state.comments || ''}/>
+						// value={this.state.comments || ''}
+						/>
 					</form>
 				</div>
 			);
