@@ -46,6 +46,17 @@ class CategoryController extends Controller
         Category::create($request->all());
         return response('Created', Response::HTTP_CREATED);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Category  $menu
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Category $category)
+    {
+        return new CategoryResource($category);
+    }   
     
     /**
      * Display a listing of the resource.
@@ -56,6 +67,18 @@ class CategoryController extends Controller
     {
         $category->update(['name'=>$request->name, 'slug' => Str::slug($request->name), 'main' => $request->main]);
         return response("Updated", Response::HTTP_ACCEPTED);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Category  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Category $category)
+    {
+        $category->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 
 

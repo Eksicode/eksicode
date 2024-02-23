@@ -4,9 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\MenuResource;
+use Illuminate\Support\Str;
+use App\Http\Requests\MenuRequest;
 
 class MenuController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('JWT', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,18 +29,9 @@ class MenuController extends Controller
      */
     public function index()
     {
-        //
+        return MenuResource::collection(Menu::latest()->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -33,9 +39,10 @@ class MenuController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(MenuRequest $request)
     {
-        //
+        $menu = Menu::create($request->all());
+        return response(['menu' => new MenuResource($menu)], Response::HTTP_CREATED);
     }
 
     /**
@@ -46,19 +53,10 @@ class MenuController extends Controller
      */
     public function show(Menu $menu)
     {
-        //
+        return new MenuResource($menu);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Menu  $menu
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Menu $menu)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -67,9 +65,10 @@ class MenuController extends Controller
      * @param  \App\Models\Menu  $menu
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Menu $menu)
+    public function update(MenuRequest $request, Menu $menu)
     {
-        //
+        $menu->update(['name'=>$request->name, 'slug' => Str::slug($request->name), 'main' => $request->main]);
+        return response(['menu' => new MenuResource($menu)], Response::HTTP_ACCEPTED);
     }
 
     /**
