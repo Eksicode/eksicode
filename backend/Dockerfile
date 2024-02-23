@@ -1,7 +1,7 @@
 # docker/Dockerfile
-FROM php:7.4-fpm
+FROM php:8.2-fpm
 
-ARG APCU_VERSION=5.1.18
+ARG APCU_VERSION=5.1.23
 
 # Get frequently used tools
 RUN apt-get update && apt-get install -y \
@@ -64,8 +64,14 @@ RUN groupmod -o -g ${PGID} www-data && \
 RUN chown -R www-data:www-data /var/www
 
 # Copy and run composer
+# COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+# RUN composer install --no-interaction
+# RUN composer install --prefer-dist
+
+# Copy and run composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-RUN composer install --no-interaction
+RUN composer update
+RUN composer install --prefer-dist
 
 # For Laravel Installations
 #RUN php artisan key:generate
