@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\RoleController;
 
 
 /*
@@ -41,5 +42,6 @@ Route::apiResource('/categories', CategoryController::class);
 Route::apiResource('/groups', GroupController::class);
 Route::apiResource('/post/{post}/comments', CommentController::class);
 Route::apiResource('/menus', MenuController::class);
+Route::apiResource('/roles', RoleController::class);
 
 
