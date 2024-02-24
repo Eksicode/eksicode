@@ -13,7 +13,7 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY package.json next.config.js tsconfig.json ./
+COPY package.json next.config.mjs tsconfig.json ./
 COPY . .
 RUN npm run build
 
