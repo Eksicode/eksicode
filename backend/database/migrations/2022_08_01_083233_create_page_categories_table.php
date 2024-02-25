@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('page_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('main');
+            $table->string('slug')->unique();
+            $table->integer('main')->nullable();
             $table->timestamps();
         });
     }
