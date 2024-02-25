@@ -86,6 +86,22 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            if ($file->isValid()) {
+                $extension = $file->getClientOriginalExtension();
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $fileName = $originalName . '-' . uniqid() . '.' . $extension;
+                Storage::disk('s3')->put($fileName, file_get_contents($file), 'public');
+                $path = "https://eksicode-images.s3.eu-central-1.amazonaws.com/".$fileName;
+            }
+        }
+
+        $img = $page->image;
+        if (isset($path)) {
+            $img = $path;
+        }
+
         $post->update([
             'title'=>$request->title,
             'slug' => Str::slug($request->title),
@@ -93,7 +109,8 @@ class PostController extends Controller
             'user_id' => $request->user_id,
             'status' => $request->status,
             'tag_id' => $request->tag_id,
-            'category_id' => $request->category_id
+            'category_id' => $request->category_id,
+            'image' => $img
         ]);
         return response(['post' => new PostResource($post)], Response::HTTP_ACCEPTED);
     }
