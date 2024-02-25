@@ -31,7 +31,7 @@ export default async function Groups() {
 
   return (
     <div className="flex flex-wrap w-full justify-center pt-5 font-eksifont bg-eksiContent">
-      <div className="flex sm:basis-full md:basis-full lg:basis-full basis-3/4 sm:mx-2 justify-between">
+      <div className="flex sm:basis-full md:basis-full lg:basis-full basis-1/2 sm:mx-2 justify-between">
         <div>Telegram Grupları</div>
 
         <div>
