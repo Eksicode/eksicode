@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('members');
             $table->string('link');
             $table->string('channel_id');
-            $table->integer('list_order');
+            $table->integer('list_order')->unique();
             $table->text('description')->nullable();
             $table->timestamps();
         });
