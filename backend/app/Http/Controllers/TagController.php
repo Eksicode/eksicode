@@ -4,9 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\TagResource;
+use App\Http\Requests\TagRequest;
 
 class TagController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('JWT', ['except' => ['index', 'show']]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -14,17 +30,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return TagResource::collection(Tag::latest()->get());
     }
 
     /**
@@ -33,9 +39,10 @@ class TagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TagRequest $request)
     {
-        //
+        $tag = Tag::create($request->all());
+        return response(['tag' => new TagResource($tag)], Response::HTTP_CREATED);
     }
 
     /**
@@ -46,18 +53,7 @@ class TagController extends Controller
      */
     public function show(Tag $tag)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Tag  $tag
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Tag $tag)
-    {
-        //
+        return new TagResource($tag);
     }
 
     /**
@@ -67,9 +63,10 @@ class TagController extends Controller
      * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tag $tag)
+    public function update(TagRequest $request, Tag $tag)
     {
-        //
+        $tag->update(['name'=>$request->name, 'slug' => Str::slug($request->name)]);
+        return response(['tag' => new TagResource($tag)], Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -80,6 +77,7 @@ class TagController extends Controller
      */
     public function destroy(Tag $tag)
     {
-        //
+        $tag->delete();
+        return response(['success' => true, 'message' => 'Tag deleted successfully'], Response::HTTP_NO_CONTENT);
     }
 }
