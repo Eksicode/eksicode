@@ -1,7 +1,34 @@
 import React from "react";
 import Link from "next/link";
+import TelegramGroupCard from "@components/TelegramGroupCard";
 
-function Groups() {
+interface Group {
+  id: number;
+  name: string;
+  logo: string;
+  link: string;
+  members: number;
+}
+
+type TelegramGroupsProps = {
+  groups?: Group[];
+};
+
+async function getData() {
+  try {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/groups");
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+}
+export default async function Groups() {
+  const groups = await getData();
+
   return (
     <div className="flex flex-wrap w-full justify-center pt-5 font-eksifont bg-eksiContent">
       <div className="flex sm:basis-full md:basis-full lg:basis-full basis-3/4 sm:mx-2 justify-between">
@@ -25,7 +52,12 @@ function Groups() {
               xmlns="http://www.w3.org/2000/svg"
               xmlnsXlink="http://www.w3.org/1999/xlink"
               xmlSpace="preserve"
-              style={{ fillRule: "evenodd", clipRule: "evenodd", strokeLinejoin: "round", strokeMiterlimit: 1.41421 }}
+              style={{
+                fillRule: "evenodd",
+                clipRule: "evenodd",
+                strokeLinejoin: "round",
+                strokeMiterlimit: 1.41421,
+              }}
             >
               <path
                 id="telegram-1"
@@ -44,8 +76,14 @@ function Groups() {
           <Link href="/grup-kurallari">Grup Kuralları için tıklayın</Link>
         </div>
       </div>
+      {groups.data?.map((group: Group) => (
+        <div
+          key={group.id}
+          className="flex sm:basis-full md:basis-full lg:basis-full basis-1/2 sm:mx-2"
+        >
+          <TelegramGroupCard {...group} />
+        </div>
+      ))}
     </div>
   );
 }
-
-export default Groups;
