@@ -10,7 +10,9 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\PageCategoryController;
 use App\Http\Controllers\PageController;
+
 
 
 /*
@@ -46,6 +48,8 @@ Route::apiResource('/posts/{post}/comments', CommentController::class);
 Route::apiResource('/menus', MenuController::class);
 Route::apiResource('/roles', RoleController::class);
 Route::apiResource('/tags', TagController::class);
+Route::apiResource('/page-categories', PageCategoryController::class);
 Route::apiResource('/pages', PageController::class);
+
 
 

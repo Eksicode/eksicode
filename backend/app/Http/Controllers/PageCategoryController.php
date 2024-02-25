@@ -4,9 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\PageCategory;
 use Illuminate\Http\Request;
+use App\Http\Resources\PageCategoryResource;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\PageCategoryRequest;
 
 class PageCategoryController extends Controller
 {
+     /**
+     * Create a new AuthController instance.
+
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('JWT', ['except' => ['index', 'show']]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -14,17 +30,7 @@ class PageCategoryController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return PageCategoryResource::collection(PageCategory::latest()->get());
     }
 
     /**
@@ -33,9 +39,10 @@ class PageCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PageCategoryRequest $request)
     {
-        //
+        PageCategory::create($request->all());
+        return response('Created', Response::HTTP_CREATED);
     }
 
     /**
@@ -46,19 +53,9 @@ class PageCategoryController extends Controller
      */
     public function show(PageCategory $pageCategory)
     {
-        //
+        return new PageCategoryResource($pageCategory);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\PageCategory  $pageCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(PageCategory $pageCategory)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -67,9 +64,14 @@ class PageCategoryController extends Controller
      * @param  \App\Models\PageCategory  $pageCategory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PageCategory $pageCategory)
+    public function update(PageCategoryRequest $request, PageCategory $pageCategory)
     {
-        //
+        $pageCategory->update([
+            'name'=>$request->name, 
+            'slug' => Str::slug($request->name), 
+            'main' => $request->main
+        ]);
+        return response("Updated", Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -80,6 +82,7 @@ class PageCategoryController extends Controller
      */
     public function destroy(PageCategory $pageCategory)
     {
-        //
+        $pageCategory->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
