@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
-            $table->unsignedInteger('menu_id');
+            $table->string('slug');
+            $table->string('header_image')->nullable();
             $table->unsignedInteger('page_category_id');
             $table->timestamps();
         });
