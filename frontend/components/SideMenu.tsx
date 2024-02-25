@@ -36,11 +36,11 @@ const SideMenu = () => {
           </li>
           <li>
             <Link
-              href="#"
+              href="telegram-gruplari"
               className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
             >
               <AiOutlineAudio className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Podcast</span>
+              <span className="flex-1 ml-3 whitespace-nowrap">Telegram Grupları</span>
             </Link>
           </li>
           <li>
