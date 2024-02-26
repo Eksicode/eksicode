@@ -11,7 +11,7 @@ interface Group {
 
 const TelegramGroupCard = (group: Group) => {
   return (
-    <div className="relative flex flex-col align-top justify-center items-center text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-56 p-2 m-2">
+    <div className="relative flex items-center flex-col justify-center text-gray-700 bg-white border border-gray-200 shadow-md bg-clip-border rounded-xl w-52 p-2 m-2">
       <Image
         src={group.logo}
         alt="eksi-code-logo"
@@ -27,7 +27,7 @@ const TelegramGroupCard = (group: Group) => {
           {group.members} Üye
         </p>
       </div>
-      <Link href={group.link} target="_blank" className="mt-2">
+      <Link href={group.link} target="_blank" className="mt-2 border-gray-500 border-2 rounded-lg px-6 py-1">
         Katıl
       </Link>
     </div>
