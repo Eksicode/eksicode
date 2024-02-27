@@ -14,6 +14,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\PageCategoryController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SourceController;
+use App\Http\Controllers\JobController;
 
 
 /*
@@ -52,6 +53,7 @@ Route::apiResource('/tags', TagController::class);
 Route::apiResource('/page-categories', PageCategoryController::class);
 Route::apiResource('/pages', PageController::class);
 Route::apiResource('/sources', SourceController::class);
+Route::apiResource('/jobs', JobController::class);
 
 
 

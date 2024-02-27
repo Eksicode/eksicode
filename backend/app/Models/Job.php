@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Tag extends Model
+class Job extends Model
 {
     use HasFactory;
 
@@ -16,13 +16,18 @@ class Tag extends Model
     {
         parent::boot();
 
-        static::creating(function($tag) {
-            $tag->slug = Str::slug($tag->name);
+        static::creating(function($job) {
+            $job->slug = Str::slug($job->title);
         });
     }
 
-    public function post()
+     /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
     {
-        return $this->belongsTo(Post::class);
+        return 'slug';
     }
 }
