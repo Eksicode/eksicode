@@ -1,10 +1,11 @@
 <?php
 
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\MenuController;
@@ -12,7 +13,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\PageCategoryController;
 use App\Http\Controllers\PageController;
-
+use App\Http\Controllers\SourceController;
 
 
 /*
@@ -50,6 +51,7 @@ Route::apiResource('/roles', RoleController::class);
 Route::apiResource('/tags', TagController::class);
 Route::apiResource('/page-categories', PageCategoryController::class);
 Route::apiResource('/pages', PageController::class);
+Route::apiResource('/sources', SourceController::class);
 
 
 
