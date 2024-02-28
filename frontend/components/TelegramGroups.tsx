@@ -38,6 +38,7 @@ export default function TelegramGroups({ groups }: TelegramGroupsProps) {
 
   return (
     <div className="flex items-center w-3/4 md:w-full h-16 justify-between overflow-hidden">
+      <p>Telegram Grupları</p>
       {fetchedGroups?.length >= 0 ? (
         <>
           {fetchedGroups?.map((group: Group) => (

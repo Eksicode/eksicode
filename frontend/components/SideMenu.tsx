@@ -8,9 +8,9 @@ import {
   AiOutlineInfoCircle,
   AiOutlineBook,
   AiOutlinePhone,
-} from "react-icons/ai";
-import Link from "next/link";
-import React from "react";
+} from 'react-icons/ai';
+import Link from 'next/link';
+import React from 'react';
 
 const SideMenu = () => {
   return (
@@ -28,15 +28,6 @@ const SideMenu = () => {
           </li>
           <li>
             <Link
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 "
-            >
-              <AiOutlineUnorderedList className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">İlanlar</span>
-            </Link>
-          </li>
-          <li>
-            <Link
               href="telegram-gruplari"
               className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
             >
@@ -49,19 +40,28 @@ const SideMenu = () => {
           <li>
             <Link
               href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
+              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 "
             >
-              <AiOutlineVideoCamera className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Video</span>
+              <AiOutlineUnorderedList className="text-lg mb-1" />
+              <span className="flex-1 ml-3 whitespace-nowrap">İlanlar</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="etiketler"
+              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
+            >
+              <AiOutlineTag className="text-lg mb-1" />
+              <span className="flex-1 ml-3 whitespace-nowrap">Etiketler</span>
             </Link>
           </li>
           <li>
             <Link
               href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
+              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
             >
-              <AiOutlineTag className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Etiketler</span>
+              <AiOutlineVideoCamera className="text-lg mb-1" />
+              <span className="flex-1 ml-3 whitespace-nowrap">Video</span>
             </Link>
           </li>
           <li>

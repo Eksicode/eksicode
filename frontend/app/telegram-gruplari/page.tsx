@@ -37,8 +37,8 @@ export default async function Groups() {
         </div>
         <div className="flex flex-wrap w-2/3 sm:w-full md:w-full justify-center text-center">
           <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-coolGray-800 border-2 text-gray-600">
-            <p className="w-full">Telegram Grupları</p>
-            <p className="w-full">
+            <p className="w-full text-3xl text-bold mb-4">Telegram Grupları</p>
+            <p className="w-full mb-4">
               İlgilendiğin yazılım dili veya konular ile ilgili telegram
               gruplarımıza katılabilirsin.
             </p>
@@ -46,7 +46,7 @@ export default async function Groups() {
               href="https://telegram.org/dl/"
               data-te-ripple-init
               data-te-ripple-color="light"
-              className="flex mb-2 rounded px-6 py-2.5 text-xs font-medium uppercase leading-normal text-white shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg"
+              className="flex mb-4 rounded px-6 py-2.5 text-xs font-medium uppercase leading-normal text-white shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg"
               style={{ backgroundColor: "#0088cc" }}
               target="_blank"
               rel="noopener noreferrer"
@@ -73,7 +73,7 @@ export default async function Groups() {
               </svg>
               Telegram'ı İndir
             </Link>
-            <div className="w-full">
+            <div className="w-full text-sm">
               <Link href="/grup-kurallari">Grup Kuralları için tıklayın</Link>
             </div>
           </div>

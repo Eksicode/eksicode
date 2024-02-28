@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { ReactMatrixAnimation } from "react-matrix-animation";
+import Link from 'next/link';
+import { ReactMatrixAnimation } from 'react-matrix-animation';
 
 function NotFound() {
   return (
