@@ -16,6 +16,9 @@ return new class extends Migration
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('icon')->nullable();
+            $table->string('description')->nullable();
+            $table->bigInteger('post_count')->default(0);
             $table->string('slug');
             $table->timestamps();
         });

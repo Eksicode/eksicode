@@ -18,6 +18,7 @@ class MenuResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'icon' => $this->icon,
             'main' => $this->main,
             'created_at' => $this->created_at->diffForHumans()
         ];
