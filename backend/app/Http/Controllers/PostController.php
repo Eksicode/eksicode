@@ -56,7 +56,7 @@ class PostController extends Controller
         }
         $post->title = $request->title;
         $post->post = $request->post;
-        $post->tag_id = $request->tag_id;
+        $post->tags = $request->tags;
         $post->category_id = $request->category_id;
         $post->user_id = $request->user_id;
         $post->status = $request->status;
@@ -108,7 +108,7 @@ class PostController extends Controller
             'post' => $request->post,
             'user_id' => $request->user_id,
             'status' => $request->status,
-            'tag_id' => $request->tag_id,
+            'tags' => $request->tags,
             'category_id' => $request->category_id,
             'image' => $img
         ]);
