@@ -2,6 +2,9 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import Image from "next/image";
+// import "slick-carousel/slick/slick.css";
+// import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
 interface Group {
   id: number;
@@ -16,6 +19,16 @@ type TelegramGroupsProps = {
 
 export default function TelegramGroups({ groups }: TelegramGroupsProps) {
   const [fetchedGroups, setFetchedGroups] = useState<Group[]>(groups || []);
+  const [settings] = useState({
+    dots: true,
+    infinite: true,
+    slidesToShow: 3,
+    slidesToScroll: 3,
+    // autoplay: true,
+    speed: 500,
+    // autoplaySpeed: 2000,
+    // cssEase: "linear",
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -37,39 +50,57 @@ export default function TelegramGroups({ groups }: TelegramGroupsProps) {
   }, []);
 
   return (
-    <div className="flex items-center w-3/4 md:w-full h-16 justify-between overflow-hidden">
+    <div className="flex items-center w-3/4 md:w-full h-[900px] justify-between overflow-hidden">
       <p>Telegram Grupları</p>
+
       {fetchedGroups?.length >= 0 ? (
-        <>
-          {fetchedGroups?.map((group: Group) => (
-            <div
-              key={group.id}
-              className="flex items-center"
-              data-tooltip-id={group.name}
-              data-tooltip-content={group.name}
-              data-tooltip-place="bottom"
-            >
-              <Link key={group.id} href={group.link} target="_blank" className="h-12 w-12 rounded-full">
-                <Image
-                  src={group.logo}
-                  alt={group.name}
-                  style={{ objectFit: "fill" }}
-                  width={50}
-                  height={50}
-                  loading="lazy"
-                  className="rounded-full"
-                />
-              </Link>
-              <Tooltip
-                id={group.name}
-                //anchorSelect=".my-anchor-element"
-                place="bottom"
-                content={group.name}
-              />
-            </div>
-          ))}
+        <div className="slider-container">
+          <Slider {...settings}>
+            {fetchedGroups?.map((group: Group) => (
+              <Image
+              src={group.logo}
+              alt={group.name}
+              style={{ objectFit: "fill" }}
+              width={50}
+              height={50}
+              loading="lazy"
+              className="rounded-full"
+            />
+              // <div
+              //   key={group.id}
+              //   className="flex items-center"
+              //   data-tooltip-id={group.name}
+              //   data-tooltip-content={group.name}
+              //   data-tooltip-place="bottom"
+              // >
+              //   <Link
+              //     key={group.id}
+              //     href={group.link}
+              //     target="_blank"
+              //     className="h-12 w-12 rounded-full"
+              //   >
+              //     <Image
+              //       src={group.logo}
+              //       alt={group.name}
+              //       style={{ objectFit: "fill" }}
+              //       width={50}
+              //       height={50}
+              //       loading="lazy"
+              //       className="rounded-full"
+              //     />
+              //   </Link>
+              //   <Tooltip
+              //     id={group.name}
+              //     //anchorSelect=".my-anchor-element"
+              //     place="bottom"
+              //     content={group.name}
+              //   />
+              // </div>
+            ))}
+          </Slider>
+
           <Link href="/telegram-gruplari">Bütün Gruplar</Link>
-        </>
+        </div>
       ) : (
         <h1>Telegram grubu bulunamadı</h1>
       )}
