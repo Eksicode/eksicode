@@ -65,7 +65,12 @@ class TagController extends Controller
      */
     public function update(TagRequest $request, Tag $tag)
     {
-        $tag->update(['name'=>$request->name, 'slug' => Str::slug($request->name)]);
+        $tag->update([
+            'name'=>$request->name, 
+            'slug' => Str::slug($request->name),
+            'description' => $request->description,
+            'icon' => $request->icon
+        ]);
         return response(['tag' => new TagResource($tag)], Response::HTTP_ACCEPTED);
     }
 
