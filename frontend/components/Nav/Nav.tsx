@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import Logo from "@public/assets/eksi-code-logo.png";
 import UserMenu from "@components/Nav/UserMenu";
 import NewPost from "@components/NewPost";
 import TelegramGroups from "@components/TelegramGroups";
-import Search from "@components/Nav/Search"
+import Search from "@components/Search";
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,8 +35,9 @@ const Nav = () => {
             ></Image>
           </Link>
         </div>
-
-        <Search />
+        <div className="flex justify-center w-1/3 sm:w-full">
+          <Search text="Başlık Ara..." />
+        </div>
 
         <div className="flex items-center justify-end w-1/3">
           {/*  Desktop menu */}
@@ -60,7 +61,7 @@ const Nav = () => {
             >
               Üye Ol
             </Link>
-            
+
             <Link className="inline-block relative mx-3 " href="/bildirimler">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +76,6 @@ const Nav = () => {
             </Link>
 
             <UserMenu setModalOpen={setModalOpen} />
-            
           </div>
 
           {/*  Hamburger Menu Icon */}
@@ -85,7 +85,7 @@ const Nav = () => {
         </div>
       </div>
       <hr className="h-1 w-full"></hr>
-      
+
       <TelegramGroups />
 
       {/*  Mobile menu */}

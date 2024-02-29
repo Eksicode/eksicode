@@ -4,7 +4,7 @@ import { useState } from "react";
 import SideMenu from "./SideMenu";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 import { BiBookmarkAltPlus } from "react-icons/bi";
-
+import Post from "@components/Post";
 import ppImage from "../public/assets/pp-image.png";
 
 const Page = () => {
@@ -27,6 +27,8 @@ const Page = () => {
               En Beğenilenler
             </button>
           </div>
+
+          <Post />
 
           <div className="py-4 w-full px-1 mb-3 bg-white rounded-lg border-gray-300 border">
             <div className="flex flex-wrap sm:basis-full basis-3/4 mx-3 sm:mx-2 justify-between">
