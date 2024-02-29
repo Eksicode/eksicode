@@ -25,6 +25,7 @@ class MenuRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255|min:3',
+            'icon' => 'required|max:255',
         ];
     }
 
@@ -32,6 +33,10 @@ class MenuRequest extends FormRequest
     {
         return [
             'name.required' => 'The name field is required.',
+            'name.min' => 'The name must be at least 3 characters.',
+            'name.max' => 'The name may not be greater than 255 characters.',
+            'icon.required' => 'The icon field is required.',
+            'icon.max' => 'The icon may not be greater than 255 characters.',
         ];
     }
 }
