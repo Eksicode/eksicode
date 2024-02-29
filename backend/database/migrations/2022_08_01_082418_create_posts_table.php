@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->unsignedInteger('user_id');
             $table->boolean('status');
-            $table->unsignedInteger('tag_id');
+            $table->string('tags')->nullable();
             $table->unsignedInteger('category_id');
             $table->timestamps();
         });

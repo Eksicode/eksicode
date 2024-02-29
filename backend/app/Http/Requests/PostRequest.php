@@ -28,7 +28,7 @@ class PostRequest extends FormRequest
         return [
             'title' => 'required',
             'post' => 'required',
-            'tag_id' => 'required',
+            'tags' => 'required',
             'category_id' => 'required',
             'user_id' => 'required',
             'status' => 'required',
@@ -41,7 +41,7 @@ class PostRequest extends FormRequest
         return [
             'title.required' => 'The title field is required.',
             'post.required' => 'The post field is required.',
-            'tag_id.required' => 'The tag field is required.',
+            'tags.required' => 'The tag field is required.',
             'category_id.required' => 'The category field is required.',
             'user_id.required' => 'The user field is required.',
             'status.required' => 'The status field is required.',

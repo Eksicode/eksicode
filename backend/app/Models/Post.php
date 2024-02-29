@@ -10,7 +10,9 @@ class Post extends Model
 {
     use HasFactory;
 
-    //protected $guarded = [];
+    protected $fillable = ['title', 'slug', 'post', 'user_id', 'category_id', 'status', 'tags'];
+
+    protected $with = ['comments'];
 
    
     protected static function boot()
@@ -22,10 +24,9 @@ class Post extends Model
         });
     }
 
-
-    protected $fillable = ['title', 'slug', 'post', 'user_id', 'category_id', 'status', 'tag_id'];
-
-    protected $with = ['comments'];
+    protected $casts = [
+        'tags' => 'array'
+    ];
 
     /**
      * Get the route key for the model.
@@ -56,6 +57,17 @@ class Post extends Model
     {
         return $this->hasMany(Tag::class);
     }
+
+    public function getTagsAttribute($tags)
+    {   
+        $str = str_replace("", "", $tags);
+        $str = str_replace('[', "", $str);
+        $str = str_replace(']', "", $str);
+        $str = str_replace('"', "", $str);
+        $array = explode(",", $str);
+        return  Tag::whereIn('id', $array)->get();
+    }
+
 
     /**
      * Get the path attribute for the model.

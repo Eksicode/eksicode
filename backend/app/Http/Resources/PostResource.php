@@ -24,7 +24,7 @@ class PostResource extends JsonResource
             'user_id' => $this->user_id,
             'user' => $this->user->name,
             'status' => $this->status,
-            'tag_id' => $this->tag_id,
+            'tags' => $this->tags,
             'category_id' => $this->category_id,
             'category' => $this->category->name,
             'created_at' => $this->created_at->diffForHumans(),
