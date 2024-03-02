@@ -49,6 +49,7 @@ Route::apiResource('/groups', GroupController::class);
 Route::apiResource('/posts/{post}/comments', CommentController::class);
 Route::apiResource('/menus', MenuController::class);
 Route::apiResource('/roles', RoleController::class);
+Route::get('/tags/total-count', [TagController::class, 'totalCount']);
 Route::apiResource('/tags', TagController::class);
 Route::apiResource('/page-categories', PageCategoryController::class);
 Route::apiResource('/pages', PageController::class);
