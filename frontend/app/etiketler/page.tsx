@@ -19,7 +19,7 @@ type TagsProps = {
 
 async function getData() {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/tags");
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/tags", { next: { revalidate: 43200 } });
     if (!res.ok) {
       throw new Error("Failed to fetch data");
     }
@@ -46,10 +46,10 @@ export default async function Tags() {
             </div>
 
             <div className="flex flex-nowrap basis-1/2">
-              <button className="p-2 border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
+              <button className="p-2 border w-full hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
                 Takipteki Etiketler
               </button>
-              <button className="mx-2 p-2 border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
+              <button className="mx-2 p-2 w-full border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
                 Gizli Etiketler
               </button>
               <Search text="Etiket ara" />

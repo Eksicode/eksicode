@@ -16,7 +16,7 @@ type TelegramGroupsProps = {
 
 async function getData() {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/groups");
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/groups", { next: { revalidate: 43200 } });
     if (!res.ok) {
       throw new Error("Failed to fetch data");
     }
