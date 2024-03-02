@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\TagResource;
 use App\Http\Requests\TagRequest;
+use Illuminate\Support\Facades\DB;
 
 class TagController extends Controller
 {
@@ -19,7 +20,7 @@ class TagController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('JWT', ['except' => ['index', 'show']]);
+        $this->middleware('JWT', ['except' => ['index', 'show', 'totalCount']]);
     }
 
 
@@ -77,6 +78,24 @@ class TagController extends Controller
             'icon' => $request->icon
         ]);
         return response(['tag' => new TagResource($tag)], Response::HTTP_ACCEPTED);
+    }
+    
+     /**
+     * Calculate the total count of posts for each tag in the database.
+     *
+     * @return Response
+     */
+    public function totalCount()
+    {
+        $total = DB::table('tags')
+            ->select('tags.name AS tag_name', DB::raw('COUNT(posts.id) AS post_count'))
+            ->leftJoin('posts', function ($join) {
+                $join->on(DB::raw("posts.tags"), 'like', DB::raw("CONCAT('%', tags.id, '%')"));
+            })
+            ->groupBy('tags.name')
+            ->get();
+        
+        return response(["data" => $total], Response::HTTP_OK);
     }
 
     /**
