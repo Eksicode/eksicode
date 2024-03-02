@@ -67,7 +67,12 @@ class MenuController extends Controller
      */
     public function update(MenuRequest $request, Menu $menu)
     {
-        $menu->update(['name'=>$request->name, 'slug' => Str::slug($request->name), 'main' => $request->main]);
+        $menu->update([
+            'name'=>$request->name, 
+            'slug' => Str::slug($request->name), 
+            'main' => $request->main, 
+            'icon' => $request->icon
+        ]);
         return response(['menu' => new MenuResource($menu)], Response::HTTP_ACCEPTED);
     }
 
