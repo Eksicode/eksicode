@@ -28,9 +28,14 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return TagResource::collection(Tag::latest()->get());
+        if ($request->count == "total") {
+            $total = Tag::count();
+            $tag = Tag::latest()->get();
+            return response(["data" =>  TagResource::collection($tag),"total" => $total], Response::HTTP_OK);
+        }
+        return TagResource::collection(Tag::latest()->paginate($request->count));
     }
 
     /**

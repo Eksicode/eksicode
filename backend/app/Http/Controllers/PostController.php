@@ -29,9 +29,14 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return PostResource::collection(Post::latest()->get());
+        if ($request->count == "total") {
+            $total = Post::count();
+            $post = Post::latest()->get();
+            return response(["data" =>  PostResource::collection($post), "total" => $total], Response::HTTP_OK);
+        }
+        return PostResource::collection(Post::latest()->paginate($request->count));
     }
 
 

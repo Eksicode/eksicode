@@ -26,9 +26,14 @@ class SourceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return SourceResource::collection(Source::orderBy('id', 'asc')->get());
+        if ($request->count == "total") {
+            $total = Source::count();
+            $source = Source::latest()->get();
+            return response(["data" =>  SourceResource::collection($source),"total" => $total], Response::HTTP_OK);
+        }
+        return SourceResource::collection(Source::orderBy('id', 'asc')->paginate($request->count));
     }
 
     /**

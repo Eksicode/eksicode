@@ -24,9 +24,14 @@ class GroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return GroupResource::collection(Group::orderBy('list_order', 'asc')->get());
+        if ($request->count == "total") {
+            $total = Group::count();
+            $group = Group::latest()->get();
+            return response(["data" =>  GroupResource::collection($group),"total" => $total], Response::HTTP_OK);
+        }
+        return GroupResource::collection(Group::orderBy('list_order', 'asc')->paginate($request->count));
     }
 
 

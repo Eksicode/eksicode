@@ -29,9 +29,14 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return CategoryResource::collection(Category::latest()->get());
+        if ($request->count == "total") {
+            $total = Category::count();
+            $category = Category::latest()->get();
+            return response(["data" =>  CategoryResource::collection($category),"total" => $total], Response::HTTP_OK);
+        }
+        return CategoryResource::collection(Category::latest()->paginate($request->count));
     }
 
 
