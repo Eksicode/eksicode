@@ -19,7 +19,7 @@ type TagsProps = {
 
 async function getData() {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/tags");
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/tags", { next: { revalidate: 43200 } });
     if (!res.ok) {
       throw new Error("Failed to fetch data");
     }
@@ -38,25 +38,31 @@ export default async function Tags() {
         <div className="flex w-1/3">
           <SideMenu />
         </div>
-        <div className="flex flex-wrap w-2/3 sm:w-full md:w-full justify-center text-center">
-          <div className="flex w-full bg-white mx-2 p-2 justify-between rounded-lg border-coolGray-800 border-2 text-gray-600">
-            <p className="flex w-1/2 text-3xl text-bold text-left mb-4">Etiketler</p>
-            <p className="felex flex-nowrap w-1/2 mb-4">
-              <button className="p-2 border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
+
+        <div className="flex flex-wrap w-2/3 sm:w-full md:w-full justify-center">
+          <div className="flex w-full bg-white h-16 mx-2 p-2 justify-between rounded-lg border-cool Gray-800 border-2 text-gray-600">
+            <div className="flex basis-1/2 text-3xl text-bold text-left">
+              Etiketler
+            </div>
+
+            <div className="flex flex-nowrap basis-1/2">
+              <button className="p-2 border w-full hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
                 Takipteki Etiketler
               </button>
-              <button className="mx-2 p-2 border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
+              <button className="mx-2 p-2 w-full border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
                 Gizli Etiketler
               </button>
               <Search text="Etiket ara" />
-            </p>
+            </div>
           </div>
+
           <div className="flex flex-wrap w-full justify-between sm:mx-2">
             {tags.data?.map((tag: Tag) => (
               <TagsCard {...tag} />
             ))}
           </div>
         </div>
+
       </div>
     </div>
   );

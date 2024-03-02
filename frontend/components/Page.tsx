@@ -4,7 +4,7 @@ import { useState } from "react";
 import SideMenu from "./SideMenu";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 import { BiBookmarkAltPlus } from "react-icons/bi";
-import Post from "@components/Post";
+import Post from "@components/PostCard";
 import ppImage from "../public/assets/pp-image.png";
 
 const Page = () => {
@@ -172,12 +172,14 @@ const Page = () => {
           <aside className="w-full" aria-label="Sidebar-right">
             <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
               <span className="w-full flex">
-                <strong>Açık Ofis Saati Projesi</strong>
+                <h1 className="text-lg font-bold">
+                  Ekşicode Yazılımcı Geliştirme Topluluğu
+                </h1>
               </span>
-              <span>
-                Lise ve üniversite öğrencilerinin akademisyenler ile kolayca
-                iletişime geçebilmelerini amaçlar.{" "}
-              </span>
+              <h2 className="text-sm">
+                Yazılım geliştiriciler için yapıcı ve kapsayıcı bir sosyal ağ.
+                Yolculuğunuzun her adımında yanınızda.
+              </h2>
             </div>
           </aside>
         </div>
