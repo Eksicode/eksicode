@@ -27,9 +27,14 @@ class JobController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return JobResource::collection(Job::latest()->get());
+        if ($request->count == "total") {
+            $total = Job::count();
+            $job = Job::latest()->get();
+            return response(["data" =>  JobResource::collection($job),"total" => $total], Response::HTTP_OK);
+        }
+        return JobResource::collection(Job::latest()->paginate($request->count));
     }
 
 

@@ -27,9 +27,14 @@ class PageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return PageResource::collection(Page::latest()->get());
+        if ($request->count == "total") {
+            $total = Page::count();
+            $page = Page::latest()->get();
+            return response(["data" =>  PageResource::collection($page), "total" => $total], Response::HTTP_OK);
+        }
+        return PageResource::collection(Page::latest()->paginate($request->count));
     }
 
     /**

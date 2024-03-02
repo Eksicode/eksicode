@@ -28,9 +28,14 @@ class PageCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return PageCategoryResource::collection(PageCategory::latest()->get());
+        if ($request->count == "total") {
+            $total = PageCategory::count();
+            $pageCategory = PageCategory::latest()->get();
+            return response(["data" =>  PageCategoryResource::collection($pageCategory),"total" => $total], Response::HTTP_OK);
+        }
+        return PageCategoryResource::collection(PageCategory::latest()->paginate($request->count));
     }
 
     /**
