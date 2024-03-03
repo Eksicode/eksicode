@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\JobResource;
 use App\Http\Requests\JobRequest;
-use Illuminate\Support\Str;
 
 class JobController extends Controller
 {
@@ -73,7 +72,7 @@ class JobController extends Controller
     {
         $job->update([
             'title'=>$request->title, 
-            'slug' => Str::slug($request->title),
+            'slug' => $request->slug,
             'technology' => $request->technology,
             'contract_type' => $request->contract_type,
             'experience_level' => $request->experience_level,

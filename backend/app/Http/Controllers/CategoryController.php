@@ -6,8 +6,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use Illuminate\Support\Str;
+use App\Http\Requests\CategoryRequest;
 
 
 class CategoryController extends Controller
@@ -70,7 +69,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $category->update(['name'=>$request->name, 'slug' => Str::slug($request->name), 'main' => $request->main]);
+        $category->update(['name'=>$request->name, 'slug' => $request->slug, 'main' => $request->main]);
         return response("Updated", Response::HTTP_ACCEPTED);
     }
 

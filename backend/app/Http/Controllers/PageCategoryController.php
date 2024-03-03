@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\PageCategory;
 use Illuminate\Http\Request;
 use App\Http\Resources\PageCategoryResource;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\PageCategoryRequest;
 
@@ -73,7 +72,7 @@ class PageCategoryController extends Controller
     {
         $pageCategory->update([
             'name'=>$request->name, 
-            'slug' => Str::slug($request->name), 
+            'slug' => $request->slug, 
             'main' => $request->main
         ]);
         return response("Updated", Response::HTTP_ACCEPTED);

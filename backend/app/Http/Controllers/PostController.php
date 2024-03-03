@@ -6,7 +6,6 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Str;
 use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Storage;
 
@@ -60,6 +59,7 @@ class PostController extends Controller
             }
         }
         $post->title = $request->title;
+        $post->slug = $request->slug;
         $post->post = $request->post;
         $post->tags = $request->tags;
         $post->category_id = $request->category_id;
@@ -109,7 +109,7 @@ class PostController extends Controller
 
         $post->update([
             'title'=>$request->title,
-            'slug' => Str::slug($request->title),
+            'slug' => $request->slug,
             'post' => $request->post,
             'user_id' => $request->user_id,
             'status' => $request->status,

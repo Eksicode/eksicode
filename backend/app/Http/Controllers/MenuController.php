@@ -6,7 +6,6 @@ use App\Models\Menu;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\MenuResource;
-use Illuminate\Support\Str;
 use App\Http\Requests\MenuRequest;
 
 class MenuController extends Controller
@@ -69,7 +68,7 @@ class MenuController extends Controller
     {
         $menu->update([
             'name'=>$request->name, 
-            'slug' => Str::slug($request->name), 
+            'slug' => $request->slug, 
             'main' => $request->main, 
             'icon' => $request->icon
         ]);

@@ -8,7 +8,6 @@ use App\Http\Resources\PageResource;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
@@ -57,7 +56,7 @@ class PageController extends Controller
             }
         }
         $page->title = $request->title;
-        $page->slug = Str::slug($request->title);
+        $page->slug = $request->slug;
         $page->content = $request->content;
         $page->page_category_id = $request->page_category_id;
         $page->header_image = $path;
@@ -104,7 +103,7 @@ class PageController extends Controller
 
         $page->update([
             'title'=> $request->title,
-            'slug' => Str::slug($request->title),
+            'slug' => $request->slug,
             'content' => $request->content,
             'page_category_id' => $request->page_category_id,
             'header_image' => $img
