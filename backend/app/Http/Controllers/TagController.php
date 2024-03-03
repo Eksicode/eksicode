@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\TagResource;
 use App\Http\Requests\TagRequest;
@@ -73,7 +72,7 @@ class TagController extends Controller
     {
         $tag->update([
             'name'=>$request->name, 
-            'slug' => Str::slug($request->name),
+            'slug' => $request->slug,
             'description' => $request->description,
             'icon' => $request->icon
         ]);
