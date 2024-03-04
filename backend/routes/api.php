@@ -15,6 +15,7 @@ use App\Http\Controllers\PageCategoryController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\EmailVerificationController;
 
 
 /*
@@ -30,7 +31,7 @@ use App\Http\Controllers\JobController;
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => ['api'],
     'prefix' => 'auth'
 
 ], function ($router) {
@@ -40,7 +41,8 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
-
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail']);
+    Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');   
 });
 
 Route::apiResource('/posts', PostController::class);
@@ -55,6 +57,8 @@ Route::apiResource('/page-categories', PageCategoryController::class);
 Route::apiResource('/pages', PageController::class);
 Route::apiResource('/sources', SourceController::class);
 Route::apiResource('/jobs', JobController::class);
+Route::post('/email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('JWT');
+Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('JWT');
 
 
 
