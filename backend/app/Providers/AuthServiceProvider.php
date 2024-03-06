@@ -30,7 +30,8 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            $token = JWTAuth::getToken();
+            $user = auth()->user();
+            $token = JWTAuth::fromUser($user);
             $url = "https://eksicode.org?verify_url=" . $url . "&token=" . $token;
             return (new MailMessage)
                 ->subject('Verify Email Address')

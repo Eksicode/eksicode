@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Requests\SignupRequest;
+use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -28,12 +30,16 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['email', 'password']);
-
+        
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Hata burada'], 401);
         }
 
-        return $this->respondWithToken($token);
+        if (auth()->user()->hasVerifiedEmail()) {
+            return $this->respondWithToken($token);
+        }
+
+        return response()->json(['message' => 'Please verify your email'], 401);
     }
 
     /**
@@ -45,7 +51,11 @@ class AuthController extends Controller
     public function signup(SignupRequest $request)
     {
         User::create($request->all());
-        return $this->login($request);
+        $login = $this->login($request);
+        $user = auth()->user();
+        $user->sendEmailVerificationNotification();
+        return response(['success' =>true,'message' => 'Email verification link sent!'], Response::HTTP_OK);
+        //return $this->login($request);
     }
 
     /**
