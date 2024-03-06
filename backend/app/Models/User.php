@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Post;
+use App\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
@@ -82,5 +83,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function roles()
     {
         return $this->hasOne(Role::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = 'https://eksicode.org/reset-password?token=' . $token;
+        $this->notify(new ResetPasswordNotification($url));
     }
 }
