@@ -30,13 +30,13 @@ export default async function Groups() {
   const groups = await getData();
 
   return (
-    <div className="flex w-full justify-center pt-5 font-eksifont bg-eksiContent">
+    <div className="flex w-full justify-center pt-5 pb-5 font-eksifont bg-eksiContent">
       <div className="flex w-3/4">
         <div className="flex w-1/3">
           <SideMenu />
         </div>
         <div className="flex flex-wrap w-2/3 sm:w-full md:w-full justify-center text-center">
-          <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-coolGray-800 border-2 text-gray-600">
+          <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
             <p className="w-full text-3xl text-bold mb-4">Telegram Grupları</p>
             <p className="w-full mb-4">
               İlgilendiğin yazılım dili veya konular ile ilgili telegram

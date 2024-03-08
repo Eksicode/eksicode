@@ -33,7 +33,7 @@ export default async function Tags() {
   const tags = await getData();
 
   return (
-    <div className="flex w-full justify-center pt-5 font-eksifont bg-eksiContent">
+    <div className="flex w-full justify-center pt-5 pb-5 font-eksifont bg-eksiContent">
       <div className="flex w-3/4">
         <div className="flex w-1/3">
           <SideMenu />
