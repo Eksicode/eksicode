@@ -20,7 +20,7 @@ class PageResource extends JsonResource
             'image' => $this->header_image,
             'content' => $this->content,
             'slug' => $this->slug,
-            'page_category_id' => $this->page_category_id,
+            'page_category' => new PageCategoryResource($this->pageCategory),
             'created_at' => $this->created_at,
         ];
     }

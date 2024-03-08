@@ -30,4 +30,9 @@ class Page extends Model
     {
         return asset("pages/$this->slug");
     }
+
+    public function pageCategory()
+    {
+        return $this->belongsTo(PageCategory::class);
+    }
 }
