@@ -30,4 +30,9 @@ class PageCategory extends Model
     {
          return asset("page-categories/$this->slug");
     }
+
+    public function page()
+    {
+        return $this->hasOne(Page::class);
+    }
 }
