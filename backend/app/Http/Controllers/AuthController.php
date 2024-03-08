@@ -30,9 +30,9 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['email', 'password']);
-        
+
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Hata burada'], 401);
+            return response()->json(['error' => 'Your credentials is incorrect. Please try again with the correct details.'], 401);
         }
 
         if (auth()->user()->hasVerifiedEmail()) {
@@ -75,6 +75,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
+        $user->tokens()->delete();
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);

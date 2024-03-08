@@ -47,7 +47,7 @@ class NewPasswordController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user) use ($request) {
                 $user->update($request->all());
-
+                $user->tokens()->delete();
                 event(new PasswordReset($user));
             }
         );
