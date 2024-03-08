@@ -83,6 +83,7 @@ class MenuController extends Controller
      */
     public function destroy(Menu $menu)
     {
-        //
+        $menu->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
