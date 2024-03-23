@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import SideMenu from "./SideMenu";
+import SideMenu from "./Nav/SideMenu";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 import { BiBookmarkAltPlus } from "react-icons/bi";
 import Post from "@components/PostCard";
+import Navlink from "@components/Ui/NavLink";
+import Pagination from "@components/Ui/Pagination";
+
 import ppImage from "../public/assets/pp-image.png";
 
 const Page = () => {
@@ -17,15 +20,15 @@ const Page = () => {
 
         <div className="flex flex-wrap w-7/12 sm:w-full md:w-full mx-2">
           <div className="flex mb-2 h-10 text-xs items-center">
-            <button className="p-2 border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
-              İlgili{" "}
-            </button>
-            <button className="mx-2 p-2 border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
+            <Navlink variant="tertiary" href="/uye-ol">
+              İlgili
+            </Navlink>
+            <Navlink variant="tertiary" clasName="ml-3" href="/uye-ol">
               En Yeniler
-            </button>
-            <button className="p-2 border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
+            </Navlink>
+            <Navlink variant="tertiary" clasName="ml-3" href="/uye-ol">
               En Beğenilenler
-            </button>
+            </Navlink>
           </div>
 
           <Post />
@@ -161,11 +164,9 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="py-4 w-full px-1 mb-3 text-center">
-            <button className="p-2 ml-3 border border-eksiContent hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark">
-              Daha Fazla Yükle
-            </button>
-          </div>
+
+
+          <Pagination />
         </div>
 
         <div className="flex w-3/12 sm:hidden md:hidden">

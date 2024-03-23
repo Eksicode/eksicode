@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Tooltip } from "react-tooltip";
 import Image from "next/image";
-
+import Navlink from "@components/Ui/NavLink";
 interface Group {
   id: number;
   name: string;
@@ -39,40 +39,47 @@ export default function TelegramGroups({ groups }: TelegramGroupsProps) {
   return (
     <div className="flex items-center w-3/4 md:w-full h-16 justify-between overflow-hidden">
       <p>Telegram Grupları</p>
-      {fetchedGroups?.length >= 0 ? (
-        <>
-          {fetchedGroups?.map((group: Group) => (
-            <div
-              key={group.id}
-              className="flex items-center"
-              data-tooltip-id={group.name}
-              data-tooltip-content={group.name}
-              data-tooltip-place="bottom"
-            >
-              <Link key={group.id} href={group.link} target="_blank" className="h-12 w-12 rounded-full">
-                <Image
-                  src={group.logo}
-                  alt={group.name}
-                  style={{ objectFit: "fill" }}
-                  width={50}
-                  height={50}
-                  loading="lazy"
-                  className="rounded-full"
+        {fetchedGroups?.length >= 0 ? (
+          <>
+            {fetchedGroups?.map((group: Group) => (
+              <div
+                key={group.id}
+                className="flex items-center"
+                data-tooltip-id={group.name}
+                data-tooltip-content={group.name}
+                data-tooltip-place="bottom"
+              >
+                <Link
+                  key={group.id}
+                  href={group.link}
+                  target="_blank"
+                  className="h-12 w-12 rounded-full"
+                >
+                  <Image
+                    src={group.logo}
+                    alt={group.name}
+                    style={{ objectFit: "fill" }}
+                    width={50}
+                    height={50}
+                    loading="lazy"
+                    className="rounded-full"
+                  />
+                </Link>
+                <Tooltip
+                  id={group.name}
+                  //anchorSelect=".my-anchor-element"
+                  place="bottom"
+                  content={group.name}
                 />
-              </Link>
-              <Tooltip
-                id={group.name}
-                //anchorSelect=".my-anchor-element"
-                place="bottom"
-                content={group.name}
-              />
-            </div>
-          ))}
-          <Link href="/telegram-gruplari">Bütün Gruplar</Link>
-        </>
-      ) : (
-        <h1>Telegram grubu bulunamadı</h1>
-      )}
+              </div>
+            ))}
+            <Navlink variant="quaternary" clasName="border border-white" href="/telegram-gruplari">
+              Bütün Gruplar
+            </Navlink>
+          </>
+        ) : (
+          <h1>Telegram grubu bulunamadı</h1>
+        )}
     </div>
   );
 }

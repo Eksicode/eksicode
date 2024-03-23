@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import SideMenu from "@components/SideMenu";
+import SideMenu from "@components/Nav/SideMenu";
 import TagsCard from "@components/TagsCard";
 import Search from "@components/Search";
 

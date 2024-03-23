@@ -12,18 +12,18 @@ services:
     networks:
       - eksicode_nw
 
-  frontend:
-    container_name: eksicodeFrontend
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./frontend/.env
-    volumes:
-      - ./frontend:/app/
-    restart: on-failure
-    networks:
-      - eksicode_nw
+  # frontend:
+  #   container_name: eksicodeFrontend
+  #   build: ./frontend
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - ./frontend/.env
+  #   volumes:
+  #     - ./frontend:/app/
+  #   restart: on-failure
+  #   networks:
+  #     - eksicode_nw
 
   nginx:
     container_name: nginx
@@ -61,7 +61,7 @@ services:
 
 volumes:
   backend:
-  frontend:
+  # frontend:
   nginx:
   # db:
 

@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Navlink from "@components/Ui/NavLink";
 interface Group {
   id: number;
   name: string;
@@ -27,9 +28,9 @@ const TelegramGroupCard = (group: Group) => {
           {group.members} Üye
         </p>
       </div>
-      <Link href={group.link} target="_blank" className="mt-2 border-gray-500 border-2 rounded-lg px-6 py-1">
+      <Navlink variant="tertiary" href={group.link} target="_blank">
         Katıl
-      </Link>
+      </Navlink>
     </div>
   );
 };

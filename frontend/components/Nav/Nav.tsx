@@ -10,6 +10,7 @@ import UserMenu from "@components/Nav/UserMenu";
 import NewPost from "@components/NewPost";
 import TelegramGroups from "@components/TelegramGroups";
 import Search from "@components/Search";
+import Navlink from "@components/Ui/NavLink";
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,25 +43,20 @@ const Nav = () => {
         <div className="flex items-center justify-end w-1/3">
           {/*  Desktop menu */}
           <div className="flex flex-nowrap sm:hidden text-center md:text-sm lg:text-sm">
-            <button
-              className=" border rounded-lg p-2 ml-3 bg-white text-eksiCode hover:bg-eksiCode hover:text-white"
-              onClick={() => setModalOpen(true)}
-            >
+            <Navlink variant="secondary" href="/uye-giris">
               Yeni Gönderi
-            </button>
+            </Navlink>
             {modalOpen && <NewPost modalClose={setModalOpen} />}
-            <Link
-              className="p-2 ml-3 border border-white hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark"
+            <Navlink
+              variant="quaternary"
+              clasName="ml-3 pt-2 border border-white"
               href="/uye-giris"
             >
               Üye Girişi
-            </Link>
-            <Link
-              className=" border rounded-lg p-2 ml-3 hover:bg-white hover:text-eksiCode bg-eksiCode text-gray-50"
-              href="/uye-ol"
-            >
+            </Navlink>
+            <Navlink variant="primary" clasName="ml-3" href="/uye-ol">
               Üye Ol
-            </Link>
+            </Navlink>
 
             <Link className="inline-block relative mx-3 " href="/bildirimler">
               <svg

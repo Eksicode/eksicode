@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import FileUpload from "@components/FileUpload";
+import Button from "@components/Ui/Button";
 
 interface Page {
   title: string;
@@ -14,6 +15,9 @@ interface Page {
 const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  // const [categories, setCategories] = useState<string | null>(null);
+  const [categories, setCategories] = useState([]);
+
   const [token, setToken] = useState<string | null>(null);
 
   const [page, setPage] = useState<Page>(
@@ -44,35 +48,33 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
     setPage((prevPage) => ({ ...prevPage, [name]: value }));
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleClick = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     try {
       const formData = new FormData();
       formData.append("title", page.title);
       formData.append("slug", page.slug);
       formData.append("category", page.category);
       formData.append("content", page.content);
-      formData.append("page_category_id", page.page_category_id); // Assuming this is included
-      formData.append("image", file || ""); // Provide a default value for the image field
-      const response = await fetch("http://127.0.0.1:8000/api/pages", {
+      formData.append("page_category_id", page.page_category_id);
+      formData.append("image", file || "");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pages`, {
         method: "POST",
         body: formData,
         headers: {
-          Authorization: `Bearer ${token}`, // Include token in Authorization header
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
         console.log("Form submission successful!");
-        // Handle success, e.g., clear form fields or redirect
       } else {
         console.error("Form submission failed:", response.statusText);
-        // Handle failure, e.g., display an error message
       }
     } catch (error) {
       console.error("Error during form submission:", error);
-      // Handle errors, e.g., display a generic error message
     }
   };
   const createSlug = (title: string) => {
@@ -98,17 +100,35 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       .replace(/[^a-z0-9-]/g, "");
   };
 
+  const getCategories = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/page-categories?count=total`
+      );
+      if (response.ok) {
+        const fetchedCategories = await response.json();
+        setCategories(fetchedCategories);
+      } else {
+        console.error("Failed to fetch categories:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
   const getToken = async () => {
-    const fetchedToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk5MTcxMjAsImV4cCI6MTcwOTkyMDcyMCwibmJmIjoxNzA5OTE3MTIwLCJqdGkiOiJaVnBHM3NyQWVsaUNCdW5nIiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.cHqGomkqVfoU7HMEs9tQUDpyYgx-ok8kpRr4i8c-fJ0"; // Replace with actual token retrieval logic
+    const fetchedToken =
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk5MjkzNTEsImV4cCI6MTcwOTkzMjk1MSwibmJmIjoxNzA5OTI5MzUxLCJqdGkiOiJaNEZzOXB1R2lBbzBqWGI1Iiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.eNVyEbgG_UQ9xSVmEmjR4YAfY9CeFlp1YhMn2q1FsJ8"; // Replace with actual token retrieval logic
     setToken(fetchedToken);
   };
 
   useEffect(() => {
+    getCategories();
     getToken();
   }, []);
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-wrap">
+    <form onSubmit={handleClick} className="flex flex-wrap">
       <div className="flex basis-1/2 flex-wrap pr-7 gap-1.5">
         <label htmlFor="title" className="text-sm font-medium flex basis-full">
           Başlık:
@@ -141,11 +161,14 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
         <select
           id="category"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          value={page.category}
+          onChange={(e) => handleSelect(e.target.value)}
         >
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="mercedes">Mercedes</option>
-          <option value="audi">Audi</option>
+          {categories.data?.map((category: any) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
         </select>
 
         <label htmlFor="image" className="text-sm font-medium w-full">
@@ -167,12 +190,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
         />
       </div>
       <div className="flex justify-end basis-full mt-10">
-        <button
-          type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-        >
-          Kaydet
-        </button>
+        <Button onClick={() => {}} variant="primary" clasName="">Kaydet</Button>
       </div>
     </form>
   );

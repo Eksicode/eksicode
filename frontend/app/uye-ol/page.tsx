@@ -2,8 +2,7 @@
 import type { NextPage } from 'next'
 import {useEffect} from 'react'
 import Head from 'next/head'
-import Image from 'next/image'
-import SignUp from '../../components/SignUp'
+import SignUpForm from '@components/Auth/SignUpForm'
 
 const Home: NextPage = () => {
 
@@ -20,7 +19,7 @@ const Home: NextPage = () => {
         <title>Ekşicode - Yeni üye</title>
         <meta name='description' content='Ekşicode - Yazılımcı Geliştirme Platformu'/>
       </Head>
-      <SignUp />
+      <SignUpForm />
     </div>
   )
 }

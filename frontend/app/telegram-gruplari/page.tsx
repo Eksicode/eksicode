@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import TelegramGroupCard from "@components/TelegramGroupCard";
-import SideMenu from "@components/SideMenu";
+import SideMenu from "@components/Nav/SideMenu";
 interface Group {
   id: number;
   name: string;
@@ -16,7 +16,7 @@ type TelegramGroupsProps = {
 
 async function getData() {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/groups", { next: { revalidate: 43200 } });
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/groups?count=total", { next: { revalidate: 43200 } });
     if (!res.ok) {
       throw new Error("Failed to fetch data");
     }
@@ -46,7 +46,7 @@ export default async function Groups() {
               href="https://telegram.org/dl/"
               data-te-ripple-init
               data-te-ripple-color="light"
-              className="flex mb-4 rounded px-6 py-2.5 text-xs font-medium uppercase leading-normal text-white shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg"
+              className="flex mb-4 rounded px-6 py-2 text-xs h-8 align-middle font-medium leading-normal text-white shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg"
               style={{ backgroundColor: "#0088cc" }}
               target="_blank"
               rel="noopener noreferrer"

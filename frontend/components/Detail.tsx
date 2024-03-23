@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import SideMenu from './SideMenu'
+import SideMenu from './Nav/SideMenu'
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 
 import ppImage from '../public/assets/pp-image.png'
