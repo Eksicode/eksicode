@@ -3,7 +3,7 @@ import React from 'react';
 function Page() {
   return (
     <div>
-      <h1>Pages</h1>
+      <h1>Yonetim Posts</h1>
     </div>
   );
 }

@@ -37,6 +37,8 @@ services:
       - ./nginx/logs/:/etc/nginx/logs/
       - ./nginx/mime.types:/etc/nginx/mime.types
       - ./nginx/cache/:/etc/nginx/cache/
+      - ./nginx/eksicode.crt:/etc/nginx/eksicode.crt
+      - ./nginx/eksicode.key:/etc/nginx/eksicode.key
     restart: on-failure
     ports:
       - "80:80"
@@ -44,26 +46,10 @@ services:
     networks:
       - eksicode_nw
 
-  # db:
-    # image: postgres:12
-    # container_name: db
-    # restart: always
-    # # volumes:
-    # #   - db_data:/var/lib/postgresql/data
-    # environment:
-    #   POSTGRES_PASSWORD: eksicode
-    #   POSTGRES_USER: eksicode
-    #   POSTGRES_DB: eksicode
-    # ports:
-    #   - "54320:5432"
-    # networks:
-    #   - eksicode_nw
-
 volumes:
   backend:
   frontend:
   nginx:
-  # db:
 
 networks:
   eksicode_nw:

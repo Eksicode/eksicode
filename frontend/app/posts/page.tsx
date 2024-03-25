@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Page() {
+function Posts() {
   return (
     <div>
       <h1>Posts</h1>
@@ -8,4 +8,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default Posts;
