@@ -12,11 +12,18 @@ interface Page {
   page_category_id: string;
 }
 
+interface Categories {
+  id?: number;
+  name?: string;
+  slug?: string;
+  main_id?: number;
+}
+
 const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  // const [categories, setCategories] = useState<string | null>(null);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([] as Categories[]);
+  //const [categories, setCategories] = useState<any[]>([]) ;
 
   const [token, setToken] = useState<string | null>(null);
 
@@ -107,7 +114,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       );
       if (response.ok) {
         const fetchedCategories = await response.json();
-        setCategories(fetchedCategories);
+        setCategories(fetchedCategories.data);
       } else {
         console.error("Failed to fetch categories:", response.statusText);
       }
@@ -164,7 +171,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
           value={page.category}
           onChange={(e) => handleSelect(e.target.value)}
         >
-          {categories.data?.map((category: any) => (
+          {categories?.map((category: any) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
@@ -190,7 +197,9 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
         />
       </div>
       <div className="flex justify-end basis-full mt-10">
-        <Button onClick={() => {}} variant="primary" clasName="">Kaydet</Button>
+        <Button onClick={() => {}} variant="primary" clasName="">
+          Kaydet
+        </Button>
       </div>
     </form>
   );

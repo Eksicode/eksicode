@@ -8,35 +8,33 @@ import Navlink from "@components/Ui/NavLink";
 
 function DashboardPages() {
   return (
-    <div className="flex w-full justify-center pt-5 pb-5 font-eksifont bg-eksiContent">
-      <div className="flex basis-3/4">
-        <div className="basis-1/4">
-          <SideMenu />
-        </div>
+    <>
+      <div className="basis-1/4">
+        <SideMenu />
+      </div>
 
-        <div className="flex flex-wrap basis-full">
-          <NextBreadcrumb
-            homeElement={"Anasayfa"}
-            separator={<span> / </span>}
-            activeClasses="text-slate-700"
-            containerClasses="flex"
-            listClasses="hover:underline mx-2"
-            capitalizeLinks
-          />
+      <div className="flex flex-wrap basis-full mb-6">
+        <NextBreadcrumb
+          homeElement={"Anasayfa"}
+          separator={<span> / </span>}
+          activeClasses="text-slate-700"
+          containerClasses="flex"
+          listClasses="hover:underline mx-2"
+          capitalizeLinks
+        />
 
-          <div className="nowrap w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
-            <div className="flex justify-between flex-nowrap basis-full text-xl text-bold mb-4">
-              <h1 className="mt-2">Sayfalar</h1>
-              <Navlink clasName="" href="/dashboard/sayfalar/yeni-sayfa">
-                + Yeni Sayfa
-              </Navlink>
-            </div>
-
-            <DataTable />
+        <div className="nowrap w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
+          <div className="flex justify-between flex-nowrap basis-full text-xl text-bold mb-4">
+            <h1 className="mt-2">Sayfalar</h1>
+            <Navlink clasName="" href="/dashboard/sayfalar/yeni-sayfa">
+              + Yeni Sayfa
+            </Navlink>
           </div>
+
+          <DataTable />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

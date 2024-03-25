@@ -12,18 +12,18 @@ services:
     networks:
       - eksicode_nw
 
-  # frontend:
-  #   container_name: eksicodeFrontend
-  #   build: ./frontend
-  #   ports:
-  #     - "3000:3000"
-  #   env_file:
-  #     - ./frontend/.env
-  #   volumes:
-  #     - ./frontend:/app/
-  #   restart: on-failure
-  #   networks:
-  #     - eksicode_nw
+  frontend:
+    container_name: eksicodeFrontend
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    volumes:
+      - ./frontend:/app/
+    restart: on-failure
+    networks:
+      - eksicode_nw
 
   nginx:
     container_name: nginx
@@ -37,6 +37,8 @@ services:
       - ./nginx/logs/:/etc/nginx/logs/
       - ./nginx/mime.types:/etc/nginx/mime.types
       - ./nginx/cache/:/etc/nginx/cache/
+      - ./nginx/eksicode.crt:/etc/nginx/eksicode.crt
+      - ./nginx/eksicode.key:/etc/nginx/eksicode.key
     restart: on-failure
     ports:
       - "80:80"
@@ -44,26 +46,10 @@ services:
     networks:
       - eksicode_nw
 
-  # db:
-    # image: postgres:12
-    # container_name: db
-    # restart: always
-    # # volumes:
-    # #   - db_data:/var/lib/postgresql/data
-    # environment:
-    #   POSTGRES_PASSWORD: eksicode
-    #   POSTGRES_USER: eksicode
-    #   POSTGRES_DB: eksicode
-    # ports:
-    #   - "54320:5432"
-    # networks:
-    #   - eksicode_nw
-
 volumes:
   backend:
-  # frontend:
+  frontend:
   nginx:
-  # db:
 
 networks:
   eksicode_nw:

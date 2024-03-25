@@ -29,9 +29,10 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <section className="w-5/6 m-10 flex justify-center">
-      <div className="flex justify-center items-center flex-wrap md:w-8/12 lg:w-6/12 xl:w-4/12 2xl:w-4/12 lg:ml-20">
+    <>
+      <div className="w-full bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6">
         <div className="mb-10 text-center">
+          <h1 className="mb-2 text-xl font-bold">Kullanıcı Girişi</h1>
           EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.
         </div>
         <Formik
@@ -101,7 +102,7 @@ const LoginForm: React.FC = () => {
           </Form>
         </Formik>
       </div>
-    </section>
+    </>
   );
 };
 

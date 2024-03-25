@@ -93,7 +93,7 @@ const SideMenu = () => {
           </li>
           <li>
             <Link
-              href="#"
+              href="/iletisim"
               className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
             >
               <AiOutlinePhone className="text-lg mb-1" />
