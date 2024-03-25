@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json .
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
-RUN npm install --production
+RUN npm install
 
 # -------------------------------------
 
@@ -21,7 +21,7 @@ RUN npm run build
 FROM node:20-alpine AS runner
 
 WORKDIR /app
-ENV NODE_ENV production
+# ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs
