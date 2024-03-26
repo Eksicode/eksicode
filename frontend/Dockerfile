@@ -6,9 +6,9 @@ EXPOSE 4000
 
 FROM base as builder
 WORKDIR /app
-COPY . .
-RUN npm run build
-
+COPY . ./
+# RUN npm run build
+CMD ["npm", "run", "build"]
 
 FROM base as production
 WORKDIR /app
