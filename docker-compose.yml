@@ -9,7 +9,6 @@ services:
       - ./backend/.env
     volumes:
       - ./backend:/app/
-    network_mode: bridge
     networks:
       main:
         aliases:
@@ -27,7 +26,6 @@ services:
       - /app/node_modules
       - /app/.next
     restart: on-failure
-    network_mode: bridge
     networks:
       main:
         aliases:
@@ -54,7 +52,6 @@ services:
     volumes_from:
       - backend
       - frontend
-    network_mode: bridge
     networks:
       main:
         aliases:
