@@ -9,8 +9,11 @@ services:
       - ./backend/.env
     volumes:
       - ./backend:/app/
+    network_mode: bridge
     networks:
-      - eksicode_nw
+      main:
+        aliases:
+          - eksicode_nw
 
   frontend:
     container_name: eksicodeFrontend
@@ -24,8 +27,11 @@ services:
       - /app/node_modules
       - /app/.next
     restart: on-failure
+    network_mode: bridge
     networks:
-      - eksicode_nw
+      main:
+        aliases:
+          - eksicode_nw
 
   nginx:
     container_name: nginx
@@ -45,8 +51,14 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    volumes_from:
+      - backend
+      - frontend
+    network_mode: bridge
     networks:
-      - eksicode_nw
+      main:
+        aliases:
+          - eksicode_nw
 
 volumes:
   backend:
@@ -54,4 +66,4 @@ volumes:
   nginx:
 
 networks:
-  eksicode_nw:
+  main:
