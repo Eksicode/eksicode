@@ -28,15 +28,19 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN npm install sharp
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 nextjs
+# USER nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY . .
+
+RUN npm install
+
+USER root
 
 EXPOSE 4000
 ENV PORT 4000
