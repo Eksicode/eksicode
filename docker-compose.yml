@@ -18,7 +18,7 @@ services:
     container_name: eksicodeFrontend
     build: 
       context: ./frontend
-      target: production
+      # target: production
     ports:
       - "4000:4000"
     env_file:
