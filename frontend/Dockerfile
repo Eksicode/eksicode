@@ -9,7 +9,7 @@
 
 # -------------------------------------
 
-FROM node:20-alpine AS builder
+FROM node:20 AS builder
 
 RUN apt-get update && \
     apt-get install -y \
@@ -32,7 +32,7 @@ RUN npm install
 RUN npm run build
 
 # -------------------------------------
-FROM node:20-alpine AS runner
+FROM node:20 AS runner
 
 WORKDIR /app
 # ENV NODE_ENV production
