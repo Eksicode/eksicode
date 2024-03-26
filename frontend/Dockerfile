@@ -38,11 +38,13 @@ WORKDIR /app
 # ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
+RUN npm install sharp
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-RUN npm install sharp
+
 
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
