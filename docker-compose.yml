@@ -16,7 +16,7 @@ services:
     container_name: eksicodeFrontend
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "4000:4000"
     env_file:
       - ./frontend/.env
     volumes:
