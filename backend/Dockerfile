@@ -1,12 +1,22 @@
 # docker/Dockerfile
-FROM php:8.2-fpm
+FROM php:8.2-fpm as php
 
-ARG APCU_VERSION=5.1.23
+# Set environment variables
+ENV PHP_OPCACHE_ENABLE=1
+ENV PHP_OPCACHE_ENABLE_CLI=0
+ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
+ENV PHP_OPCACHE_REVALIDATE_FREQ=0
 
-# Get frequently used tools
+RUN usermod -u 1000 www-data
+
+# Install dependencies.
 RUN apt-get update && apt-get install -y \
     build-essential \
     libicu-dev \
+    libpq-dev \
+    libcurl4-gnutls-dev \
+    nginx \ 
+    libonig-dev \
     libzip-dev \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -22,60 +32,58 @@ RUN apt-get update && apt-get install -y \
     wget \
     zsh
 
-RUN docker-php-ext-configure zip
-
+# Install PHP extensions.
 RUN docker-php-ext-install \
-        bcmath \
-        mbstring \
-        pcntl \
-        intl \
-        zip \
-        opcache
+    mysqli \
+    pdo \
+    pdo_mysql \
+    bcmath \
+    curl \
+    opcache \
+    mbstring
 
-# apcu for caching, xdebug for debugging and also phpunit coverage
-RUN pecl install \
-        apcu-${APCU_VERSION} \
-        xdebug \
-    && docker-php-ext-enable \
-        apcu \
-        xdebug
-
-
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# php-cs-fixer tool
-RUN wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O /usr/local/bin/php-cs-fixer
-RUN chmod +x /usr/local/bin/php-cs-fixer
+WORKDIR /var/www
 
 # Copy existing app directory
 COPY . /var/www
-WORKDIR /var/www
 
-
-# Configure non-root user.
-ARG PUID=1000
-ENV PUID ${PUID}
-ARG PGID=1000
-ENV PGID ${PGID}
-
-RUN groupmod -o -g ${PGID} www-data && \
-    usermod -o -u ${PUID} -g www-data www-data
-
-RUN chown -R www-data:www-data /var/www
+# Copy files from current folder to container current folder (set in workdir).
+COPY --chown=www-data:www-data . .
 
 # Copy and run composer
-# COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-# RUN composer install --no-interaction
-# RUN composer install --prefer-dist
+COPY --from=composer:2.3.5 /usr/bin/composer /usr/composer
 
-# Copy and run composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-RUN composer update
-RUN composer install --prefer-dist
+# Copy configuration files.
+COPY ./php/php.ini /usr/local/etc/php/php.ini
+COPY ./php/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
-# For Laravel Installations
-#RUN php artisan key:generate
+RUN php artisan cache:clear
+RUN php artisan config:clear
 
-EXPOSE 8080
+# Create laravel caching folders.
+RUN mkdir -p /var/www/storage/framework
+RUN mkdir -p /var/www/storage/framework/cache
+RUN mkdir -p /var/www/storage/framework/testing
+RUN mkdir -p /var/www/storage/framework/sessions
+RUN mkdir -p /var/www/storage/framework/views
 
-CMD ["php-fpm"]
+# Fix files ownership.
+RUN chown -R www-data /var/www/storage
+RUN chown -R www-data /var/www/storage/framework
+RUN chown -R www-data /var/www/storage/framework/sessions
+
+# Set correct permission.
+RUN chmod -R 755 /var/www/storage
+RUN chmod -R 755 /var/www/storage/logs
+RUN chmod -R 755 /var/www/storage/framework
+RUN chmod -R 755 /var/www/storage/framework/sessions
+RUN chmod -R 755 /var/www/bootstrap
+
+# Adjust user permission & group
+RUN usermod --uid 1000 www-data
+RUN groupmod --gid 1001 www-data
+
+# ENTRYPOINT [ "./entrypoint.sh" ]
+
+RUN ["chmod", "+x", "./entrypoint.sh"]
