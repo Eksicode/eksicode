@@ -84,6 +84,7 @@ RUN chmod -R 755 /var/www/bootstrap
 RUN usermod --uid 1000 www-data
 RUN groupmod --gid 1001 www-data
 
+RUN chmod +x ./entrypoint.sh
 # ENTRYPOINT [ "./entrypoint.sh" ]
 
-RUN ["chmod", "+x", "./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
