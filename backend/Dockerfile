@@ -58,8 +58,8 @@ COPY ./php/php.ini /usr/local/etc/php/php.ini
 COPY ./php/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
-RUN php artisan cache:clear
-RUN php artisan config:clear
+# RUN php artisan cache:clear
+# RUN php artisan config:clear
 
 # Create laravel caching folders.
 RUN mkdir -p /var/www/storage/framework
