@@ -21,8 +21,8 @@ services:
       - ./backend/nginx/logs/:/etc/nginx/logs/
       - ./backend/nginx/mime.types:/etc/nginx/mime.types
       - ./backend/nginx/cache/:/etc/nginx/cache/
-      - ./nginx/eksicode.crt:/etc/nginx/eksicode.crt
-      - ./nginx/eksicode.key:/etc/nginx/eksicode.key
+      - ./backend/nginx/eksicode.crt:/etc/nginx/eksicode.crt
+      - ./backend/nginx/eksicode.key:/etc/nginx/eksicode.key
     networks:
       main:
         aliases:
