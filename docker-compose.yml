@@ -6,8 +6,13 @@ services:
       context: ./backend
       target: php
     working_dir: /var/www
+    # ports:
+    #   - "8080:8080"
     ports:
-      - "8080:8080"
+      - "80:80"
+      - "443:443"
+    volumes_from:
+      - frontend
     env_file:
       - ./backend/.env
     volumes:
