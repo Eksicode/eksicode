@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     jpegoptim optipng pngquant gifsicle \
-    # vim \
+    nano \
     git \
     curl \
     wget \
@@ -95,5 +95,6 @@ RUN composer install --no-progress --no-interaction
 RUN php artisan optimize
 RUN php artisan view:cache
 
-RUN php-fpm -D
-CMD [ "nginx", "-g", "daemon off;"]
+ENTRYPOINT ["./entrypoint.sh"]
+# RUN php-fpm -D
+# CMD [ "nginx", "-g", "daemon off;"]
