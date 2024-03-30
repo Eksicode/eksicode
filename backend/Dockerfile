@@ -63,6 +63,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy files from current folder to container current folder (set in workdir).
 COPY --chown=www-data:www-data . .
 
+RUN chown -R www-data:www-data /var/www
+
 # Create laravel caching folders.
 RUN mkdir -p /var/www/storage/framework
 RUN mkdir -p /var/www/storage/framework/cache
@@ -89,11 +91,11 @@ RUN groupmod --gid 1001 www-data
 # RUN chmod -R 777 entrypoint.sh
 
 # ENTRYPOINT ["./entrypoint.sh"]
-RUN composer install --no-progress --no-interaction
+# RUN composer install --no-progress --no-interaction
 
 # RUN php artisan migrate
-RUN php artisan optimize
-RUN php artisan view:cache
+# RUN php artisan optimize
+# RUN php artisan view:cache
 
 ENTRYPOINT ["./entrypoint.sh"]
 # RUN php-fpm -D
