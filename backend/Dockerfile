@@ -85,6 +85,13 @@ RUN chmod -R 755 /var/www/bootstrap
 RUN usermod --uid 1000 www-data
 RUN groupmod --gid 1001 www-data
 
-RUN chmod +x /var/www/entrypoint.sh
+# RUN chmod -R 777 entrypoint.sh
 
-ENTRYPOINT ["./entrypoint.sh"]
+# ENTRYPOINT ["./entrypoint.sh"]
+
+# RUN php artisan migrate
+RUN php artisan optimize
+RUN php artisan view:cache
+
+RUN php-fpm -D
+CMD [ "nginx", "-g", "daemon off;"]
