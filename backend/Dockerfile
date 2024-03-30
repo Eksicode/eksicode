@@ -89,8 +89,6 @@ RUN chmod -R 777 /var/www/storage/framework
 RUN chmod -R 777 /var/www/storage/framework/sessions
 RUN chmod -R 777 /var/www/bootstrap
 
-RUN chown -R www-data:www-data /var/storage/logs/
-
 # Adjust user permission & group
 RUN usermod --uid 1000 www-data
 RUN groupmod --gid 1001 www-data
