@@ -78,20 +78,20 @@ RUN mkdir -p /var/www/storage/framework/sessions
 RUN mkdir -p /var/www/storage/framework/views
 
 # Fix files ownership.
-RUN chown -R www-data /var/www/storage
-RUN chown -R www-data /var/www/storage/framework
-RUN chown -R www-data /var/www/storage/framework/sessions
+# RUN chown -R www-data /var/www/storage
+# RUN chown -R www-data /var/www/storage/framework
+# RUN chown -R www-data /var/www/storage/framework/sessions
 
-RUN chown -R www-data:www-data /var/www/storage
+# RUN chown -R www-data:www-data /var/www/storage
 
 # Set correct permission.
-RUN chmod -R 755 /var/www/storage
-RUN chmod -R 755 /var/www/storage/logs
-RUN chmod -R 755 /var/www/storage/framework
-RUN chmod -R 755 /var/www/storage/framework/sessions
-RUN chmod -R 755 /var/www/bootstrap
+# RUN chmod -R 755 /var/www/storage
+# RUN chmod -R 755 /var/www/storage/logs
+# RUN chmod -R 755 /var/www/storage/framework
+# RUN chmod -R 755 /var/www/storage/framework/sessions
+# RUN chmod -R 755 /var/www/bootstrap
 
-VOLUME /var/www/storage
+# VOLUME /var/www/storage
 
 # Adjust user permission & group
 RUN usermod --uid 1000 www-data
