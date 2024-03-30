@@ -92,7 +92,7 @@ RUN groupmod --gid 1001 www-data
 # ENTRYPOINT ["./entrypoint.sh"]
 RUN composer install --no-progress --no-interaction
 
-RUN php artisan migrate
+# RUN php artisan migrate
 RUN php artisan optimize
 RUN php artisan view:cache
 
