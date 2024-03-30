@@ -46,7 +46,9 @@ RUN docker-php-ext-install \
 COPY . /var/www
 
 # Copy and run composer
-COPY --from=composer:2.3.5 /usr/bin/composer /usr/composer
+# COPY --from=composer:2.3.5 /usr/bin/composer /usr/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 
 # Copy configuration files.
 COPY ./php/php.ini /usr/local/etc/php/php.ini
