@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     jpegoptim optipng pngquant gifsicle \
-    vim \
+    # vim \
     git \
     curl \
     wget \
@@ -42,24 +42,23 @@ RUN docker-php-ext-install \
     opcache \
     mbstring
 
+# Set working directory to /var/www.
+WORKDIR /var/www
+
 # Copy existing app directory
-COPY . /var/www
+COPY . .
 
 # Copy and run composer
 # COPY --from=composer:2.3.5 /usr/bin/composer /usr/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-
 # Copy configuration files.
-COPY ./php/php.ini /usr/local/etc/php/php.ini
-COPY ./php/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+# COPY ./php/php.ini /usr/local/etc/php/php.ini
+# COPY ./php/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+# COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # RUN php artisan cache:clear
 # RUN php artisan config:clear
-
-# Set working directory to /var/www.
-WORKDIR /var/www
 
 # Copy files from current folder to container current folder (set in workdir).
 COPY --chown=www-data:www-data . .

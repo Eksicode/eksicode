@@ -17,6 +17,8 @@ services:
       - ./backend/.env
     volumes:
       - ./backend:/var/www
+      - ./backend/php/php.ini /usr/local/etc/php/php.ini
+      - ./backend/php/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
       - ./backend/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./backend/nginx/logs/:/etc/nginx/logs/
       - ./backend/nginx/mime.types:/etc/nginx/mime.types
