@@ -39,9 +39,9 @@ RUN apt-get install -y libpq-dev \
     pgsql \ 
     mysqli \
     pdo_mysql \
-    nodejs \
-    yarn \ 
-    npm \
+    # nodejs \
+    # yarn \ 
+    # npm \
     bcmath \
     curl \
     opcache \
