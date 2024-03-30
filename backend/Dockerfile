@@ -83,11 +83,13 @@ RUN chown -R www-data /var/www/storage/framework
 RUN chown -R www-data /var/www/storage/framework/sessions
 
 # Set correct permission.
-RUN chmod -R 755 /var/www/storage
-RUN chmod -R 755 /var/www/storage/logs
-RUN chmod -R 755 /var/www/storage/framework
-RUN chmod -R 755 /var/www/storage/framework/sessions
-RUN chmod -R 755 /var/www/bootstrap
+RUN chmod -R 777 /var/www/storage
+RUN chmod -R 777 /var/www/storage/logs
+RUN chmod -R 777 /var/www/storage/framework
+RUN chmod -R 777 /var/www/storage/framework/sessions
+RUN chmod -R 777 /var/www/bootstrap
+
+RUN chown -R www-data:www-data /var/storage/logs/
 
 # Adjust user permission & group
 RUN usermod --uid 1000 www-data
