@@ -35,15 +35,18 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions.
 RUN docker-php-ext-install \
     mysqli \
+    pdo \
+    pdo_pgsql \
+    pdo_mysql \
     bcmath \
     curl \
     opcache \
-    mbstring
+    mbstring \
+    postgresql-dev \
+    nodejs \
+    yarn \ 
+    npm
 
-RUN set -ex \
-      && apk --no-cache add postgresql-dev nodejs yarn npm\
-      && docker-php-ext-install pdo pdo_pgsql
-      
 # Set working directory to /var/www.
 WORKDIR /var/www
 
