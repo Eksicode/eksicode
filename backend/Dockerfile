@@ -42,13 +42,8 @@ RUN docker-php-ext-install \
     opcache \
     mbstring
 
-WORKDIR /var/www
-
 # Copy existing app directory
 COPY . /var/www
-
-# Copy files from current folder to container current folder (set in workdir).
-COPY --chown=www-data:www-data . .
 
 # Copy and run composer
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/composer
@@ -60,6 +55,12 @@ COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # RUN php artisan cache:clear
 # RUN php artisan config:clear
+
+# Set working directory to /var/www.
+WORKDIR /var/www
+
+# Copy files from current folder to container current folder (set in workdir).
+COPY --chown=www-data:www-data . .
 
 # Create laravel caching folders.
 RUN mkdir -p /var/www/storage/framework
