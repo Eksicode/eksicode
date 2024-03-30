@@ -13,7 +13,6 @@ RUN usermod -u 1000 www-data
 RUN apt-get update && apt-get install -y \
     build-essential \
     libicu-dev \
-    libpq-dev \
     libcurl4-gnutls-dev \
     nginx \ 
     libonig-dev \
@@ -32,20 +31,21 @@ RUN apt-get update && apt-get install -y \
     wget \
     zsh
 
-# Install PHP extensions.
-RUN docker-php-ext-install \
+# Install Postgre PDO
+RUN apt-get install -y libpq-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo \ 
+    pdo_pgsql \ 
+    pgsql \ 
     mysqli \
-    pdo \
-    pdo_pgsql \
     pdo_mysql \
+    nodejs \
+    yarn \ 
+    npm \
     bcmath \
     curl \
     opcache \
-    mbstring \
-    postgresql-dev \
-    nodejs \
-    yarn \ 
-    npm
+    mbstring
 
 # Set working directory to /var/www.
 WORKDIR /var/www
