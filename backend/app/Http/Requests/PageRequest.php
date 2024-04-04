@@ -26,7 +26,7 @@ class PageRequest extends FormRequest
         return [
             'title' => 'required',
             'content' => 'required',
-            'page_category_id' => 'required',
+            'page_category' => 'required',
         ];
     }
 
@@ -36,7 +36,7 @@ class PageRequest extends FormRequest
         return [
             'title.required' => 'The title field is required.',
             'content.required' => 'The content field is required.',
-            'page_category_id.required' => 'The page category id field is required.',
+            'page_category.required' => 'The page category field is required.',
         ];
     }
 }

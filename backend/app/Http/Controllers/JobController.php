@@ -78,9 +78,11 @@ class JobController extends Controller
             'experience_level' => $request->experience_level,
             'requirements' => $request->requirements,
             'company_name' => $request->company_name,
-            'location' => $request->location,
+            'country' => $request->country,
+            'city' => $request->city,
+            'state' => $request->state,
             'remote' => $request->remote,
-            'price' => $request->price,
+            'salary' => $request->price,
             'contact' => $request->contact,
             'website' => $request->website,
             'validity_date' => $request->validity_date
