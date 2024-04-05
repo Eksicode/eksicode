@@ -28,7 +28,7 @@ class GroupController extends Controller
     {
         if ($request->count == "total") {
             $total = Group::count();
-            $group = Group::latest()->get();
+            $group = Group::orderBy('list_order', 'asc')->get();
             return response(["data" =>  GroupResource::collection($group),"total" => $total], Response::HTTP_OK);
         }
         return GroupResource::collection(Group::orderBy('list_order', 'asc')->paginate($request->count));
