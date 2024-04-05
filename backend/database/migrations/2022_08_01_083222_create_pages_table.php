@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('content');
             $table->string('slug');
             $table->string('header_image')->nullable();
-            $table->unsignedInteger('page_category_id');
+            $table->string('page_category')->nullable();
             $table->timestamps();
         });
     }

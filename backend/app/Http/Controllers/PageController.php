@@ -58,7 +58,7 @@ class PageController extends Controller
         $page->title = $request->title;
         $page->slug = $request->slug;
         $page->content = $request->content;
-        $page->page_category_id = $request->page_category_id;
+        $page->page_category = $request->page_category;
         $page->header_image = $path;
         $page->save();
         return response(['page' => new PageResource($page)], Response::HTTP_CREATED);
@@ -105,7 +105,7 @@ class PageController extends Controller
             'title'=> $request->title,
             'slug' => $request->slug,
             'content' => $request->content,
-            'page_category_id' => $request->page_category_id,
+            'page_category' => $request->page_category,
             'header_image' => $img
         ]);
         return response(['page' => new PageResource($page)], Response::HTTP_ACCEPTED);
