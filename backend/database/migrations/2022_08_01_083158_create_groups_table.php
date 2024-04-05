@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('icon')->nullable();
             $table->integer('members');
             $table->string('link');
-            $table->string('channel_id');
+            $table->string('channelID');
             $table->integer('list_order')->unique();
             $table->text('description')->nullable();
             $table->timestamps();
