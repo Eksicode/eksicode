@@ -22,7 +22,7 @@ class GroupResource extends JsonResource
             'icon' => $this->icon,
             'members' => $this->members,
             'link' => $this->link,
-            'channelID' => $this->channel_id,
+            'channelID' => $this->channelID,
             'listOrder' => $this->list_order,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
