@@ -1,0 +1,453 @@
+[
+  {
+    "name": "Duyuru",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/duyuru.jpg",
+    "icon": null,
+    "members": 275,
+    "link": "https://t.me/+T21XXkOQtaChSIIu",
+    "channelID": "-1001332565854",
+    "listOrder": 0,
+    "descriprion": "EkşiCode Duyuruları."
+  },
+  {
+    "name": "Genel Konular",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/genel.jpg",
+    "icon": "",
+    "members": 1015,
+    "link": "https://t.me/+PaBUhA5nqiM5ODk0",
+    "channelID": "-1001364530781",
+    "listOrder": 1,
+    "descriprion": "Yazılım hakkında genel konular."
+  },
+  {
+    "name": "JavaScript",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/javascript.jpg",
+    "icon": "",
+    "members": 1337,
+    "link": "https://t.me/+3FMaocsKi29mMmVk",
+    "channelID": "-1001156686363",
+    "listOrder": 2,
+    "descriprion": "JavaScript hakkında genel konular."
+  },
+  {
+    "name": "Python",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/python.jpg",
+    "icon": null,
+    "members": 1833,
+    "link": "https://t.me/+FbX-MPw6m-RjZmY0",
+    "channelID": "-1001353326048",
+    "listOrder": 3,
+    "descriprion": "Python hakkında genel konular."
+  },
+  {
+    "id": 5,
+    "name": "C++",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/cpp.jpg",
+    "icon": null,
+    "members": 666,
+    "link": "https://t.me/+vOSgQQRiR_BmZjlk",
+    "channelID": "-1001210277059",
+    "listOrder": 4,
+    "descriprion": "C++ hakkında genel konular."
+  },
+  {
+    "name": "C#",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/sisarp.jpg",
+    "icon": "",
+    "members": 1226,
+    "link": "https://t.me/+T3NOZuA53mLjJ2sn",
+    "channelID": "-1001332956774",
+    "listOrder": 5,
+    "descriprion": "C# hakkında genel konular."
+  },
+  {
+    "name": "C",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/si.jpg",
+    "icon": null,
+    "members": 666,
+    "link": "https://t.me/+TCrTe5oACSqOn9wj",
+    "channelID": "-1001277875067",
+    "listOrder": 6,
+    "descriprion": "C hakkında genel konular."
+  },
+  {
+    "name": "Yapay Zeka & Veri Bilimi",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/ai.jpg",
+    "icon": "",
+    "members": 1404,
+    "link": "https://t.me/+TzBOieqmwvl0qELw",
+    "channelID": "-1001328565897",
+    "listOrder": 7,
+    "descriprion": "Yapay Zeka & Veri Bilimi hakkında genel konular."
+  },
+  {
+    "name": "Java",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/java.jpg",
+    "icon": null,
+    "members": 873,
+    "link": "https://t.me/+2zs8bUA8Gy8wYzFk",
+    "channelID": "-1001389029475",
+    "listOrder": 8,
+    "descriprion": "Java hakkında genel konular."
+  },
+  {
+    "name": "Siber Güvenlik",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/cybersecurity.jpg",
+    "icon": null,
+    "members": 899,
+    "link": "https://t.me/+VyOexoWKAawGpPSz",
+    "channelID": "-1001461952198",
+    "listOrder": 9,
+    "descriprion": "Siber Güvenlik hakkında genel konular."
+  },
+  {
+    "name": "Kariyer",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/career.jpg",
+    "icon": "",
+    "members": 1068,
+    "link": "https://t.me/+SSB8Zwi1bE182g2P",
+    "channelID": "-1001226865767",
+    "listOrder": 10,
+    "descriprion": "Kariyer hakkında genel konular."
+  },
+  {
+    "name": "Mobil Uygulama Geliştirme",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/mobile.jpg",
+    "icon": "",
+    "members": 906,
+    "link": "https://t.me/+TX6fHFZsIQe3dRRo",
+    "channelID": "-1001300143900",
+    "listOrder": 11,
+    "descriprion": "Mobil Uygulama Geliştirme hakkında genel konular."
+  },
+  {
+    "name": "PHP",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/php.jpg",
+    "icon": null,
+    "members": 538,
+    "link": "https://t.me/+CmXuuDNeG_wxNGI0",
+    "channelID": "-1001211127698",
+    "listOrder": 12,
+    "descriprion": "PHP hakkında genel konular."
+  },
+  {
+    "name": "Flutter",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/flutter.jpg",
+    "icon": null,
+    "members": 494,
+    "link": "https://t.me/+xamLQPMriU0xMWZk",
+    "channelID": "-1001356411278",
+    "listOrder": 13,
+    "descriprion": "Flutter hakkında genel konular."
+  },
+  {
+    "name": "Linux",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/linux.jpg",
+    "icon": null,
+    "members": 769,
+    "link": "https://t.me/+wvmaJhL1V6E5NjBk",
+    "channelID": "-1001380409228",
+    "listOrder": 14,
+    "descriprion": "Linux hakkında genel konular."
+  },
+  {
+    "name": "Windows",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/windows.jpg",
+    "icon": null,
+    "members": 395,
+    "link": "https://t.me/+TQFnV8B4dyi6jFkE",
+    "channelID": "-1001291937623",
+    "listOrder": 15,
+    "descriprion": "Windows hakkında genel konular."
+  },
+  {
+    "name": "macOS",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/macos.jpg",
+    "icon": null,
+    "members": 227,
+    "link": "https://t.me/+S_nguXHqhQgX8LEq",
+    "channelID": "-1001274667193",
+    "listOrder": 16,
+    "descriprion": "macOS hakkında genel konular."
+  },
+  {
+    "name": "Oyun Geliştirme",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/gamedevelopment.jpg",
+    "icon": "",
+    "members": 406,
+    "link": "https://t.me/+QuzKpAGPfBAUQ57G",
+    "channelID": "-1001122814628",
+    "listOrder": 17,
+    "descriprion": "Oyun Geliştirme hakkında genel konular."
+  },
+  {
+    "name": "DevOps & Networking",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/devops.jpg",
+    "icon": null,
+    "members": 537,
+    "link": "https://t.me/+ShYyjNmD8Awk5a9R",
+    "channelID": "-1001242968716",
+    "listOrder": 18,
+    "descriprion": "DevOps & Networking hakkında genel konular."
+  },
+  {
+    "name": "UX/UI - Tasarım",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/ui-ux.jpg",
+    "icon": "",
+    "members": 498,
+    "link": "https://t.me/+BJZ6Ps88YEQwNmI0",
+    "channelID": "-1001480553178",
+    "listOrder": 19,
+    "descriprion": "YaUX/UI - Tasarım hakkında genel konular."
+  },
+  {
+    "name": "Ruby",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/ruby.jpg",
+    "icon": null,
+    "members": 132,
+    "link": "https://t.me/joinchat/UaU_HKsfRkllLYcm",
+    "channelID": "-1001369784092",
+    "listOrder": 20,
+    "descriprion": "Ruby hakkında genel konular."
+  },
+  {
+    "name": "İngilizce",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/english.jpg",
+    "icon": "",
+    "members": 1100,
+    "link": "https://t.me/joinchat/azLsOBAhFDwwNDM0",
+    "channelID": "-1001263722948",
+    "listOrder": 21,
+    "descriprion": "İngilizce hakkında genel konular."
+  },
+  {
+    "name": "Almanca",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/german.jpg",
+    "icon": null,
+    "members": 350,
+    "link": "https://t.me/+RT5ym5P5Q-MP2OHR",
+    "channelID": "-1001161720475",
+    "listOrder": 22,
+    "descriprion": "Almanca hakkında genel konular."
+  },
+  {
+    "name": "Eğitim",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/education.jpg",
+    "icon": "",
+    "members": 305,
+    "link": "https://t.me/eksicode_egitim",
+    "channelID": "-1001142111543",
+    "listOrder": 23,
+    "descriprion": "Eğitim hakkında genel konular."
+  },
+  {
+    "name": "Matematik & Algoritma",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/math.jpg",
+    "icon": "",
+    "members": 620,
+    "link": "https://t.me/+5TvKby41qug5N2Vk",
+    "channelID": "-1001159983728",
+    "listOrder": 24,
+    "descriprion": "Matematik & Algoritma hakkında genel konular."
+  },
+  {
+    "name": "Go",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/go.jpg",
+    "icon": null,
+    "members": 299,
+    "link": "https://t.me/joinchat/VUlUEoUL9EE-pe3s",
+    "channelID": "-1001430869010",
+    "listOrder": 25,
+    "descriprion": "Go hakkında genel konular."
+  },
+  {
+    "name": "Gömülü Sistemler & Robotik",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/embeded.jpg",
+    "icon": "",
+    "members": 486,
+    "link": "https://t.me/+VLq340MbEG0mB8H1",
+    "channelID": "-1001421522915",
+    "listOrder": 26,
+    "descriprion": "Gömülü Sistemler & Robotik hakkında genel konular."
+  },
+  {
+    "name": "Veritabanları",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/databases.jpg",
+    "icon": "",
+    "members": 563,
+    "link": "https://t.me/joinchat/SWr2D9EEu--u5Sh6",
+    "channelID": "-1001231746575",
+    "listOrder": 27,
+    "descriprion": "Veritabanları hakkında genel konular."
+  },
+  {
+    "name": "Bilişim Hukuku",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/law.jpg",
+    "icon": null,
+    "members": 287,
+    "link": "https://t.me/+RT5xaf56OGFxpz8X",
+    "channelID": "-1001161720169",
+    "listOrder": 28,
+    "descriprion": "Bilişim Hukuku hakkında genel konular."
+  },
+  {
+    "name": "Rust",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/rust.jpg",
+    "icon": null,
+    "members": 189,
+    "link": "https://t.me/+S0dUKJg1j7kQSpl4",
+    "channelID": "-1001262965800",
+    "listOrder": 29,
+    "descriprion": "Rust hakkında genel konular."
+  },
+  {
+    "name": "Blockchain",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/blockchain.jpg",
+    "icon": null,
+    "members": 383,
+    "link": "https://t.me/+H83tVquLY1wyZWI8",
+    "channelID": "-1001333212756",
+    "listOrder": 30,
+    "descriprion": "Blockchain hakkında genel konular."
+  },
+  {
+    "name": "Cryptocurrency",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/cryiptocurrency.jpg",
+    "icon": null,
+    "members": 178,
+    "link": "https://t.me/joinchat/Ssl5dka1tfJumbG8",
+    "channelID": "-1001254717814",
+    "listOrder": 31,
+    "descriprion": "Cryptocurrency hakkında genel konular."
+  },
+  {
+    "name": "Matlab & Julia",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/matlab.jpg",
+    "icon": null,
+    "members": 367,
+    "link": "https://t.me/+zLdtsqlcGaJkMmY0",
+    "channelID": "-1001476238342",
+    "listOrder": 32,
+    "descriprion": "Matlab & Julia hakkında genel konular."
+  },
+  {
+    "name": "PLC",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/plc.jpg",
+    "icon": "",
+    "members": 307,
+    "link": "https://t.me/eksicode_plc",
+    "channelID": "-1001260299968",
+    "listOrder": 33,
+    "descriprion": "PLC hakkında genel konular."
+  },
+  {
+    "name": "Kotlin",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/kotlin.jpg",
+    "icon": null,
+    "members": 239,
+    "link": "https://t.me/+Sp7WIV9vNwDwD4GC",
+    "channelID": "-1001251923489",
+    "listOrder": 34,
+    "descriprion": "Kotlin hakkında genel konular."
+  },
+  {
+    "name": "R",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/r.jpg",
+    "icon": null,
+    "members": 192,
+    "link": "https://t.me/+T9Lv6D6io36p14wS",
+    "channelID": "-1001339224040",
+    "listOrder": 35,
+    "descriprion": "R hakkında genel konular."
+  },
+  {
+    "name": "SAP",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/sap.jpg",
+    "icon": null,
+    "members": 133,
+    "link": "https://t.me/+TMnqRfxwICopdDhY",
+    "channelID": "-1001288301125",
+    "listOrder": 36,
+    "descriprion": "SAP hakkında genel konular."
+  },
+  {
+    "name": "Swift",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/swift.jpg",
+    "icon": null,
+    "members": 267,
+    "link": "https://t.me/+SCPMtSS_GRmoOzi0",
+    "channelID": "-1001210305717",
+    "listOrder": 37,
+    "descriprion": "Swift hakkında genel konular."
+  },
+  {
+    "name": "SEO & Dijital Pazarlama",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/digitalmarketing.jpg",
+    "icon": null,
+    "members": 210,
+    "link": "https://t.me/joinchat/4goulPjv3y82Y2U0",
+    "channelID": "-1001166481081",
+    "listOrder": 38,
+    "descriprion": "SEO & Dijital Pazarlama hakkında genel konular."
+  },
+  {
+    "name": "Fizik",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/fizik.jpg",
+    "icon": null,
+    "members": 126,
+    "link": "https://t.me/joinchat/VvPbtU9VY_YDfBdS",
+    "channelID": "-1001458822069",
+    "listOrder": 39,
+    "descriprion": "Fizik hakkında genel konular."
+  },
+  {
+    "name": "Kimya & Biyoloji",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/chemistry.jpg",
+    "icon": null,
+    "members": 73,
+    "link": "https://t.me/+ULtdmsz6u2zAwmew",
+    "channelID": "-1001354456474",
+    "listOrder": 40,
+    "descriprion": "Kimya & Biyoloji hakkında genel konular."
+  },
+  {
+    "name": "Cad/Cam",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/cad-cam.jpg",
+    "icon": "ee",
+    "members": 67,
+    "link": "https://t.me/joinchat/S8AI-OmjKaqR9opX",
+    "channelID": "-1001270876408",
+    "listOrder": 41,
+    "descriprion": "Cad/Cam hakkında genel konular."
+  },
+  {
+    "name": "Yazılım Analiz Tasarım",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/engineeringmanagement.jpg",
+    "icon": "",
+    "members": 121,
+    "link": "https://t.me/+yh1iO8JNips1Njlk",
+    "channelID": "-1001703214688",
+    "listOrder": 42,
+    "descriprion": "Yazılım projelerindeki başarısızlığın altında yatan en önemli sebepler analiz ve planlama eksikliğine bağlı olarak ortaya çıkmaktadır. Bir yazılım ürününün yaşam döngüsü boyunca nasıl nasıl hareket edeceğinin planlaması analiz ve tasarım süreçlerinde ortaya koyulur. Bu süreçler ile ilgili paylaşımlar için Yazılım Analiz Tasarım grubunu kullanabilirsiniz."
+  },
+  {
+    "name": "Delphi",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/delphi.jpg",
+    "icon": null,
+    "members": 26,
+    "link": "https://t.me/+QN-ionqtRsZmNzFk",
+    "channelID": "-1001509310368",
+    "listOrder": 43,
+    "descriprion": "Delphi hakkında genel konular."
+  },
+  {
+    "name": "Geyik",
+    "logo": "https://eksicode-images.s3.eu-central-1.amazonaws.com/geyik.jpg",
+    "icon": "",
+    "members": 156,
+    "link": "https://t.me/+iXeb0Ba8zPphMTQ0",
+    "channelID": "-1001248972136",
+    "listOrder": 44,
+    "descriprion": "Geyik Baba."
+  }
+]

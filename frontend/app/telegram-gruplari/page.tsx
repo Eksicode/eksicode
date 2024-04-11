@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import TelegramGroupCard from "@components/TelegramGroupCard";
 import SideMenu from "@components/Nav/SideMenu";
+import getGroups from "@providers/getGroups";
+
 interface Group {
   id: number;
   name: string;
@@ -10,34 +12,15 @@ interface Group {
   members: number;
 }
 
-type TelegramGroupsProps = {
-  groups?: Group[];
-};
-
-async function getData() {
-  try {
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_API_URL + "/groups?count=total",
-      { next: { revalidate: 43200 } }
-    );
-    if (!res.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    return res.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
-}
-export default async function Groups() {
-  const groups = await getData();
+async function Groups() {
+  const groups = await getGroups("total", undefined, "no-cache");
 
   return (
     <>
-      <div className="flex w-1/3">
+      <div className="flex">
         <SideMenu />
       </div>
-      <div className="flex flex-wrap w-2/3 sm:w-full md:w-full justify-center text-center">
+      <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
         <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
           <p className="w-full text-3xl text-bold mb-4">Telegram Grupları</p>
           <p className="w-full mb-4">
@@ -81,11 +64,13 @@ export default async function Groups() {
         </div>
 
         <div className="flex flex-wrap w-full justify-between sm:mx-2">
-          {groups.data?.map((group: Group) => (
-            <TelegramGroupCard {...group} />
+           {groups.map((group) => (
+            <TelegramGroupCard key={group.id} {...group} />
           ))}
         </div>
       </div>
     </>
   );
 }
+
+export default Groups;

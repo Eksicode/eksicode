@@ -15,7 +15,7 @@ import React from 'react';
 const SideMenu = () => {
   return (
     <aside className="w-64 sm:hidden" aria-label="Sidebar">
-      <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
+      <div className="overflow-y-auto w-64 py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border fixed">
         <ul className="space-y-2">
           <li>
             <Link

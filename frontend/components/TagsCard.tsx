@@ -11,7 +11,7 @@ interface Tag {
 
 function TagsCard(tag: Tag) {
   return (
-    <div className="relative flex items-start flex-col justify-start text-gray-700 bg-white border border-gray-200 shadow-md bg-clip-border rounded-xl w-[30%] p-2 m-2">
+    <div key={tag.id} className="relative flex items-start flex-col justify-start text-gray-700 bg-white border border-gray-200 shadow-md bg-clip-border rounded-xl w-[30%] p-2 m-2">
       <div className="p-4">
         <h4 className="mb-2 font-sans text-lg antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
           <Link href={`/etiketler/${tag.slug}`}>#{tag.name}</Link>

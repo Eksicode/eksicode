@@ -1,18 +1,17 @@
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import Navlink from "@components/Ui/NavLink";
 interface Group {
   id: number;
   name: string;
   logo: string;
-  link: string;
-  members: number;
+  link?: string;
+  members?: number;
 }
 
 const TelegramGroupCard = (group: Group) => {
   return (
-    <div className="relative flex items-center flex-col justify-center text-gray-700 bg-white border border-gray-200 shadow-md bg-clip-border rounded-xl w-52 p-2 m-2">
+    <div className="relative grid content-between justify-items-center sm:w-full h-64 w-52 flex-col text-gray-700 bg-white border border-gray-200 shadow-md bg-clip-border rounded-xl p-2 m-2">
       <Image
         src={group.logo}
         alt="eksi-code-logo"
@@ -28,7 +27,12 @@ const TelegramGroupCard = (group: Group) => {
           {group.members} Üye
         </p>
       </div>
-      <Navlink variant="tertiary" href={group.link} target="_blank">
+      <Navlink
+        variant="tertiary"
+        href={group.link}
+        target="_blank"
+        clasName="w-[150px]"
+      >
         Katıl
       </Navlink>
     </div>

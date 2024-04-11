@@ -39,7 +39,7 @@ const MobileMenu = () => {
           </div>
 
           {/*  Mobile Menu */}
-          <div className="flex flex-col items-end mt-5 mx-5 py-4 z-20 font-eksifont">
+          <div className="flex flex-col items-end mt-5 mx-5 py-4 z-20 ">
             Mobile Menu
             <div className="mt-20 flex items-center justify-around my-10 ml-2 w-full sm:w-[80%]">
               <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-105 ease-in duration-300 text-eksi">
