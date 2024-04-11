@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "@styles/globals.css";
 import React from "react";
 import Nav from "@components/Nav/Nav";
 import Footer from "@components/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '700'],
+})
 
 export const metadata: Metadata = {
   title: "Ekşicode - Yazılımcı Geliştirme Platformu",
@@ -25,12 +28,12 @@ export default function RootLayout({
       <body
         className={
           process.env.NODE_ENV === "development"
-            ? inter.className + " debug-screens"
-            : "" + " " + inter.className
+            ? roboto.className + " debug-screens bg-eksiContent"
+            : "" + " bg-eksiContent" + roboto.className 
         }
       >
         <Nav />
-        <div className="flex flex-wrap w-full justify-center pt-5 font-eksifont bg-eksiContent">
+        <div className="flex flex-wrap w-full justify-center pt-5">
           <div className="flex justify-center sm:basis-full md:basis-full lg:basis-full basis-3/4 sm:mx-2">
             {children}
           </div>

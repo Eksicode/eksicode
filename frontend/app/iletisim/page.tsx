@@ -3,9 +3,9 @@ import Link from "next/link";
 
 function page() {
   return (
-    <>
+        <div className="flex flex-col mb-32 w-1/2 justify-center text-center"> 
+
       <div className="w-1/2 bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6 text-center">
-    {/* <div className="w-1/2 h-[1000px] justify-center text-center px-6 font-eksifont bg-white"> */}
       <h1 className="text-xl">İletişim</h1>
       <p>Aşağıdaki yöntemlerle bize ulaşabilirsiniz.</p>
 
@@ -45,7 +45,7 @@ function page() {
         </Link>
       </p>
     </div>
-    </>
+    </div>
   );
 }
 

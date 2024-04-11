@@ -14,7 +14,7 @@ const Nav = () => {
     setNav(!nav)
   }
   return (
-    <nav className="flex h-22 w-full bg-dark z-10 font-eksifont sticky top-0 nav-sahdow">
+    <nav className="flex h-22 w-full bg-dark z-10 sticky top-0 nav-sahdow">
       <div className='flex items-center h-16 w-full ml-10 mr-10 justify-between'>
         <Link href="/corporate">
             <Image 
@@ -47,7 +47,7 @@ const Nav = () => {
               </div>
             </div>
           <div>
-          <div className='flex flex-col mt-10 py-4 font-eksifont'>
+          <div className='flex flex-col mt-10 py-4'>
             {menuItems.map((menu, index)=>{
               return(
                 <Link className='flex py-4 text-sm text-dark hover:text-eksi' key={index} href={menu.id}>

@@ -1,3 +1,4 @@
+"use client";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Button from "@components/Ui/Button";
@@ -77,8 +78,8 @@ const LoginForm: React.FC = () => {
                 Beni Hatırla
               </label>
               <Link
-                href="/sifremi-unuttum"
-                className=" text-eksiCodeMedium hover:text-eksiCode focus:text-eksiCode active:text-eksiCodeDark duration-200 transition ease-in-out"
+                href="/auth/sifremi-unuttum"
+                className="text-gray-400 text-sm hover:underline"
               >
                 Şifremi Unuttum
               </Link>
@@ -93,8 +94,8 @@ const LoginForm: React.FC = () => {
             </Button>
             <div className="flex justify-center items-center mb-6">
               <Link
-                href="/uye-ol"
-                className=" text-eksiCodeMedium hover:text-eksiCode focus:text-eksiCode active:text-eksiCodeDark duration-200 transition ease-in-out"
+                href="/auth/uye-ol"
+                className="text-gray-400 text-sm hover:underline"
               >
                 Hesabınız yok mu?
               </Link>

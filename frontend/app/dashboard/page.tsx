@@ -4,8 +4,6 @@ import NextBreadcrumb from "@/components/NextBreadcrumb";
 
 function Dahboard() {
   return (
-    // <div className="flex w-full justify-center pt-5 pb-5 font-eksifont bg-eksiContent">
-    // <div className="flex basis-3/4">
     <>
       <div className="basis-1/4">
         <SideMenu />
@@ -28,8 +26,6 @@ function Dahboard() {
         </div>
       </div>
     </>
-    // </div>
-    // </div>
   );
 }
 

@@ -1,230 +1,67 @@
 import React from "react";
 
-const DataTable = () => {
+interface DataParams {
+  [key: string]: any;
+}
+
+interface DataTableProps {
+  data: DataParams[];
+}
+const DataTable: React.FC<{ data: DataTableProps[] }> = ({ data }) => {
+  const columns = Object.keys(data[0] || {});
+
+  const prepareDataForDisplay = (postData: Post) => ({
+    ...postData,
+    status: postData.status ? "Published" : "Draft",
+    view: true, // Assuming view is always true
+    edit: false, // Assuming edit is always false (can be adjusted based on logic)
+  });
+
+  const preparedData = data.map(prepareDataForDisplay);
+
   return (
     <div className="basis-full overflow-x-auto w-full bg-white ">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
           <tr>
-            <th scope="col" className="px-6 py-3">
-              Product name
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Color
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Category
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Price
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Edit
-            </th>
-            <th scope="col" className="px-6 py-3">
-              <span className="sr-only">Edit</span>
-            </th>
+            {columns?.map((column) => (
+              <th
+                key={column}
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                {column}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          <tr className="bg-white border-b  hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Apple MacBook Pro 17"
-            </th>
-            <td className="px-6 py-4">Silver</td>
-            <td className="px-6 py-4">Laptop</td>
-            <td className="px-6 py-4">$2999</td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
-          <tr className="bg-white border-b   hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Microsoft Surface Pro
-            </th>
-            <td className="px-6 py-4">White</td>
-            <td className="px-6 py-4">Laptop PC</td>
-            <td className="px-6 py-4">$1999</td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
-          <tr className="bg-white  hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Magic Mouse 2
-            </th>
-            <td className="px-6 py-4">Black</td>
-            <td className="px-6 py-4">Accessories</td>
-            <td className="px-6 py-4">$99</td>
-            <td className="px-6 py-4 text-right">
-              <a
-                href="#"
-                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-              >
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
-          <tr className="bg-white border-b  hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Apple MacBook Pro 17"
-            </th>
-            <td className="px-6 py-4">Silver</td>
-            <td className="px-6 py-4">Laptop</td>
-            <td className="px-6 py-4">$2999</td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
-          <tr className="bg-white border-b   hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Microsoft Surface Pro
-            </th>
-            <td className="px-6 py-4">White</td>
-            <td className="px-6 py-4">Laptop PC</td>
-            <td className="px-6 py-4">$1999</td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
-          <tr className="bg-white  hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Magic Mouse 2
-            </th>
-            <td className="px-6 py-4">Black</td>
-            <td className="px-6 py-4">Accessories</td>
-            <td className="px-6 py-4">$99</td>
-            <td className="px-6 py-4 text-right">
-              <a
-                href="#"
-                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-              >
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
-          <tr className="bg-white border-b  hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Apple MacBook Pro 17"
-            </th>
-            <td className="px-6 py-4">Silver</td>
-            <td className="px-6 py-4">Laptop</td>
-            <td className="px-6 py-4">$2999</td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
-          <tr className="bg-white border-b   hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Microsoft Surface Pro
-            </th>
-            <td className="px-6 py-4">White</td>
-            <td className="px-6 py-4">Laptop PC</td>
-            <td className="px-6 py-4">$1999</td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
-          <tr className="bg-white  hover:bg-gray-50 ">
-            <th
-              scope="row"
-              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-            >
-              Magic Mouse 2
-            </th>
-            <td className="px-6 py-4">Black</td>
-            <td className="px-6 py-4">Accessories</td>
-            <td className="px-6 py-4">$99</td>
-            <td className="px-6 py-4 text-right">
-              <a
-                href="#"
-                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-              >
-                Edit
-              </a>
-            </td>
-            <td className="px-6 py-4 text-right">
-              <a href="#" className="font-medium text-blue-600 hover:underline">
-                Delete
-              </a>
-            </td>
-          </tr>
+          {data?.length > 0 ? (
+            data?.map((DataParam, index) => (
+              <tr key={index} className="bg-white border-b  hover:bg-gray-50">
+                {columns?.map((column) => (
+                  <td key={column} className="px-6 py-4">
+                    {DataParam[column]}
+                    {DataParam.view !== true && (
+                      <a href={`/delete/${DataParam.id}`}>Görüntüle</a>
+                    )}
+                    {DataParam.edit !== true && (
+                      <a href={`/delete/${DataParam.id}`}>Düzenle</a>
+                    )}
+                    {DataParam.delete !== true && (
+                      <a href={`/delete/${DataParam.id}`}>Sil</a>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={columns.length} className="text-center py-4">
+                Veri bulunamadı.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

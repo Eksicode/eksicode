@@ -22,7 +22,7 @@ const Nav = () => {
     setNav(!nav);
   };
   return (
-    <nav className="flex flex-wrap w-full justify-center z-10 font-eksifont sticky top-0 nav-sahdow bg-white">
+    <nav className="flex flex-wrap w-full justify-center z-10  sticky top-0 nav-sahdow bg-white">
       {/* Menu */}
       <div className="flex items-center sm:basis-full md:basis-full lg:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-between">
         {/* Logo */}
@@ -43,18 +43,18 @@ const Nav = () => {
         <div className="flex items-center justify-end w-1/3">
           {/*  Desktop menu */}
           <div className="flex flex-nowrap sm:hidden text-center md:text-sm lg:text-sm">
-            <Navlink variant="secondary" href="/uye-giris">
+            <Navlink variant="secondary" href="#">
               Yeni Gönderi
             </Navlink>
             {modalOpen && <NewPost modalClose={setModalOpen} />}
             <Navlink
               variant="quaternary"
               clasName="ml-3 pt-2 border border-white"
-              href="/uye-giris"
+              href="/auth/uye-giris"
             >
               Üye Girişi
             </Navlink>
-            <Navlink variant="primary" clasName="ml-3" href="/uye-ol">
+            <Navlink variant="primary" clasName="ml-3" href="/auth/uye-ol">
               Üye Ol
             </Navlink>
 
@@ -71,7 +71,7 @@ const Nav = () => {
               <span className="animate-ping absolute top-1 right-0.5 block h-1 w-1 rounded-full ring-2 ring-green-800 bg-eksiCode"></span>
             </Link>
 
-            <UserMenu setModalOpen={setModalOpen} />
+            <UserMenu />
           </div>
 
           {/*  Hamburger Menu Icon */}
@@ -107,7 +107,7 @@ const Nav = () => {
           </div>
 
           {/*  Mobile Menu */}
-          <div className="flex flex-col items-end mt-5 mx-5 py-4 z-20 font-eksifont">
+          <div className="flex flex-col items-end mt-5 mx-5 py-4 z-20">
             Mobile Menu
             <div className="mt-20 flex items-center justify-around my-10 ml-2 w-full sm:w-[80%]">
               <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-105 ease-in duration-300 text-eksi">

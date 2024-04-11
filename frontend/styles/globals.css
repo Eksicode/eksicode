@@ -2,6 +2,9 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 /* @import '../styles/header.css'; */
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
 
 *, html {
     scroll-behavior: smooth !important;
