@@ -17,6 +17,7 @@ use App\Http\Controllers\SourceController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\NewPasswordController;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +54,7 @@ Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 've
 Route::post('/forgot-password', [NewPasswordController::class, 'forgotPassword']);
 Route::post('/reset-password', [NewPasswordController::class, 'reset']);
 
-
+Route::get('/search/posts', SearchController::class)->name('search');
 Route::apiResource('/posts', PostController::class);
 Route::apiResource('/categories', CategoryController::class);
 Route::apiResource('/groups', GroupController::class);
@@ -66,6 +67,7 @@ Route::apiResource('/page-categories', PageCategoryController::class);
 Route::apiResource('/pages', PageController::class);
 Route::apiResource('/sources', SourceController::class);
 Route::apiResource('/jobs', JobController::class);
+
 
 
 
