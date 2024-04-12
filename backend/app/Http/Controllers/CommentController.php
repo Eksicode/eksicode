@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Spatie\Activitylog\Models\Activity;
 
 class CommentController extends Controller
 {

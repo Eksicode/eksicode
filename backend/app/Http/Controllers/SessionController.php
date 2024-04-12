@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Session;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class SessionController extends Controller
 {

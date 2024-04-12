@@ -6,6 +6,7 @@ use App\Models\Group;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\GroupResource;
+use Spatie\Activitylog\Models\Activity;
 
 class GroupController extends Controller
 {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Like;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class LikeController extends Controller
 {

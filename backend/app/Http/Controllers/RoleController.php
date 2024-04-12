@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\RoleResource;
 use App\Http\Requests\Rolerequest;
+use Spatie\Activitylog\Models\Activity;
 
 class RoleController extends Controller
 {

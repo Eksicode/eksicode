@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\JobResource;
 use App\Http\Requests\JobRequest;
+use Spatie\Activitylog\Models\Activity;
 
 class JobController extends Controller
 {

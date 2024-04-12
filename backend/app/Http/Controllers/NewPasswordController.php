@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password as RulesPassword;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Requests\SignupRequest;
+use Spatie\Activitylog\Models\Activity;
 
 
 class NewPasswordController extends Controller

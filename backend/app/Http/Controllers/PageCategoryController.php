@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\PageCategoryResource;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\PageCategoryRequest;
+use Spatie\Activitylog\Models\Activity;
 
 class PageCategoryController extends Controller
 {

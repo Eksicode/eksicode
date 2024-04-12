@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CategoryRequest;
+use Spatie\Activitylog\Models\Activity;
 
 
 class CategoryController extends Controller
