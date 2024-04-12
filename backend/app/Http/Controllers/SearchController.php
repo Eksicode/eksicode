@@ -7,6 +7,7 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Resources\PostResource;
+use Spatie\Activitylog\Models\Activity;
 
 class SearchController extends Controller
 {

@@ -8,6 +8,7 @@ use App\Http\Resources\PageResource;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\PageRequest;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Models\Activity;
 
 class PageController extends Controller
 {

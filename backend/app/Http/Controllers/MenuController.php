@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\MenuResource;
 use App\Http\Requests\MenuRequest;
+use Spatie\Activitylog\Models\Activity;
 
 class MenuController extends Controller
 {
