@@ -7,7 +7,7 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa";
 import Logo from "@public/assets/eksi-code-logo.png";
 import UserMenu from "@components/Nav/UserMenu";
-import NewPost from "@components/NewPost";
+// import NewPost from "@components/NewPost";
 import TelegramGroups from "@components/TelegramGroups";
 import Search from "@components/Search";
 import Navlink from "@components/Ui/NavLink";
@@ -46,7 +46,7 @@ const Nav = () => {
             <Navlink variant="secondary" href="#">
               Yeni Gönderi
             </Navlink>
-            {modalOpen && <NewPost modalClose={setModalOpen} />}
+            {/* {modalOpen && <NewPost modalClose={setModalOpen} />} */}
             <Navlink
               variant="quaternary"
               clasName="ml-3 pt-2 border border-white"
