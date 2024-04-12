@@ -9,13 +9,13 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'slug', 'post', 'user_id', 'category_id', 'status', 'tags'];
+    protected $fillable = ['title', 'slug', 'post', 'user_id', 'category_id', 'status'];
 
     protected $with = ['comments'];
 
-    protected $casts = [
+   /* protected $casts = [
         'tags' => 'array'
-    ];
+    ];*/
 
     /**
      * Get the route key for the model.
@@ -44,10 +44,10 @@ class Post extends Model
 
     public function tags()
     {
-        return $this->hasMany(Tag::class);
+        return $this->belongsToMany(Tag::class);
     }
 
-    public function getTagsAttribute($tags)
+   /* public function getTagsAttribute($tags)
     {   
         $str = str_replace("", "", $tags);
         $str = str_replace('[', "", $str);
@@ -55,7 +55,7 @@ class Post extends Model
         $str = str_replace('"', "", $str);
         $array = explode(",", $str);
         return  Tag::whereIn('id', $array)->get();
-    }
+    }*/
 
 
     /**

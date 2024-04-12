@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\PostTag;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\PostRequest;
@@ -47,6 +48,12 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+        $tags = $request->tags;
+        $str = str_replace('[', "", $tags);
+        $str = str_replace(']', "", $str);
+        $str = str_replace('"', "", $str);
+        $tagIds = explode(",", $str);
+
         $post = new Post;
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -58,15 +65,19 @@ class PostController extends Controller
                 $path = "https://eksicode-images.s3.eu-central-1.amazonaws.com/".$fileName;
             }
         }
+
         $post->title = $request->title;
         $post->slug = $request->slug;
         $post->post = $request->post;
-        $post->tags = $request->tags;
         $post->category_id = $request->category_id;
         $post->user_id = $request->user_id;
         $post->status = $request->status;
         $post->image = $path;
         $post->save();
+
+        $post->tags()->attach($tagIds);
+
+
         return response(['post' => new PostResource($post)], Response::HTTP_CREATED);
     }
 
@@ -107,16 +118,24 @@ class PostController extends Controller
             $img = $path;
         }
 
+        $tags = $request->tags;
+        $str = str_replace('[', "", $tags);
+        $str = str_replace(']', "", $str);
+        $str = str_replace('"', "", $str);
+        $tagIds = explode(",", $str);
+
         $post->update([
             'title'=>$request->title,
             'slug' => $request->slug,
             'post' => $request->post,
             'user_id' => $request->user_id,
             'status' => $request->status,
-            'tags' => $request->tags,
             'category_id' => $request->category_id,
             'image' => $img
         ]);
+
+        $post->tags()->sync($tagIds);
+        
         return response(['post' => new PostResource($post)], Response::HTTP_ACCEPTED);
     }
 
