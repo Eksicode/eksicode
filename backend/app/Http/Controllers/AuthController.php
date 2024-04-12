@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Http\Requests\SignupRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Spatie\Activitylog\Models\Activity;
 
 class AuthController extends Controller
 {
@@ -36,6 +37,17 @@ class AuthController extends Controller
         }
 
         if (auth()->user()->hasVerifiedEmail()) {
+            $user = auth()->user();
+            $ip = request()->getClientIp();
+            activity('Login')
+                ->causedBy($user)
+                ->performedOn($user)
+                ->withProperties([
+                    'ip' => $ip,
+                    'user' => $user
+                    ])
+                ->log($user->name . ' Login');
+
             return $this->respondWithToken($token);
         }
 
@@ -54,6 +66,17 @@ class AuthController extends Controller
         $login = $this->login($request);
         $user = auth()->user();
         $user->sendEmailVerificationNotification();
+
+        $ip = $request->getClientIp();
+            activity('Signup')
+                ->causedBy($user)
+                ->performedOn($user)
+                ->withProperties([
+                    'ip' => $ip,
+                    'user' => $user
+                    ])
+                ->log($user->name . ' signup');
+       
         return response(['success' =>true,'message' => 'Email verification link sent!'], Response::HTTP_OK);
         //return $this->login($request);
     }
