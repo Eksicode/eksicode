@@ -3,7 +3,7 @@ interface Pages {
   content: string;
   header_image: string;
   slug: string;
-  page_category_id: string;
+  page_category: string;
 }
 
 async function getPages(count: string, cache: string | number = "no-store"): Promise<Pages[]> {

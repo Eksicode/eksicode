@@ -49,8 +49,8 @@ const UserMenu = () => {
             <Link onClick={handleLinkClick} className="block px-4 py-2 text-sm hover:bg-gray-100" href="#">@Mkltkn</Link>
             <hr className="border-t border-gray-300 hover:bg-gray-100" />
             <Link onClick={handleLinkClick} className="block px-4 py-2 text-sm hover:bg-gray-100" href="/dashboard">Dashboard</Link>
-            <Link onClick={handleLinkClick} className="block px-4 py-2 text-sm hover:bg-gray-100" href="/favoriler">Favoriler</Link>
-            <Link onClick={handleLinkClick} className="block px-4 py-2 text-sm hover:bg-gray-100" href="/ayarlar">Ayarlar</Link>
+            <Link onClick={handleLinkClick} className="block px-4 py-2 text-sm hover:bg-gray-100" href="/dashboard/favoriler">Favoriler</Link>
+            <Link onClick={handleLinkClick} className="block px-4 py-2 text-sm hover:bg-gray-100" href="/dashboard/ayarlar">Ayarlar</Link>
             <form method="POST" action="#">
               <button onClick={handleLinkClick} className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left" type="submit">Güvenli Çıkış</button>
             </form>
