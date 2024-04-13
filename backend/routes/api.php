@@ -18,6 +18,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,7 @@ Route::apiResource('/page-categories', PageCategoryController::class);
 Route::apiResource('/pages', PageController::class);
 Route::apiResource('/sources', SourceController::class);
 Route::apiResource('/jobs', JobController::class);
+Route::apiResource('/users', UserController::class);
 
 
 
