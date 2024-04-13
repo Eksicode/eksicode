@@ -43,7 +43,7 @@ const Nav = () => {
         <div className="flex items-center justify-end w-1/3">
           {/*  Desktop menu */}
           <div className="flex flex-nowrap sm:hidden text-center md:text-sm lg:text-sm">
-            <Navlink variant="secondary" href="#">
+            <Navlink variant="secondary" href="/dashboard/posts/yeni">
               Yeni Gönderi
             </Navlink>
             {/* {modalOpen && <NewPost modalClose={setModalOpen} />} */}
@@ -58,7 +58,7 @@ const Nav = () => {
               Üye Ol
             </Navlink>
 
-            <Link className="inline-block relative mx-3 " href="/bildirimler">
+            <Link className="inline-block relative mx-3 " href="/dashboard/bildirimler">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 hover:text-eksiCode text-dark text-4xl"
