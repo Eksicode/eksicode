@@ -29,7 +29,7 @@ export default function RootLayout({
         className={
           process.env.NODE_ENV === "development"
             ? roboto.className + " debug-screens bg-eksiContent"
-            : "" + " bg-eksiContent" + roboto.className 
+            : roboto.className + " bg-eksiContent"
         }
       >
         <Nav />
