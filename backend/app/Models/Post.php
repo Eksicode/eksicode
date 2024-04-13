@@ -13,6 +13,7 @@ class Post extends Model
 
     protected $with = ['comments'];
 
+
    /* protected $casts = [
         'tags' => 'array'
     ];*/
@@ -47,15 +48,10 @@ class Post extends Model
         return $this->belongsToMany(Tag::class);
     }
 
-   /* public function getTagsAttribute($tags)
+    public function getTagNamesAttribute()
     {   
-        $str = str_replace("", "", $tags);
-        $str = str_replace('[', "", $str);
-        $str = str_replace(']', "", $str);
-        $str = str_replace('"', "", $str);
-        $array = explode(",", $str);
-        return  Tag::whereIn('id', $array)->get();
-    }*/
+        return $this->tags->pluck('name')->toArray();
+    }
 
 
     /**
