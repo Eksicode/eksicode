@@ -109,8 +109,8 @@ const SignUpForm: React.FC = () => {
   return (
     <div className="w-full bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6">
       <div className="mb-10 text-center">
-        <h1 className="mb-2 text-xl font-bold">Kullanıcı Hesabı Oluştur</h1>
-        EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.
+        <h1 className="mb-2 text-xl">Kullanıcı Hesabı Oluştur</h1>
+        <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
       </div>
       <Formik
         initialValues={initialValues}

@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { useState, useEffect, Suspense } from "react";
-import { Tooltip } from "react-tooltip";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import Navlink from "@components/Ui/NavLink";
 import LoadingAnimation from "@components/Ui/LoadingAnimation";
 import getGroups from "@providers/getGroups";
+
 interface Group {
   id: number;
   name: string;
@@ -16,75 +15,104 @@ type TelegramGroupsProps = {
   groups?: Group[];
 };
 
-export default function TelegramGroups({ groups }: TelegramGroupsProps) {
+const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
+  const initialLogoCount = 17;
+  const logoWidth = 70;
+  const mobileWidth = 780;
+
   const [fetchedGroups, setFetchedGroups] = useState<Group[]>(groups || []);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [logoCount, setLogoCount] = useState<number>(initialLogoCount);
 
   useEffect(() => {
     const fetchData = async () => {
-      const fetchedPosts = await getGroups(15);
+      const fetchedPosts = await getGroups(logoCount);
       setFetchedGroups(fetchedPosts);
       setLoading(false);
     };
     fetchData();
+
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      setIsMobile(screenWidth < mobileWidth);
+      const newLogoCount = Math.floor(screenWidth / logoWidth);
+      setLogoCount(Math.min(newLogoCount, initialLogoCount));
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
-    <div className="flex items-center w-3/4 md:w-full h-16 justify-between overflow-hidden">
-      {loading ? (
+    <div className="flex items-center lg:w-full xl:w-3/4 2xl:w-3/4 md:w-full h-16 justify-between overflow-hidden">
+      {isMobile ? (
         <div className="flex w-full justify-center">
-          <LoadingAnimation style="" />
+          <Navlink
+            variant="primary"
+            clasName="border border-white"
+            href="/telegram-gruplari"
+          >
+            Bütün Telegram Grupları
+          </Navlink>
         </div>
       ) : (
         <>
-          <p>Telegram Grupları</p>
-          {fetchedGroups?.length > 0 ? (
-            <>
-              {fetchedGroups?.map((group: Group) => (
-                <div
-                  key={group.id}
-                  className="flex items-center"
-                  data-tooltip-id={group.name}
-                  data-tooltip-content={group.name}
-                  data-tooltip-place="bottom"
-                >
-                  <Link
-                    key={group.id}
-                    href={group.link}
-                    target="_blank"
-                    className="h-12 w-12 rounded-full"
-                  >
-                    <Image
-                      src={group.logo}
-                      alt={group.name}
-                      style={{ objectFit: "fill" }}
-                      width={50}
-                      height={50}
-                      loading="lazy"
-                      className="rounded-full"
-                    />
-                  </Link>
-                  <Tooltip
-                    id={group.name}
-                    //anchorSelect=".my-anchor-element"
-                    place="bottom"
-                    content={group.name}
-                  />
-                </div>
-              ))}
-              <Navlink
-                variant="quaternary"
-                clasName="border border-white"
-                href="/telegram-gruplari"
-              >
-                Bütün Gruplar
-              </Navlink>
-            </>
+          {loading ? (
+            <div className="flex w-full justify-center">
+              <LoadingAnimation style="" />
+            </div>
           ) : (
-            <h1>Telegram grubu bulunamadı</h1>
+            <>
+              <p>Telegram Grupları</p>
+              {fetchedGroups.length > 0 ? (
+                <>
+                  {fetchedGroups.slice(0, logoCount).map((group: Group) => (
+                    <div
+                      key={group.id}
+                      className="flex items-center"
+                      data-tooltip-id={group.name}
+                      data-tooltip-content={group.name}
+                      data-tooltip-place="bottom"
+                    >
+                      <Link
+                        href={group.link}
+                        target="_blank"
+                        className="h-12 w-12 rounded-full"
+                      >
+                        <img
+                          src={group.logo}
+                          alt={group.name}
+                          style={{ objectFit: "fill" }}
+                          width={50}
+                          height={50}
+                          loading="lazy"
+                          className="rounded-full"
+                        />
+                      </Link>
+                    </div>
+                  ))}
+                  <Navlink
+                    variant="quaternary"
+                    clasName="border border-white"
+                    href="/telegram-gruplari"
+                  >
+                    Bütün Gruplar
+                  </Navlink>
+                </>
+              ) : (
+                <h1>Telegram grubu bulunamadı</h1>
+              )}
+            </>
           )}
         </>
       )}
     </div>
   );
-}
+};
+
+export default TelegramGroups;

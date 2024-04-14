@@ -2,31 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa";
+import {
+  AiOutlineEdit,
+  AiOutlineLogin,
+  AiOutlineUserAdd,
+} from "react-icons/ai";
 import Logo from "@public/assets/eksi-code-logo.png";
 import UserMenu from "@components/Nav/UserMenu";
-// import NewPost from "@components/NewPost";
 import TelegramGroups from "@components/TelegramGroups";
 import Search from "@components/Search";
 import Navlink from "@components/Ui/NavLink";
+import MobileMenu from "./MobileMenu";
 
 const Nav = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [nav, setNav] = useState(false);
-
-  let [modalOpen, setModalOpen] = useState(false);
-
-  const handleNav = () => {
-    setNav(!nav);
-  };
   return (
     <nav className="flex flex-wrap w-full justify-center z-10  sticky top-0 nav-sahdow bg-white">
       {/* Menu */}
-      <div className="flex items-center sm:basis-full md:basis-full lg:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-between">
+      {/* <div className="flex items-center sm:basis-full md:basis-full lg:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-between"> */}
+      <div className="flex justify-between items-center h-16 mx-10 sm:mx-2 sm:basis-full md:basis-full lg:basis-full basis-3/4 ">
         {/* Logo */}
-        <div className="flex items-center w-1/3">
+        <div className="flex items-center">
           <Link className="flex content-center" href="/">
             <Image
               src={Logo}
@@ -36,32 +31,55 @@ const Nav = () => {
             ></Image>
           </Link>
         </div>
-        <div className="flex justify-center w-1/3 sm:w-full">
+
+        <div className="flex justify-center w-1/4 sm:w-1/2">
           <Search text="Başlık Ara..." />
         </div>
 
-        <div className="flex items-center justify-end w-1/3">
+        <div className="flex items-center justify-end">
           {/*  Desktop menu */}
-          <div className="flex flex-nowrap sm:hidden text-center md:text-sm lg:text-sm">
-            <Navlink variant="secondary" href="/dashboard/posts/yeni">
-              Yeni Gönderi
+          <div className="flex flex-nowrap text-center md:text-sm lg:text-sm">
+            <Navlink
+              variant="secondary"
+              href="/dashboard/posts/yeni"
+              clasName="sm:hidden"
+            >
+              <div className="flex items-center">
+                <AiOutlineEdit className="h-5 w-5 mr-1" />
+                <span className="sm:hidden flex">Yeni Gönderi</span>
+              </div>
             </Navlink>
-            {/* {modalOpen && <NewPost modalClose={setModalOpen} />} */}
+            <Link href="/dashboard/posts/yeni">
+              <AiOutlineEdit className="hidden sm:flex h-5 w-5 mr-2" />
+            </Link>
             <Navlink
               variant="quaternary"
-              clasName="ml-3 pt-2 border border-white"
+              clasName="ml-3 pt-2 border border-white sm:hidden"
               href="/auth/uye-giris"
             >
-              Üye Girişi
+              <div className="flex items-center">
+                <AiOutlineLogin className="h-5 w-5 mr-1" />{" "}
+                <span> Üye Girişi</span>
+              </div>
             </Navlink>
-            <Navlink variant="primary" clasName="ml-3" href="/auth/uye-ol">
-              Üye Ol
+            <Navlink
+              variant="primary"
+              clasName="ml-3 sm:hidden"
+              href="/auth/uye-ol"
+            >
+              <div className="flex items-center">
+                <AiOutlineUserAdd className="h-5 w-5 mr-1" />{" "}
+                <span className="">Üye Ol</span>
+              </div>
             </Navlink>
 
-            <Link className="inline-block relative mx-3 " href="/dashboard/bildirimler">
+            <Link
+              className="inline-block relative mx-1"
+              href="/dashboard/bildirimler"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 hover:text-eksiCode text-dark text-4xl"
+                className="sm:h-6 sm:w-6 h-8 w-8 hover:text-eksiCode text-dark text-4xl"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -73,56 +91,12 @@ const Nav = () => {
 
             <UserMenu />
           </div>
-
-          {/*  Hamburger Menu Icon */}
-          <div onClick={handleNav} className="sm:block hidden cursor-pointer">
-            <AiOutlineMenu size={25} className="m-6 text-dark" />
-          </div>
+          <MobileMenu />
         </div>
       </div>
-      <hr className="h-1 w-full"></hr>
+      <hr className="h-1 w-full" />
 
       <TelegramGroups />
-
-      {/*  Mobile menu */}
-      <div
-        className={
-          nav ? "md:hidden fixed left-0 top-0 w-full h-full bg-dark/70" : " "
-        }
-      >
-        <div
-          className={
-            nav
-              ? "fixed right-0 top-0 w-[75%] ease-in duration-500 xl:w-[35%] sm:w-[50%] md:w-[45%] h-full bg-menu"
-              : "fixed right-[-100%] top-0 ease-in duration-500 h-full bg-menu"
-          }
-        >
-          <div className="flex w-full items-end justify-end">
-            <div
-              onClick={handleNav}
-              className="rounded-full shadow-lg shadow-gray-400 p-2 mr-5 mt-5 cursor-pointer"
-            >
-              <AiOutlineClose />
-            </div>
-          </div>
-
-          {/*  Mobile Menu */}
-          <div className="flex flex-col items-end mt-5 mx-5 py-4 z-20">
-            Mobile Menu
-            <div className="mt-20 flex items-center justify-around my-10 ml-2 w-full sm:w-[80%]">
-              <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-105 ease-in duration-300 text-eksi">
-                <FaGithub />
-              </div>
-              <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-105 ease-in duration-300 text-eksi">
-                <FaTwitter />
-              </div>
-              <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-105 ease-in duration-300 text-eksi">
-                <FaDiscord />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </nav>
   );
 };

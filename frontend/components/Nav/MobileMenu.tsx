@@ -4,7 +4,6 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa";
 
 const MobileMenu = () => {
-  
   const [nav, setNav] = useState(false);
   const handleNav = () => {
     setNav(!nav);
@@ -14,7 +13,7 @@ const MobileMenu = () => {
     <>
       {/*  Hamburger Menu Icon */}
       <div onClick={handleNav} className="sm:block hidden cursor-pointer">
-        <AiOutlineMenu size={25} className="m-6 text-dark" />
+        <AiOutlineMenu size={25} className="m-1 text-dark" />
       </div>
       {/*  Mobile menu */}
       <div
@@ -25,14 +24,14 @@ const MobileMenu = () => {
         <div
           className={
             nav
-              ? "fixed right-0 top-0 w-[75%] ease-in duration-500 xl:w-[35%] sm:w-[50%] md:w-[45%] h-full bg-menu"
-              : "fixed right-[-100%] top-0 ease-in duration-500 h-full bg-menu"
+              ? "fixed right-0 top-0 w-[75%] ease-in duration-500 xl:w-[35%] sm:w-[75%] md:w-[45%] h-full bg-white"
+              : "fixed right-[-100%] top-0 ease-in duration-500 h-full bg-white"
           }
         >
           <div className="flex w-full items-end justify-end">
             <div
               onClick={handleNav}
-              className="rounded-full shadow-lg shadow-gray-400 p-2 mr-5 mt-5 cursor-pointer"
+              className="rounded-full shadow-sm shadow-gray-400 p-2 mr-2 mt-3 cursor-pointer"
             >
               <AiOutlineClose />
             </div>
