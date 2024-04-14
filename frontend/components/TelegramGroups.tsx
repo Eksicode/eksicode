@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Navlink from "@components/Ui/NavLink";
 import LoadingAnimation from "@components/Ui/LoadingAnimation";
 import getGroups from "@providers/getGroups";
+import { Tooltip } from "react-tooltip";
 
 interface Group {
   id: number;
@@ -94,6 +95,11 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
                           className="rounded-full"
                         />
                       </Link>
+                      <Tooltip
+                        id={group.name}
+                        place="bottom"
+                        content={group.name}
+                      />
                     </div>
                   ))}
                   <Navlink
