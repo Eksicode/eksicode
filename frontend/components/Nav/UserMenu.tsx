@@ -32,7 +32,7 @@ const UserMenu = () => {
   };
 
   return (
-    <div className="relative inline-block text-left" ref={menuRef}>
+    <div className="relative sm:hidden inline-block text-left" ref={menuRef}>
       <div>
         <button onClick={toggleMenu} className="flex justify-center bg-white outline-none focus:outline-none focus:border-none">
           <span className="relative w-10 h-10 ml-2 overflow-hidden ring-2 ring-gray-300 bg-gray-100 rounded-full dark:bg-gray-600">

@@ -9,7 +9,7 @@ const Search: React.FC<Props> = ({ text }) => {
   return (
     <div className="relative text-gray-600 w-full">
       <input
-        className="border-2 w-full border-gray-300 bg-white h-10 pl-2 pr-8 focus:ring-eksiCode focus:border-eksiCode rounded-lg text-sm focus:outline-none"
+        className="border w-full border-gray-300 bg-white h-10 pl-2 pr-8 focus:ring-eksiCode focus:border-eksiCode rounded-lg text-sm focus:outline-none"
         name="search"
         placeholder={text}
         required

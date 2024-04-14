@@ -77,8 +77,8 @@ const ForgotPassword: React.FC = () => {
   return (
     <div className="w-full bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6 h-[60vh]">
       <div className="mb-10 text-center">
-        <h1 className="mb-2 text-xl font-bold">Şifre Hatırlatma</h1>
-        EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.
+        <h1 className="mb-2 text-xl">Şifre Hatırlatma</h1>
+        <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
       </div>
       <Formik
         initialValues={initialValues}
