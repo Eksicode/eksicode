@@ -6,7 +6,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\RoleResource;
-use App\Http\Requests\Rolerequest;
+use App\Http\Requests\RoleRequest;
 use Spatie\Activitylog\Models\Activity;
 
 class RoleController extends Controller
@@ -39,7 +39,7 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Rolerequest $request)
+    public function store(RoleRequest $request)
     {
         Role::create($request->all());
         return response('Created', Response::HTTP_CREATED);
@@ -64,7 +64,7 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Rolerequest $request, Role $role)
+    public function update(RoleRequest $request, Role $role)
     {
         $role->update(['name'=>$request->name, 'description' => $request->description]);
         return response("Updated", Response::HTTP_ACCEPTED);

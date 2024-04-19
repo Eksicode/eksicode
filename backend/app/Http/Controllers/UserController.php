@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -68,8 +69,28 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo');
+            if ($file->isValid()) {
+                $extension = $file->getClientOriginalExtension();
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $fileName = $originalName . '-' . uniqid() . '.' . $extension;
+                Storage::disk('s3')->put($fileName, file_get_contents($file), 'public');
+                $path = "https://eksicode-images.s3.eu-central-1.amazonaws.com/".$fileName;
+            }
+        }
+
         $user = User::find($id);
-        $user->update($request->all());
+        $img = $user->profile_photo;
+        if (isset($path)) {
+            $img = $path;
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'profile_photo' => $img
+        ]);
         return response(["data" =>  $user], Response::HTTP_ACCEPTED);
     }
 
