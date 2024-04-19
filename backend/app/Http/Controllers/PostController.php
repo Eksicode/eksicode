@@ -114,7 +114,7 @@ class PostController extends Controller
             }
         }
 
-        $img = $page->image;
+        $img = $post->image;
         if (isset($path)) {
             $img = $path;
         }
