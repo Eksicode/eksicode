@@ -5,11 +5,10 @@ import Button from "@components/Ui/Button";
 
 interface Page {
   title: string;
-  image: string;
   content: string;
+  page_category: string;
+  header_image: string;
   slug: string;
-  category: string;
-  page_category_id: string;
 }
 
 interface Categories {
@@ -25,16 +24,14 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   const [categories, setCategories] = useState([] as Categories[]);
   //const [categories, setCategories] = useState<any[]>([]) ;
 
-  const [token, setToken] = useState<string | null>(null);
 
   const [page, setPage] = useState<Page>(
     initialData || {
       title: "",
-      image: file ? URL.createObjectURL(file) : "",
       content: "",
-      category: "",
+      page_category: "",
+      header_image: file ? URL.createObjectURL(file) : "",
       slug: "",
-      page_category_id: "",
     }
   );
 
@@ -45,9 +42,8 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
 
   const handleSelect = (value: string) => {
     setSelectedValue(value);
-    setPage((prevPage) => ({ ...prevPage, category: value }));
+    setPage((prevPage) => ({ ...prevPage, page_category: value }));
   };
-
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -59,13 +55,20 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
     event.preventDefault();
 
     try {
+      const tokenResponse = await fetch('/api');
+      const data = await tokenResponse.json();
+
+      const token = data.token;
+      if (!token) {
+        console.error('Token is not available.');
+        return;
+      }
       const formData = new FormData();
       formData.append("title", page.title);
       formData.append("slug", page.slug);
-      formData.append("category", page.category);
+      formData.append("page_category", page.page_category);
       formData.append("content", page.content);
-      formData.append("page_category_id", page.page_category_id);
-      formData.append("image", file || "");
+      formData.append("header_image", file || "");
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pages`, {
         method: "POST",
         body: formData,
@@ -114,6 +117,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       );
       if (response.ok) {
         const fetchedCategories = await response.json();
+        console.log(fetchedCategories);
         setCategories(fetchedCategories.data);
       } else {
         console.error("Failed to fetch categories:", response.statusText);
@@ -123,16 +127,10 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
     }
   };
 
-  const getToken = async () => {
-    const fetchedToken =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk5MjkzNTEsImV4cCI6MTcwOTkzMjk1MSwibmJmIjoxNzA5OTI5MzUxLCJqdGkiOiJaNEZzOXB1R2lBbzBqWGI1Iiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.eNVyEbgG_UQ9xSVmEmjR4YAfY9CeFlp1YhMn2q1FsJ8"; // Replace with actual token retrieval logic
-    setToken(fetchedToken);
-  };
-
   useEffect(() => {
     getCategories();
-    getToken();
   }, []);
+
 
   return (
     <form onSubmit={handleClick} className="flex flex-wrap">
@@ -161,24 +159,26 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
           className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
         />
 
-        <label htmlFor="category" className="text-sm font-medium w-full">
+        <label htmlFor="page_category" className="text-sm font-medium w-full">
           Kategori:
         </label>
 
         <select
-          id="category"
+          id="page_category"
+          name="page_category"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          value={page.category}
+          value={page.page_category}
           onChange={(e) => handleSelect(e.target.value)}
         >
+          <option value="">Seçiniz</option>
           {categories?.map((category: any) => (
-            <option key={category.id} value={category.id}>
+            <option key={category.id} value={category.name}>
               {category.name}
             </option>
           ))}
         </select>
 
-        <label htmlFor="image" className="text-sm font-medium w-full">
+        <label htmlFor="header_image" className="text-sm font-medium w-full">
           Header Image:
         </label>
         <FileUpload setFile={setFile} />
@@ -197,7 +197,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
         />
       </div>
       <div className="flex justify-end basis-full mt-10">
-        <Button onClick={() => {}} variant="primary" clasName="">
+        <Button onClick={() => { }} type="submit" variant="primary" clasName="">
           Kaydet
         </Button>
       </div>

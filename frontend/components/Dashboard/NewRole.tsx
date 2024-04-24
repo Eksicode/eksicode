@@ -7,12 +7,9 @@ interface Role {
   description: string;
 }
 
-
 const NewRole: React.FC<{ initialData?: Role }> = ({ initialData }) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   //const [categories, setCategories] = useState<any[]>([]) ;
-
-  const [token, setToken] = useState<string | null>(null);
 
   const [role, setRole] = useState<Role>(
     initialData || {
@@ -20,6 +17,7 @@ const NewRole: React.FC<{ initialData?: Role }> = ({ initialData }) => {
       description: "",
     }
   );
+
 
   useEffect(() => {
     const newSlug = role.name.trim() ? createSlug(role.name) : "";
@@ -36,29 +34,40 @@ const NewRole: React.FC<{ initialData?: Role }> = ({ initialData }) => {
 
   const handleClick = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+  
     try {
+      const tokenResponse = await fetch('/api');
+      const data = await tokenResponse.json();
+
+      const token = data.token;
+      if (!token) {
+        console.error('Token is not available.');
+        return;
+      }
+  
       const formData = new FormData();
-      formData.append("name", role.name);
-      formData.append("slug", role.description);
+      formData.append('name', role.name);
+      formData.append('description', role.description);
+  
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/roles`, {
-        method: "POST",
+        method: 'POST',
         body: formData,
         headers: {
-          Accept: "application/json",
+          Accept: 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       if (response.ok) {
-        console.log("Form submission successful!");
+        console.log('Form submission successful!');
       } else {
-        console.error("Form submission failed:", response.statusText);
+        console.error('Form submission failed:', response.statusText);
       }
     } catch (error) {
-      console.error("Error during form submission:", error);
+      console.error('Error during form submission:', error);
     }
   };
+  
   const createSlug = (title: string) => {
     const turkishCharacters: { [key: string]: string } = {
       ç: "c",
@@ -82,16 +91,6 @@ const NewRole: React.FC<{ initialData?: Role }> = ({ initialData }) => {
       .replace(/[^a-z0-9-]/g, "");
   };
 
-
-  const getToken = async () => {
-    const fetchedToken =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2RlbW8tYXBpLmVrc2ljb2RlLm9yZy9hcGkvYXV0aC9sb2dpbiIsImlhdCI6MTcxMzM0OTk0MCwiZXhwIjoxNzEzMzUzNTQwLCJuYmYiOjE3MTMzNDk5NDAsImp0aSI6Im1PQXFlcko1cGNXNldUNXUiLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.fm9eRzfxxB4Xc3x5vq4R3yIU6K6njLGuCd9b6CHDHdE"; // Replace with actual token retrieval logic
-    setToken(fetchedToken);
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
 
   return (
     <form onSubmit={handleClick} className="flex flex-wrap">
@@ -121,7 +120,7 @@ const NewRole: React.FC<{ initialData?: Role }> = ({ initialData }) => {
         />
       </div>
       <div className="flex justify-end basis-full mt-10">
-        <Button onClick={() => {}} variant="primary" clasName="">
+        <Button onClick={() => {}} variant="primary" type="submit" clasName="">
           Kaydet
         </Button>
       </div>

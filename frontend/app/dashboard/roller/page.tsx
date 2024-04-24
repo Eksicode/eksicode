@@ -16,7 +16,7 @@ async function Roles() {
   return (
     <>
       <h1 className="mt-2">Roller</h1>
-      <Navlink href="/dashboard/menuler/yeni" variant="primary">
+      <Navlink href="/dashboard/roller/yeni" variant="primary">
         + Yeni Rol
       </Navlink>
       <DataTable

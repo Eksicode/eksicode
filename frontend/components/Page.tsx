@@ -1,16 +1,15 @@
 import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
 import SideMenu from "./Nav/SideMenu";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 import { BiBookmarkAltPlus } from "react-icons/bi";
 import Post from "@components/PostCard";
 import Navlink from "@components/Ui/NavLink";
 import Pagination from "@components/Ui/Pagination";
-
 import ppImage from "../public/assets/pp-image.png";
+import Slider from "./Slider";
 
 const Page = () => {
+
   return (
     <>
       <div className="flex">
@@ -18,6 +17,8 @@ const Page = () => {
       </div>
 
       <div className="flex flex-wrap w-7/12 sm:w-full md:w-full mx-2">
+
+        <Slider />
         <div className="flex mb-2 h-10 text-xs items-center">
           <Navlink variant="tertiary" href="/uye-ol">
             İlgili

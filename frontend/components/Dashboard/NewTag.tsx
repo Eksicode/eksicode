@@ -13,7 +13,6 @@ const NewTag: React.FC<{ initialData?: Tag }> = ({ initialData }) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   //const [categories, setCategories] = useState<any[]>([]) ;
 
-  const [token, setToken] = useState<string | null>(null);
 
   const [tag, setTag] = useState<Tag>(
     initialData || {
@@ -39,8 +38,15 @@ const NewTag: React.FC<{ initialData?: Tag }> = ({ initialData }) => {
 
   const handleClick = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     try {
+      const tokenResponse = await fetch('/api');
+      const data = await tokenResponse.json();
+
+      const token = data.token;
+      if (!token) {
+          console.error('Token is not available.');
+          return;
+      }
       const formData = new FormData();
       formData.append("name", tag.name);
       formData.append("slug", tag.slug);
@@ -86,16 +92,6 @@ const NewTag: React.FC<{ initialData?: Tag }> = ({ initialData }) => {
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "");
   };
-
-  const getToken = async () => {
-    const fetchedToken =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2RlbW8tYXBpLmVrc2ljb2RlLm9yZy9hcGkvYXV0aC9sb2dpbiIsImlhdCI6MTcxMzM1ODU2NiwiZXhwIjoxNzEzMzYyMTY2LCJuYmYiOjE3MTMzNTg1NjYsImp0aSI6IllnTVU5M0dGVlhleTdGS3EiLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.I1iFf5VNKKgbKdmE049lxXZa1Dq3kOt31VWtI_Bq69s"; // Replace with actual token retrieval logic
-    setToken(fetchedToken);
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
 
   return (
     <form onSubmit={handleClick} className="flex flex-wrap">
