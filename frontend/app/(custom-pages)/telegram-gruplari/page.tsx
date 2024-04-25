@@ -17,9 +17,6 @@ async function Groups() {
 
   return (
     <>
-      <div className="flex">
-        <SideMenu />
-      </div>
       <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
         <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
           <p className="w-full text-3xl text-bold mb-4">Telegram Grupları</p>
@@ -37,7 +34,7 @@ async function Groups() {
             rel="noopener noreferrer"
           >
             <svg
-              className="h-4 w-4 mr-5"
+              className="h-4 w-4 mr-[10px]"
               fill="currentColor"
               viewBox="0 0 24 24"
               version="1.1"

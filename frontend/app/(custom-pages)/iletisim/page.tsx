@@ -1,28 +1,25 @@
 import React from "react";
 import Link from "next/link";
+import ContactForm from "@components/ContactForm";
 
 function page() {
   return (
-    <div className="flex flex-col mb-32 w-1/2 justify-center text-center">
-      <div className="w-1/2 bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6 text-center">
-        <h1 className="text-xl">İletişim</h1>
-        <p>Aşağıdaki yöntemlerle bize ulaşabilirsiniz.</p>
-
-        <p>Email: eksicode@eksicode.org 😁</p>
-
-        <p>
-          X(Twitter):
+    <div className="flex basis-full rounded-lg mx-2 bg-white border-gray-300 border p-4 mb-4">
+      <div className="flex basis-1/2 justify-between flex-wrap text text-center text-bold p-4">
+        <h1 className="text-xl w-full">İletişim</h1>
+        <p className="w-full">Aşağıdaki yöntemlerle bize ulaşabilirsiniz.</p>
+        <p className="w-full">
+          X(Twitter): 
           <Link
             href="https://x.com/eksicode"
             target="_blank"
             className="hover:underline"
           >
-            @eksicode
+             @eksicode
           </Link>
           👻
         </p>
-
-        <p>
+        <p className="w-full">
           Bir hata bildirmek için lütfen açık kaynak depomuzda bir{" "}
           <Link
             href="https://github.com/Eksicode/eksicode/issues/new"
@@ -32,8 +29,7 @@ function page() {
             hata raporu oluşturun.
           </Link>
         </p>
-
-        <p>
+        <p className="w-full">
           Bir özellik talep etmek için lütfen Eksicode reposunda yeni bir
           <Link
             href="https://github.com/Eksicode/eksicode/discussions"
@@ -44,7 +40,9 @@ function page() {
           </Link>
         </p>
       </div>
-      <div className="h-64"></div>
+      <div className="basis-1/2 justify-end">
+        <ContactForm />
+      </div>
     </div>
   );
 }

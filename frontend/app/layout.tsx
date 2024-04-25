@@ -5,6 +5,7 @@ import React from "react";
 import Nav from "@components/Nav/Nav";
 import Footer from "@components/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import SideMenu from "@components/Nav/SideMenu";
 
 const roboto = Roboto({
   subsets: ['latin'],

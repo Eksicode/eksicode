@@ -8,7 +8,7 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <div className="basis-1/4">
+      <div className="flex">
         <SideMenu />
       </div>
 

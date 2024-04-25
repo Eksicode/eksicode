@@ -36,11 +36,6 @@ export default async function Tags() {
 
   return (
     <>
-      <div className="flex w-1/3">
-        <SideMenu />
-      </div>
-
-      <div className="flex flex-wrap w-2/3 sm:w-full md:w-full justify-center">
         <div className="flex w-full bg-white h-16 mx-2 p-2 justify-between rounded-lg border-cool Gray-800 border-2 text-gray-600">
           <div className="flex basis-1/2 text-3xl text-bold text-left">
             Etiketler
@@ -62,7 +57,6 @@ export default async function Tags() {
             <TagsCard {...tag} />
           ))}
         </div>
-      </div>
     </>
   );
 }
