@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
       "text-dark text-sm rounded-md hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode",
   };
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className={`p-2 ${clasName} ${variantClass[variant]}`}>
+    <button type={type} onClick={onClick} disabled={disabled} className={`px-4 py-2 ${clasName} ${variantClass[variant]}`}>
       {children}
     </button>
   );
