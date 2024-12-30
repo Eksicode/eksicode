@@ -116,8 +116,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
                     </div>
                   ))}
                   <Navlink
-                    variant="quaternary"
-                    clasName="border border-white"
+                    variant="secondary"
                     href="/telegram-gruplari"
                   >
                     Bütün Gruplar
