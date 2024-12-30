@@ -16,7 +16,7 @@ import MobileMenu from "./MobileMenu";
 
 const Nav = () => {
   return (
-    <nav className="flex flex-wrap w-full justify-center z-10  sticky top-0 nav-sahdow bg-white">
+    <nav className="flex flex-wrap w-full justify-center z-50  sticky top-0 nav-sahdow bg-white">
       {/* Menu */}
       {/* <div className="flex items-center sm:basis-full md:basis-full lg:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-between"> */}
       <div className="flex justify-between items-center h-16 mx-10 sm:mx-2 sm:basis-full md:basis-full lg:basis-full basis-3/4 ">

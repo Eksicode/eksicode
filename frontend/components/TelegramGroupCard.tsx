@@ -4,16 +4,16 @@ import Navlink from "@components/Ui/NavLink";
 interface Group {
   id: number;
   name: string;
-  logo: string;
+  icon: string;
   link?: string;
-  members?: number;
+  members: string;
 }
 
 const TelegramGroupCard = (group: Group) => {
   return (
     <div className="relative grid content-between justify-items-center sm:w-full h-64 w-52 flex-col text-gray-700 bg-white border border-gray-200 shadow-md bg-clip-border rounded-xl p-2 m-2">
       <Image
-        src={group.logo}
+        src={group.icon}
         alt="eksi-code-logo"
         className="h-20 w-20 rounded-full"
         width="80"
