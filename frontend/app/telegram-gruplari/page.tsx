@@ -51,7 +51,7 @@ async function Groups() {
             Telegram'ı İndir
           </Link>
           <div className="w-full text-sm">
-            <Link href="/grup-kurallari">Grup Kuralları için tıklayın</Link>
+            <Link href="/sayfalar/kurallar">Grup Kuralları için tıklayın</Link>
           </div>
         </div>
 
