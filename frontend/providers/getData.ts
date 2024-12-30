@@ -10,7 +10,7 @@ interface Data {
     limit?: number,
     pageSize?: number,
     page?: number,
-    cache: RequestCache = "no-store",
+    // cache: RequestCache = "no-store",
   ): Promise<{ data: Data[]; meta: Meta[] }> {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -25,9 +25,7 @@ interface Data {
         ...(pageSize !== undefined && { pageSize: String(pageSize) }),
       });
   
-      const response = await fetch(`${apiUrl}/${endPoint}?${queryParams.toString()}`, {
-        cache,
-      });
+      const response = await fetch(`${apiUrl}/${endPoint}?${queryParams.toString()}`);
   
       if (!response.ok) {
         console.error(
