@@ -166,6 +166,7 @@ model Menus {
   name       String           
   link       String
   subMenu    Int              @default(0)
+  icon       String?
   categories MenuCategories[]
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt

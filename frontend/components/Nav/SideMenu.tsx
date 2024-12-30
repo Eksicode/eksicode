@@ -75,16 +75,16 @@ const SideMenu = () => {
           </li>
           <li>
             <Link
-              href="#"
+              href="/sayfalar/amacimiz"
               className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
             >
               <AiOutlineInfoCircle className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Hakkında</span>
+              <span className="flex-1 ml-3 whitespace-nowrap">Amacimiz</span>
             </Link>
           </li>
           <li>
             <Link
-              href="#"
+              href="/sayfalar/kurallar"
               className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
             >
               <AiOutlineBook className="text-lg mb-1" />
