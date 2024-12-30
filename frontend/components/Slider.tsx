@@ -1,72 +1,113 @@
-"use client"
-import { useState, useEffect } from "react";
-import { Navigation, Autoplay } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
+"use client";
+import React, { useState, useEffect, useCallback } from "react";
 import Button from "@components/Ui/Button";
+import "../styles/slider.css";
 
-const Slider = () => {
+interface CustomCarouselProps {
+  children: React.ReactNode[];
+}
 
-    const [open, setOpen] = useState(() => {
-        const isOpen = localStorage.getItem("swiperOpen");
-        return isOpen ? JSON.parse(isOpen) : true;
-    });
+const Slider: React.FC<CustomCarouselProps> = ({ children }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isSliding, setIsSliding] = useState(true);
+  const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+  const [isOpen, setIsOpen] = useState(true);
 
-    const handleClick = () => {
-        setOpen(false);
-        localStorage.setItem("swiperOpen", JSON.stringify(false));
+  useEffect(() => {
+    const storedOpenState = localStorage.getItem("slider");
+    if (storedOpenState !== null) {
+      setIsOpen(JSON.parse(storedOpenState));
     }
+  }, []);
 
-    useEffect(() => {
-        localStorage.setItem("swiperOpen", JSON.stringify(open));
-    }, [open]);
+  useEffect(() => {
+    if (isSliding) {
+      const id = setTimeout(() => {
+        moveToNextSlide();
+      }, 5000);
+      setTimerId(id);
+      return () => clearTimeout(id);
+    }
+  }, [isSliding, activeIndex]);
 
-    return (
-        <>
-            {
-                open &&
-                <div className="w-full h-[430px] mb-3">
-                    <div className="flex justify-between items-center mx-2 mb-2">
-                        <h1 className="text-lg my-2 font-semibold">
-                            Tanıtım Videosu
-                        </h1>
-                        <Button onClick={handleClick} variant="primary">Gizle</Button>
-                    </div>
-                    <Swiper
-                        className="w-[600px] h-96"
-                        navigation={true}
-                        centeredSlides={true}
-                        modules={[Autoplay, Navigation]}
-                        autoplay={{
-                            delay: 2500,
-                            disableOnInteraction: false,
-                        }}
-                        loop={true}
-                        spaceBetween={10}
-                        slidesPerView={1}
-                    >
-                        <SwiperSlide className="bg-white border rounded-lg text-center flex items-center w-fit">
-                            <p>
-                                Slide 1
-                            </p>
-                        </SwiperSlide>
-                        <SwiperSlide className="bg-white border rounded-lg text-center w-fit">
-                            Slide 2
-                        </SwiperSlide>
-                        <SwiperSlide className="bg-white border rounded-lg text-center w-fit">
-                            Slide 3
-                        </SwiperSlide>
-                        <SwiperSlide className="bg-white border rounded-lg text-center w-fit">
-                            Slide 4
-                        </SwiperSlide>
-                    </Swiper>
-                </div>
-            }
+  const moveToNextSlide = useCallback(() => {
+    setActiveIndex((prevIndex) => (prevIndex + 1) % children.length);
+  }, [children.length]);
 
-        </>
+  const moveToPreviousSlide = useCallback(() => {
+    setActiveIndex((prevIndex) =>
+      prevIndex === 0 ? children.length - 1 : prevIndex - 1
     );
-};
+  }, [children.length]);
 
+  const stopAutoPlay = useCallback(() => {
+    if (timerId) {
+      clearTimeout(timerId);
+      setIsSliding(false);
+    }
+  }, [timerId]);
+
+  const startAutoPlay = useCallback(() => {
+    setIsSliding(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+    localStorage.setItem("slider", JSON.stringify(false));
+  }, []);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="relative mb-3 bg-white border rounded-lg">
+      <div className="absolute z-20 flex justify-between right-0 top-2 items-center mx-2 mb-2">
+        <Button onClick={handleClose} variant="primary">
+          Gizle
+        </Button>
+      </div>
+      <div
+        className="container__slider bg-white border rounded-lg"
+        onMouseEnter={stopAutoPlay}
+        onMouseLeave={startAutoPlay}
+      >
+        {children.map((item, index) => (
+          <div
+            className={`slider__item slider__item-active-${activeIndex + 1}`}
+            key={index}
+          >
+            {item}
+          </div>
+        ))}
+
+        <div className="container__slider__links">
+          {children.map((_, index) => (
+            <button
+              key={index}
+              className={
+                activeIndex === index
+                  ? "container__slider__links-small container__slider__links-small-active"
+                  : "container__slider__links-small"
+              }
+              onClick={() => setActiveIndex(index)}
+            ></button>
+          ))}
+        </div>
+
+        <button
+          className="slider__btn-next"
+          onClick={moveToNextSlide}
+        >
+          {">"}
+        </button>
+        <button
+          className="slider__btn-prev bg-gray-400 rounded-sm text-white"
+          onClick={moveToPreviousSlide}
+        >
+          {"<"}
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default Slider;

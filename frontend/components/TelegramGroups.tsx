@@ -2,13 +2,13 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Navlink from "@components/Ui/NavLink";
 import LoadingAnimation from "@components/Ui/LoadingAnimation";
-import getGroups from "@providers/getGroups";
+import getData from "@providers/getData";
 import { Tooltip } from "react-tooltip";
 
 interface Group {
   id: number;
   name: string;
-  logo: string;
+  icon: string;
   link: string;
 }
 
@@ -28,10 +28,23 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const fetchedPosts = await getGroups(logoCount);
-      setFetchedGroups(fetchedPosts);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const fetchedPosts = await getData("telegrams", true, logoCount);
+        const groups = fetchedPosts.data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          icon: item.icon,
+          link: item.link,
+        })) as Group[];
+        setFetchedGroups(groups);
+      } catch (error) {
+        console.error("Error fetching telegram groups:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+
     fetchData();
 
     const handleResize = () => {
@@ -47,7 +60,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [logoCount, mobileWidth, initialLogoCount, logoWidth]);
 
   return (
     <div className="flex items-center lg:w-full xl:w-3/4 2xl:w-3/4 md:w-full h-16 justify-between overflow-hidden">
@@ -86,7 +99,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
                         className="h-12 w-12 rounded-full"
                       >
                         <img
-                          src={group.logo}
+                          src={group.icon}
                           alt={group.name}
                           style={{ objectFit: "fill" }}
                           width={50}

@@ -1,0 +1,248 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  password       String
+  firstName      String?
+  lastName       String?
+  username       String          @unique
+  profilePicture String?
+  birthday       DateTime?
+  telegramId     Int?
+  phoneNumber    String?
+  linkedin       String?
+  github         String?
+  website        String?
+  twitter        String?
+  instagram      String?
+  facebook       String?
+  verified       Boolean         @default(false)
+  emailVerified  Boolean         @default(false)
+  roles          UserRoles[]
+  posts          Posts[]
+  comments       Comments[]
+  postLikes      PostLikes[]
+  sources        Sources[]
+  notifications  Notifications[]
+  jobs           Jobs[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Roles {
+  id          Int               @id @default(autoincrement())
+  name        String            @unique
+  description String?
+  permissions RolePermissions[]
+  users       UserRoles[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model Permissions {
+  id          Int               @id @default(autoincrement())
+  name        String            @unique
+  description String?
+  roles       RolePermissions[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model UserRoles {
+  id     Int   @id @default(autoincrement())
+  userId Int
+  roleId Int
+  user   Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Roles @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+model RolePermissions {
+  id           Int         @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  role         Roles       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permissions @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model Posts {
+  id          Int              @id @default(autoincrement())
+  title       String
+  content     String
+  headerImage String?
+  authorId    Int
+  author      Users            @relation(fields: [authorId], references: [id])
+  postLikes   PostLikes[]
+  comments    Comments[]
+  categories  PostCategories[]
+  tags        HashTags[]
+  status      PostStatusEnum   @default(draft)
+  slug        String           @unique
+  approved    Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model Comments {
+  id        Int      @id @default(autoincrement())
+  content   String
+  authorId  Int
+  postId    Int
+  author    Users    @relation(fields: [authorId], references: [id])
+  post      Posts    @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PostCategories {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  posts     Posts[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HashTags {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  posts Posts[]
+}
+
+model PostLikes {
+  id     Int   @id @default(autoincrement())
+  userId Int
+  postId Int
+  user   Users @relation(fields: [userId], references: [id])
+  post   Posts @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
+}
+
+model Pages {
+  id         Int              @id @default(autoincrement())
+  title      String
+  content    String
+  headerImg  String?
+  slug       String           @unique
+  categories PageCategories[]
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
+
+model PageCategories {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  pages     Pages[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TelegramGroups {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  icon        String?
+  members     Int      @default(0)
+  link        String
+  channelId   String?
+  listOrder   Int?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Menus {
+  id         Int              @id @default(autoincrement())
+  name       String           
+  link       String
+  subMenu    Int              @default(0)
+  categories MenuCategories[]
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
+
+model MenuCategories {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  menus     Menus?   @relation(fields: [id], references: [id])
+}
+
+model Notifications {
+  id        Int               @id @default(autoincrement())
+  title     String
+  content   String
+  type      NotificationTypes
+  userId    Int
+  user      Users             @relation(fields: [userId], references: [id])
+  read      Boolean           @default(false)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model Jobs {
+  id             Int               @id @default(autoincrement())
+  title          String
+  description    String
+  location       String
+  EmploymentType JobEmploymentType
+  Department     String
+  salary         String
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  company        Users?            @relation(fields: [usersId], references: [id])
+  usersId        Int?
+}
+
+model Sources {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  url         String
+  userId      Int
+  user        Users    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Enums List
+
+enum JobEmploymentType {
+  fullTime
+  partTime
+  contract
+  temporary
+  internship
+}
+
+enum NotificationTypes {
+  yorum
+  gönderi
+  hata
+  yönetim
+  mesaj
+}
+
+enum MediaTypes {
+  image
+  video
+  audio
+  document
+}
+
+enum PostStatusEnum {
+  draft
+  published
+  archived
+}

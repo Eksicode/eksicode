@@ -24,12 +24,12 @@ const Post = () => {
           </div>
         </div>
         <div className="w-full ml-14">
-          <h1 className="text-2xl my-2 font-bold">
+          <h3 className="text-2xl my-2 font-bold">
             <a href="/detail">
               [Algorithms] 3 - Find First and Last Position of Element in Sorted
               Array
             </a>
-          </h1>
+          </h3>
           <div>#cursogratuito #treinamento #cs50 #datascience</div>
           <div className="flex flex-nowrap mt-6 text-sm">
             <button className="flex flex-nowrap p-1 border border-eksiContent hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark">

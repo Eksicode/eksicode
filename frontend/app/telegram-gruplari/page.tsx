@@ -2,19 +2,11 @@ import React from "react";
 import Link from "next/link";
 import TelegramGroupCard from "@components/TelegramGroupCard";
 import SideMenu from "@components/Nav/SideMenu";
-import getGroups from "@providers/getGroups";
-
-interface Group {
-  id: number;
-  name: string;
-  logo: string;
-  link: string;
-  members: number;
-}
+import getData from "@providers/getData";
 
 async function Groups() {
-  const groups = await getGroups("total", undefined, "no-cache");
-
+  const groups = await getData("telegrams", false );
+  console.log(groups);
   return (
     <>
       <div className="flex">
@@ -22,11 +14,11 @@ async function Groups() {
       </div>
       <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
         <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
-          <p className="w-full text-3xl text-bold mb-4">Telegram Grupları</p>
-          <p className="w-full mb-4">
+          <h1 className="w-full text-3xl text-bold mb-4">Telegram Grupları</h1>
+          <h2 className="w-full mb-4">
             İlgilendiğin yazılım dili veya konular ile ilgili telegram
             gruplarımıza katılabilirsin.
-          </p>
+          </h2>
           <Link
             href="https://telegram.org/dl/"
             data-te-ripple-init
@@ -64,8 +56,8 @@ async function Groups() {
         </div>
 
         <div className="flex flex-wrap w-full justify-between sm:mx-2">
-           {groups.map((group) => (
-            <TelegramGroupCard key={group.id} {...group} />
+           {groups.data.map((group) => (
+            <TelegramGroupCard key={group.id} id={group.id} name={group.name} icon={group.icon} members={group.members} link={group.link}/>
           ))}
         </div>
       </div>

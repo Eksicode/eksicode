@@ -6,10 +6,9 @@ import Post from "@components/PostCard";
 import Navlink from "@components/Ui/NavLink";
 import Pagination from "@components/Ui/Pagination";
 import ppImage from "../public/assets/pp-image.png";
-import Slider from "./Slider";
-
+import Slider from "@components/Slider";
+import images from "@components/images";
 const Page = () => {
-
   return (
     <>
       <div className="flex">
@@ -17,8 +16,11 @@ const Page = () => {
       </div>
 
       <div className="flex flex-wrap w-7/12 sm:w-full md:w-full mx-2">
-
-        <Slider />
+        <Slider>
+          {images.map((image, index) => {
+            return <img key={index} fetchPriority="high" src={image.imgURL} alt={image.imgAlt} />;
+          })}
+        </Slider>
         <div className="flex mb-2 h-10 text-xs items-center">
           <Navlink variant="tertiary" href="/uye-ol">
             İlgili
@@ -51,12 +53,12 @@ const Page = () => {
               </div>
             </div>
             <div className="w-full ml-14">
-              <h1 className="text-2xl my-2 font-bold">
+              <span className="text-2xl my-2 font-bold">
                 <a href="/detail">
                   [Algorithms] 3 - Find First and Last Position of Element in
                   Sorted Array
                 </a>
-              </h1>
+              </span>
               <div>#cursogratuito #treinamento #cs50 #datascience</div>
               <div className="flex flex-nowrap mt-6 text-sm">
                 <button className="flex flex-nowrap p-1 border border-eksiContent hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark">
@@ -96,10 +98,10 @@ const Page = () => {
               </div>
             </div>
             <div className="w-full ml-14">
-              <h1 className="text-2xl my-2 font-bold">
+              <span className="text-2xl my-2 font-bold">
                 [Algorithms] 3 - Find First and Last Position of Element in
                 Sorted Array
-              </h1>
+              </span>
               <div>#cursogratuito #treinamento #cs50 #datascience</div>
               <div className="flex flex-nowrap mt-6 text-sm">
                 <button className="flex flex-nowrap p-1 border border-eksiContent hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark">
@@ -139,10 +141,10 @@ const Page = () => {
               </div>
             </div>
             <div className="w-full ml-14">
-              <h1 className="text-2xl my-2 font-bold">
+              <span className="text-2xl my-2 font-bold">
                 [Algorithms] 3 - Find First and Last Position of Element in
                 Sorted Array
-              </h1>
+              </span>
               <div>#cursogratuito #treinamento #cs50 #datascience</div>
               <div className="flex flex-nowrap mt-6 text-sm">
                 <button className="flex flex-nowrap p-1 border border-eksiContent hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark">
@@ -164,7 +166,7 @@ const Page = () => {
           </div>
         </div>
 
-        <Pagination />
+        <Pagination activePage={1} totalPages={10} />
       </div>
 
       <div className="flex w-3/12 sm:hidden md:hidden">
