@@ -1,29 +1,37 @@
 import React from "react";
 import Link from "next/link";
+import SideMenu from "@components/Nav/SideMenu";
 
 function page() {
   return (
-    <div className="flex flex-col mb-32 w-1/2 justify-center text-center">
-      <div className="w-1/2 bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6 text-center">
-        <h1 className="text-xl">İletişim</h1>
-        <p>Aşağıdaki yöntemlerle bize ulaşabilirsiniz.</p>
+    <>
+      <div className="flex w-1/3">
+        <SideMenu />
+      </div>
+      <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
+        <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
+          <h1 className="w-full text-3xl text-bold mb-4">İletişim</h1>
+          <p className="w-full my-2">
+            Aşağıdaki yöntemlerle bize ulaşabilirsiniz.
+          </p>
 
-        <p>Email: eksicode@eksicode.org 😁</p>
+          <p className="w-full my-2">Email: eksicode@eksicode.org 😁</p>
 
-        <p>
-          X(Twitter):
-          <Link
-            href="https://x.com/eksicode"
-            target="_blank"
-            className="hover:underline"
-          >
-            @eksicode
-          </Link>
-          👻
-        </p>
+          <p className="w-full my-2">
+            X(Twitter):
+            <Link
+              href="https://x.com/eksicode"
+              target="_blank"
+              className="hover:underline"
+            >
+              @eksicode
+            </Link>
+            👻
+          </p>
 
-        <p>
-          Bir hata bildirmek için lütfen açık kaynak depomuzda bir{" "}
+          <p className="w-full my-2">
+            Bir hata bildirmek için lütfen açık kaynak depomuzda bir{" "}
+          </p>
           <Link
             href="https://github.com/Eksicode/eksicode/issues/new"
             target="_blank"
@@ -31,21 +39,20 @@ function page() {
           >
             hata raporu oluşturun.
           </Link>
-        </p>
 
-        <p>
-          Bir özellik talep etmek için lütfen Eksicode reposunda yeni bir
+          <p className="w-full my-2">
+            Bir özellik talep etmek için lütfen Eksicode reposunda yeni bir
+          </p>
           <Link
             href="https://github.com/Eksicode/eksicode/discussions"
             target="_blank"
             className="hover:underline"
           >
             GitHub Tartışması başlatın!
-          </Link>
-        </p>
+          </Link> 
+        </div>
       </div>
-      <div className="h-64"></div>
-    </div>
+    </>
   );
 }
 

@@ -1,16 +1,16 @@
 
-import getRoles from "@providers/getRoles";
+// import getRoles from "@providers/getRoles";
 import DataTable from "@components/Ui/DataTable";
 import Navlink from "@components/Ui/NavLink";
 
 
 async function Roles() {
-  const RolesData = await getRoles("total", "no-store");
+  // const RolesData = await getRoles("total", "no-store");
 
-  const preparedData = RolesData.map((role) => ({
-    name: role.name,
-    description: role.description,
-  }));
+  // const preparedData = RolesData.map((role) => ({
+  //   name: role.name,
+  //   description: role.description,
+  // }));
 
 
   return (
@@ -19,12 +19,12 @@ async function Roles() {
       <Navlink href="/dashboard/roller/yeni" variant="primary">
         + Yeni Rol
       </Navlink>
-      <DataTable
+      {/* <DataTable
         data={preparedData}
         onView={true}
         onEdit={true}
         onDelete={true}
-      />
+      /> */}
 
     </>
   );

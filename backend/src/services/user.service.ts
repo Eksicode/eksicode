@@ -1,4 +1,4 @@
-import { PrismaClient, Users, Prisma } from "@prisma/client";
+import { PrismaClient, User, Prisma } from "@prisma/client";
 
 class UserService {
   private prisma = new PrismaClient();
@@ -10,9 +10,9 @@ class UserService {
     skip: number,
     limit: number,
     summaryOnly: boolean
-  ): Promise<{ users: Users[]; count: number }> {
+  ): Promise<{ users: User[]; count: number }> {
     const [users, count] = await Promise.all([
-      this.prisma.users.findMany({
+      this.prisma.user.findMany({
         skip,
         take: limit,
         select: summaryOnly
@@ -40,7 +40,7 @@ class UserService {
             }
           : undefined,
       }),
-      this.prisma.users.count(),
+      this.prisma.user.count(),
     ]);
     return { users, count };
   }
@@ -48,8 +48,8 @@ class UserService {
   /**
    * Get user by ID
    */
-  public async getUserById(id: number): Promise<Users | null> {
-    return this.prisma.users.findUnique({
+  public async getUserById(id: number): Promise<User | null> {
+    return this.prisma.user.findUnique({
       where: { id },
     });
   }
@@ -57,8 +57,8 @@ class UserService {
   /**
    * Create a new user
    */
-  public async createUser(data: Prisma.UsersCreateInput): Promise<Users> {
-    return this.prisma.users.create({
+  public async createUser(data: Prisma.UserCreateInput): Promise<User> {
+    return this.prisma.user.create({
       data,
     });
   }
@@ -66,8 +66,8 @@ class UserService {
   /**
    * Update an existing user
    */
-  public async updateUser(id: number, data: Partial<Users>): Promise<Users> {
-    return this.prisma.users.update({
+  public async updateUser(id: number, data: Partial<User>): Promise<User> {
+    return this.prisma.user.update({
       where: { id },
       data,
     });
@@ -76,8 +76,8 @@ class UserService {
   /**
    * Delete a user
    */
-  public async deleteUser(id: number): Promise<Users> {
-    return this.prisma.users.delete({
+  public async deleteUser(id: number): Promise<User> {
+    return this.prisma.user.delete({
       where: { id },
     });
   }

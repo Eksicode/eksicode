@@ -1,6 +1,6 @@
-import { PrismaClient, Pages, Prisma } from "@prisma/client";
+import { PrismaClient, Page, Prisma } from "@prisma/client";
 
-class Page {
+class PageService {
   private prisma: PrismaClient;
 
   constructor() {
@@ -18,9 +18,9 @@ class Page {
     skip: number,
     limit: number,
     summaryOnly: boolean
-  ): Promise<{ pages: Partial<Pages>[]; count: number }> {
+  ): Promise<{ pages: Partial<Page>[]; count: number }> {
     const [pages, count] = await Promise.all([
-      this.prisma.pages.findMany({
+      this.prisma.page.findMany({
         skip,
         take: limit,
         select: summaryOnly
@@ -40,7 +40,7 @@ class Page {
               updatedAt: true,
             },
       }),
-      this.prisma.pages.count(),
+      this.prisma.page.count(),
     ]);
 
     return { pages, count };
@@ -67,9 +67,9 @@ class Page {
    * @param id - The Slug of the page.
    * @returns The page if found, or null if not.
    */
-  public async getPageBySlug(slug: string): Promise<Pages | null> {
+  public async getPageBySlug(slug: string): Promise<Page | null> {
     try {
-      return await this.prisma.pages.findUnique({
+      return await this.prisma.page.findUnique({
         where: { slug },
       });
     } catch (error) {
@@ -83,9 +83,9 @@ class Page {
    * @param data - The data for the new page.
    * @returns The created page.
    */
-  public async createPage(data: Prisma.PagesCreateInput): Promise<Pages> {
+  public async createPage(data: Prisma.PageCreateInput): Promise<Page> {
     try {
-      return await this.prisma.pages.create({ data });
+      return await this.prisma.page.create({ data });
     } catch (error) {
       console.error("Error creating page:", error);
       throw new Error("Unable to create page.");
@@ -100,10 +100,10 @@ class Page {
    */
   public async updatePage(
     id: number,
-    data: Partial<Prisma.PagesUpdateInput>
-  ): Promise<Pages> {
+    data: Partial<Prisma.PageUpdateInput>
+  ): Promise<Page> {
     try {
-      return await this.prisma.pages.update({
+      return await this.prisma.page.update({
         where: { id },
         data,
       });
@@ -118,9 +118,9 @@ class Page {
    * @param id - The ID of the page to delete.
    * @returns The deleted page.
    */
-  public async deletePage(id: number): Promise<Pages> {
+  public async deletePage(id: number): Promise<Page> {
     try {
-      return await this.prisma.pages.delete({
+      return await this.prisma.page.delete({
         where: { id },
       });
     } catch (error) {
@@ -130,4 +130,4 @@ class Page {
   }
 }
 
-export default Page;
+export default PageService;
