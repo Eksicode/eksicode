@@ -6,7 +6,6 @@ import getData from "@providers/getData";
 
 async function Groups() {
   const groups = await getData("telegrams", false );
-  console.log(groups);
   return (
     <>
       <div className="flex">

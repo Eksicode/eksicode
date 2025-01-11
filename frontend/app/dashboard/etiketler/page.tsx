@@ -1,5 +1,5 @@
 import React from "react";
-import getTags from "@providers/getTags";
+// import getTags from "@providers/getTags";
 import DataTable from "@components/Ui/DataTable";
 import Navlink from "@components/Ui/NavLink";
 
@@ -11,11 +11,11 @@ interface Tags {
 
 async function Tags() {
 
-  const tagsData = await getTags("");
+  // const tagsData = await getTags("");
 
-  const preparedData = tagsData.map((tag) => ({
-    name: tag.name,
-  }));
+  // const preparedData = tagsData.map((tag) => ({
+  //   name: tag.name,
+  // }));
 
   return (
     <>
@@ -25,12 +25,12 @@ async function Tags() {
           + Yeni Etiket
         </Navlink>
       </div>
-      <DataTable
+      {/* <DataTable
         data={preparedData}
         onView={true}
         onEdit={true}
         onDelete={true}
-      />
+      /> */}
 
     </>
   );

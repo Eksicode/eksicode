@@ -1,10 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import SideMenu from "@components/Nav/SideMenu";
-import TagsCard from "@components/TagsCard";
-import Search from "@components/Search";
+import DataTable from "@components/Ui/DataTable";
 
-interface Tag {
+interface sources {
   id: number;
   name: string;
   slug: string;
@@ -12,10 +11,6 @@ interface Tag {
   icon: string;
   description: string;
 }
-
-type TagsProps = {
-  tags?: Tag[];
-};
 
 async function getData() {
   try {
@@ -32,7 +27,11 @@ async function getData() {
   }
 }
 export default async function Tags() {
-  const tags = await getData();
+  const sources = await getData();
+
+  // const preparedData = tagsData.map((tag) => ({
+  //   name: tag.name,
+  // }));
 
   return (
     <>
@@ -42,25 +41,15 @@ export default async function Tags() {
 
       <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-left">
         <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
-          <div className="flex basis-1/2 text-3xl text-bold text-left">
-            Etiketler
-          </div>
-
-          <div className="flex flex-nowrap basis-1/2">
-            <button className="p-2 border w-full hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
-              Takipteki Etiketler
-            </button>
-            <button className="mx-2 p-2 w-full border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
-              Gizli Etiketler
-            </button>
-            <Search text="Etiket ara" />
-          </div>
-        </div>
-
-        <div className="flex flex-wrap w-full justify-between sm:mx-2">
-          {tags.data?.map((tag: Tag) => (
-            <TagsCard {...tag} />
-          ))}
+          <h1 className="flex basis-1/2 text-3xl text-bold text-left">
+            Kaynaklar
+          </h1>
+          {/* <DataTable
+        data={preparedData}
+        onView={true}
+        onEdit={true}
+        onDelete={true}
+      /> */}
         </div>
       </div>
     </>

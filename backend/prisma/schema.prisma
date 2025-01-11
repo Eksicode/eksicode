@@ -7,13 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id             Int             @id @default(autoincrement())
-  email          String          @unique
+model User {
+  id             Int            @id @default(autoincrement())
+  email          String         @unique
   password       String
   firstName      String?
   lastName       String?
-  username       String          @unique
+  username       String         @unique
   profilePicture String?
   birthday       DateTime?
   telegramId     Int?
@@ -24,131 +24,151 @@ model Users {
   twitter        String?
   instagram      String?
   facebook       String?
-  verified       Boolean         @default(false)
-  emailVerified  Boolean         @default(false)
-  roles          UserRoles[]
-  posts          Posts[]
-  comments       Comments[]
-  postLikes      PostLikes[]
-  sources        Sources[]
-  notifications  Notifications[]
-  jobs           Jobs[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  verified       Boolean        @default(false)
+  emailVerified  Boolean        @default(false)
+  roles          UserRole[]
+  posts          Post[]
+  comments       Comment[]
+  postLikes      PostLike[]
+  notifications  Notification[]
+  jobs           Job[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@map("users")
 }
 
-model Roles {
-  id          Int               @id @default(autoincrement())
-  name        String            @unique
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
   description String?
-  permissions RolePermissions[]
-  users       UserRoles[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  permissions RolePermission[]
+  users       UserRole[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("roles")
 }
 
-model Permissions {
-  id          Int               @id @default(autoincrement())
-  name        String            @unique
+model Permission {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
   description String?
-  roles       RolePermissions[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("permissions")
 }
 
-model UserRoles {
-  id     Int   @id @default(autoincrement())
+model UserRole {
+  id     Int  @id @default(autoincrement())
   userId Int
   roleId Int
-  user   Users @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role   Roles @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roleId])
+  @@map("user_roles")
 }
 
-model RolePermissions {
-  id           Int         @id @default(autoincrement())
+model RolePermission {
+  id           Int        @id @default(autoincrement())
   roleId       Int
   permissionId Int
-  role         Roles       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission   Permissions @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@unique([roleId, permissionId])
+  @@map("role_permissions")
 }
 
-model Posts {
-  id          Int              @id @default(autoincrement())
+model Post {
+  id          Int            @id @default(autoincrement())
   title       String
   content     String
   headerImage String?
   authorId    Int
-  author      Users            @relation(fields: [authorId], references: [id])
-  postLikes   PostLikes[]
-  comments    Comments[]
-  categories  PostCategories[]
-  tags        HashTags[]
-  status      PostStatusEnum   @default(draft)
-  slug        String           @unique
-  approved    Boolean          @default(false)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  author      User           @relation(fields: [authorId], references: [id])
+  postLikes   PostLike[]
+  comments    Comment[]
+  categories  PostCategory[]
+  tags        HashTag[]
+  status      PostStatusEnum @default(draft)
+  slug        String         @unique
+  approved    Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("posts")
 }
 
-model Comments {
+model Comment {
   id        Int      @id @default(autoincrement())
   content   String
   authorId  Int
   postId    Int
-  author    Users    @relation(fields: [authorId], references: [id])
-  post      Posts    @relation(fields: [postId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("comments")
 }
 
-model PostCategories {
+model PostCategory {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  posts     Posts[]
+  posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("post_categories")
 }
 
-model HashTags {
-  id    Int     @id @default(autoincrement())
-  name  String  @unique
-  posts Posts[]
+model HashTag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[]
+
+  @@map("hash_tags")
 }
 
-model PostLikes {
-  id     Int   @id @default(autoincrement())
+model PostLike {
+  id     Int  @id @default(autoincrement())
   userId Int
   postId Int
-  user   Users @relation(fields: [userId], references: [id])
-  post   Posts @relation(fields: [postId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
+  post   Post @relation(fields: [postId], references: [id])
 
   @@unique([userId, postId])
+  @@map("post_likes")
 }
 
-model Pages {
-  id         Int              @id @default(autoincrement())
+model Page {
+  id         Int            @id @default(autoincrement())
   title      String
   content    String
   headerImg  String?
-  slug       String           @unique
-  categories PageCategories[]
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  slug       String         @unique
+  categories PageCategory[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@map("pages")
 }
 
-model PageCategories {
+model PageCategory {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  pages     Pages[]
+  pages     Page[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("page_categories")
 }
 
-model TelegramGroups {
+model TelegramGroup {
   id          Int      @id @default(autoincrement())
   name        String   @unique
   icon        String?
@@ -159,67 +179,80 @@ model TelegramGroups {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@map("telegram_groups")
 }
 
-model Menus {
-  id         Int              @id @default(autoincrement())
-  name       String           
+model Menu {
+  id         Int            @id @default(autoincrement())
+  name       String
   link       String
-  subMenu    Int              @default(0)
+  subMenu    Int            @default(0)
   icon       String?
-  categories MenuCategories[]
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  categories MenuCategory[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@map("menus")
 }
 
-model MenuCategories {
+model MenuCategory {
   id        Int      @id @default(autoincrement())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  menus     Menus?   @relation(fields: [id], references: [id])
+  menus     Menu?    @relation(fields: [id], references: [id])
+
+  @@map("menu_categories")
 }
 
-model Notifications {
-  id        Int               @id @default(autoincrement())
+model Notification {
+  id        Int                  @id @default(autoincrement())
   title     String
   content   String
-  type      NotificationTypes
+  type      NotificationTypeEnum
   userId    Int
-  user      Users             @relation(fields: [userId], references: [id])
-  read      Boolean           @default(false)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  user      User                 @relation(fields: [userId], references: [id])
+  read      Boolean              @default(false)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  @@map("notifications")
 }
 
-model Jobs {
-  id             Int               @id @default(autoincrement())
+model Job {
+  id             Int                   @id @default(autoincrement())
   title          String
   description    String
   location       String
-  EmploymentType JobEmploymentType
+  EmploymentType JobEmploymentTypeEnum
   Department     String
   salary         String
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
-  company        Users?            @relation(fields: [usersId], references: [id])
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  company        User?                 @relation(fields: [usersId], references: [id])
   usersId        Int?
+
+  @@map("jobs")
 }
 
-model Sources {
+model Source {
   id          Int      @id @default(autoincrement())
-  name        String   @unique
+  title       String   @unique
   description String?
+  headers     String?
   url         String
-  userId      Int
-  user        Users    @relation(fields: [userId], references: [id])
+  tgChannel   String?
+  tgUser      String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@map("sources")
 }
 
 // Enums List
 
-enum JobEmploymentType {
+enum JobEmploymentTypeEnum {
   fullTime
   partTime
   contract
@@ -227,7 +260,7 @@ enum JobEmploymentType {
   internship
 }
 
-enum NotificationTypes {
+enum NotificationTypeEnum {
   yorum
   gönderi
   hata
@@ -235,7 +268,7 @@ enum NotificationTypes {
   mesaj
 }
 
-enum MediaTypes {
+enum MediaTypeEnum {
   image
   video
   audio

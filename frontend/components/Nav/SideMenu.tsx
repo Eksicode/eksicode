@@ -7,8 +7,9 @@ import {
   AiOutlineQuestionCircle,
   AiOutlineInfoCircle,
   AiOutlineBook,
-  AiOutlinePhone,
+  AiOutlinePhone
 } from 'react-icons/ai';
+import { MdOutlineSource } from "react-icons/md";
 import Link from 'next/link';
 import React from 'react';
 
@@ -28,12 +29,23 @@ const SideMenu = () => {
           </li>
           <li>
             <Link
-              href="telegram-gruplari"
+              href="/telegram-gruplari"
               className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
             >
               <AiOutlineAudio className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">
                 Telegram Grupları
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/kaynaklar"
+              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
+            >
+              <MdOutlineSource className="text-lg mb-1" />
+              <span className="flex-1 ml-3 whitespace-nowrap">
+                Kaynaklar
               </span>
             </Link>
           </li>
@@ -48,7 +60,7 @@ const SideMenu = () => {
           </li>
           <li>
             <Link
-              href="etiketler"
+              href="/etiketler"
               className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
             >
               <AiOutlineTag className="text-lg mb-1" />

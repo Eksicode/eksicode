@@ -1,4 +1,4 @@
-import { PrismaClient, TelegramGroups, Prisma } from "@prisma/client";
+import { PrismaClient, TelegramGroup, Prisma } from "@prisma/client";
 
 class TelegramGroupsService {
   private prisma: PrismaClient;
@@ -18,9 +18,9 @@ class TelegramGroupsService {
     skip: number,
     limit: number,
     summaryOnly: boolean
-  ): Promise<{ telegrams: Partial<TelegramGroups>[]; count: number }> {
+  ): Promise<{ telegrams: Partial<TelegramGroup>[]; count: number }> {
     const [telegrams, count] = await Promise.all([
-      this.prisma.telegramGroups.findMany({
+      this.prisma.telegramGroup.findMany({
         skip,
         take: limit,
         select: summaryOnly
@@ -43,7 +43,7 @@ class TelegramGroupsService {
               updatedAt: true,
             },
       }),
-      this.prisma.telegramGroups.count(),
+      this.prisma.telegramGroup.count(),
     ]);
 
     return { telegrams, count };
@@ -56,9 +56,9 @@ class TelegramGroupsService {
    */
   public async getTelegramGroupById(
     id: number
-  ): Promise<TelegramGroups | null> {
+  ): Promise<TelegramGroup | null> {
     try {
-      return await this.prisma.telegramGroups.findUnique({
+      return await this.prisma.telegramGroup.findUnique({
         where: { id },
       });
     } catch (error) {
@@ -73,10 +73,10 @@ class TelegramGroupsService {
    * @returns The created telegram group.
    */
   public async createTelegramGroup(
-    data: Prisma.TelegramGroupsCreateInput
-  ): Promise<TelegramGroups> {
+    data: Prisma.TelegramGroupCreateInput
+  ): Promise<TelegramGroup> {
     try {
-      return await this.prisma.telegramGroups.create({ data });
+      return await this.prisma.telegramGroup.create({ data });
     } catch (error) {
       console.error("Error creating telegram group:", error);
       throw new Error("Unable to create telegram group.");
@@ -91,10 +91,10 @@ class TelegramGroupsService {
    */
   public async updateTelegramGroup(
     id: number,
-    data: Partial<Prisma.TelegramGroupsUpdateInput>
-  ): Promise<TelegramGroups> {
+    data: Partial<Prisma.TelegramGroupUpdateInput>
+  ): Promise<TelegramGroup> {
     try {
-      return await this.prisma.telegramGroups.update({
+      return await this.prisma.telegramGroup.update({
         where: { id },
         data,
       });
@@ -109,9 +109,9 @@ class TelegramGroupsService {
    * @param id - The ID of the telegram group to delete.
    * @returns The deleted telegram group.
    */
-  public async deleteTelegramGroup(id: number): Promise<TelegramGroups> {
+  public async deleteTelegramGroup(id: number): Promise<TelegramGroup> {
     try {
-      return await this.prisma.telegramGroups.delete({
+      return await this.prisma.telegramGroup.delete({
         where: { id },
       });
     } catch (error) {
