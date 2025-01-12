@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { telegramGroupsData } from "./telegramGroupsData";
 import { menuItems } from "./menuItemsData";
+import { pageCategories, pages } from './pagesData';
 
 async function seedPermissions() {
   console.log("Seeding permissions...");
@@ -151,19 +152,70 @@ async function seedMenuCategories() {
 async function seedMenus(menuCategory) {
   console.log("Seeding menus...");
   for (const menuItem of menuItems) {
-    const { categories, ...menuItemData } = menuItem;
+    const { categories, id, ...menuItemData } = menuItem;
     
-    await prisma.menu.create({
-      data: {
+    await prisma.menu.upsert({
+      where: {
+        id: id || -1  // Use -1 as fallback if id doesn't exist
+      },
+      update: {
         ...menuItemData,
         categories: {
           connect: [{ id: menuCategory.id }]
         },
       },
+      create: {
+        ...menuItemData,
+        categories: {
+          connect: [{ id: menuCategory.id }]
+        },
+      }
     });
   }
 }
 
+async function seedPageCategories() {
+  console.log('Seeding categories...');
+  for (const pageCategory of pageCategories) {
+    await prisma.pageCategory.upsert({
+      where: { name: pageCategory.name },
+      update: {},
+      create: pageCategory,
+    });
+  }
+}
+
+async function seedPages() {
+  console.log('Seeding pages...');
+  for (const page of pages) {
+    const { categories, ...pageData } = page;
+    
+    await prisma.page.upsert({
+      where: {
+        slug: pageData.slug
+      },
+      update: {
+        ...pageData,
+        categories: {
+          set: [], // Clear existing categories first
+          connectOrCreate: categories.map((name) => ({
+            where: { name },
+            create: { name }
+          }))
+        }
+      },
+      create: {
+        ...pageData,
+        categories: {
+          connectOrCreate: categories.map((name) => ({
+            where: { name },
+            create: { name }
+          }))
+        }
+      }
+    });
+  }
+}
 async function main() {
   try {
     console.log("Deleting existing data...");
@@ -178,6 +230,8 @@ async function main() {
     const roles = await seedRoles(permissions);
     await seedUsers(roles);
     await seedTelegramGroups();
+    await seedPageCategories();
+    await seedPages();
 
     const { footerMenuCategory, mainMenuCategory } = await seedMenuCategories();
     await seedMenus(mainMenuCategory);

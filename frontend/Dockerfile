@@ -6,9 +6,11 @@ COPY package.json package-lock.json* ./
 
 COPY . ./
 
+RUN npm i sharp
+
 USER root
+
 RUN npm install 
-# RUN npm i sharp
 
 RUN npm run build
 

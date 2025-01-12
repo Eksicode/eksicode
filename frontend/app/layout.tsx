@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr">
+    <html lang="tr" className="dark" suppressHydrationWarning>
       <GoogleAnalytics gaId="UA-143778720-1" />
 
       <body

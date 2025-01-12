@@ -13,7 +13,7 @@ import TelegramGroups from "@components/TelegramGroups";
 import Search from "@components/Search";
 import Navlink from "@components/Ui/NavLink";
 import MobileMenu from "./MobileMenu";
-import ThemeToggle from '@components/themeToggle'
+import ThemeToggle from '@components/ThemeToggle'
 const Nav = () => {
   return (
     <nav className="flex flex-wrap w-full justify-center z-50  sticky top-0 nav-sahdow bg-white">

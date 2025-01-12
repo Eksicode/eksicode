@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import FileUpload from "@components/FileUpload";
+// import FileUpload from "@components/FileUpload";
 import Button from "@components/Ui/Button";
 
 interface Page {
@@ -181,7 +181,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
         <label htmlFor="header_image" className="text-sm font-medium w-full">
           Header Image:
         </label>
-        <FileUpload setFile={setFile} />
+        {/* <FileUpload setFile={setFile} /> */}
         {file && <img src={URL.createObjectURL(file)} alt="Uploaded File" />}
       </div>
       <div className="flex basis-1/2 flex-col">
