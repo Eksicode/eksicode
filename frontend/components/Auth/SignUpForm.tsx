@@ -217,7 +217,6 @@ const SignUpForm: React.FC = () => {
               isOpen={showModal}
               onClose={() => setShowModal(false)}
               title={modalContent.title}
-              text={modalContent.text}
               buttonText={modalContent.buttonText}
               redUrl="/uye-giris"
             />
