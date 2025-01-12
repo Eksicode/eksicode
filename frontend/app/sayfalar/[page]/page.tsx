@@ -3,28 +3,35 @@ import Image from "@node_modules/next/image";
 import SideMenu from "@components/Nav/SideMenu";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+
 interface PageData {
   page: string;
   title: string;
   image?: string;
   content: string;
 }
+
 interface PageProps {
   params: {
     page: string;
   };
 }
+
 const Page: React.FC<PageProps> = async ({ params }) => {
   const { page } = params;
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/pages/${page}`,
       { cache: "force-cache" }
     );
+
     if (response.status === 404) {
       notFound();
     }
+
     const pageData: PageData = await response.json();
+
     return (
       <>
         <div className="flex">
@@ -39,8 +46,8 @@ const Page: React.FC<PageProps> = async ({ params }) => {
               <Image
                 src={pageData.image}
                 alt={pageData.title}
-                width={1920} // 1920px
-                height={1080} // 1080px
+                width={1920}
+                height={1080}
               />
             )}
             <div dangerouslySetInnerHTML={{ __html: pageData.content }}></div>
@@ -50,6 +57,7 @@ const Page: React.FC<PageProps> = async ({ params }) => {
     );
   } catch (error) {
     console.error(error);
+    return null; // Return `null` to prevent rendering broken UI
   }
 };
 
