@@ -13,7 +13,7 @@ import TelegramGroups from "@components/TelegramGroups";
 import Search from "@components/Search";
 import Navlink from "@components/Ui/NavLink";
 import MobileMenu from "./MobileMenu";
-
+import ThemeToggle from '@components/themeToggle'
 const Nav = () => {
   return (
     <nav className="flex flex-wrap w-full justify-center z-50  sticky top-0 nav-sahdow bg-white">
@@ -37,13 +37,21 @@ const Nav = () => {
         </div>
 
         <div className="flex items-center justify-end">
+
+
+          
+
           {/*  Desktop menu */}
           <div className="flex flex-nowrap text-center md:text-sm lg:text-sm">
+                    {/*  Theme Switcher */}
+              <ThemeToggle />
+
             <Navlink
               variant="secondary"
               href="/dashboard/posts/yeni"
               clasName="sm:hidden"
             >
+
               <div className="flex items-center">
                 <AiOutlineEdit className="h-5 w-5 mr-1" />
                 <span className="sm:hidden flex">Yeni Gönderi</span>
