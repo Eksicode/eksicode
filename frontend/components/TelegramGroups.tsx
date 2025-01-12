@@ -82,7 +82,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
             </div>
           ) : (
             <>
-              <p>Telegram Grupları</p>
+              <p className="text-eksiCodeMedium dark:text-eksiCodeLight">Telegram Grupları</p>
               {fetchedGroups.length > 0 ? (
                 <>
                   {fetchedGroups.slice(0, logoCount).map((group: Group) => (

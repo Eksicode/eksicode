@@ -5,11 +5,12 @@ import React from "react";
 import Nav from "@components/Nav/Nav";
 import Footer from "@components/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Providers } from "./Providers";
 
 const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
-})
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Ekşicode - Yazılımcı Geliştirme Platformu",
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <GoogleAnalytics gaId="UA-143778720-1" />
+
       <body
         className={
           process.env.NODE_ENV === "development"
@@ -32,13 +34,15 @@ export default function RootLayout({
             : roboto.className
         }
       >
-        <Nav />
-        <div className="flex flex-wrap w-full justify-center pt-5">
-          <div className="flex justify-center sm:basis-full md:basis-full lg:basis-full basis-3/4 sm:mx-2">
-            {children}
+        <Providers>
+          <Nav />
+          <div className="flex flex-wrap w-full justify-center pt-5">
+            <div className="flex justify-center sm:basis-full md:basis-full lg:basis-full basis-3/4 sm:mx-2">
+              {children}
+            </div>
           </div>
-        </div>
-        <Footer />
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
