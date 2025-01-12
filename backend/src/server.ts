@@ -5,6 +5,8 @@ import IndexRoute from './routes/index.route';
 import UserRoute from './routes/user.route';
 import TelegramRoute from './routes/telegram.route';
 import PageRoute from './routes/page.route';
+import MenuRoute from './routes/menu.route';
+import MenuCategoryRoute from './routes/menu-category.route';
 // import AuthRoute from '@routes/auth.route';
 // import OAuthRoute from '@routes/oauth.route';
 // import RolesRoute from '@routes/roles.route';
@@ -15,6 +17,8 @@ const app = new App([
     new UserRoute(),
     new TelegramRoute(),
     new PageRoute(),
+    new MenuRoute(),
+    new MenuCategoryRoute(),
     // new RolesRoute(),
     // new PermissionsRoute(),
     // new AuthRoute(),
@@ -22,3 +26,4 @@ const app = new App([
 ]);
 
 app.listen();
+

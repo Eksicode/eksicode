@@ -1,121 +1,65 @@
-import {
-  AiOutlineHome,
-  AiOutlineUnorderedList,
-  AiOutlineAudio,
-  AiOutlineVideoCamera,
-  AiOutlineTag,
-  AiOutlineQuestionCircle,
-  AiOutlineInfoCircle,
-  AiOutlineBook,
-  AiOutlinePhone
-} from 'react-icons/ai';
-import { MdOutlineSource } from "react-icons/md";
-import Link from 'next/link';
 import React from 'react';
+import * as md from "react-icons/md";
+import * as Ai from 'react-icons/ai';
+import Link from 'next/link';
+import getData from '@providers/getData';
 
-const SideMenu = () => {
+interface Menu {
+  id: number;
+  name: string;
+  link: string;
+  subMenu: number;
+  icon: string;
+}
+
+const IconMap = {
+  ...md,
+  ...Ai,
+};
+
+const getIconComponent = (iconName: string): React.ComponentType | null => {
+  const IconComponent = IconMap[iconName as keyof typeof IconMap];
+  return IconComponent || null;
+};
+
+async function SideMenu() {
+  // Fetch data directly in the server component
+  let menu: Menu[] = [];
+  try {
+    const fetchedMenu = await getData("menus", true);
+    menu = fetchedMenu.data.map((item) => ({
+      id: item.id,
+      name: item.name,
+      icon: item.icon,
+      link: item.link,
+      subMenu: item.subMenu
+    })) as Menu[];
+  } catch (error) {
+    console.error("Error fetching telegram groups:", error);
+  }
+
   return (
     <aside className="w-64 sm:hidden" aria-label="Sidebar">
       <div className="overflow-y-auto w-64 py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border fixed">
         <ul className="space-y-2">
-          <li>
-            <Link
-              href="/"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
-            >
-              <AiOutlineHome className="text-lg mb-1" />
-              <span className="ml-3">Home</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/telegram-gruplari"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
-            >
-              <AiOutlineAudio className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">
-                Telegram Grupları
-              </span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/kaynaklar"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
-            >
-              <MdOutlineSource className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">
-                Kaynaklar
-              </span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 "
-            >
-              <AiOutlineUnorderedList className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">İlanlar</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/etiketler"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
-            >
-              <AiOutlineTag className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Etiketler</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
-            >
-              <AiOutlineVideoCamera className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Video</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
-            >
-              <AiOutlineQuestionCircle className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">SSS</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/sayfalar/amacimiz"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
-            >
-              <AiOutlineInfoCircle className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Amacimiz</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/sayfalar/kurallar"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
-            >
-              <AiOutlineBook className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Kurallar</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/iletisim"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
-            >
-              <AiOutlinePhone className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">İletişim</span>
-            </Link>
-          </li>
+        {menu.map((item) => {
+          const IconComponent = getIconComponent(item.icon);
+          return (
+            <li key={item.id}>
+              <Link
+                href={item.link}
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
+              >
+                {IconComponent && <IconComponent className="text-lg" {...(IconComponent as any)} />}
+                <span className="ml-3">{item.name}</span>
+              </Link>
+            </li>
+          );
+        })}
         </ul>
       </div>
     </aside>
   );
-};
+}
 
 export default SideMenu;

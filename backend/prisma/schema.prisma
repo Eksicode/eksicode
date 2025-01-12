@@ -189,7 +189,7 @@ model Menu {
   link       String
   subMenu    Int            @default(0)
   icon       String?
-  categories MenuCategory[]
+  categories MenuCategory[] 
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
 
@@ -201,7 +201,7 @@ model MenuCategory {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  menus     Menu?    @relation(fields: [id], references: [id])
+  menus     Menu[]   // Changed from Menu? to Menu[]
 
   @@map("menu_categories")
 }
