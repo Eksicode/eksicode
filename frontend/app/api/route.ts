@@ -1,9 +1,9 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
-export function GET(req: NextApiRequest, res: NextApiResponse) {
+export function GET(req: NextRequest) {
   const token = process.env.LOG_TOKEN;
-  if(!token){
-    return Response.json({error: 'Token is not available'})
+  if (!token) {
+    return NextResponse.json({ error: 'Token is not available' }, { status: 400 });
   }
-  return Response.json({token})
+  return NextResponse.json({ token });
 }
