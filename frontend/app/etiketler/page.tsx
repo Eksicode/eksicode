@@ -19,7 +19,7 @@ type TagsProps = {
 
 async function getData() {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/tags", {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/hashtags", {
       next: { revalidate: 43200 },
     });
     if (!res.ok) {
@@ -60,7 +60,7 @@ export default async function Tags() {
         <div className="flex flex-wrap w-full justify-between sm:mx-2">
           
           {tags.data?.map((tag: Tag) => (
-            <TagsCard {...tag} />
+            <TagsCard key={tag.id} {...tag} />
           ))}
         </div>
       </div>

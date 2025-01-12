@@ -6,6 +6,11 @@
 @tailwind components;
 @tailwind utilities; */
 
+
+
+
+
+
 *,
 html {
   scroll-behavior: smooth !important;
@@ -34,4 +39,11 @@ body.modal-active {
 
 .ql-editor {
   min-height: 50vh;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+      --primary-color: #0B4F66; /* Dark */
+      --background-color: #0C3555; /* Dark */
+      --text-color: #72CFE9; /* Dark */
+  }
 }
