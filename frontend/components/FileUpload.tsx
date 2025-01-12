@@ -1,6 +1,10 @@
 import React from "react";
 
-const FileUpload = ({ setFile }: { setFile: any }) => {
+interface FileUploadProps {}
+
+const FileUpload = ({
+  setFile
+}: FileUploadProps) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -61,7 +65,5 @@ const FileUpload = ({ setFile }: { setFile: any }) => {
     </div>
   );
 };
-
-FileUpload.propTypes = {};
 
 export default FileUpload;

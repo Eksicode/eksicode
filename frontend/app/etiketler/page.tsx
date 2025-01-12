@@ -58,6 +58,7 @@ export default async function Tags() {
         </div>
 
         <div className="flex flex-wrap w-full justify-between sm:mx-2">
+          
           {tags.data?.map((tag: Tag) => (
             <TagsCard key={tag.id} {...tag} />
           ))}

@@ -1,6 +1,5 @@
-"use client";
+"use client";;
 import React from "react";
-import PropTypes from "prop-types";
 import Link from "next/link";
 import Navlink from "@components/Ui/NavLink";
 
@@ -9,10 +8,15 @@ interface PaginationProps {
   totalPages: number;
 }
 
+interface PaginationProps {
+  activePage: number;
+  totalPages: number;
+}
+
 const Pagination: React.FC<PaginationProps> = ({
   activePage,
-  totalPages,
-}) => {
+  totalPages
+}: PaginationProps) => {
   const generatePageLink = (page: number) => `/posts?page=${page}`;
 
   const currentPage: number = Number(activePage);
@@ -161,11 +165,6 @@ const Pagination: React.FC<PaginationProps> = ({
       </div>
     </div>
   );
-};
-
-Pagination.propTypes = {
-  activePage: PropTypes.number.isRequired,
-  totalPages: PropTypes.number.isRequired,
 };
 
 export default Pagination;
