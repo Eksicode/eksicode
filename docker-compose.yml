@@ -10,6 +10,7 @@ services:
       - ./backend/.env
     volumes:
       - ./backend:/app
+      - app/node_modules
     networks:
       main:
         aliases:
@@ -21,7 +22,7 @@ services:
       context: ./frontend
       # target: production
     ports:
-      - "4000:4000"
+      - "3000:3000"
     env_file:
       - ./frontend/.env
     volumes:
@@ -34,36 +35,36 @@ services:
         aliases:
           - eksicode_nw
 
-  # nginx:
-  #   container_name: nginx
-  #   image: nginx
-  #   environment:
-  #     - TZ=Europe/Istanbul
-  #     - PROTOCOL=HTTP
-  #   privileged: true
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #     - ./nginx/logs/:/etc/nginx/logs/
-  #     - ./nginx/mime.types:/etc/nginx/mime.types
-  #     - ./nginx/cache/:/etc/nginx/cache/
-  #     - ./nginx/eksicode.crt:/etc/nginx/eksicode.crt
-  #     - ./nginx/eksicode.key:/etc/nginx/eksicode.key
-  #   restart: on-failure
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes_from:
-  #     - backend
-  #     - frontend
-  #   networks:
-  #     main:
-  #       aliases:
-  #         - eksicode_nw
+  nginx:
+    container_name: nginx
+    image: nginx
+    environment:
+      - TZ=Europe/Istanbul
+      - PROTOCOL=HTTP
+    privileged: true
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/logs/:/etc/nginx/logs/
+      - ./nginx/mime.types:/etc/nginx/mime.types
+      - ./nginx/cache/:/etc/nginx/cache/
+      - ./nginx/eksicode.crt:/etc/nginx/eksicode.crt
+      - ./nginx/eksicode.key:/etc/nginx/eksicode.key
+    restart: on-failure
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes_from:
+      - backend
+      - frontend
+    networks:
+      main:
+        aliases:
+          - eksicode_nw
 
 volumes:
   backend:
   frontend:
-  # nginx:
+  nginx:
 
 networks:
   main:
