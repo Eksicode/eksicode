@@ -1,8 +1,8 @@
 import React from "react";
-import Image from "@node_modules/next/image";
+import Image from "next/image";
 import SideMenu from "@components/Nav/SideMenu";
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
 interface PageData {
   page: string;
@@ -11,18 +11,26 @@ interface PageData {
   content: string;
 }
 
-interface PageProps {
-  params: {
-    page: string;
-  };
+// Remove custom Props type and use the correct parameter typing
+export async function generateMetadata({
+  params,
+}: {
+  params: { page: string };
+}): Promise<Metadata> {
+  return {
+    title: `${params.page} - EksiCode`,
+  }
 }
 
-const Page: React.FC<PageProps> = async ({ params }) => {
-  const { page } = params;
-
+// Use the correct parameter typing for the page component
+export default async function Page({
+  params,
+}: {
+  params: { page: string };
+}) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/pages/${page}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/pages/${params.page}`,
       { cache: "force-cache" }
     );
 
@@ -57,8 +65,6 @@ const Page: React.FC<PageProps> = async ({ params }) => {
     );
   } catch (error) {
     console.error(error);
-    return null; // Return `null` to prevent rendering broken UI
+    return null;
   }
-};
-
-export default Page;
+}

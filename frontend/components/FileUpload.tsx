@@ -1,6 +1,8 @@
 import React from "react";
 
-interface FileUploadProps {}
+interface FileUploadProps {
+  setFile: (file: File) => void;
+}
 
 const FileUpload = ({
   setFile
