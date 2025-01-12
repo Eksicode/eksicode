@@ -14,7 +14,7 @@ interface sources {
 
 async function getData() {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/tags", {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/hashtags", {
       next: { revalidate: 43200 },
     });
     if (!res.ok) {
