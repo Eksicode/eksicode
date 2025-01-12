@@ -1,10 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-/* @import '../styles/header.css'; */
-/* @tailwind base;
+@tailwind base;
 @tailwind components;
-@tailwind utilities; */
+@tailwind utilities;
 @media (prefers-color-scheme: dark) {
   :root {
     --primary-color: #0b4f66; /* Dark */
@@ -26,7 +22,6 @@ body {
   box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%),
     0 1px 5px 0 rgb(0 0 0 / 20%);
 }
-
 .modal {
   transition: opacity 0.25s ease;
 }
@@ -37,8 +32,6 @@ body.modal-active {
 .opacity-95 {
   opacity: 0.95;
 }
-
 .ql-editor {
   min-height: 50vh;
 }
-
