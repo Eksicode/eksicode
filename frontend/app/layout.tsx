@@ -35,6 +35,7 @@ export default function RootLayout({
         }
       >
         <Providers>
+          <div className="bg-gray-100 text-black dark:text-white dark:bg-gray-900">
           <Nav />
           <div className="flex flex-wrap w-full justify-center pt-5">
             <div className="flex justify-center sm:basis-full md:basis-full lg:basis-full basis-3/4 sm:mx-2">
@@ -42,6 +43,7 @@ export default function RootLayout({
             </div>
           </div>
           <Footer />
+          </div>
         </Providers>
       </body>
     </html>

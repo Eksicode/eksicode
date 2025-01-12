@@ -1,16 +1,18 @@
 /** @type {import('tailwindcss').Config} */
-import type { Config } from "tailwindcss";
 
-const config: Config = {
+const colors = require('tailwindcss/colors')
+
+module.exports = {
   darkMode: 'class',
   content: [
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    './app/pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {},
     colors:{
+      ...colors,
       dark:'#000000',
       eksiContent: '#f5f5f5',
       eksiCodeLight: '#D6F9DD',
@@ -69,4 +71,3 @@ const config: Config = {
     require('tailwindcss-debug-screens'),
   ]
 }
-export default config;
