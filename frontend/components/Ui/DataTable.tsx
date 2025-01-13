@@ -34,21 +34,21 @@ const DataTable: React.FC<DataTableProps> = ({
   const renderActionCell = () => {
     if (onView || onEdit || onDelete) {
       return (
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="px-6 py-4 whitespace-nowrap flex gap-2">
           {onView && (
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               <div className="flex gap-2"><AiFillEye className="h-4 w-4" /> Görüntüle</div>
-            </th>
+            </div>
           )}
           {onEdit && (
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               <div className="flex gap-2"><AiFillEdit className="h-4 w-4" />Düzenle</div>
-            </th>
+            </div>
           )}
           {onDelete && (
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               <div className="flex gap-2"><AiFillDelete className="h-4 w-4" /> Sil</div>
-            </th>
+            </div>
           )}
         </td>
       );

@@ -1,14 +1,15 @@
 import React from "react";
 import DataTable from "@components/Ui/DataTable";
 import Navlink from "@components/Ui/NavLink";
+import getData from "@providers/getData";
 
 async function DashboardPages() {
-  // const pagesData = await getPages("");
+  const pagesData = await getData("pages", true, 10);
 
-  // const preparedData = pagesData.map((page) => ({
-  //   title: page.title,
-  //   page_category: page.page_category,
-  // }));
+  const preparedData = pagesData.data.map((page) => ({
+    id: page.id,
+    title: page.title
+  }));
 
   return (
     <>
@@ -22,12 +23,12 @@ async function DashboardPages() {
           </Navlink>
         </div>
       </div>
-      {/* <DataTable
+      <DataTable
         data={preparedData}
         onView={true}
         onEdit={true}
         onDelete={true}
-      /> */}
+      />
     </>
   );
 }
