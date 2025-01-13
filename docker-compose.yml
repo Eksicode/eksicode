@@ -20,8 +20,8 @@ services:
         aliases:
           - eksicode_nw
     depends_on:
-      - backend 
-      
+      - backend
+
   backend:
     container_name: eksicodeBackend
     build: 
@@ -37,7 +37,25 @@ services:
     networks:
       main:
         aliases:
-          - eksicode_nw
+          - backend  
+    command: sh -c "npm run build && npm run start" 
+
+  # backend:
+  #   container_name: eksicodeBackend
+  #   build: 
+  #     context: ./backend
+  #   working_dir: /app
+  #   ports:
+  #     - "9000:9000"
+  #   env_file:
+  #     - ./backend/.env
+  #   volumes:
+  #     - ./backend:/app
+  #     - /app/node_modules
+  #   networks:
+  #     main:
+  #       aliases:
+  #         - eksicode_nw
 
   # frontend:
   #   container_name: eksicodeFrontend
