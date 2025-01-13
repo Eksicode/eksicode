@@ -1,4 +1,27 @@
 services:
+  frontend:
+    container_name: eksicodeFrontend
+    build: 
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    environment:
+      - NEXT_STATIC_PAGE_GENERATION_TIMEOUT=180
+      - NODE_OPTIONS="--max-old-space-size=4096"
+    volumes:
+      - ./frontend:/app/
+      - /app/node_modules
+      - /app/.next
+    restart: on-failure
+    networks:
+      main:
+        aliases:
+          - eksicode_nw
+    depends_on:
+      - backend 
+      
   backend:
     container_name: eksicodeBackend
     build: 
@@ -16,24 +39,24 @@ services:
         aliases:
           - eksicode_nw
 
-  frontend:
-    container_name: eksicodeFrontend
-    build: 
-      context: ./frontend
-      # target: production
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./frontend/.env
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
-    restart: on-failure
-    networks:
-      main:
-        aliases:
-          - eksicode_nw
+  # frontend:
+  #   container_name: eksicodeFrontend
+  #   build: 
+  #     context: ./frontend
+  #     # target: production
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - ./frontend/.env
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #     - /app/.next
+  #   restart: on-failure
+  #   networks:
+  #     main:
+  #       aliases:
+  #         - eksicode_nw
 
   nginx:
     container_name: nginx
