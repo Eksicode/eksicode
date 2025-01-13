@@ -1,6 +1,8 @@
 FROM node:22
 
-COPY package.json ./
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
 
 COPY . ./
 
