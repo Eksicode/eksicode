@@ -10,7 +10,7 @@ services:
       - ./backend/.env
     volumes:
       - ./backend:/app
-      - app/node_modules
+      - /app/node_modules
     networks:
       main:
         aliases:
