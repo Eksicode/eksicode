@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-// import FileUpload from "@components/FileUpload";
+import FileUpload from "@components/FileUpload";
 import Button from "@components/Ui/Button";
+import TextEditor from "@components/TextEditor";
 
 interface Page {
   title: string;
@@ -134,7 +135,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
 
   return (
     <form onSubmit={handleClick} className="flex flex-wrap">
-      <div className="flex basis-1/2 flex-wrap pr-7 gap-1.5">
+      <div className="flex w-full flex-wrap pr-7 gap-1.5">
         <label htmlFor="title" className="text-sm font-medium flex basis-full">
           Başlık:
         </label>
@@ -144,7 +145,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
           name="title"
           value={page.title}
           onChange={handleChange}
-          className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 basis-full"
+          className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 basis-full bg-white"
         />
 
         <label htmlFor="slug" className="text-sm font-medium w-full">
@@ -156,7 +157,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
           name="slug"
           value={page.slug}
           onChange={handleChange}
-          className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
+          className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full bg-white"
         />
 
         <label htmlFor="page_category" className="text-sm font-medium w-full">
@@ -181,22 +182,22 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
         <label htmlFor="header_image" className="text-sm font-medium w-full">
           Header Image:
         </label>
-        {/* <FileUpload setFile={setFile} /> */}
+        <FileUpload setFile={setFile} />
         {file && <img src={URL.createObjectURL(file)} alt="Uploaded File" />}
-      </div>
-      <div className="flex basis-1/2 flex-col">
+
         <label htmlFor="content" className="text-sm font-medium">
           İçerik:
         </label>
-        <textarea
+        <TextEditor value={page.content} onChange={(value) => setPage((prevPage) => ({ ...prevPage, content: value }))} />
+        {/* <textarea
           id="content"
           name="content"
           value={page.content}
           onChange={handleChange}
           className="rounded-md border border-gray-300 p-2 h-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
+        /> */}
       </div>
-      <div className="flex justify-end basis-full mt-10">
+      <div className="flex justify-end w-full mt-10">
         <Button onClick={() => { }} type="submit" variant="primary" clasName="">
           Kaydet
         </Button>
