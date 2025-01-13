@@ -12,8 +12,9 @@ import UserMenu from "@components/Nav/UserMenu";
 import TelegramGroups from "@components/TelegramGroups";
 import Search from "@components/Search";
 import Navlink from "@components/Ui/NavLink";
-import MobileMenu from "./MobileMenu";
-import ThemeToggle from "@components/ThemeToggle";
+import MobileMenu from "@components/Nav/MobileMenu";
+import ThemeSwitch from "@components/Nav/ThemeSwitch";
+
 const Nav = () => {
   return (
     <nav className="flex flex-wrap w-full justify-center z-50  sticky top-0 nav-sahdow bg-white">
@@ -37,12 +38,11 @@ const Nav = () => {
         </div>
 
         <div className="flex items-center justify-end">
-          
           {/*  Desktop menu */}
           <div className="flex flex-nowrap text-center md:text-sm lg:text-sm">
             {/*  Theme Switcher */}
             <div className="mt-1 mr-4">
-              <ThemeToggle />
+              <ThemeSwitch />
             </div>
 
             <Navlink

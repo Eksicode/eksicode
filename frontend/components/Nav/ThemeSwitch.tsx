@@ -1,11 +1,10 @@
 "use client";
-
 import React from "react";
 import { useEffect, useState } from "react";
 import { FaMoon } from "react-icons/fa";
 import { BsSunFill } from "react-icons/bs";
 
-function ThemeToggle() {
+function ThemeSwitch() {
   const [darkMode, setdarkMode] = useState(true);
 
   useEffect(() => {
@@ -29,10 +28,10 @@ function ThemeToggle() {
 
   return (
     <>
-    <button 
-    title="Toggle Theme" 
-    onClick={() => setdarkMode(!darkMode)}
-    className="
+      <button
+        title="Toggle Theme"
+        onClick={() => setdarkMode(!darkMode)}
+        className="
         w-12 
         h-6 
         rounded-full
@@ -47,10 +46,12 @@ function ThemeToggle() {
         focus:ring-gray-700 
         dark:focus:ring-gray-600 
         focus:border-transparent
-      ">
+      "
+      >
         <FaMoon className="block absolute mt-0.5 text-white" size={12} />
-      <div id="toggle"
-        className="
+        <div
+          id="toggle"
+          className="
             rounded-full 
             w-4 
             h-4
@@ -64,11 +65,13 @@ function ThemeToggle() {
             transition-all 
             duration-300 
             ease-out
-        ">
-      </div>
-      <BsSunFill className="block absolute z-10 mt-1.5 mr-1 text-yellow-400 right-0 top-0" size={12} />
-
-</button>
+        "
+        ></div>
+        <BsSunFill
+          className="block absolute z-10 mt-1.5 mr-1 text-yellow-400 right-0 top-0"
+          size={12}
+        />
+      </button>
     </>
     // <div
     //   className="relative w-16 h-8 items-center dark:bg-gray-900 bg-teal-500 cursor-pointer rounded-full p-1"
@@ -84,4 +87,4 @@ function ThemeToggle() {
   );
 }
 
-export default ThemeToggle;
+export default ThemeSwitch;
