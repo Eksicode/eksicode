@@ -1,4 +1,21 @@
 services:
+  eksicodeBackend:
+    container_name: eksicodeBackend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - eksicode_nw
+      
   eksicodefrontend:
     container_name: eksicodeFrontend
     build: 
@@ -18,24 +35,7 @@ services:
     networks:
       - eksicode_nw
     depends_on:
-      - backend
-
-  eksicodeBackend:
-    container_name: eksicodeBackend
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    working_dir: /app
-    restart: unless-stopped
-    ports:
-      - "9000:9000"
-    env_file:
-      - ./backend/.env
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    networks:
-      - eksicode_nw
+      - eksicodeBackend
 
   nginx:
     container_name: aciksozlukNginx
