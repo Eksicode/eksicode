@@ -79,7 +79,7 @@ class App {
     };
 
     this.app.use(morgan("dev"));
-    this.app.use(cors(corsOptions));
+    // this.app.use(cors(corsOptions));
     // this.app.use(
     //   cors({
     //     origin: (origin, callback) => {
