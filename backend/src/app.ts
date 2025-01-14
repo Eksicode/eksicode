@@ -52,6 +52,7 @@ class App {
       "https://eksicode.org",
       "https://demo.eksicode.org",
       "https://demo-api.eksicode.org",
+      "https://api-demo.eksicode.org",
     ];
 
     this.app.use(morgan("dev"));
