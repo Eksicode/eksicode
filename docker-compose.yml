@@ -16,9 +16,7 @@ services:
       - /app/.next
     restart: on-failure
     networks:
-      main:
-        aliases:
-          - eksicode_nw
+      - eksicode_nw
     depends_on:
       - backend
 
@@ -35,46 +33,7 @@ services:
       - ./backend:/app
       - /app/node_modules
     networks:
-      main:
-        aliases:
-          - eksicode_nw  
-    command: sh -c "npm run build && npm run start" 
-
-  # backend:
-  #   container_name: eksicodeBackend
-  #   build: 
-  #     context: ./backend
-  #   working_dir: /app
-  #   ports:
-  #     - "9000:9000"
-  #   env_file:
-  #     - ./backend/.env
-  #   volumes:
-  #     - ./backend:/app
-  #     - /app/node_modules
-  #   networks:
-  #     main:
-  #       aliases:
-  #         - eksicode_nw
-
-  # frontend:
-  #   container_name: eksicodeFrontend
-  #   build: 
-  #     context: ./frontend
-  #     # target: production
-  #   ports:
-  #     - "3000:3000"
-  #   env_file:
-  #     - ./frontend/.env
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #     - /app/.next
-  #   restart: on-failure
-  #   networks:
-  #     main:
-  #       aliases:
-  #         - eksicode_nw
+      - eksicode_nw
 
   nginx:
     container_name: nginx
@@ -98,9 +57,7 @@ services:
       - backend
       - frontend
     networks:
-      main:
-        aliases:
-          - eksicode_nw
+      - eksicode_nw
 
 volumes:
   backend:
@@ -108,4 +65,4 @@ volumes:
   nginx:
 
 networks:
-  main:
+  eksicode_nw:
