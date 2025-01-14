@@ -55,33 +55,56 @@ class App {
       "https://api-demo.eksicode.org",
     ];
 
+    const corsOptions = {
+      origin: (origin, callback) => {
+        if (!origin || process.env.NODE_ENV === "development") {
+          return callback(null, true);
+        }
+        if (!origin || whitelist.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+      credentials: true, // Allow cookies and credentials
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: [
+        "Origin",
+        "X-Requested-With",
+        "Content-Type",
+        "Accept",
+        "Authorization"
+      ],
+      exposedHeaders: ["Access-Control-Allow-Origin"]
+    };
+
     this.app.use(morgan("dev"));
+    this.app.use(cors(corsOptions));
+    // this.app.use(
+    //   cors({
+    //     origin: (origin, callback) => {
+    //       if (!origin || process.env.NODE_ENV === "development") {
+    //         return callback(null, true);
+    //       }
 
-    this.app.use(
-      cors({
-        origin: (origin, callback) => {
-          if (!origin || process.env.NODE_ENV === "development") {
-            return callback(null, true);
-          }
-
-          if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-          } else {
-            callback(new Error(`Origin ${origin} not allowed by CORS`));
-          }
-        },
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: [
-          "Origin",
-          "X-Requested-With",
-          "Content-Type",
-          "Accept",
-          "Authorization"
-        ],
-        exposedHeaders: ["Access-Control-Allow-Origin"]
-      })
-    );
+    //       if (whitelist.indexOf(origin) !== -1) {
+    //         callback(null, true);
+    //       } else {
+    //         callback(new Error(`Origin ${origin} not allowed by CORS`));
+    //       }
+    //     },
+    //     credentials: true,
+    //     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    //     allowedHeaders: [
+    //       "Origin",
+    //       "X-Requested-With",
+    //       "Content-Type",
+    //       "Accept",
+    //       "Authorization"
+    //     ],
+    //     exposedHeaders: ["Access-Control-Allow-Origin"]
+    //   })
+    // );
 
     this.app.use(
       helmet({
