@@ -51,38 +51,48 @@ class App {
     const whitelist = ALLOWED_ORIGINS?.split(",") || [
       "https://eksicode.org",
       "https://demo.eksicode.org",
+      "https://demo-api.eksicode.org",
     ];
+
     this.app.use(morgan("dev"));
+
     this.app.use(
       cors({
-        origin: function (origin, callback) {
-          if (
-            !origin ||
-            process.env.NODE_ENV === "development" ||
-            whitelist.includes(origin)
-          ) {
+        origin: (origin, callback) => {
+          if (!origin || process.env.NODE_ENV === "development") {
+            return callback(null, true);
+          }
+
+          if (whitelist.indexOf(origin) !== -1) {
             callback(null, true);
           } else {
-            callback(new Error("Not allowed by CORS"));
+            callback(new Error(`Origin ${origin} not allowed by CORS`));
           }
         },
         credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: [
+          "Origin",
+          "X-Requested-With",
+          "Content-Type",
+          "Accept",
+          "Authorization"
+        ],
+        exposedHeaders: ["Access-Control-Allow-Origin"]
       })
     );
-    this.app.use(function (req, res, next) {
-      res.header("Access-Control-Allow-Credentials", "true");
-      res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
-      );
-      res.header("Cache-Control", "no-store,no-cache,must-revalidate");
-      next();
-    });
-    this.app.use(helmet());
+
+    this.app.use(
+      helmet({
+        crossOriginResourcePolicy: { policy: "cross-origin" },
+        crossOriginOpenerPolicy: { policy: "same-origin" }
+      })
+    );
+    
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+    this.app.options("*", cors());
   }
 
   private initializeRoutes(routes: Routes[]) {
