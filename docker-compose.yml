@@ -38,7 +38,7 @@ services:
       - backend
 
   nginx:
-    container_name: aciksozlukNginx
+    container_name: eksicodeNginx
     image: nginx
     environment:
       - TZ=Europe/Istanbul
