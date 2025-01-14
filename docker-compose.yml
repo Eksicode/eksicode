@@ -37,7 +37,7 @@ services:
     networks:
       main:
         aliases:
-          - backend  
+          - eksicode_nw  
     command: sh -c "npm run build && npm run start" 
 
   # backend:
