@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import helmet from "helmet";
+// import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
@@ -106,12 +106,12 @@ class App {
     //   })
     // );
 
-    this.app.use(
-      helmet({
-        crossOriginResourcePolicy: { policy: "cross-origin" },
-        crossOriginOpenerPolicy: { policy: "same-origin" }
-      })
-    );
+    // this.app.use(
+    //   helmet({
+    //     crossOriginResourcePolicy: { policy: "cross-origin" },
+    //     crossOriginOpenerPolicy: { policy: "same-origin" }
+    //   })
+    // );
     
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
