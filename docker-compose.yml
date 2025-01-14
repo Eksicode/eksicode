@@ -1,5 +1,5 @@
 services:
-  frontend:
+  eksicodefrontend:
     container_name: eksicodeFrontend
     build: 
       context: ./frontend
@@ -20,11 +20,13 @@ services:
     depends_on:
       - backend
 
-  backend:
+  eksicodeBackend:
     container_name: eksicodeBackend
-    build: 
+    build:
       context: ./backend
+      dockerfile: Dockerfile
     working_dir: /app
+    restart: unless-stopped
     ports:
       - "9000:9000"
     env_file:
@@ -36,7 +38,7 @@ services:
       - eksicode_nw
 
   nginx:
-    container_name: nginx
+    container_name: aciksozlukNginx
     image: nginx
     environment:
       - TZ=Europe/Istanbul
@@ -49,13 +51,10 @@ services:
       - ./nginx/cache/:/etc/nginx/cache/
       - ./nginx/eksicode.crt:/etc/nginx/eksicode.crt
       - ./nginx/eksicode.key:/etc/nginx/eksicode.key
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
-    volumes_from:
-      - backend
-      - frontend
     networks:
       - eksicode_nw
 
