@@ -1,5 +1,5 @@
 services:
-  eksicodeBackend:
+  backend:
     container_name: eksicodeBackend
     build:
       context: ./backend
@@ -16,7 +16,7 @@ services:
     networks:
       - eksicode_nw
       
-  eksicodefrontend:
+  frontend:
     container_name: eksicodeFrontend
     build: 
       context: ./frontend
@@ -35,7 +35,7 @@ services:
     networks:
       - eksicode_nw
     depends_on:
-      - eksicodeBackend
+      - backend
 
   nginx:
     container_name: aciksozlukNginx
