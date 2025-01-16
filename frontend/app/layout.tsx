@@ -26,7 +26,6 @@ export default function RootLayout({
   return (
     <html lang="tr" className="dark" suppressHydrationWarning>
       <GoogleAnalytics gaId="UA-143778720-1" />
-
       <body
         className={
           process.env.NODE_ENV === "development"
@@ -35,7 +34,7 @@ export default function RootLayout({
         }
       >
         <Providers>
-          <div className="bg-gray-100 text-black dark:text-white dark:bg-gray-900">
+          <div className="bg-gray-100 text-black dark:text-white dark:bg-green-800">
           <Nav />
           <div className="flex flex-wrap w-full justify-center pt-5">
             <div className="flex justify-center sm:basis-full md:basis-full lg:basis-full basis-3/4 sm:mx-2">
