@@ -1,4 +1,33 @@
 services:
+  frontend:
+    container_name: eksicodeFrontend
+    build: 
+      context: ./frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+        restart: true
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    environment:
+      - NEXT_STATIC_PAGE_GENERATION_TIMEOUT=180
+      - NODE_OPTIONS="--max-old-space-size=4096"
+    volumes:
+      - ./frontend:/app/
+      - /app/node_modules
+      - /app/.next
+    restart: on-failure
+    networks:
+      - eksicode_nw
+    healthcheck:
+      test: ["curl", "localhost:3000"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
   backend:
     container_name: eksicodeBackend
     build:
@@ -15,27 +44,12 @@ services:
       - /app/node_modules
     networks:
       - eksicode_nw
-      
-  frontend:
-    container_name: eksicodeFrontend
-    build: 
-      context: ./frontend
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./frontend/.env
-    environment:
-      - NEXT_STATIC_PAGE_GENERATION_TIMEOUT=180
-      - NODE_OPTIONS="--max-old-space-size=4096"
-    volumes:
-      - ./frontend:/app/
-      - /app/node_modules
-      - /app/.next
-    restart: on-failure
-    networks:
-      - eksicode_nw
-    depends_on:
-      - backend
+    healthcheck:
+      test: ["curl", "localhost:9000"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
   nginx:
     container_name: eksicodeNginx
@@ -57,6 +71,13 @@ services:
       - "443:443"
     networks:
       - eksicode_nw
+    depends_on:
+      backend:
+        condition: service_healthy
+        restart: true
+      frontend:
+        condition: service_healthy
+        restart: true
 
 volumes:
   backend:
