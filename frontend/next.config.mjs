@@ -8,6 +8,9 @@ const nextConfig = {
   experimental: {
     workerThreads: true,
     cpus: 4  // Adjust based on your system
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false
   }
 };
 
