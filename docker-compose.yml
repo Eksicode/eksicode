@@ -22,7 +22,7 @@ services:
     networks:
       - eksicode_nw
     healthcheck:
-      test: ["curl", "localhost:3000"]
+      test: ["cmd", "curl", "-f", "localhost:3000"]
       interval: 10s
       retries: 5
       start_period: 30s
