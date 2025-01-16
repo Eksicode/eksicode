@@ -2,7 +2,6 @@ import React from "react";
 import * as md from "react-icons/md";
 import * as Ai from "react-icons/ai";
 import Link from "next/link";
-import getData from "@providers/getData";
 
 interface Menu {
   id: number;
@@ -26,12 +25,23 @@ async function SideMenu() {
   // Fetch data directly in the server component
   let menu: Menu[] = [];
   try {
-    const fetchedMenu = await getData("menus", true);
-    menu = fetchedMenu.data.map((item) => ({
+    interface FetchedMenuItem {
+      id: number;
+      name: string;
+      link: string;
+      subMenu: number;
+      icon: string;
+    }
+    interface FetchedMenuResponse {
+      data: FetchedMenuItem[];
+    }
+
+    const response: FetchedMenuResponse = await fetch(process.env.NEXT_PUBLIC_API_URL + "/menus").then(res => res.json());
+    menu = response.data.map((item: FetchedMenuItem) => ({
       id: item.id,
       name: item.name,
-      icon: item.icon,
       link: item.link,
+      icon: item.icon,
       subMenu: item.subMenu,
     })) as Menu[];
   } catch (error) {
