@@ -38,6 +38,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
           link: item.link,
         })) as Group[];
         setFetchedGroups(groups);
+        console.log("Fetched telegram groups:", fetchedPosts);
       } catch (error) {
         console.error("Error fetching telegram groups:", error);
       } finally {
