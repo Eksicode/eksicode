@@ -22,7 +22,7 @@ services:
     networks:
       - eksicode_nw
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3000|| exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:3000"]
       interval: 10s
       retries: 5
       start_period: 30s
@@ -45,7 +45,7 @@ services:
     networks:
       - eksicode_nw
     healthcheck:
-      test: ["curl", "localhost:9000"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9000"]
       interval: 10s
       retries: 5
       start_period: 30s
