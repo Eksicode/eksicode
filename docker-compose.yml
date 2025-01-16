@@ -12,6 +12,7 @@ services:
     env_file:
       - ./frontend/.env
     environment:
+      - NEXT_PUBLIC_BACKEND_URL=https://api-demo.eksicode.org
       - NEXT_STATIC_PAGE_GENERATION_TIMEOUT=180
       - NODE_OPTIONS="--max-old-space-size=4096"
     volumes:
