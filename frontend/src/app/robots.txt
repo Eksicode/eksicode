@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /auth/
+Sitemap: https://eksicode.org.com/sitemap.xml
