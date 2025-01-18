@@ -1,19 +1,29 @@
-FROM node:22
-# RUN apk add --no-cache g++ make py3-pip libc6-compat
+FROM node:22-alpine
+
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
+# Install necessary build dependencies
+RUN apk add --no-cache curl
 
-COPY . ./
+# Copy package files
+COPY package*.json ./
 
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Install sharp specifically
 RUN npm i sharp
 
-USER root
-
-RUN npm install 
-
+# Build the application
 RUN npm run build
 
 EXPOSE 3000
 
-CMD npm run start
+# Add a health check script
+COPY healthcheck.sh /healthcheck.sh
+RUN chmod +x /healthcheck.sh
+
+CMD ["npm", "run", "start"]
