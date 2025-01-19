@@ -10,6 +10,10 @@ interface Data {
     limit?: number,
     pageSize?: number,
     page?: number,
+    options: {
+      cache?: RequestCache; // no-store, no-cache, must-revalidate, proxy-revalidate
+      next?: { revalidate: number };
+    } = { cache: 'no-store', next: { revalidate: 0 } }
     // cache: RequestCache = "no-store",
   ): Promise<{ data: Data[]; meta: Meta[] }> {
     try {
@@ -24,8 +28,13 @@ interface Data {
         ...(page !== undefined && { page: String(page) }),
         ...(pageSize !== undefined && { pageSize: String(pageSize) }),
       });
+
+      console.log("queryParams", queryParams)
   
-      const response = await fetch(`${apiUrl}/${endPoint}?${queryParams.toString()}`);
+      const response = await fetch(`${apiUrl}/${endPoint}?${queryParams.toString()}`, {
+        cache: options.cache,
+        next: options.next
+      });
   
       if (!response.ok) {
         console.error(
