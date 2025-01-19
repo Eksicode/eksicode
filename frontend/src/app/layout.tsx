@@ -29,7 +29,7 @@ export default function RootLayout({
         <Providers>
           <div className="bg-gray-100 text-black dark:text-white dark:bg-green-800">
             <Nav />
-            <div className="flex flex-wrap w-full justify-center pt-5">
+            <div className="flex flex-wrap w-full justify-center">
               {children}
             </div>
             <Footer />

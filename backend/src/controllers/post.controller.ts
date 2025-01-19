@@ -46,6 +46,20 @@ class PostController {
     }
   };
 
+  public getPostsBySearch = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const term = req.params.term;
+      const post = await this.postService.searchPost(term);
+      if (!post) {
+        res.status(404).json({ message: "Post not found" });
+      } else {
+        res.status(200).json(post);
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
   public createPost = async (req: Request, res: Response): Promise<void> => {
     try {
       const post = await this.postService.createPost(req.body);

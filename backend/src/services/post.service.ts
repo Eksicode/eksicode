@@ -1,4 +1,7 @@
 import { PrismaClient, Post, Prisma } from "@prisma/client";
+import { isEmpty } from "../utils/util";
+import { HttpException } from "../exceptions/HttpException";
+import { IPost } from "../interfaces/post.interface";
 
 class PostService {
   private prisma: PrismaClient;
@@ -53,14 +56,65 @@ class PostService {
     return { posts, count };
   }
 
+  // Search post by term
+  public async searchPost(term: string): Promise<IPost[]> {
+    if (isEmpty(term)) throw new HttpException(400, "Search term is empty");
+    const decodedTerm = decodeURIComponent(term);
+    console.log("Search term after decoding:", decodedTerm);
+    try {
+      const decodedTerm = decodeURIComponent(term);
+      console.log("Search term after decoding:", decodedTerm);
+
+      const posts = await this.prisma.post.findMany({
+        where: {
+          OR: [
+            {
+              title: {
+                contains: decodedTerm,
+                mode: "insensitive",
+              },
+            },
+            {
+              content: {
+                contains: decodedTerm,
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+        include: {
+          author: true,
+          postLikes: true,
+          comments: {
+            include: {
+              author: true, // Include author to get userId
+            },
+          },
+          categories: true,
+          tags: true,
+        },
+      });
+
+      // Transform Prisma types to match IPost interface
+      return posts.map((post) => ({
+        ...post,
+        comments: post.comments.map((comment) => ({
+          ...comment,
+          userId: comment.author.id, // Map authorId to userId
+        })),
+      })) as IPost[];
+    } catch (error) {
+      console.error("Error searching posts:", error);
+      throw new HttpException(500, "Error searching posts");
+    }
+  }
+
   /**
    * Fetch a specific post by its ID.
    * @param id - The ID of the post.
    * @returns The post if found, or null if not.
    */
-  public async getPostById(
-    id: number
-  ): Promise<Post | null> {
+  public async getPostById(id: number): Promise<Post | null> {
     try {
       return await this.prisma.post.findUnique({
         where: { id },
@@ -71,32 +125,28 @@ class PostService {
     }
   }
 
-    /**
+  /**
    * Fetch a specific post by its slug.
    * @param slug - The slug of the post.
    * @returns The post if found, or null if not.
    */
-    public async getPostBySlug(
-        slug: string
-      ): Promise<Post | null> {
-        try {
-          return await this.prisma.post.findUnique({
-            where: { slug },
-          });
-        } catch (error) {
-          console.error(`Error fetching post with ID ${slug}:`, error);
-          throw new Error("Unable to fetch post.");
-        }
-      }
+  public async getPostBySlug(slug: string): Promise<Post | null> {
+    try {
+      return await this.prisma.post.findUnique({
+        where: { slug },
+      });
+    } catch (error) {
+      console.error(`Error fetching post with ID ${slug}:`, error);
+      throw new Error("Unable to fetch post.");
+    }
+  }
 
   /**
    * Create a new post.
    * @param data - The data for the new post.
    * @returns The created post.
    */
-  public async createPost(
-    data: Prisma.PostCreateInput
-  ): Promise<Post> {
+  public async createPost(data: Prisma.PostCreateInput): Promise<Post> {
     try {
       return await this.prisma.post.create({ data });
     } catch (error) {

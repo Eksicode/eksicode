@@ -1,8 +1,11 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import * as md from "react-icons/md";
 import * as Ai from "react-icons/ai";
 import Link from "next/link";
 import getData from "@/utils/getData";
+import LoadingAnimation from "@/components/Ui/LoadingAnimation";
 
 interface Menu {
   id: number;
@@ -22,29 +25,61 @@ const getIconComponent = (iconName: string): React.ComponentType | null => {
   return IconComponent || null;
 };
 
-async function SideMenu() {
-  // Fetch data directly in the server component
-  let menu: Menu[] = [];
-  try {
-    const fetchedMenu = await getData("menus", true);
-    menu = fetchedMenu.data.map((item) => ({
-      id: item.id,
-      name: item.name,
-      icon: item.icon,
-      link: item.link,
-      subMenu: item.subMenu,
-    })) as Menu[];
-  } catch (error) {
-    console.error("Error fetching telegram groups:", error);
+function SideMenu() {
+  const [menu, setMenu] = useState<Menu[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const fetchedMenu = await getData("menus", true);
+        const formattedMenu = fetchedMenu.data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          icon: item.icon,
+          link: item.link,
+          subMenu: item.subMenu,
+        }));
+        setMenu(formattedMenu);
+      } catch (error) {
+        console.error("Error fetching menu:", error);
+        setError("Menu yüklenirken bir hata oluştu");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMenu();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <aside className="w-64 sm:hidden" aria-label="Sidebar">
+        <div className="overflow-y-auto flex justify-center w-64 py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border ">
+          <LoadingAnimation />
+        </div>
+      </aside>
+    );
+  }
+
+  if (error) {
+    return (
+      <aside className="w-64 sm:hidden" aria-label="Sidebar">
+        <div className="overflow-y-auto w-64 py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
+          <span className="text-sm font-semibold text-gray-500">{error}</span>
+        </div>
+      </aside>
+    );
   }
 
   return (
     <aside className="w-64 sm:hidden" aria-label="Sidebar">
-      <div className="overflow-y-auto w-64 py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border fixed">
+      <div className="overflow-y-auto w-64 py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
         <ul className="space-y-2">
-          {menu && menu.length < 0 && (
+          {menu.length === 0 && (
             <span className="text-sm font-semibold text-gray-500">
-              Hata oluştu
+              Menü bulunamadı
             </span>
           )}
           {menu.map((item) => {

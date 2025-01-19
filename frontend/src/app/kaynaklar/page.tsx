@@ -34,7 +34,7 @@ export default async function Tags() {
   // }));
 
   return (
-    <>
+    <div className="flex py-5 md:basis-3/4">
       <div className="flex w-1/3">
         <SideMenu />
       </div>
@@ -52,6 +52,6 @@ export default async function Tags() {
       /> */}
         </div>
       </div>
-    </>
+    </div>
   );
 }
