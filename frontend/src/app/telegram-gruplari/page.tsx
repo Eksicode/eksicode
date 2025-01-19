@@ -5,10 +5,11 @@ import SideMenu from "@/components/Nav/SideMenu";
 import getData from "@/utils/getData";
 
 async function Groups() {
-  const groups = await getData("telegrams", false);
+  const groups = await getData("telegrams", false, 100, 100, 1, { cache: "reload" });
+  console.log("groups", groups)
   return (
     <div className="flex py-5 basis-3/4">
-      <div className="flex">
+      <div className="flex"> 
         <SideMenu />
       </div>
       <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
