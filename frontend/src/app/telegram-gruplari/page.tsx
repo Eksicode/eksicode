@@ -5,9 +5,9 @@ import SideMenu from "@/components/Nav/SideMenu";
 import getData from "@/utils/getData";
 
 async function Groups() {
-  const groups = await getData("telegrams", false );
+  const groups = await getData("telegrams", false);
   return (
-    <>
+    <div className="flex py-5 basis-3/4">
       <div className="flex">
         <SideMenu />
       </div>
@@ -55,12 +55,19 @@ async function Groups() {
         </div>
 
         <div className="flex flex-wrap w-full justify-between sm:mx-2">
-           {groups.data.map((group) => (
-            <TelegramGroupCard key={group.id} id={group.id} name={group.name} icon={group.icon} members={group.members} link={group.link}/>
+          {groups.data.map((group) => (
+            <TelegramGroupCard
+              key={group.id}
+              id={group.id}
+              name={group.name}
+              icon={group.icon}
+              members={group.members}
+              link={group.link}
+            />
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

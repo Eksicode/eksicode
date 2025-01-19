@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import SideMenu from "@/components/Nav/SideMenu";
 import { notFound } from "next/navigation";
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
 interface PageData {
   page: string;
@@ -19,15 +19,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   return {
     title: `${params.page} - EksiCode`,
-  }
+  };
 }
 
 // Use the correct parameter typing for the page component
-export default async function Page({
-  params,
-}: {
-  params: { page: string };
-}) {
+export default async function Page({ params }: { params: { page: string } }) {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/pages/${params.page}`,
@@ -41,11 +37,11 @@ export default async function Page({
     const pageData: PageData = await response.json();
 
     return (
-      <>
+      <div className="flex py-5 md:basis-3/4">
         <div className="flex">
           <SideMenu />
         </div>
-        <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-left">
+        <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
           <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
             <h1 className="w-full text-3xl text-bold mb-4 text-center">
               {pageData.title}
@@ -61,7 +57,7 @@ export default async function Page({
             <div dangerouslySetInnerHTML={{ __html: pageData.content }}></div>
           </div>
         </div>
-      </>
+      </div>
     );
   } catch (error) {
     console.error(error);
