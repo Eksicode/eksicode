@@ -3,6 +3,7 @@ import Link from "next/link";
 import TelegramGroupCard from "@/components/TelegramGroupCard";
 import SideMenu from "@/components/Nav/SideMenu";
 import getData from "@/utils/getData";
+export const dynamic = 'force-dynamic'
 
 async function Groups() {
   const groups = await getData("telegrams", false, 100, 100, 1, { cache: "reload" });
