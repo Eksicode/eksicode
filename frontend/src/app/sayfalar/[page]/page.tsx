@@ -37,7 +37,7 @@ export default async function Page({ params }: { params: { page: string } }) {
     const pageData: PageData = await response.json();
 
     return (
-      <div className="flex py-5 md:basis-3/4">
+      <div className="flex py-5 basis-3/4">
         <div className="flex">
           <SideMenu />
         </div>
