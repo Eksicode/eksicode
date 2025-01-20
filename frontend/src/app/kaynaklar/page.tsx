@@ -34,14 +34,11 @@ export default async function Tags() {
   // }));
 
   return (
-    <div className="flex py-5 md:basis-3/4">
-      <div className="flex w-1/3">
-        <SideMenu />
-      </div>
-
-      <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-left">
+    <div className="flex py-5 basis-3/4">
+      <SideMenu />
+      <div className="flex flex-wrap w-full justify-center text-left">
         <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
-          <h1 className="flex basis-1/2 text-3xl text-bold text-left">
+          <h1 className="flex text-3xl text-bold text-left">
             Kaynaklar
           </h1>
           {/* <DataTable

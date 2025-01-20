@@ -35,11 +35,11 @@ export default async function Tags() {
   const tags = await getData();
 
   return (
-    <div className="flex py-5 md:basis-3/4">
+    <div className="flex py-5 basis-3/4">
       <div className="flex">
         <SideMenu />
       </div>
-      <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
+      <div className="flex flex-wrap w-full justify-center text-center">
         <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
           <div className="flex basis-1/2 text-3xl text-bold text-left">
             Etiketler
@@ -56,7 +56,7 @@ export default async function Tags() {
           </div>
         </div>
 
-        <div className="flex flex-wrap w-full justify-between sm:mx-2">
+        <div className="flex flex-wrap w-full justify-between mx-0 sm:mx-2">
           {tags.data?.map((tag: Tag) => (
             <TagsCard key={tag.id} {...tag} />
           ))}
