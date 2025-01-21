@@ -2,7 +2,7 @@ import Image from "next/image";
 import SideMenu from "@/components/Nav/SideMenu";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 import { BiBookmarkAltPlus } from "react-icons/bi";
-import Post from "@/components/PostCard";
+// import Post from "@/components/PostCard";
 import Navlink from "@/components/Ui/NavLink";
 import Pagination from "@/components/Ui/Pagination";
 import ppImage from "@/public/assets/pp-image.png";
@@ -38,7 +38,7 @@ const Page = () => {
             En Beğenilenler
           </Navlink>
         </div>
-        <Post />
+        {/* <Post /> */}
         <div className="py-4 w-full px-1 mb-3 bg-white rounded-lg border-gray-300 border">
           <div className="flex flex-wrap sm:basis-full basis-3/4 mx-3 sm:mx-2 justify-between">
             <div className="flex items-center space-x-4 content-start">

@@ -2,7 +2,22 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { telegramGroupsData } from "./telegramGroupsData";
 import { menuItems } from "./menuItemsData";
-import { pageCategories, pages } from './pagesData';
+import { pageCategories, pages } from "./pagesData";
+import { posts } from "./postsData";
+
+async function cleanDatabase() {
+  console.log("Cleaning database...");
+  await prisma.postLike.deleteMany({});
+  await prisma.comment.deleteMany({});
+  await prisma.post.deleteMany({});
+  await prisma.user.deleteMany({});
+  await prisma.hashTag.deleteMany({});
+  await prisma.postCategory.deleteMany({});
+  await prisma.menu.deleteMany({});
+  await prisma.menuCategory.deleteMany({});
+  await prisma.role.deleteMany({});
+  await prisma.permission.deleteMany({});
+}
 
 async function seedPermissions() {
   console.log("Seeding permissions...");
@@ -25,7 +40,7 @@ async function seedRoles(permissions) {
     update: {
       description: "Administrator with full access",
       permissions: {
-        set: [], // Clear existing permissions
+        set: [],
         create: [
           { permissionId: permissions.createPost.id },
           { permissionId: permissions.deletePost.id },
@@ -49,7 +64,7 @@ async function seedRoles(permissions) {
     update: {
       description: "Editor with limited access",
       permissions: {
-        set: [], // Clear existing permissions
+        set: [],
         create: [{ permissionId: permissions.createPost.id }],
       },
     },
@@ -68,174 +83,187 @@ async function seedRoles(permissions) {
 async function seedUsers(roles) {
   console.log("Seeding users...");
 
-  await prisma.user.upsert({
-    where: { email: "admin@example.com" },
-    update: {
-      username: "admin",
-      roles: {
-        set: [], // Clear existing roles
-        create: [{ roleId: roles.adminRole.id }],
-      },
-    },
-    create: {
+  const users = [
+    {
       email: "admin@example.com",
-      password: "eksicode2025**",
       username: "admin",
-      roles: {
-        create: [{ roleId: roles.adminRole.id }],
-      },
-    },
-  });
-
-  await prisma.user.upsert({
-    where: { email: "mkltkn@gmail.com" },
-    update: {
-      username: "mkltkn",
-      roles: {
-        set: [], // Clear existing roles
-        create: [{ roleId: roles.userRole.id }],
-      },
-    },
-    create: {
-      email: "mkltkn@gmail.com",
       password: "eksicode2025**",
-      username: "mkltkn",
-      roles: {
-        create: [{ roleId: roles.userRole.id }],
-      },
+      roleId: roles.adminRole.id,
     },
-  });
+    {
+      email: "mkltkn@gmail.com",
+      username: "mkltkn",
+      password: "eksicode2025**",
+      roleId: roles.userRole.id,
+    },
+    {
+      email: "john@example.com",
+      username: "John Doe",
+      password: "defaultpassword",
+      profilePicture: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+    },
+    {
+      email: "jane@example.com",
+      username: "Jane Smith",
+      password: "defaultpassword",
+      profilePicture: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane",
+    },
+  ];
 
-  console.log("Users seeded successfully.");
+  for (const user of users) {
+    const { roleId, ...userData } = user;
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: { 
+        username: user.username,
+        ...(roleId && {
+          roles: {
+            set: [],  // Clear existing roles
+            create: [{ roleId }]
+          }
+        })
+      },
+      create: {
+        ...userData,
+        roles: roleId ? {
+          create: [{ roleId }]
+        } : undefined
+      },
+    });
+  }
 }
 
 async function seedTelegramGroups() {
   console.log("Seeding telegram groups...");
   for (const group of telegramGroupsData) {
+    const { channel_id, list_order, logo, ...groupData } = group;
     await prisma.telegramGroup.upsert({
-      where: { id: group.id },
+      where: { name: group.name },
       update: {},
       create: {
-        id: group.id,
-        name: group.name,
-        icon: group.logo,
-        members: group.members,
-        link: group.link,
-        channelId: group.channel_id,
-        listOrder: group.list_order,
-        description: group.description,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        ...groupData,
+        channelId: channel_id,
+        listOrder: list_order,
+        icon: logo,
       },
     });
   }
 }
 
-async function seedMenuCategories() {
-  console.log("Seeding menu categories...");
+async function seedMenuCategoriesAndItems() {
+  console.log("Seeding menu categories and items...");
+  
+  // Create a map to store category name -> id mapping
+  const categoryMap = new Map();
+  
+  // Create categories and store their IDs
+  const categories = await Promise.all(
+    ["main-menu", "footer-menu"].map(async (name) => {
+      const category = await prisma.menuCategory.upsert({
+        where: { name },
+        create: { name },
+        update: {}
+      });
+      categoryMap.set(name, category.id);
+      return category;
+    })
+  );
 
-  const mainMenuCategory = await prisma.menuCategory.create({
-    data: {
-      name: "main-menu",
-    },
-  });
-
-  const footerMenuCategory = await prisma.menuCategory.create({
-    data: {
-      name: "footer-menu",
-    },
-  });
-
-  return { mainMenuCategory, footerMenuCategory };
-}
-
-async function seedMenus(menuCategory) {
-  console.log("Seeding menus...");
   for (const menuItem of menuItems) {
-    const { categories, id, ...menuItemData } = menuItem;
+    const { categories: categoryNames, id, ...menuItemData } = menuItem;
+    
+    // Get category IDs from the map
+    const categoryIds = categoryNames.map(name => categoryMap.get(String(name)))
+                                   .filter(id => id !== undefined);
     
     await prisma.menu.upsert({
-      where: {
-        id: id || -1  // Use -1 as fallback if id doesn't exist
-      },
-      update: {
-        ...menuItemData,
-        categories: {
-          connect: [{ id: menuCategory.id }]
-        },
-      },
+      where: { id: id || -1 },
+      update: menuItemData,
       create: {
         ...menuItemData,
         categories: {
-          connect: [{ id: menuCategory.id }]
-        },
+          connect: categoryIds.map(categoryId => ({ id: categoryId }))
+        }
       }
     });
   }
 }
 
-async function seedPageCategories() {
-  console.log('Seeding categories...');
-  for (const pageCategory of pageCategories) {
+async function seedPageCategoriesAndPages() {
+  console.log("Seeding page categories and pages...");
+  for (const category of pageCategories) {
     await prisma.pageCategory.upsert({
-      where: { name: pageCategory.name },
+      where: { name: category.name },
       update: {},
-      create: pageCategory,
+      create: category,
     });
   }
-}
 
-async function seedPages() {
-  console.log('Seeding pages...');
   for (const page of pages) {
     const { categories, ...pageData } = page;
-    
     await prisma.page.upsert({
-      where: {
-        slug: pageData.slug
-      },
-      update: {
-        ...pageData,
-        categories: {
-          set: [], // Clear existing categories first
-          connectOrCreate: categories.map((name) => ({
-            where: { name },
-            create: { name }
-          }))
-        }
-      },
-      create: {
-        ...pageData,
-        categories: {
-          connectOrCreate: categories.map((name) => ({
-            where: { name },
-            create: { name }
-          }))
-        }
-      }
+      where: { slug: pageData.slug },
+      update: pageData,
+      create: { ...pageData, categories: { connect: categories.map((name) => ({ name })) } },
     });
   }
 }
+
+async function seedPostCategoriesAndTags() {
+  console.log("Seeding post categories and tags...");
+  const categories = await Promise.all(
+    ["Technology", "Programming", "Web Development", "Data Science"].map((name) =>
+      prisma.postCategory.create({ data: { name } })
+    )
+  );
+
+  const tags = await Promise.all(
+    ["javascript", "react", "nextjs", "typescript", "prisma", "database"].map((name) =>
+      prisma.hashTag.create({ data: { name } })
+    )
+  );
+
+  return { categories, tags };
+}
+
+async function seedPosts(users, categories, tags) {
+  console.log("Seeding posts...");
+
+  for (const post of posts) {
+    const { authorIndex, tagIndices, categoryIndices, ...postData } = post;
+    
+    await prisma.post.create({
+      data: {
+        ...postData,
+        slug: post.title.toLowerCase().replace(/ /g, "-"),
+        author: {
+          connect: { id: users[authorIndex].id }
+        },
+        categories: {
+          connect: categoryIndices.map(index => ({ id: categories[index].id }))
+        },
+        tags: {
+          connect: tagIndices.map(index => ({ id: tags[index].id }))
+        }
+      },
+    });
+  }
+}
+
 async function main() {
   try {
-    console.log("Deleting existing data...");
-    // Delete in correct order to respect foreign keys
-    await prisma.menu.deleteMany({});
-    await prisma.menuCategory.deleteMany({});
-    await prisma.user.deleteMany({});
-    await prisma.role.deleteMany({});
-    await prisma.permission.deleteMany({});
+    await cleanDatabase();
 
     const permissions = await seedPermissions();
     const roles = await seedRoles(permissions);
     await seedUsers(roles);
     await seedTelegramGroups();
-    await seedPageCategories();
-    await seedPages();
+    await seedMenuCategoriesAndItems();
+    await seedPageCategoriesAndPages();
 
-    const { footerMenuCategory, mainMenuCategory } = await seedMenuCategories();
-    await seedMenus(mainMenuCategory);
-    await seedMenus(footerMenuCategory);
+    const { categories, tags } = await seedPostCategoriesAndTags();
+    const users = await prisma.user.findMany();
+    await seedPosts(users, categories, tags);
 
     console.log("Seeding completed successfully.");
   } catch (error) {
