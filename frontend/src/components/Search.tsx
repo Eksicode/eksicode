@@ -1,23 +1,46 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 
-interface Props {
-  text: string;
+interface SearchFormProps {
+  initialTerm?: string;
 }
 
-const Search: React.FC<Props> = ({ text }) => {
+const Search: React.FC<SearchFormProps> = ({
+  initialTerm = "",
+}: SearchFormProps) => {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState(initialTerm);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/arama?q=${encodeURIComponent(searchTerm)}`);
+    }
+    setSearchTerm("");
+  };
+
   return (
-    <div className="relative text-gray-600 w-full">
+    <form onSubmit={handleSubmit} className="relative text-gray-600 w-full">
       <input
+        type="search"
+        placeholder="Gönderi, yazar, etiket ara..."
         className="border w-full border-gray-300 bg-white h-10 pl-2 pr-8 focus:ring-eksiCode focus:border-eksiCode rounded-lg text-sm focus:outline-none"
         name="search"
-        placeholder={text}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
         required
       />
-      <button type="submit" className="absolute right-0 top-0 w-8 h-10">
+      <button
+        type="submit"
+        onKeyDown={handleSubmit}
+        className="absolute right-0 top-0 w-8 h-10"
+      >
         <AiOutlineSearch />
       </button>
-    </div>
+    </form>
   );
 };
 
