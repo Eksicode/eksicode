@@ -33,7 +33,7 @@ const Nav = () => {
         </div>
 
         <div className="flex justify-center w-1/4 sm:w-1/2">
-          <Search text="Başlık Ara..." />
+          <Search />
         </div>
 
         <div className="flex items-center justify-end">
