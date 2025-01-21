@@ -52,7 +52,7 @@ export default async function Tags() {
             <button className="mx-2 p-2 w-full border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
               Gizli Etiketler
             </button>
-            <Search text="Etiket ara" />
+            <Search />
           </div>
         </div>
 
