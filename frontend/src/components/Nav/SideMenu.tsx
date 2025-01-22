@@ -50,7 +50,7 @@ async function SideMenu() {
   } catch (error) {
     return (
       <aside className="w-64 sm:hidden" aria-label="Sidebar">
-        <div className="overflow-y-auto w-64 py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
+        <div className="overflow-y-auto w-64 py-4 px-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
           <span className="text-sm font-semibold text-gray-500">
             Menu yüklenirken bir hata oluştu
           </span>
@@ -61,7 +61,7 @@ async function SideMenu() {
 
   return (
     <aside className="w-64 sm:hidden" aria-label="Sidebar">
-      <div className="overflow-y-auto min-h-96 w-64 py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
+      <div className="overflow-y-auto min-h-96 w-64 py-4 px-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
         <ul className="space-y-2">
           {menu.length === 0 && (
             <span className="text-sm font-semibold text-gray-500">
@@ -74,7 +74,7 @@ async function SideMenu() {
               <li key={item.id}>
                 <Link
                   href={item.link}
-                  className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
+                  className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey"
                 >
                   {IconComponent && (
                     <IconComponent

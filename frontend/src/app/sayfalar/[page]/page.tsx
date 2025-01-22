@@ -42,7 +42,7 @@ export default async function Page({ params }: { params: { page: string } }) {
           <SideMenu />
         </div>
         <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
-          <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
+          <div className="flex flex-wrap justify-center w-full mx-2 p-4 rounded-lg border bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey">
             <h1 className="w-full text-3xl text-bold mb-4 text-center">
               {pageData.title}
             </h1>
