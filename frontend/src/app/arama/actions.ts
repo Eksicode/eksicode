@@ -4,18 +4,11 @@ import { IPost } from "@/types/types";
 
 export async function searchPosts(term: string): Promise<IPost[]> {
   if (!term.trim()) return [];
-
+  const query = encodeURIComponent(term.toLowerCase());
   try {
+    
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/posts/search/${encodeURIComponent(
-        term
-      )}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      `${process.env.NEXT_PUBLIC_API_URL}/posts/search/${query}`
     );
 
     if (!response.ok) {
@@ -23,6 +16,7 @@ export async function searchPosts(term: string): Promise<IPost[]> {
     }
 
     return response.json();
+
   } catch (error) {
     console.error("Error searching posts:", error);
     throw new Error("Failed to search posts");
