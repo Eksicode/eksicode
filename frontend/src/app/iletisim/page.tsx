@@ -5,7 +5,7 @@ import SideMenu from "@/components/Nav/SideMenu";
 function page() {
   return (
     <>
-      <div className="flex basis-3/4 pt-10">
+      <div className="flex basis-3/4 py-5">
         <div className="flex">
           <SideMenu />
         </div>

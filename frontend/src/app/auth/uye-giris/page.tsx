@@ -5,7 +5,7 @@ import LoginForm from "@/components/Auth/LoginForm";
 
 const Login: NextPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center py-5">
       <Head>
         <title>Ekşicode - Üye Girişi</title>
         <meta
