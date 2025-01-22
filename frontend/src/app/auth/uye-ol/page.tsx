@@ -13,7 +13,7 @@ const Home: NextPage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center py-5">
       <Head>
         <title>Ekşicode - Yeni üye</title>
         <meta

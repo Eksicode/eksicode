@@ -31,7 +31,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-      <div className="w-full bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6">
+      <div className="w-full bg-white px-6 py-6 border border-gray-300 rounded-lg">
         <div className="mb-10 text-center">
           <h1 className="mb-2 text-xl">Kullanıcı Girişi</h1>
           <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
