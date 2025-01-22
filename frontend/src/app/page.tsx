@@ -169,12 +169,12 @@ const Page = () => {
           </div>
         </div>
 
-        <Pagination activePage={1} totalPages={10} />
+        <Pagination activePage={4} totalPages={10} />
       </div>
 
       <div className="flex w-3/12 sm:hidden md:hidden">
         <aside className="w-full" aria-label="Sidebar-right">
-          <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
+          <div className="overflow-y-auto py-4 px-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
             <span className="w-full flex">
               <h1 className="text-lg font-bold">
                 Ekşicode Yazılımcı Geliştirme Topluluğu

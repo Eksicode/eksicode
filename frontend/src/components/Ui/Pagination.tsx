@@ -17,7 +17,7 @@ const Pagination: React.FC<PaginationProps> = ({
   activePage,
   totalPages
 }: PaginationProps) => {
-  const generatePageLink = (page: number) => `/posts?page=${page}`;
+  const generatePageLink = (page: number) => `/?page=${page}`;
 
   const currentPage: number = Number(activePage);
 

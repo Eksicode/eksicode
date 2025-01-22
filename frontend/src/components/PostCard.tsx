@@ -34,7 +34,7 @@ export function PostCard({ post, onLike, onComment, onSave }: PostCardProps) {
 
   return (
     <>
-      <div className="py-4 w-full px-1 mb-3 bg-white rounded-lg border-gray-300 border">
+      <div className="py-4 w-full px-1 mb-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
         <div className="flex flex-wrap sm:basis-full basis-3/4 mx-3 sm:mx-2 justify-between">
           <div className="flex items-center space-x-4 content-start">
             <Image
@@ -56,9 +56,9 @@ export function PostCard({ post, onLike, onComment, onSave }: PostCardProps) {
             </div>
           </div>
           <div className="w-full ml-14">
-            <span className="text-2xl my-2 font-bold">
+            <h2 className="text-2xl my-2 font-bold">
               <a href={`/posts/${id}`}>{title}</a>
-            </span>
+            </h2>
             <div>
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
