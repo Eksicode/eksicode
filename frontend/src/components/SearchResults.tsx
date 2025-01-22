@@ -30,9 +30,6 @@ export function SearchResults({ searchTerm }: { searchTerm: string }) {
         <div className="text-center py-8 text-red-500">
           Sonuçlar yüklenirken hata oluştu...
         </div>
-        <div className="text-center text-sm py-8 text-red-500">
-          {error && error.message}
-        </div>
       </>
     );
   }

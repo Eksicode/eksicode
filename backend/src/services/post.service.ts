@@ -65,7 +65,7 @@ class PostService {
       const decodedTerm = decodeURIComponent(term);
       console.log("Search term after decoding:", decodedTerm);
 
-      const posts = await this.prisma.post.findMany({
+      let posts = await this.prisma.post.findMany({
         where: {
           OR: [
             {
@@ -94,6 +94,10 @@ class PostService {
           tags: true,
         },
       });
+
+      if (posts.length <= 1) {
+        posts = [];
+      }
 
       // Transform Prisma types to match IPost interface
       return posts.map((post) => ({
