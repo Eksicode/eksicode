@@ -27,7 +27,7 @@ const Search: React.FC<SearchFormProps> = ({
       <input
         type="search"
         placeholder="Gönderi, yazar, etiket ara..."
-        className="border w-full border-gray-300 bg-white h-10 pl-2 pr-8 focus:ring-eksiCode focus:border-eksiCode rounded-lg text-sm focus:outline-none"
+        className="border w-full border-gray-500 bg-white dark:bg-gray-300 dark:placeholder:text-dark h-10 pl-2 pr-8 focus:ring-eksiCode focus:border-eksiCode rounded-lg text-sm focus:outline-none"
         name="search"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}

@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,7 +15,7 @@ import ThemeSwitch from "@/components/Nav/ThemeSwitch";
 
 const Nav = () => {
   return (
-    <nav className="flex flex-wrap w-full justify-center z-50 sticky top-0 nav-sahdow bg-white dark:bg-green-950">
+    <nav className="flex flex-wrap w-full justify-center z-50 sticky top-0 nav-sahdow bg-white dark:bg-DarkerGrey">
       {/* Menu */}
       {/* <div className="flex items-center sm:basis-full md:basis-full lg:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-between"> */}
       <div className="flex justify-between items-center h-16 mx-10 sm:mx-2 sm:basis-full md:basis-full lg:basis-full basis-3/4 ">
@@ -38,9 +37,9 @@ const Nav = () => {
 
         <div className="flex items-center justify-end">
           {/*  Desktop menu */}
-          <div className="flex flex-nowrap text-center md:text-sm lg:text-sm">
+          <div className="flex flex-nowrap items-center text-center md:text-sm lg:text-sm">
             {/*  Theme Switcher */}
-            <div className="mt-1 mr-4">
+            <div className="mr-4 mt-1">
               <ThemeSwitch />
             </div>
 
@@ -84,7 +83,7 @@ const Nav = () => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="sm:h-6 sm:w-6 h-8 w-8 hover:text-eksiCode text-dark text-4xl"
+                className="sm:h-6 sm:w-6 h-8 w-8 hover:text-eksiCode text-dark dark:text-gray-300 dark:hover:text-eksiCode transition duration-300 ease-in-out text-4xl"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -99,7 +98,7 @@ const Nav = () => {
           <MobileMenu />
         </div>
       </div>
-      <hr className="h-1 w-full dark:border-t-0" />
+      <hr className="h-1 w-full border-t dark:border-DarkLightGrey"  />
 
       <TelegramGroups />
     </nav>

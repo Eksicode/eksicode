@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
   variant?: "primary" | "secondary" | "tertiary" | "quaternary";
   children: React.ReactNode;
   clasName?: string;
@@ -21,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({
     primary:
       "bg-eksiCode text-gray-50 text-white border rounded-md text-sm hover:bg-white hover:text-eksiCode",
     secondary:
-      "bg-white text-eksiCode text-eksiCode border rounded-md text-sm border-eksiCode text-sm hover:bg-eksiCode hover:text-white",
+      "bg-white text-eksiCode text-eksiCode border rounded-md text-sm border-eksiCode text-sm hover:bg-eksiCode hover:text-white dark:bg-DarkerGrey dark:text-eksiCodeLight dark:border-eksiCode dark:hover:bg-white dark:hover:text-eksiCode",
     tertiary:
       "text-black border rounded-md text-sm hover:border hover:bg-eksiCode hover:text-white",
     quaternary:
