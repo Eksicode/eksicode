@@ -10,7 +10,7 @@ import Slider from "@/components/Slider";
 import images from "@/components/images";
 const Page = () => {
   return (
-    <div className="flex py-5 max-[1023px]:basis-full basis-full">
+    <div className="flex py-5 basis-3/4">
       <div className="flex">
         <SideMenu />
       </div>

@@ -64,7 +64,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
   }, [logoCount, mobileWidth, initialLogoCount, logoWidth]);
 
   return (
-    <div className="flex items-center lg:w-full xl:w-3/4 2xl:w-3/4 md:w-full h-16 justify-between overflow-hidden">
+    <div className="flex items-center lg:w-full xl:w-3/4 2xl:w-3/4 md:w-full h-16 justify-between overflow-hidden ">
       {isMobile ? (
         <div className="flex w-full justify-center">
           <Navlink
@@ -106,7 +106,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
                           width={50}
                           height={50}
                           loading="lazy"
-                          className="rounded-full"
+                          className="rounded-full opacity-80 hover:opacity-100 dark:opacity-60 dark:hover:opacity-100 transition duration-300 ease-in-out"
                         />
                       </Link>
                       <Tooltip

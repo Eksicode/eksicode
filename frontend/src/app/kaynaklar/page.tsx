@@ -36,8 +36,8 @@ export default async function Tags() {
   return (
     <div className="flex py-5 basis-3/4">
       <SideMenu />
-      <div className="flex flex-wrap w-full justify-center text-left">
-        <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
+      <div className="flex flex-wrap w-full justify-center text-left ">
+        <div className="flex flex-wrap justify-center w-full bg-white dark:bg-DarkerGrey dark:border-DarkLightGrey mx-2 p-4 rounded-lg border-gray-300 border text-gray-600 dark:text-white">
           <h1 className="flex text-3xl text-bold text-left">
             Kaynaklar
           </h1>

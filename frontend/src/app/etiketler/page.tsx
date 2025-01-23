@@ -3,6 +3,8 @@ import Link from "next/link";
 import SideMenu from "@/components/Nav/SideMenu";
 import TagsCard from "@/components/TagsCard";
 import Search from "@/components/Search";
+import Button from "@/components/Ui/Button";
+import Navlink from "@/components/Ui/NavLink";
 
 interface Tag {
   id: number;
@@ -40,21 +42,25 @@ export default async function Tags() {
         <SideMenu />
       </div>
       <div className="flex flex-wrap w-full justify-center text-center">
-        <div className="flex flex-wrap justify-center w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
-          <div className="flex basis-1/2 text-3xl text-bold text-left">
+        <div className="flex justify-between w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600 dark:bg-DarkerGrey dark:border-DarkLightGrey dark:text-white">
+          <div className="text-3xl text-bold">
             Etiketler
           </div>
-
-          <div className="flex flex-nowrap basis-1/2">
-            <button className="p-2 border w-full hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
-              Takipteki Etiketler
-            </button>
-            <button className="mx-2 p-2 w-full border hover:border hover:bg-eksiCode rounded-lg hover:text-white text-dark">
-              Gizli Etiketler
-            </button>
-            <Search />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="secondary"
+              children="Takipteki Etiketler"
+            />
+            <Button
+              variant="secondary"
+              children="Gizli Etiketler"
+            />
+            <div>
+              <Search />
+            </div>
           </div>
         </div>
+
 
         <div className="flex flex-wrap w-full justify-between mx-0 sm:mx-2">
           {tags.data?.map((tag: Tag) => (
