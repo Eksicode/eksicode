@@ -8,6 +8,8 @@ import Pagination from "@/components/Ui/Pagination";
 import ppImage from "@/public/assets/pp-image.png";
 import Slider from "@/components/Slider";
 import images from "@/components/images";
+import Posts from "@/components/Posts";
+
 const Page = () => {
   return (
     <div className="flex py-5 basis-3/4">
@@ -38,8 +40,8 @@ const Page = () => {
             En Beğenilenler
           </Navlink>
         </div>
-        {/* <Post /> */}
-        <div className="py-4 w-full px-1 mb-3 bg-white rounded-lg border-gray-300 border">
+        <Posts />
+        {/* <div className="py-4 w-full px-1 mb-3 bg-white rounded-lg border-gray-300 border">
           <div className="flex flex-wrap sm:basis-full basis-3/4 mx-3 sm:mx-2 justify-between">
             <div className="flex items-center space-x-4 content-start">
               <Image
@@ -167,9 +169,9 @@ const Page = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <Pagination activePage={4} totalPages={10} />
+        {/* <Pagination activePage={4} totalPages={10} /> */}
       </div>
 
       <div className="flex w-3/12 sm:hidden md:hidden">

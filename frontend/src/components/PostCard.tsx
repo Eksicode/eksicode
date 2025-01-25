@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react";
 import Image from "next/image";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
@@ -21,6 +23,7 @@ interface PostCardProps {
     author: Author;
     tags?: { id: string; name: string }[];
     likes?: number;
+    slug?: string;
     comments?: { id: string }[];
     createdAt?: string;
   };
@@ -29,12 +32,14 @@ interface PostCardProps {
   onSave?: (postId: string) => void;
 }
 
+const generateRandomNumber = (): number => Math.floor(Math.random() * 1000);
+
 export function PostCard({ post, onLike, onComment, onSave }: PostCardProps) {
-  const { id, title, author, tags = [], comments = [] } = post;
+  const { id, title, slug, author, tags = [], comments = [] } = post;
 
   return (
     <>
-      <div className="py-4 w-full px-1 mb-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
+      <div key={generateRandomNumber()} className="py-4 w-full px-1 mb-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
         <div className="flex flex-wrap sm:basis-full basis-3/4 mx-3 sm:mx-2 justify-between">
           <div className="flex items-center space-x-4 content-start">
             <Image
@@ -57,7 +62,7 @@ export function PostCard({ post, onLike, onComment, onSave }: PostCardProps) {
           </div>
           <div className="w-full ml-14">
             <h2 className="text-2xl my-2 font-bold">
-              <a href={`/posts/${id}`}>{title}</a>
+              <a href={`/posts/${slug}`}>{title}</a>
             </h2>
             <div>
               {tags.length > 0 && (

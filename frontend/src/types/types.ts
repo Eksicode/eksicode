@@ -16,6 +16,7 @@ export interface IPost {
   content: string;
   author: IAuthor;
   postLikes: any[];
+  image: string;
   comments: IComment[];
   categories: any[];
   tags: any[];
