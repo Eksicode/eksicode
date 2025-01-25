@@ -51,6 +51,8 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
       setHasMore(Number(newPosts.length) === Number(limit));
       setSkip((prevSkip) => prevSkip + limit);
 
+      console.log("response:", response);
+
       console.log("Fetched posts:", newPosts);
       console.log("Total posts:", totalPosts);
       console.log("Has more:", hasMore);
