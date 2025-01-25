@@ -31,7 +31,7 @@ const TelegramGroupCard = (group: Group) => {
         variant="tertiary"
         href={group.link}
         target="_blank"
-        clasName="w-[150px]"
+        style="w-[150px]"
       >
         Katıl
       </Navlink>

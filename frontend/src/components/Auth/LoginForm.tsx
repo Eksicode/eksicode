@@ -88,7 +88,7 @@ const LoginForm: React.FC = () => {
               type="submit"
               onClick={() => {}}
               variant="secondary"
-              clasName="w-full mb-6"
+              style="w-full mb-6"
             >
               Giriş Yap
             </Button>

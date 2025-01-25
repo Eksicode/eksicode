@@ -162,7 +162,7 @@ const Modal: React.FC<ModalProps> = ({
             </div>
             <div className="flex justify-end basis-full mt-10">
               {buttonText && (
-                <Button onClick={() => { }} type="submit" variant="primary" clasName="w-full">
+                <Button onClick={() => { }} type="submit" variant="primary" style="w-full">
                   {buttonText}
                 </Button>
               )}

@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { IPost } from "@/types/types";
 import { PostCard } from "./PostCard";
-import Link from "next/link";
 import Button from "@/components/Ui/Button";
 
 interface PostsProps {
@@ -33,17 +32,21 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
     setLoading(true);
 
     try {
-      let response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?summaryOnly=false&limit=${limit}&skip=${skip}`);
-      
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/posts?summaryOnly=false&limit=${limit}&skip=${skip}`,
+        { cache: "no-store" } // Changed from force-cache to no-store
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to fetch posts');
+        throw new Error("Failed to fetch posts");
       }
-      const { data: newPosts, meta }: FetchPostsResponse = await response.json();
+      const { data: newPosts, meta }: FetchPostsResponse =
+        await response.json();
 
       setTotalPosts(meta.total);
       setPostItems((prevPosts) => [...prevPosts, ...newPosts]);
       setHasMore(newPosts.length === limit);
-      setSkip((prevSkip: number) => prevSkip + limit);
+      setSkip((prevSkip) => prevSkip + limit);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
@@ -58,12 +61,12 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
         fetchPosts();
       }
     };
-  
+
     const observerOptions: IntersectionObserverInit = {
       rootMargin: "100px",
       threshold: 0.1,
     };
-  
+
     const observer = new IntersectionObserver(
       observerCallback,
       observerOptions
@@ -82,30 +85,27 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
     };
   }, [fetchPosts, loading]);
 
-  const generateRandomNumber = (): number => Math.floor(Math.random() * 1000);
-
   return (
     <>
       <div className="flex justify-center w-full flex-wrap">
-        {postItems.map((post) => (
-            <PostCard key={generateRandomNumber()} post={post} />
+        {postItems.map((post, index) => (
+          <PostCard key={post.id || index} post={post} />
         ))}
       </div>
       <div className="flex justify-center w-full">
-      {postItems.length < totalPosts && (
-        <div className="text-center mt-4">
-          <Button
-            onClick={fetchPosts}
-            disabled={loading}
-            variant="secondary"
-            clasName={`${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}          >
-            {loading ? "Yükleniyor..." : "Daha Fazla Göster"}
-          </Button>
-        </div>
-      )}
-      <button ref={loadMoreButtonRef} className="invisible"></button>
+        {postItems.length < totalPosts && (
+          <div className="text-center mt-4">
+            <Button
+              onClick={fetchPosts}
+              disabled={loading}
+              variant="secondary"
+              style={`${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {loading ? "Yükleniyor..." : "Daha Fazla Göster"}
+            </Button>
+          </div>
+        )}
+        <button ref={loadMoreButtonRef} className="invisible"></button>
       </div>
     </>
   );

@@ -4,7 +4,7 @@ interface ButtonProps {
   onClick?: () => void;
   variant?: "primary" | "secondary" | "tertiary" | "quaternary";
   children: React.ReactNode;
-  clasName?: string;
+  style?: string;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
 }
@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   type = "button",
   children,
-  clasName,
+  style,
   disabled = false,
 }) => {
   const variantClass = {
@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
       "text-dark text-sm rounded-md hover:border hover:border-eksiCode rounded-lg hover:text-eksiCode",
   };
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className={`px-4 py-2 ${clasName} ${variantClass[variant]}`}>
+    <button type={type} onClick={onClick} disabled={disabled} className={`px-4 py-2 ${style} ${variantClass[variant]}`}>
       {children}
     </button>
   );
