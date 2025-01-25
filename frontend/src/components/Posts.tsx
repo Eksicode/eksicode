@@ -36,7 +36,7 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
         `${process.env.NEXT_PUBLIC_API_URL}/posts?summaryOnly=false&limit=${limit}&skip=${skip}`,
         {
           cache: "no-store",
-          next: { revalidate: 0 },
+          // next: { revalidate: 0 },
         }
       );
 
