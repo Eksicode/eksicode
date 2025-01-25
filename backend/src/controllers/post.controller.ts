@@ -14,8 +14,8 @@ class PostController {
       //const { page, limit, skip } = getPaginationParams(req.query);
       //const summaryOnly = req.query.summaryOnly === "true";
 
-      const skip = parseInt(req.query.skip as string) || 0;
-      const limit = parseInt(req.query.limit as string) || 10;
+      const skip = parseInt(req.query.skip as string);
+      const limit = parseInt(req.query.limit as string);
       const summaryOnly = req.query.summaryOnly === "true";
 
       const { posts, count } = await this.postService.getAllPosts(
