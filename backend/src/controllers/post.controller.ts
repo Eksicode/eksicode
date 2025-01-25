@@ -1,9 +1,34 @@
 import { Request, Response, NextFunction } from "express";
 import PostService from "../services/post.service";
-//import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
+import { HttpException } from "../exceptions/HttpException";
 
-class PostController {
-  private postService = new PostService();
+export class PostController {
+  private postService: PostService;
+
+  constructor(postService?: PostService) {
+    this.postService = postService || new PostService();
+  }
+
+  private validatePaginationParams(
+    skip: unknown, 
+    limit: unknown
+  ): { skip: number; limit: number } {
+    const parsedSkip = Number(skip);
+    const parsedLimit = Number(limit);
+
+    if (isNaN(parsedSkip) || parsedSkip < 0) {
+      throw new HttpException(400, 'Invalid skip parameter');
+    }
+
+    if (isNaN(parsedLimit) || parsedLimit <= 0 || parsedLimit > 100) {
+      throw new HttpException(400, 'Invalid limit parameter (1-100)');
+    }
+
+    return {
+      skip: parsedSkip,
+      limit: parsedLimit
+    };
+  }
 
   public getAllPosts = async (
     req: Request,
@@ -11,11 +36,11 @@ class PostController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      //const { page, limit, skip } = getPaginationParams(req.query);
-      //const summaryOnly = req.query.summaryOnly === "true";
+      const { skip, limit } = this.validatePaginationParams(
+        req.query.skip, 
+        req.query.limit
+      );
 
-      const skip = parseInt(req.query.skip as string);
-      const limit = parseInt(req.query.limit as string);
       const summaryOnly = req.query.summaryOnly === "true";
 
       const { posts, count } = await this.postService.getAllPosts(
@@ -24,83 +49,122 @@ class PostController {
         summaryOnly
       );
 
-      //const meta = getPaginationMeta(count, skip, limit);
-
       res.status(200).json({
         data: posts,
         meta: {
           total: count,
           skip,
           limit,
+          summaryOnly
         },
-        message: "findPosts",
+        message: "Posts retrieved successfully",
       });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      if (error instanceof HttpException) {
+        res.status(400).json({ 
+          message: error.message 
+        });
+      } else {
+        res.status(500).json({ 
+          message: "Internal server error",
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+      next(error);
     }
   };
 
-  public getPostBySlug = async (req: Request, res: Response): Promise<void> => {
+
+  public getPostBySlug = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      const slug = req.params.slug;
-      const post = await this.postService.getPostBySlug(slug);
+      const post = await this.postService.getPostBySlug(req.params.slug);
+
       if (!post) {
         res.status(404).json({ message: "Post not found" });
       } else {
-        res.status(200).json(post);
+        res.status(200).json({ data: post, message: "Post retrieved successfully" });
       }
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ 
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : String(error)
+      });
+      next(error);
     }
   };
 
   public getPostsBySearch = async (
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const term = req.params.term;
-      const post = await this.postService.searchPost(term);
-
-      // if (!post) {
-      //   res.status(404).json({ message: "Post not found" });
-      // } else {
-      console.log(post);
-      res.status(200).json(post);
-      // }
+      const posts = await this.postService.searchPost(term);
+      res.status(200).json({ data: posts, message: "Posts retrieved successfully" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ 
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : String(error)
+      });
+      next(error);
     }
   };
 
-  public createPost = async (req: Request, res: Response): Promise<void> => {
+  public createPost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const post = await this.postService.createPost(req.body);
-      res.status(201).json(post);
+      res.status(201).json({ data: post, message: "Post created successfully" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  };
+      res.status(500).json({ 
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : String(error)
+      });
+      next(error);
+    }}
 
-  public updatePost = async (req: Request, res: Response): Promise<void> => {
+  public updatePost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
       const post = await this.postService.updatePost(id, req.body);
-      res.status(200).json(post);
+      res.status(200).json({ data: post, message: "Post updated successfully" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ 
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : String(error)
+      });
+      next(error);
     }
   };
 
-  public deletePost = async (req: Request, res: Response): Promise<void> => {
+  public deletePost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
-      const post = await this.postService.deletePost(id);
-      res.status(200).json({ message: "Post deleted successfully", post });
+      await this.postService.deletePost(id);
+      res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ 
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : String(error)
+      });
+      next(error);
     }
   };
-}
 
-export default PostController;
+}

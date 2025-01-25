@@ -1,5 +1,5 @@
 import { Router } from "express";
-import PostController from "../controllers/post.controller";
+import { PostController } from "../controllers/post.controller";
 import { Routes } from "../interfaces/routes.interface";
 
 class PostRoute implements Routes {
