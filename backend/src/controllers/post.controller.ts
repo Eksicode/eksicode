@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import PostService from "../services/post.service";
-import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
+//import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
 
 class PostController {
   private postService = new PostService();
@@ -11,7 +11,11 @@ class PostController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const { page, limit, skip } = getPaginationParams(req.query);
+      //const { page, limit, skip } = getPaginationParams(req.query);
+      //const summaryOnly = req.query.summaryOnly === "true";
+
+      const skip = parseInt(req.query.skip as string) || 0;
+      const limit = parseInt(req.query.limit as string) || 10;
       const summaryOnly = req.query.summaryOnly === "true";
 
       const { posts, count } = await this.postService.getAllPosts(
@@ -20,11 +24,15 @@ class PostController {
         summaryOnly
       );
 
-      const meta = getPaginationMeta(count, page, limit);
+      //const meta = getPaginationMeta(count, skip, limit);
 
       res.status(200).json({
         data: posts,
-        meta,
+        meta: {
+          total: count,
+          skip,
+          limit,
+        },
         message: "findPosts",
       });
     } catch (error) {

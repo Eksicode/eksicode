@@ -22,33 +22,36 @@ class PostService {
     limit: number,
     summaryOnly: boolean
   ): Promise<{ posts: Partial<Post>[]; count: number }> {
+    const selectFields = summaryOnly
+    ? {
+        id: true,
+        title: true,
+        slug: true,
+      }
+    : {
+        id: true,
+        title: true,
+        content: true,
+        headerImage: true,
+        authorId: true,
+        author: true,
+        postLikes: true,
+        comments: true,
+        categories: true,
+        tags: true,
+        status: true,
+        slug: true,
+        approved: true,
+        createdAt: true,
+        updatedAt: true,
+      };
+
+
     const [posts, count] = await Promise.all([
       this.prisma.post.findMany({
         skip,
         take: limit,
-        select: summaryOnly
-          ? {
-              id: true,
-              title: true,
-              slug: true,
-            }
-          : {
-              id: true,
-              title: true,
-              content: true,
-              headerImage: true,
-              authorId: true,
-              author: true,
-              postLikes: true,
-              comments: true,
-              categories: true,
-              tags: true,
-              status: true,
-              slug: true,
-              approved: true,
-              createdAt: true,
-              updatedAt: true,
-            },
+        select: selectFields
       }),
       this.prisma.post.count(),
     ]);
