@@ -33,7 +33,8 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?summaryOnly=false&limit=${limit}&skip=${skip}`);
+      let response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?summaryOnly=false&limit=${limit}&skip=${skip}`);
+      
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
