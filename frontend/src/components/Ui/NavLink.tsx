@@ -4,7 +4,7 @@ import Link from "next/link";
 interface LinkProps {
   variant?: "primary" | "secondary" | "tertiary" | "quaternary";
   children: React.ReactNode;
-  clasName?: string;
+  style?: string;
   href?: string;
   target?: "_blank" | "_self" | "_parent" | "_top";
 }
@@ -12,7 +12,7 @@ interface LinkProps {
 const Navlink: React.FC<LinkProps> = ({
   variant = "primary",
   children,
-  clasName,
+  style,
   href,
   target = "_self",
 }) => {
@@ -25,7 +25,7 @@ const Navlink: React.FC<LinkProps> = ({
   if (typeof href === "string") {
     return (
       <Link
-        className={`p-2 ${clasName} ${variantClass[variant]}`}
+        className={`p-2 ${style} ${variantClass[variant]}`}
         href={href}
         target={target}
       >
@@ -35,7 +35,7 @@ const Navlink: React.FC<LinkProps> = ({
   } else {
     return (
       <Link
-        className={`p-2 ${clasName} ${variantClass[variant]}`}
+        className={`p-2 ${style} ${variantClass[variant]}`}
         href="#"
         target={target}
       >

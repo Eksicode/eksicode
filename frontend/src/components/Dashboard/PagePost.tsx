@@ -198,7 +198,7 @@ const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
         /> */}
       </div>
       <div className="flex justify-end w-full mt-10">
-        <Button onClick={() => { }} type="submit" variant="primary" clasName="">
+        <Button onClick={() => { }} type="submit" variant="primary">
           Kaydet
         </Button>
       </div>

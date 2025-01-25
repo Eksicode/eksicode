@@ -10,10 +10,10 @@ function Notifications() {
         <Navlink variant="tertiary" href="/uye-ol">
           Tümü
         </Navlink>
-        <Navlink variant="tertiary" clasName="ml-3" href="/uye-ol">
+        <Navlink variant="tertiary" style="ml-3" href="/uye-ol">
           Yorumlar
         </Navlink>
-        <Navlink variant="tertiary" clasName="ml-3" href="/uye-ol">
+        <Navlink variant="tertiary" style="ml-3" href="/uye-ol">
           Gönderiler
         </Navlink>
       </div>

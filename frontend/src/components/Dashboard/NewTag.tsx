@@ -146,7 +146,7 @@ const NewTag: React.FC<{ initialData?: Tag }> = ({ initialData }) => {
         />
       </div>
       <div className="flex justify-end basis-full mt-10">
-        <Button onClick={() => { }} variant="primary" type="submit" clasName="">
+        <Button onClick={() => { }} variant="primary" type="submit">
           Kaydet
         </Button>
       </div>

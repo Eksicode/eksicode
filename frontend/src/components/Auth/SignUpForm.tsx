@@ -209,7 +209,7 @@ const SignUpForm: React.FC = () => {
               onClick={() => {}}
               disabled={!isFormValid}
               variant="secondary"
-              clasName="w-full mb-6"
+              style="w-full mb-6"
             >
               Üye Ol
             </Button>

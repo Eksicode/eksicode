@@ -33,10 +33,10 @@ const Page = () => {
           <Navlink variant="tertiary" href="/uye-ol">
             İlgili
           </Navlink>
-          <Navlink variant="tertiary" clasName="ml-3" href="/uye-ol">
+          <Navlink variant="tertiary" style="ml-3" href="/uye-ol">
             En Yeniler
           </Navlink>
-          <Navlink variant="tertiary" clasName="ml-3" href="/uye-ol">
+          <Navlink variant="tertiary" style="ml-3" href="/uye-ol">
             En Beğenilenler
           </Navlink>
         </div>

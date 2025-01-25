@@ -47,7 +47,7 @@ const Nav = () => {
             <Navlink
               variant="secondary"
               href="/dashboard/posts/yeni"
-              clasName="sm:hidden"
+              style="sm:hidden"
             >
               <div className="flex items-center">
                 <AiOutlineEdit className="h-5 w-5 mr-1" />
@@ -59,7 +59,7 @@ const Nav = () => {
             </Link>
             <Navlink
               variant="quaternary"
-              clasName="ml-3 pt-2 border border-white sm:hidden"
+              style="ml-3 pt-2 border border-white sm:hidden"
               href="/auth/uye-giris"
             >
               <div className="flex items-center">
@@ -69,7 +69,7 @@ const Nav = () => {
             </Navlink>
             <Navlink
               variant="primary"
-              clasName="ml-3 sm:hidden"
+              style="ml-3 sm:hidden"
               href="/auth/uye-ol"
             >
               <div className="flex items-center">
