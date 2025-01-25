@@ -23,42 +23,52 @@ class PostService {
     summaryOnly: boolean
   ): Promise<{ posts: Partial<Post>[]; count: number }> {
     const selectFields = summaryOnly
-    ? {
-        id: true,
-        title: true,
-        slug: true,
-      }
-    : {
-        id: true,
-        title: true,
-        content: true,
-        headerImage: true,
-        authorId: true,
-        author: true,
-        postLikes: true,
-        comments: true,
-        categories: true,
-        tags: true,
-        status: true,
-        slug: true,
-        approved: true,
-        createdAt: true,
-        updatedAt: true,
-      };
-
+      ? {
+          id: true,
+          title: true,
+          slug: true,
+          createdAt: true,
+        }
+      : {
+          id: true,
+          title: true,
+          content: true,
+          headerImage: true,
+          authorId: true,
+          author: true,
+          postLikes: true,
+          comments: true,
+          categories: true,
+          tags: true,
+          slug: true,
+          createdAt: true,
+          updatedAt: true,
+        };
 
     const [posts, count] = await Promise.all([
       this.prisma.post.findMany({
+        where: {
+          approved: true,
+          status: 'published'
+        },
         skip,
         take: limit,
-        select: selectFields
+        select: selectFields,
+        orderBy: {
+          createdAt: 'desc'
+        }
       }),
-      this.prisma.post.count(),
+      this.prisma.post.count({
+        where: {
+          approved: true,
+          status: 'published'
+        }
+      }),
     ]);
 
     return { posts, count };
   }
-
+  
   // Search post by term
   public async searchPost(term: string): Promise<IPost[]> {
     if (isEmpty(term)) throw new HttpException(400, "Search term is empty");
