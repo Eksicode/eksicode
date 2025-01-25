@@ -34,7 +34,10 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/posts?summaryOnly=false&limit=${limit}&skip=${skip}`,
-        { cache: "no-store" } // Changed from force-cache to no-store
+        { 
+          cache: "no-store",
+          next: { revalidate: 0 }
+        }
       );
 
       if (!response.ok) {
@@ -44,9 +47,15 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
         await response.json();
 
       setTotalPosts(meta.total);
-      setPostItems((prevPosts) => [...prevPosts, ...newPosts]);
+      setPostItems((prevPosts) => {
+        const uniquePosts = [...prevPosts, ...newPosts].filter(
+          (post, index, self) => 
+            index === self.findIndex((p) => p.id === post.id)
+        );
+        return uniquePosts;
+      });
       setHasMore(newPosts.length === limit);
-      setSkip((prevSkip) => prevSkip + limit);
+      setSkip((prevSkip) => prevSkip + newPosts.length);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
