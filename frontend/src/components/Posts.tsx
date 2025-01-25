@@ -36,7 +36,7 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
         `${process.env.NEXT_PUBLIC_API_URL}/posts?summaryOnly=false&limit=${limit}&skip=${skip}`,
         { 
           cache: "no-store",
-          next: { revalidate: 0 }
+          next: { revalidate: 0 } // Explicitly disable caching
         }
       );
 
@@ -47,15 +47,9 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
         await response.json();
 
       setTotalPosts(meta.total);
-      setPostItems((prevPosts) => {
-        const uniquePosts = [...prevPosts, ...newPosts].filter(
-          (post, index, self) => 
-            index === self.findIndex((p) => p.id === post.id)
-        );
-        return uniquePosts;
-      });
+      setPostItems((prevPosts) => [...prevPosts, ...newPosts]);
       setHasMore(newPosts.length === limit);
-      setSkip((prevSkip) => prevSkip + newPosts.length);
+      setSkip((prevSkip) => prevSkip + limit);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
