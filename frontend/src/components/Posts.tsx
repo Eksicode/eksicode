@@ -49,7 +49,7 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
       setTotalPosts(Number(meta.total));
       setPostItems((prevPosts) => [...prevPosts, ...newPosts]);
       setHasMore(Number(newPosts.length) === Number(limit));
-      setSkip((prevSkip) => Number(prevSkip) + Number(limit));
+      setSkip((prevSkip) => prevSkip + limit);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
