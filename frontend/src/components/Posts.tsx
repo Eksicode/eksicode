@@ -18,7 +18,7 @@ interface FetchPostsResponse {
 
 const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
   const [postItems, setPostItems] = useState<IPost[]>(initialPosts);
-  const [skip, setSkip] = useState<number>(initialPosts.length);
+  const [skip, setSkip] = useState<number>(Number(initialPosts.length));
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [totalPosts, setTotalPosts] = useState<number>(0);
@@ -34,9 +34,9 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/posts?summaryOnly=false&limit=${limit}&skip=${skip}`,
-        { 
+        {
           cache: "no-store",
-          next: { revalidate: 0 } // Explicitly disable caching
+          next: { revalidate: 0 },
         }
       );
 
@@ -46,10 +46,10 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
       const { data: newPosts, meta }: FetchPostsResponse =
         await response.json();
 
-      setTotalPosts(meta.total);
+      setTotalPosts(Number(meta.total));
       setPostItems((prevPosts) => [...prevPosts, ...newPosts]);
-      setHasMore(newPosts.length === limit);
-      setSkip((prevSkip) => prevSkip + limit);
+      setHasMore(Number(newPosts.length) === Number(limit));
+      setSkip((prevSkip) => Number(prevSkip) + Number(limit));
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
