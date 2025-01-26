@@ -22,6 +22,9 @@ class PostService {
     limit: number,
     summaryOnly: boolean
   ): Promise<{ posts: Partial<Post>[]; count: number }> {
+    console.log('Service getAllPosts params:', { skip, limit, summaryOnly });
+
+
     const selectFields = summaryOnly
       ? {
           id: true,
@@ -47,19 +50,27 @@ class PostService {
 
     console.log("skip: ", skip);
     console.log(typeof skip);
+    console.log('Query params:', {
+      limit,
+      skip,
+      summaryOnly,
+      calculatedPage: Math.floor(skip / limit) + 1
+    });
 
     const [posts, count] = await Promise.all([
       this.prisma.post.findMany({
-        skip,
-        take: limit,
-        select: selectFields,
         where: {
           approved: true,
           status: 'published'
         },
-        orderBy: {
-          createdAt: 'desc'
-        }
+        skip: Number(skip),
+        take: Number(limit),
+        select: selectFields,
+        orderBy: [
+          { createdAt: 'desc' }, // Primary sort by creation date
+          { id: 'desc' }, // Secondary sort by id
+        ],
+        
       }),
       this.prisma.post.count({
         where: {
