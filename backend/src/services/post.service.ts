@@ -46,6 +46,7 @@ class PostService {
         };
 
     console.log("skip: ", skip);
+    console.log(typeof skip);
 
     const [posts, count] = await Promise.all([
       this.prisma.post.findMany({
@@ -67,6 +68,8 @@ class PostService {
         }
       }),
     ]);
+
+    console.log("Posts: ", posts);
 
     return { posts, count };
   }
