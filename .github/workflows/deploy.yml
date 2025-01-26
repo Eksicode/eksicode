@@ -55,11 +55,12 @@ jobs:
         host: ec2-3-75-239-177.eu-central-1.compute.amazonaws.com
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        command_timeout: 5m
         script: |
           cd ~/eksicode
           git pull origin main
           sudo docker compose down
           sudo docker system prune -a
-          sudo docker compose -f docker-compose.yml up --build
-          sudo docker compose logs > deployment_logs.txt 2>&1
-        script_stop: false
+          sudo docker compose -f docker-compose.yml up --build -d
+          sudo docker compose logs -f
+          sudo docker ps -a 
