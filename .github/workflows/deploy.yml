@@ -21,6 +21,7 @@ jobs:
     
     - name: Install Docker Compose
       run: |
+        sudo apt-get update
         pip install docker-compose
     
     - name: SSH Deploy to Server
