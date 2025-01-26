@@ -45,15 +45,17 @@ class PostService {
           updatedAt: true,
         };
 
+    console.log("skip: ", skip);
+
     const [posts, count] = await Promise.all([
       this.prisma.post.findMany({
+        skip,
+        take: limit,
+        select: selectFields,
         where: {
           approved: true,
           status: 'published'
         },
-        skip,
-        take: limit,
-        select: selectFields,
         orderBy: {
           createdAt: 'desc'
         }
