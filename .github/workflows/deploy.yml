@@ -1,0 +1,37 @@
+name: Deploy on Main Branch
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Docker Compose
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    
+    - name: Install Docker Compose
+      run: |
+        pip install docker-compose
+    
+    - name: SSH Deploy to Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ec2-3-75-239-177.eu-central-1.compute.amazonaws.com
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ~/eksicode
+          git pull origin main
+          sudo docker compose down
+          sudo docker system prune -a
+          sudo docker compose -f docker-compose.yml up --build
