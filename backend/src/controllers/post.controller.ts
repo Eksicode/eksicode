@@ -97,7 +97,7 @@ export class PostController {
       } else {
         res
           .status(200)
-          .json({ data: post, message: "Post retrieved successfully" });
+          .json(post);
       }
     } catch (error) {
       res.status(500).json({
@@ -107,6 +107,7 @@ export class PostController {
       next(error);
     }
   };
+  
 
   public getPostsBySearch = async (
     req: Request,

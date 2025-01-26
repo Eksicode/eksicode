@@ -55,7 +55,7 @@ class PostController {
                 else {
                     res
                         .status(200)
-                        .json({ data: post, message: "Post retrieved successfully" });
+                        .json(post);
                 }
             }
             catch (error) {

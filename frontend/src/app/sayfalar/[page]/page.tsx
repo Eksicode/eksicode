@@ -11,7 +11,6 @@ interface PageData {
   content: string;
 }
 
-// Remove custom Props type and use the correct parameter typing
 export async function generateMetadata({
   params,
 }: {
@@ -22,7 +21,6 @@ export async function generateMetadata({
   };
 }
 
-// Use the correct parameter typing for the page component
 export default async function Page({ params }: { params: { page: string } }) {
   try {
     const response = await fetch(
