@@ -3,7 +3,7 @@ import React from "react";
 import * as md from "react-icons/md";
 import * as Ai from "react-icons/ai";
 import Link from "next/link";
-import getData from "@/utils/getData";
+// import getData from "@/utils/getData";
 
 interface Menu {
   id: number;
@@ -28,8 +28,19 @@ async function SideMenu() {
   // Add cache configuration to disable caching
   const fetchMenu = async () => {
     try {
-      const fetchedMenu = await getData("menus", true, 0, 0, 0, { cache: "no-cache" });
-      
+      // const fetchedMenu = await getData("menus", true, 0, 0, 0, { cache: "no-cache" });
+      const fetchedMenu = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/menus?summaryOnly=true&limit=0&page=0&pageSize=0`,
+        {
+          cache: "no-cache",
+        }
+      )
+        .then((res) => res.json())
+        .catch((error) => {
+          console.error("Error fetching menu:", error);
+          throw new Error("Menu yüklenirken bir hata oluştu");
+        });
+
       return fetchedMenu.data.map((item: any) => ({
         id: item.id,
         name: item.name,
@@ -85,8 +96,8 @@ async function SideMenu() {
                   <span className="ml-3">{item.name}</span>
                 </Link>
               </li>
-            )}
-          )}
+            );
+          })}
         </ul>
       </div>
     </aside>
