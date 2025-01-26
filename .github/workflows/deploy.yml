@@ -52,8 +52,8 @@ jobs:
     - name: SSH Deploy to Server
       uses: appleboy/ssh-action@master
       with:
-        host: ec2-3-75-239-177.eu-central-1.compute.amazonaws.com
-        username: ubuntu
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         command_timeout: 5m
         script: |
