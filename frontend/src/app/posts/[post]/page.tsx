@@ -4,17 +4,25 @@ import SideMenu from "@/components/Nav/SideMenu";
 import Image from "next/image";
 import { IPost } from "@/types/types";
 import { notFound } from "next/navigation";
+import DOMPurify from "isomorphic-dompurify";
 
 export default async function Post({ params }: { params: { post: string } }) {
+  console.log("params:", params.post);
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/posts/${params.post}`,
-      { cache: "force-cache" }
+      {
+        cache: "force-cache",
+      }
     );
     if (response.status === 404) {
       notFound();
     }
     const postData: IPost = await response.json();
+
+    console.log("postData:", postData)
+
+    const sanitizedContent = DOMPurify.sanitize(postData.content);
 
     return (
       <>
@@ -35,7 +43,10 @@ export default async function Post({ params }: { params: { post: string } }) {
                   height={1080}
                 />
               )}
-              <div className="text-left w-full" dangerouslySetInnerHTML={{ __html: postData.content }}></div>
+              <div
+                className="text-left w-full prose dark:prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: sanitizedContent }} 
+              />
             </div>
           </div>
         </div>
