@@ -14,7 +14,17 @@ declare class PostService {
         posts: Partial<Post>[];
         count: number;
     }>;
-    searchPost(term: string): Promise<IPost[]>;
+    /**
+     * Search posts by term with pagination.
+     * @param term - The search term.
+     * @param skip - Number of records to skip for pagination.
+     * @param limit - Number of records to fetch.
+     * @returns An object containing the list of posts and the total count.
+     */
+    searchPost(term: string, skip: number, limit: number): Promise<{
+        posts: IPost[];
+        count: number;
+    }>;
     /**
      * Fetch a specific post by its ID.
      * @param id - The ID of the post.

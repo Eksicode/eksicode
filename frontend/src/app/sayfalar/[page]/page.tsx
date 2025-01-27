@@ -3,7 +3,7 @@ import Image from "next/image";
 import SideMenu from "@/components/Nav/SideMenu";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-
+import DOMPurify from "isomorphic-dompurify";
 interface PageData {
   page: string;
   title: string;
@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: { page: string } }) {
     }
 
     const pageData: PageData = await response.json();
-
+    const sanitizedContent = DOMPurify.sanitize(pageData.content);
     return (
       <div className="flex py-5 basis-3/4">
         <div className="flex">
@@ -52,7 +52,7 @@ export default async function Page({ params }: { params: { page: string } }) {
                 height={1080}
               />
             )}
-            <div dangerouslySetInnerHTML={{ __html: pageData.content }}></div>
+            <div dangerouslySetInnerHTML={{ __html: sanitizedContent }}></div>
           </div>
         </div>
       </div>

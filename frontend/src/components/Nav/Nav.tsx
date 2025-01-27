@@ -8,7 +8,7 @@ import {
 } from "react-icons/ai";
 import UserMenu from "@/components/Nav/UserMenu";
 import TelegramGroups from "@/components/TelegramGroups";
-import Search from "@/components/Search";
+import Search from "@/components/Search/Search";
 import Navlink from "@/components/Ui/NavLink";
 import MobileMenu from "@/components/Nav/MobileMenu";
 import ThemeSwitch from "@/components/Nav/ThemeSwitch";

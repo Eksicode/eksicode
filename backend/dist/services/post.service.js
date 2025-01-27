@@ -15,7 +15,6 @@ class PostService {
      * @returns An object containing the list of posts and the total count.
      */
     async getAllPosts(skip, limit, summaryOnly) {
-        console.log('Service getAllPosts params:', { skip, limit, summaryOnly });
         const selectFields = summaryOnly
             ? {
                 id: true,
@@ -38,81 +37,102 @@ class PostService {
                 createdAt: true,
                 updatedAt: true,
             };
-        console.log("skip: ", skip);
-        console.log(typeof skip);
-        console.log('Query params:', {
-            limit,
-            skip,
-            summaryOnly,
-            calculatedPage: Math.floor(skip / limit) + 1
-        });
         const [posts, count] = await Promise.all([
             this.prisma.post.findMany({
                 where: {
                     approved: true,
-                    status: 'published'
+                    status: "published",
                 },
                 skip: Number(skip),
                 take: Number(limit),
                 select: selectFields,
                 orderBy: [
-                    { createdAt: 'desc' }, // Primary sort by creation date
-                    { id: 'desc' }, // Secondary sort by id
+                    { createdAt: "desc" }, // Primary sort by creation date
+                    { id: "desc" }, // Secondary sort by id
                 ],
             }),
             this.prisma.post.count({
                 where: {
                     approved: true,
-                    status: 'published'
-                }
+                    status: "published",
+                },
             }),
         ]);
         console.log("Posts: ", posts);
         return { posts, count };
     }
-    // Search post by term
-    async searchPost(term) {
+    /**
+     * Search posts by term with pagination.
+     * @param term - The search term.
+     * @param skip - Number of records to skip for pagination.
+     * @param limit - Number of records to fetch.
+     * @returns An object containing the list of posts and the total count.
+     */
+    async searchPost(term, skip, limit) {
         if ((0, util_1.isEmpty)(term))
             throw new HttpException_1.HttpException(400, "Search term is empty");
-        const decodedTerm = decodeURIComponent(term);
-        console.log("Search term after decoding:", decodedTerm);
         try {
             const decodedTerm = decodeURIComponent(term);
-            console.log("Search term after decoding:", decodedTerm);
-            let posts = await this.prisma.post.findMany({
-                where: {
-                    OR: [
-                        {
-                            title: {
-                                contains: decodedTerm,
-                                mode: "insensitive",
+            // Fetch paginated posts
+            const [posts, count] = await Promise.all([
+                this.prisma.post.findMany({
+                    where: {
+                        approved: true,
+                        status: "published",
+                        OR: [
+                            {
+                                title: {
+                                    contains: decodedTerm,
+                                    mode: "insensitive",
+                                },
                             },
-                        },
-                        {
-                            content: {
-                                contains: decodedTerm,
-                                mode: "insensitive",
+                            {
+                                content: {
+                                    contains: decodedTerm,
+                                    mode: "insensitive",
+                                },
                             },
-                        },
-                    ],
-                },
-                include: {
-                    author: true,
-                    postLikes: true,
-                    comments: {
-                        include: {
-                            author: true, // Include author to get userId
-                        },
+                        ],
                     },
-                    categories: true,
-                    tags: true,
-                },
-            });
-            if (posts.length <= 1) {
-                posts = [];
-            }
-            // Transform Prisma types to match IPost interface
-            return posts.map((post) => (Object.assign(Object.assign({}, post), { comments: post.comments.map((comment) => (Object.assign(Object.assign({}, comment), { userId: comment.author.id }))) })));
+                    skip: Number(skip),
+                    take: Number(limit),
+                    include: {
+                        author: true,
+                        postLikes: true,
+                        comments: {
+                            include: {
+                                author: true,
+                            },
+                        },
+                        categories: true,
+                        tags: true,
+                    },
+                    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                }),
+                this.prisma.post.count({
+                    where: {
+                        approved: true,
+                        status: "published",
+                        OR: [
+                            {
+                                title: {
+                                    contains: decodedTerm,
+                                    mode: "insensitive",
+                                },
+                            },
+                            {
+                                content: {
+                                    contains: decodedTerm,
+                                    mode: "insensitive",
+                                },
+                            },
+                        ],
+                    },
+                }),
+            ]);
+            // Map posts to include userId in comments
+            const mappedPosts = posts.map((post) => (Object.assign(Object.assign({}, post), { comments: post.comments.map((comment) => (Object.assign(Object.assign({}, comment), { userId: comment.author.id }))) })));
+            return { posts: mappedPosts, count };
         }
         catch (error) {
             console.error("Error searching posts:", error);

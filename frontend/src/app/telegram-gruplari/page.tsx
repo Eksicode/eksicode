@@ -7,7 +7,6 @@ export const dynamic = 'force-dynamic'
 
 async function Groups() {
   const groups = await getData("telegrams", false, 100, 100, 1, { cache: "reload" });
-  console.log("groups", groups)
   return (
     <div className="flex py-5 basis-3/4">
       <div className="flex"> 

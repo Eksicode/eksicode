@@ -69,7 +69,8 @@ class PostController {
         this.getPostsBySearch = async (req, res, next) => {
             try {
                 const term = req.params.term;
-                const posts = await this.postService.searchPost(term);
+                const { skip, limit } = this.validatePaginationParams(req.query.skip, req.query.limit);
+                const { posts, count } = await this.postService.searchPost(term, skip, limit);
                 res
                     .status(200)
                     .json({ data: posts, message: "Posts retrieved successfully" });

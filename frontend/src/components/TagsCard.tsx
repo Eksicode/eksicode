@@ -16,7 +16,7 @@ function TagsCard(tag: Tag) {
     <div key={tag.id} className="relative flex items-start flex-col justify-start text-gray-700 dark:text-white bg-white dark:bg-DarkerGrey dark:border-DarkLightGrey border border-gray-200 shadow-md bg-clip-border rounded-xl w-[30%] p-2 m-2">
       <div className="p-4">
         <h4 className="mb-2 font-sans text-lg antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
-          <Link href={`/etiketler/${tag.slug}`}>#{tag.name}</Link>
+          <Link href={`/etiketler/${tag.name}`}>#{tag.name}</Link>
         </h4>
         <p className="block font-sans text-base antialiased font-medium leading-relaxed text-transparent bg-clip-text bg-gradient-to-tr from-blue-gray-600 to-blue-gray-400">
           {tag.postCount}
