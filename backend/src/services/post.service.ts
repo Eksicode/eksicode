@@ -22,9 +22,6 @@ class PostService {
     limit: number,
     summaryOnly: boolean
   ): Promise<{ posts: Partial<Post>[]; count: number }> {
-    console.log('Service getAllPosts params:', { skip, limit, summaryOnly });
-
-
     const selectFields = summaryOnly
       ? {
           id: true,
@@ -48,35 +45,25 @@ class PostService {
           updatedAt: true,
         };
 
-    console.log("skip: ", skip);
-    console.log(typeof skip);
-    console.log('Query params:', {
-      limit,
-      skip,
-      summaryOnly,
-      calculatedPage: Math.floor(skip / limit) + 1
-    });
-
     const [posts, count] = await Promise.all([
       this.prisma.post.findMany({
         where: {
           approved: true,
-          status: 'published'
+          status: "published",
         },
         skip: Number(skip),
         take: Number(limit),
         select: selectFields,
         orderBy: [
-          { createdAt: 'desc' }, // Primary sort by creation date
-          { id: 'desc' }, // Secondary sort by id
+          { createdAt: "desc" }, // Primary sort by creation date
+          { id: "desc" }, // Secondary sort by id
         ],
-        
       }),
       this.prisma.post.count({
         where: {
           approved: true,
-          status: 'published'
-        }
+          status: "published",
+        },
       }),
     ]);
 
@@ -84,58 +71,92 @@ class PostService {
 
     return { posts, count };
   }
-  
-  // Search post by term
-  public async searchPost(term: string): Promise<IPost[]> {
+
+  /**
+   * Search posts by term with pagination.
+   * @param term - The search term.
+   * @param skip - Number of records to skip for pagination.
+   * @param limit - Number of records to fetch.
+   * @returns An object containing the list of posts and the total count.
+   */
+  public async searchPost(
+    term: string,
+    skip: number,
+    limit: number
+  ): Promise<{ posts: IPost[]; count: number }> {
     if (isEmpty(term)) throw new HttpException(400, "Search term is empty");
-    const decodedTerm = decodeURIComponent(term);
-    console.log("Search term after decoding:", decodedTerm);
+
     try {
       const decodedTerm = decodeURIComponent(term);
-      console.log("Search term after decoding:", decodedTerm);
 
-      let posts = await this.prisma.post.findMany({
-        where: {
-          OR: [
-            {
-              title: {
-                contains: decodedTerm,
-                mode: "insensitive",
+      // Fetch paginated posts
+      const [posts, count] = await Promise.all([
+        this.prisma.post.findMany({
+          where: {
+            approved: true,
+            status: "published",
+            OR: [
+              {
+                title: {
+                  contains: decodedTerm,
+                  mode: "insensitive",
+                },
               },
-            },
-            {
-              content: {
-                contains: decodedTerm,
-                mode: "insensitive",
+              {
+                content: {
+                  contains: decodedTerm,
+                  mode: "insensitive",
+                },
               },
-            },
-          ],
-        },
-        include: {
-          author: true,
-          postLikes: true,
-          comments: {
-            include: {
-              author: true, // Include author to get userId
-            },
+            ],
           },
-          categories: true,
-          tags: true,
-        },
-      });
+          skip: Number(skip),
+          take: Number(limit),
+          include: {
+            author: true,
+            postLikes: true,
+            comments: {
+              include: {
+                author: true,
+              },
+            },
+            categories: true,
+            tags: true,
+          },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        }),
+        this.prisma.post.count({
+          where: {
+            approved: true,
+            status: "published",
+            OR: [
+              {
+                title: {
+                  contains: decodedTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
+                content: {
+                  contains: decodedTerm,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          },
+        }),
+      ]);
 
-      if (posts.length <= 1) {
-        posts = [];
-      }
-
-      // Transform Prisma types to match IPost interface
-      return posts.map((post) => ({
+      // Map posts to include userId in comments
+      const mappedPosts = posts.map((post) => ({
         ...post,
         comments: post.comments.map((comment) => ({
           ...comment,
-          userId: comment.author.id, // Map authorId to userId
+          userId: comment.author.id,
         })),
       })) as IPost[];
+
+      return { posts: mappedPosts, count };
     } catch (error) {
       console.error("Error searching posts:", error);
       throw new HttpException(500, "Error searching posts");

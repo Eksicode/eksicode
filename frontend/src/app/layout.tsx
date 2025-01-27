@@ -27,7 +27,7 @@ export default function RootLayout({
             ? roboto.className + " debug-screens"
             : roboto.className} antialiased`}>
         <Providers>
-          <div className="bg-gray-100 text-black dark:text-white dark:bg-DarkGrey">
+          <div className="bg-gray-100 text-black dark:text-white dark:bg-DarkGrey min-h-screen">
             <Nav />
             <div className="flex flex-wrap w-full justify-center">
               {children}

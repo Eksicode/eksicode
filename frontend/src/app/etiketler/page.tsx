@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 import SideMenu from "@/components/Nav/SideMenu";
 import TagsCard from "@/components/TagsCard";
-import Search from "@/components/Search";
 import Button from "@/components/Ui/Button";
 import Navlink from "@/components/Ui/NavLink";
 
@@ -55,9 +54,6 @@ export default async function Tags() {
               variant="secondary"
               children="Gizli Etiketler"
             />
-            <div>
-              <Search />
-            </div>
           </div>
         </div>
 
