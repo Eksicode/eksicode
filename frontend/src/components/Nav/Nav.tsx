@@ -39,7 +39,7 @@ const Nav = () => {
           {/*  Desktop menu */}
           <div className="flex flex-nowrap items-center text-center md:text-sm lg:text-sm">
             {/*  Theme Switcher */}
-            <div className="mr-4 mt-1">
+            <div className="mr-4 mt-1 hidden md:block lg:block xl:block 2xl:block">
               <ThemeSwitch />
             </div>
 
@@ -53,9 +53,6 @@ const Nav = () => {
                 <span className="sm:hidden flex">Yeni Gönderi</span>
               </div>
             </Navlink>
-            <Link href="/dashboard/posts/yeni">
-              <AiOutlineEdit className="hidden sm:flex h-5 w-5 mr-2" />
-            </Link>
             <Navlink
               variant="quaternary"
               style="ml-3 pt-2 border border-white sm:hidden"

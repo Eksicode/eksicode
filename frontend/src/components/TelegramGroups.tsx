@@ -4,6 +4,7 @@ import Navlink from "@/components/Ui/NavLink";
 import LoadingAnimation from "@/components/Ui/LoadingAnimation";
 import getData from "@/utils/getData";
 import { Tooltip } from "react-tooltip";
+import { AiOutlineEdit } from "react-icons/ai";
 
 interface Group {
   id: number;
@@ -66,7 +67,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
   return (
     <div className="flex items-center lg:w-full xl:w-3/4 2xl:w-3/4 md:w-full h-16 justify-between overflow-hidden ">
       {isMobile ? (
-        <div className="flex w-full justify-center">
+        <div className="flex w-full gap-2 justify-center">
           <Navlink
             variant="primary"
             style="border border-white"
@@ -74,6 +75,16 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
           >
             Bütün Telegram Grupları
           </Navlink>
+          <Navlink
+              variant="secondary"
+              href="/dashboard/posts/yeni"
+              style="block md:hidden lg:hidden xl:hidden 2xl:hidden"
+            >
+              <div className="flex items-center">
+                <AiOutlineEdit className="h-5 w-5 mr-1" />
+                <span className="flex">Yeni Gönderi</span>
+              </div>
+            </Navlink>
         </div>
       ) : (
         <>

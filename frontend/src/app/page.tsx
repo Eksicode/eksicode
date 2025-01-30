@@ -23,7 +23,7 @@ const Page = () => {
             );
           })}
         </Slider>
-        <div className="flex mb-2 h-10 text-xs items-center">
+        <div className="sm:hidden flex mb-2 h-10 text-xs items-center">
           <Navlink variant="tertiary" href="/uye-ol">
             İlgili
           </Navlink>

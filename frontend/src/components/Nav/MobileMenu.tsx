@@ -6,6 +6,7 @@ import * as Ai from "react-icons/ai";
 import Link from "next/link";
 import getData from "@/utils/getData";
 import { usePathname } from "next/navigation";
+import ThemeSwitch from "./ThemeSwitch";
 
 interface Menu {
   id: number;
@@ -71,7 +72,7 @@ const MobileMenu = () => {
       >
         <div
           className={`fixed md:hidden top-0 z-50 right-0 bottom-0 min-h-screen h-full w-64 bg-white dark:bg-DarkGrey shadow-lg transform ${nav ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 ease-in-out`}
+            } transition-transform duration-300 ease-in-out`}
         >
           <div className="flex w-full items-end justify-end">
             <div
@@ -83,7 +84,7 @@ const MobileMenu = () => {
           </div>
 
           {/*  Mobile Menu */}
-          <div className="flex flex-col mt-5 mx-5 py-4 z-20">
+          <div className="flex flex-col mx-5 py-4 z-20">
             <ul className="space-y-2">
               {error && (
                 <span className="text-sm font-semibold text-gray-500">
@@ -118,7 +119,10 @@ const MobileMenu = () => {
                   );
                 })}
             </ul>
-            <div className="flex items-center text-white justify-center my-10 gap-2">
+            <div className="flex justify-center mt-2">
+              <ThemeSwitch />
+            </div>
+            <div className="flex items-center text-white justify-center mt-5 gap-2">
               <div className="rounded-full shadow-lg bg-eksiCodeMedium p-3 cursor-pointer hover:scale-110 ease-in duration-300 text-eksi">
                 <FaGithub />
               </div>

@@ -17,12 +17,12 @@ import React from "react";
 const SideMenu = () => {
   return (
     <aside className="w-64 sm:hidden" aria-label="Sidebar">
-      <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border">
+      <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border text-gray-900 dark:text-white dark:bg-DarkerGrey dark:border-DarkLightGrey">
         <ul className="space-y-2">
           <li>
             <Link
               href="/dashboard"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey"
             >
               <MdDashboard className="text-lg mb-1" />
               <span className="ml-3">Dashboard</span>
@@ -31,7 +31,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/sayfalar"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey"
             >
               <RiPagesLine className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">Sayfalar</span>
@@ -40,7 +40,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/kullanicilar"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
             >
               <FaUsers className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">
@@ -51,7 +51,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/posts"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 "
+              className="flex items-center p-2 text-base font-normal rounded-lg  hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
             >
               <AiOutlineUnorderedList className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">Posts</span>
@@ -61,7 +61,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/roller"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100"
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey"
             >
               <FaShareNodes className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">Roller</span>
@@ -70,7 +70,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/menuler"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
             >
               <BsMenuButtonWideFill className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">Menüler</span>
@@ -79,7 +79,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/etiketler"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
             >
               <AiOutlineTag className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">Etiketler</span>
@@ -88,7 +88,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/kaynaklar"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
             >
               <GrResources className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">Kaynaklar</span>
@@ -97,7 +97,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/kariyer"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
             >
               <MdOutlineWorkOutline className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">Kariyer</span>
@@ -106,7 +106,7 @@ const SideMenu = () => {
           <li>
             <Link
               href="/dashboard/ayarlar"
-              className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg hover:bg-gray-100 "
+              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
             >
               <AiFillSetting className="text-lg mb-1" />
               <span className="flex-1 ml-3 whitespace-nowrap">Ayarlar</span>
