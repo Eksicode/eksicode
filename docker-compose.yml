@@ -14,6 +14,7 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
+      - /app/dist
     networks:
       - eksicode_nw
 
