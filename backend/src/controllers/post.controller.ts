@@ -108,30 +108,36 @@ export class PostController {
     }
   };
   
-
   public getPostsBySearch = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     try {
-      const term = req.params.term;
-      const { skip, limit } = this.validatePaginationParams(
-        req.query.skip,
-        req.query.limit
+      const { skip, limit } = this.validatePaginationParams(req.query.skip, req.query.limit);
+      const searchResult = await this.postService.searchPost(
+        req.params.term,
+        req.query.hashtags as string,
+        skip,
+        limit
       );
-      const { posts, count } = await this.postService.searchPost(term, skip, limit);
-      res
-        .status(200)
-        .json({ data: posts, message: "Posts retrieved successfully" });
+
+      res.status(200).json({
+        data: searchResult,
+        count: searchResult.count,
+        message: 'Posts retrieved successfully'
+      });
     } catch (error) {
-      res.status(500).json({
-        message: "Internal server error",
-        error: error instanceof Error ? error.message : String(error),
+      const statusCode = error instanceof HttpException ? error.status : 500;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      res.status(statusCode).json({
+        message: statusCode === 500 ? 'Internal server error' : errorMessage,
+        error: errorMessage
       });
       next(error);
     }
-  };
+  }
 
   public createPost = async (
     req: Request,

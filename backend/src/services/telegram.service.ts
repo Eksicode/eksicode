@@ -42,6 +42,7 @@ class TelegramGroupsService {
               createdAt: true,
               updatedAt: true,
             },
+            orderBy: { listOrder: "asc" }
       }),
       this.prisma.telegramGroup.count(),
     ]);
