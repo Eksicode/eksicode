@@ -15,14 +15,11 @@ ARG NODE_ENV=production
 # Install necessary build dependencies
 RUN apk add --no-cache curl
 
-# Copy package files
-COPY package*.json ./
+# Copy the rest of the application
+COPY . .
 
 # Install dependencies
 RUN npm install
-
-# Copy the rest of the application
-COPY . .
 
 # Install sharp specifically
 RUN npm i sharp
