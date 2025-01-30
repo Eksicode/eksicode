@@ -13,6 +13,8 @@ const Footer = () => {
                     <a href="/sayfalar/kurallar" className="hover:underline hover:underline-offset-0">Grup Kuralları </a>
                     &#160; | &#160;
                     <a className="hover:underline hover:underline-offset-0" href="/sayfalar/gizlilik">Gizlilik Politakası</a>
+                    &#160; | &#160;
+                    <a className="hover:underline hover:underline-offset-0" href="/kunye">Künye</a>
                 </div>
                 <div className="flex justify-center mb-5">
                     <p>2017 - {new Date().getFullYear()} eksicode.org</p>

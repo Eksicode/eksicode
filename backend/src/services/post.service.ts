@@ -73,95 +73,101 @@ class PostService {
   }
 
   /**
-   * Search posts by term with pagination.
-   * @param term - The search term.
-   * @param skip - Number of records to skip for pagination.
-   * @param limit - Number of records to fetch.
-   * @returns An object containing the list of posts and the total count.
-   */
-  public async searchPost(
-    term: string,
-    skip: number,
-    limit: number
-  ): Promise<{ posts: IPost[]; count: number }> {
-    if (isEmpty(term)) throw new HttpException(400, "Search term is empty");
-
-    try {
-      const decodedTerm = decodeURIComponent(term);
-
-      // Fetch paginated posts
-      const [posts, count] = await Promise.all([
-        this.prisma.post.findMany({
-          where: {
-            approved: true,
-            status: "published",
-            OR: [
-              {
-                title: {
-                  contains: decodedTerm,
-                  mode: "insensitive",
-                },
-              },
-              {
-                content: {
-                  contains: decodedTerm,
-                  mode: "insensitive",
-                },
-              },
-            ],
-          },
-          skip: Number(skip),
-          take: Number(limit),
-          include: {
-            author: true,
-            postLikes: true,
-            comments: {
-              include: {
-                author: true,
-              },
-            },
-            categories: true,
-            tags: true,
-          },
-          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-        }),
-        this.prisma.post.count({
-          where: {
-            approved: true,
-            status: "published",
-            OR: [
-              {
-                title: {
-                  contains: decodedTerm,
-                  mode: "insensitive",
-                },
-              },
-              {
-                content: {
-                  contains: decodedTerm,
-                  mode: "insensitive",
-                },
-              },
-            ],
-          },
-        }),
-      ]);
-
-      // Map posts to include userId in comments
-      const mappedPosts = posts.map((post) => ({
-        ...post,
-        comments: post.comments.map((comment) => ({
-          ...comment,
-          userId: comment.author.id,
-        })),
-      })) as IPost[];
-
-      return { posts: mappedPosts, count };
-    } catch (error) {
-      console.error("Error searching posts:", error);
-      throw new HttpException(500, "Error searching posts");
-    }
+ * Search posts by term or hashtag with pagination.
+ * @param term - The search term (optional).
+ * @param hashtag - The hashtag to search by (optional).
+ * @param skip - Number of records to skip for pagination.
+ * @param limit - Number of records to fetch.
+ * @returns An object containing the list of posts and the total count.
+ */
+public async searchPost(
+  term?: string,
+  hashtag?: string,
+  skip: number = 0,
+  limit: number = 10
+): Promise<{ posts: IPost[]; count: number }> {
+  if (isEmpty(term) && isEmpty(hashtag)) {
+    throw new HttpException(400, "Search term or hashtag is required");
   }
+
+  try {
+    const decodedTerm = term ? decodeURIComponent(term) : undefined;
+    const decodedHashtag = hashtag ? decodeURIComponent(hashtag) : undefined;
+
+    // Define the base where clause
+    const whereClause: any = {
+      approved: true,
+      status: "published",
+    };
+
+    // Add search conditions based on term or hashtag
+    if (decodedTerm) {
+      whereClause.OR = [
+        {
+          title: {
+            contains: decodedTerm,
+            mode: "insensitive",
+          },
+        },
+        {
+          content: {
+            contains: decodedTerm,
+            mode: "insensitive",
+          },
+        },
+      ];
+    }
+
+    if (decodedHashtag) {
+      whereClause.tags = {
+        some: {
+          name: {
+            contains: decodedHashtag,
+            mode: "insensitive",
+          },
+        },
+      };
+    }
+
+    // Fetch paginated posts
+    const [posts, count] = await Promise.all([
+      this.prisma.post.findMany({
+        where: whereClause,
+        skip: Number(skip),
+        take: Number(limit),
+        include: {
+          author: true,
+          postLikes: true,
+          comments: {
+            include: {
+              author: true,
+            },
+          },
+          categories: true,
+          tags: true,
+        },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      }),
+      this.prisma.post.count({
+        where: whereClause,
+      }),
+    ]);
+
+    // Map posts to include userId in comments
+    const mappedPosts = posts.map((post) => ({
+      ...post,
+      comments: post.comments.map((comment) => ({
+        ...comment,
+        userId: comment.author.id,
+      })),
+    })) as IPost[];
+
+    return { posts: mappedPosts, count };
+  } catch (error) {
+    console.error("Error searching posts:", error);
+    throw new HttpException(500, "Error searching posts");
+  }
+}
 
   /**
    * Fetch a specific post by its ID.

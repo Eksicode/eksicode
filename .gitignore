@@ -35,10 +35,13 @@ Homestead.json
 .next/
 /out/
 .swc
-
+/dist
+dist/
+/dist/*
 # production
 /build
-
+/dist
+dist/
 # misc
 .DS_Store
 *.pem

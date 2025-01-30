@@ -2,14 +2,38 @@ import React from "react";
 import Link from "next/link";
 import TelegramGroupCard from "@/components/TelegramGroupCard";
 import SideMenu from "@/components/Nav/SideMenu";
-import getData from "@/utils/getData";
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
+import { notFound } from "next/navigation";
+
+interface Group {
+  id: number;
+  name: string;
+  icon: string;
+  members: number;
+  link: string;
+}
+
+interface GroupsResponse {
+  data: Group[];
+}
 
 async function Groups() {
-  const groups = await getData("telegrams", false, 100, 100, 1, { cache: "reload" });
+  const response: Response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/telegrams`,
+    {
+      cache: "no-cache",
+    }
+  );
+
+  if (response.status === 404) {
+    notFound();
+  }
+
+  const groups: GroupsResponse = await response.json();
+
   return (
     <div className="flex py-5 basis-3/4">
-      <div className="flex"> 
+      <div className="flex">
         <SideMenu />
       </div>
       <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
@@ -56,7 +80,7 @@ async function Groups() {
         </div>
 
         <div className="flex flex-wrap w-full justify-between sm:mx-2">
-          {groups.data.map((group) => (
+          {groups.data.map((group: Group) => (
             <TelegramGroupCard
               key={group.id}
               id={group.id}
