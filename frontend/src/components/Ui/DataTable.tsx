@@ -57,9 +57,9 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   return (
-    <div className="basis-full overflow-x-auto w-full bg-white ">
+    <div className="basis-full overflow-x-auto w-full">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead className="text-xs text-gray-700 bg-gray-50 ">
+        <thead className="text-xs dark:text-white ">
           <tr>
             {columns?.map((column) => (
               <th
@@ -76,7 +76,7 @@ const DataTable: React.FC<DataTableProps> = ({
         <tbody>
           {data?.length > 0 ? (
             data?.map((DataParam, index) => (
-              <tr key={index} className="bg-white border-b hover:bg-gray-50">
+              <tr key={index} className="bg-white dark:bg-DarkerGrey border-b hover:bg-gray-50 dark:hover:bg-DarkLightGrey">
                 {columns?.map((column) => (
                   <td key={column} className="px-6 py-4 whitespace-nowrap">
                     {DataParam[column]}

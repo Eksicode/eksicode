@@ -32,18 +32,18 @@ interface PostCardProps {
   onSave?: (postId: string) => void;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({ 
-  post, 
-  onLike, 
-  onComment, 
-  onSave 
+export const PostCard: React.FC<PostCardProps> = ({
+  post,
+  onLike,
+  onComment,
+  onSave
 }) => {
-  const { 
-    id, 
-    title, 
-    slug, 
-    author, 
-    tags = [] 
+  const {
+    id,
+    title,
+    slug,
+    author,
+    tags = []
   } = post;
 
   return (
@@ -69,7 +69,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         </div>
 
         {/* Post Content */}
-        <div className="w-full ml-14">
+        <div className="w-full ml-0 lg:ml-14 xl:ml-14 2xl:ml-14">
           <h2 className="text-2xl my-2 font-bold">
             <Link href={`/posts/${slug}`}>{title}</Link>
           </h2>
@@ -89,30 +89,33 @@ export const PostCard: React.FC<PostCardProps> = ({
           )}
 
           {/* Action Buttons */}
-          <div className="flex flex-nowrap mt-6 text-sm">
+          <div className="flex gap-2 flex-nowrap mt-6 text-sm">
             {[
-              { 
-                Icon: AiOutlineLike, 
-                text: "Beğen", 
-                onClick: () => onLike?.(id) 
+              {
+                Icon: AiOutlineLike,
+                text: "Beğen",
+                onClick: () => onLike?.(id)
               },
-              { 
-                Icon: AiOutlineMessage, 
-                text: "Yorum Ekle", 
-                onClick: () => onComment?.(id) 
+              {
+                Icon: AiOutlineMessage,
+                text: "Yorum Ekle",
+                onClick: () => onComment?.(id)
               },
-              { 
-                Icon: BiBookmarkAltPlus, 
-                text: "Kaydet", 
-                onClick: () => onSave?.(id) 
+              {
+                Icon: BiBookmarkAltPlus,
+                text: "Kaydet",
+                onClick: () => onSave?.(id)
               }
             ].map(({ Icon, text, onClick }) => (
               <button
                 key={text}
                 onClick={onClick}
-                className="flex flex-nowrap p-1 border border-eksiContent hover:border-eksiCode rounded-lg hover:text-eksiCode text-dark mx-1"
+                className="flex items-center flex-nowrap p-1 border border-eksiContent hover:border-eksiCode dark:hover:text-eksiCode rounded-lg hover:text-eksiCode dark:text-white text-dark"
               >
-                <Icon className="text-lg mr-2 mt-1 ml-1" /> {text}
+                <Icon className="text-lg" />
+                <p>
+                  {text}
+                </p>
               </button>
             ))}
           </div>

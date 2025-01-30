@@ -15,13 +15,13 @@ export default function RootLayout({
           <NextBreadcrumb
             homeElement={"Anasayfa"}
             separator={<span> / </span>}
-            activeClasses="text-slate-700"
+            activeClasses="text-slate-700 dark:text-eksiCode"
             containerClasses="flex"
             listClasses="hover:underline mx-2"
             capitalizeLinks
           />
 
-          <div className="nowrap w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600">
+          <div className="nowrap w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border dark:border-DarkLightGrey text-gray-600 dark:text-white dark:bg-DarkerGrey">
             <div className="flex justify-between flex-wrap basis-full text-xl text-bold mb-4">
               {children}
             </div>

@@ -13,7 +13,7 @@ interface Tag {
 
 function TagsCard(tag: Tag) {
   return (
-    <div key={tag.id} className="relative flex items-start flex-col justify-start text-gray-700 dark:text-white bg-white dark:bg-DarkerGrey dark:border-DarkLightGrey border border-gray-200 shadow-md bg-clip-border rounded-xl w-[30%] p-2 m-2">
+    <div key={tag.id} className="relative flex items-start flex-col justify-start text-gray-700 dark:text-white bg-white dark:bg-DarkerGrey dark:border-DarkLightGrey border border-gray-200 shadow-md bg-clip-border rounded-xl w-[45%] lg:w-[30%] xl:w-[30%] 2xl:w-[30%] p-2 m-2">
       <div className="p-4">
         <h4 className="mb-2 font-sans text-lg antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
           <Link href={`/etiketler/${tag.name}`}>#{tag.name}</Link>
@@ -23,7 +23,7 @@ function TagsCard(tag: Tag) {
         </p>
       </div>
       <p className="h-20">{tag.description}</p>
-      <div className="flex gap-2 flex-nowrap">
+      <div className="flex flex-col lg:flex-row xl:flex-row 2xl:flex-row w-full gap-2 flex-nowrap">
         <Button
         // href="/uye-ol"
         >

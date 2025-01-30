@@ -6,14 +6,14 @@ function Notifications() {
   return (
     <>
       <h1 className="mt-2">Bildirimler</h1>
-      <div className="flex mb-2 h-10 text-xs items-center">
+      <div className="flex mb-2 gap-2 h-10 text-xs items-center">
         <Navlink variant="tertiary" href="/uye-ol">
           Tümü
         </Navlink>
-        <Navlink variant="tertiary" style="ml-3" href="/uye-ol">
+        <Navlink variant="tertiary" href="/uye-ol">
           Yorumlar
         </Navlink>
-        <Navlink variant="tertiary" style="ml-3" href="/uye-ol">
+        <Navlink variant="tertiary" href="/uye-ol">
           Gönderiler
         </Navlink>
       </div>
