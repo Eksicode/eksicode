@@ -1,36 +1,30 @@
-FROM node:20-alpine
+FROM node:lts-alpine3.20 AS base
 
 WORKDIR /app
 
-# Define build arguments
-ARG NEXT_PUBLIC_BACKEND_URL=https://api-demo.eksicode.org
-ARG NEXT_STATIC_PAGE_GENERATION_TIMEOUT=180
-ARG NODE_OPTIONS="--max-old-space-size=4096"
-ARG NEXT_PUBLIC_API_URL=http://backend:9000
-ARG HOSTNAME=0.0.0.0
-ARG PORT=3000
-ARG NEXT_TELEMETRY_DISABLED=1
-ARG NODE_ENV=production
+COPY package.json package-lock.json ./
 
-# Install necessary build dependencies
-RUN apk add --no-cache curl
-
-# Copy the rest of the application
-COPY . .
-
-# Install dependencies
 RUN npm install
 
-# Install sharp specifically
-RUN npm i sharp
+COPY . .
 
-# Build the application
 RUN npm run build
+
+FROM node:lts-alpine3.20 AS release
+
+WORKDIR /app
+
+COPY --from=base /app/node_modules ./node_modules
+
+COPY --from=base /app/package.json ./package.json
+
+COPY --from=base /app/.next ./.next
 
 EXPOSE 3000
 
 # Add a health check script
 COPY healthcheck.sh /healthcheck.sh
+
 RUN chmod +x /healthcheck.sh
 
 CMD ["npm", "run", "start"]

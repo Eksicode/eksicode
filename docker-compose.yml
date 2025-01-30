@@ -56,7 +56,6 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
 
-
   nginx:
     container_name: eksicodeNginx
     image: nginx
