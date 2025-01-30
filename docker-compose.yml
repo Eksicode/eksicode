@@ -18,7 +18,7 @@ services:
     networks:
       - eksicode_nw
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/ || exit 1"]
       interval: 30s
       timeout: 10s
       start_period: 40s
