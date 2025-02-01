@@ -107,7 +107,7 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6">
+    <div className="w-full dark:bg-darkBG bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6">
       <div className="mb-10 text-center">
         <h1 className="mb-2 text-xl">Kullanıcı Hesabı Oluştur</h1>
         <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
@@ -182,17 +182,17 @@ const SignUpForm: React.FC = () => {
               />
             </div>
             <div className="flex justify-between items-center mb-6">
-              <label className="form-check-label inline-block text-gray-800">
+              <label className="form-check-label dark:text-white inline-block text-gray-800">
                 <Field
                   type="checkbox"
                   name="userAgreement"
-                  className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-eksiCode checked:border-eksiCode focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                  className="form-check-input  appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-eksiCode checked:border-eksiCode focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                 />
                 ekşiCode{" "}
                 <Link
                   href={"/kullanici-sozlesmesi"}
                   target="_blank"
-                  className="hover:underline"
+                  className="hover:underline dark:text-darkTextGreen text-eksiCode"
                 >
                   kullanıcı sözleşmesini
                 </Link>{" "}

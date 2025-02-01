@@ -31,7 +31,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-      <div className="w-full bg-white px-6 py-6 border border-gray-300 rounded-lg">
+      <div className="w-full dark:bg-darkBG bg-white px-6 py-6 border border-gray-300 rounded-lg">
         <div className="mb-10 text-center">
           <h1 className="mb-2 text-xl">Kullanıcı Girişi</h1>
           <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
@@ -55,6 +55,8 @@ const LoginForm: React.FC = () => {
                 className="text-red-500 mt-1"
               />
             </div>
+
+
             <div className="mb-6">
               <Field
                 type="password"
@@ -69,11 +71,11 @@ const LoginForm: React.FC = () => {
               />
             </div>
             <div className="flex justify-between items-center mb-6">
-              <label className="form-check-label inline-block text-gray-800">
+              <label className="form-check-label inline-block dark:text-white text-gray-800">
                 <Field
                   type="checkbox"
                   name="rememberMe"
-                  className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-eksiCode checked:border-eksiCode focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                  className="form-check-input appearance-none dark:text-white h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-eksiCode checked:border-eksiCode focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                 />
                 Beni Hatırla
               </label>
@@ -86,7 +88,7 @@ const LoginForm: React.FC = () => {
             </div>
             <Button
               type="submit"
-              onClick={() => {}}
+              onClick={() => { }}
               variant="secondary"
               style="w-full mb-6"
             >
