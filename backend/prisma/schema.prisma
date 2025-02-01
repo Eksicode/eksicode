@@ -130,6 +130,7 @@ model HashTag {
   id    Int    @id @default(autoincrement())
   name  String @unique
   posts Post[]
+  sources Source[]
 
   @@map("hash_tags")
 }
@@ -240,7 +241,7 @@ model Source {
   id          Int      @id @default(autoincrement())
   title       String   @unique
   description String?
-  headers     String?
+  tags        HashTag[]
   url         String
   tgChannel   String?
   tgUser      String?
