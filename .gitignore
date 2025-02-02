@@ -47,6 +47,7 @@ dist/
 *.pem
 *.crt
 *.key
+.qodo
 
 # debug
 npm-debug.log*

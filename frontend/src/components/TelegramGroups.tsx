@@ -17,6 +17,8 @@ type TelegramGroupsProps = {
   groups?: Group[];
 };
 
+const mediaURL = process.env.NEXT_PUBLIC_MEDIA_URL;
+
 const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
   const initialLogoCount = 17;
   const logoWidth = 70;
@@ -35,7 +37,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
         const groups = fetchedPosts.data.map((item) => ({
           id: item.id,
           name: item.name,
-          icon: item.icon,
+          icon: mediaURL+item.icon,
           link: item.link,
         })) as Group[];
         setFetchedGroups(groups);
@@ -65,6 +67,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
   }, [logoCount, mobileWidth, initialLogoCount, logoWidth]);
 
   return (
+    
     <div className="flex items-center lg:w-full xl:w-3/4 2xl:w-3/4 md:w-full h-16 justify-between overflow-hidden ">
       {isMobile ? (
         <div className="flex w-full gap-2 justify-center">

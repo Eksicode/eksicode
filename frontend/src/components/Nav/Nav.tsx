@@ -23,7 +23,7 @@ const Nav = () => {
         <div className="flex items-center">
           <Link className="flex content-center" href="/">
             <Image
-              src={"https://eksicode-images.s3.eu-central-1.amazonaws.com/eksi-code-logo.png"}
+              src={"/images/eksi-code-logo.png"}
               alt="eksi-code-logo"
               width="53"
               height="30"
