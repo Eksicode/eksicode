@@ -4,7 +4,7 @@ import { useState } from "react";
 import SideMenu from "./Nav/SideMenu";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 
-import ppImage from "../public/assets/pp-image.png";
+import ppImage from "/images/pp-image.png";
 
 const Detail = () => {
   return (

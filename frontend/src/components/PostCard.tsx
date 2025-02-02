@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 import { BiBookmarkAltPlus } from "react-icons/bi";
-import ppImage from "../public/assets/pp-image.png";
+import ppImage from "../../public/images/pp-image.png";
 import { formatDate } from "@/utils/utils";
 
 interface Author {
