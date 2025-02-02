@@ -107,7 +107,7 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full dark:bg-darkBG bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6">
+    <div className="w-full dark:bg-DarkerGrey bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6">
       <div className="mb-10 text-center">
         <h1 className="mb-2 text-xl">Kullanıcı Hesabı Oluştur</h1>
         <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
@@ -192,7 +192,7 @@ const SignUpForm: React.FC = () => {
                 <Link
                   href={"/kullanici-sozlesmesi"}
                   target="_blank"
-                  className="hover:underline dark:text-darkTextGreen text-eksiCode"
+                  className="hover:underline dark:text-eksiCode text-eksiCode"
                 >
                   kullanıcı sözleşmesini
                 </Link>{" "}

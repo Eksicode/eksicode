@@ -23,7 +23,6 @@ const config: Config = {
         sText: "#666666",
         bg: "#c5d6d8",
         btnClr: "#2196f3",
-        darkBG:"#262626",
         darkTextGreen:"#82BF4E"
       },
       fontFamily: {
