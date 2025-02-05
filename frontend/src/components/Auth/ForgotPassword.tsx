@@ -75,7 +75,7 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white px-6 py-6 border dark:bg-DarkerGrey border-gray-300 rounded-lg h-[60vh]">
+    <div className="w-full bg-white border-gray-300 px-6 py-6 border dark:bg-DarkerGrey dark:border-DarkLightGrey dark:text-white rounded-lg h-[60vh]">
       <div className="mb-10 text-center">
         <h1 className="mb-2 text-xl">Şifre Hatırlatma</h1>
         <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
@@ -92,7 +92,7 @@ const ForgotPassword: React.FC = () => {
                 id="email"
                 name="email"
                 placeholder="E-posta adresinizi girin"
-                className="border border-gray-300 rounded-md px-3 py-2 font-normal text-gray-700"
+                className="px-3 py-2 font-normal bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="email"
@@ -119,7 +119,7 @@ const ForgotPassword: React.FC = () => {
         
       </Formik>
       <div className="text-center mt-4">
-        <Link href="/auth/uye-giris" className="text-gray-400 text-sm hover:underline">
+        <Link href="/auth/uye-giris" className="text-sm hover:underline">
           Üye Girişi Yap
         </Link>
       </div>

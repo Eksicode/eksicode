@@ -31,7 +31,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-      <div className="w-full dark:bg-DarkerGrey bg-white px-6 py-6 border border-gray-300 rounded-lg">
+      <div className="w-full bg-white px-6 py-6 border border-gray-300 dark:bg-DarkerGrey dark:text-white dark:border-DarkLightGrey  rounded-lg">
         <div className="mb-10 text-center">
           <h1 className="mb-2 text-xl">Kullanıcı Girişi</h1>
           <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
@@ -47,7 +47,7 @@ const LoginForm: React.FC = () => {
                 type="text"
                 name="email"
                 placeholder="E-posta Adresi"
-                className="form-control block w-full px-4 py-2 font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                className="form-control block w-full px-4 py-2 font-normal  bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="email"
@@ -55,14 +55,12 @@ const LoginForm: React.FC = () => {
                 className="text-red-500 mt-1"
               />
             </div>
-
-
             <div className="mb-6">
               <Field
                 type="password"
                 name="password"
                 placeholder="Şifre"
-                className="form-control block w-full px-4 py-2 font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                className="form-control block w-full px-4 py-2 font-normal  bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="password"
@@ -71,7 +69,7 @@ const LoginForm: React.FC = () => {
               />
             </div>
             <div className="flex justify-between items-center mb-6">
-              <label className="form-check-label inline-block dark:text-white text-gray-800">
+              <label className="form-check-label inline-block dark:text-white ">
                 <Field
                   type="checkbox"
                   name="rememberMe"
@@ -81,7 +79,7 @@ const LoginForm: React.FC = () => {
               </label>
               <Link
                 href="/auth/sifremi-unuttum"
-                className="text-gray-400 text-sm hover:underline"
+                className="text-sm hover:underline"
               >
                 Şifremi Unuttum
               </Link>
@@ -97,7 +95,7 @@ const LoginForm: React.FC = () => {
             <div className="flex justify-center items-center mb-6">
               <Link
                 href="/auth/uye-ol"
-                className="text-gray-400 text-sm hover:underline"
+                className="text-sm hover:underline"
               >
                 Hesabınız yok mu?
               </Link>
