@@ -59,7 +59,7 @@ const Slider: React.FC<CustomCarouselProps> = ({ children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="relative mb-3 bg-white border rounded-lg">
+    <div className="relative mb-3 bg-white border rounded-lg border-gray-300 ">
       <div className="absolute z-20 flex justify-between right-0 top-2 items-center mx-2 mb-2">
         <Button onClick={handleClose} variant="primary">
           Gizle

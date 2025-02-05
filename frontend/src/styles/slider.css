@@ -64,7 +64,7 @@
   border-radius: 50%;
   outline: none;
   border: 0;
-  background-color: white;
+  /* background-color: white; */
   border: 0px;
   transition: background-color 1s ease;
   margin: 0 2px;

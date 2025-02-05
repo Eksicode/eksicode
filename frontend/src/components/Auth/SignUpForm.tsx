@@ -89,7 +89,7 @@ const SignUpForm: React.FC = () => {
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
-          setIsFormValid(false)
+          setIsFormValid(false);
         } catch (error) {
           console.error("Error parsing JSON response", error);
         }
@@ -107,10 +107,12 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full dark:bg-DarkerGrey bg-white px-6 py-6 border border-gray-300 rounded-lg mb-6">
+    <div className="w-8/12 bg-white px-6 py-6 border border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg mb-6">
       <div className="mb-10 text-center">
         <h1 className="mb-2 text-xl">Kullanıcı Hesabı Oluştur</h1>
-        <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
+        <span className="text-sm">
+          EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.
+        </span>
       </div>
       <Formik
         initialValues={initialValues}
@@ -124,14 +126,14 @@ const SignUpForm: React.FC = () => {
         }}
       >
         {({ isValid }) => (
-          <Form className="mb-2 text-sm font-normal text-gray-700 w-full">
+          <Form className="mb-2 text-sm font-normal text-gray-700 dark:text-white w-full">
             <div className="mb-6">
               <label htmlFor="name">Kullanıcı Adınız*</label>
               <Field
                 type="text"
                 name="name"
                 placeholder="johndoe"
-                className="block w-full px-4 py-2 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="name"
@@ -145,7 +147,7 @@ const SignUpForm: React.FC = () => {
                 type="text"
                 name="email"
                 placeholder="johndoe@example.com"
-                className="block w-full px-4 py-2 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="email"
@@ -159,7 +161,7 @@ const SignUpForm: React.FC = () => {
                 type="password"
                 name="password"
                 placeholder="Şifre"
-                className="block w-full px-4 py-2 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="password"
@@ -173,7 +175,7 @@ const SignUpForm: React.FC = () => {
                 type="password"
                 name="password_confirmation"
                 placeholder="Şifre Tekrar"
-                className="block w-full px-4 py-2 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="password_confirmation"
@@ -182,26 +184,36 @@ const SignUpForm: React.FC = () => {
               />
             </div>
             <div className="flex justify-between items-center mb-6">
-              <label className="form-check-label dark:text-white inline-block text-gray-800">
+              <label className="form-check-label text-wrap dark:text-white inline-block text-gray-800">
                 <Field
                   type="checkbox"
                   name="userAgreement"
-                  className="form-check-input  appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-eksiCode checked:border-eksiCode focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                  className="form-check-input appearance-none h-4 w-4 mb-8 mr-3 border border-gray-300 rounded-sm bg-white checked:bg-eksiCode checked:border-eksiCode focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left cursor-pointer"
                 />
-                ekşiCode{" "}
-                <Link
-                  href={"/kullanici-sozlesmesi"}
-                  target="_blank"
-                  className="hover:underline dark:text-eksiCode text-eksiCode"
-                >
-                  kullanıcı sözleşmesini
-                </Link>{" "}
-                okudum ve kabul ediyorum
-                <ErrorMessage
-                  name="userAgreement"
-                  component="div"
-                  className="text-red-500 mt-1"
-                />
+                <span className="text-sm">
+                  ekşiCode{" "}
+                  <Link
+                    href={"/kullanici-sozlesmesi"}
+                    target="_blank"
+                    className="hover:underline dark:text-eksiCode text-eksiCode"
+                  >
+                    kullanıcı sözleşmesini
+                  </Link>{" "}
+                  ve{" "}
+                  <Link
+                    href={"/sayfalar/kurallar"}
+                    target="_blank"
+                    className="hover:underline dark:text-eksiCode text-eksiCode"
+                  >
+                    grup kurallarını
+                  </Link>{" "}
+                  okudum ve kabul ediyorum
+                  <ErrorMessage
+                    name="userAgreement"
+                    component="div"
+                    className="text-red-500 mt-1"
+                  />
+                </span>
               </label>
             </div>
             <Button
@@ -224,7 +236,7 @@ const SignUpForm: React.FC = () => {
         )}
       </Formik>
       <div className="text-center">
-        <Link href="/auth/uye-giris" className="text-gray-400 text-sm hover:underline">
+        <Link href="/auth/uye-giris" className="text-sm hover:underline">
           Üye Girişi Yap
         </Link>
       </div>
