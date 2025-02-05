@@ -1,9 +1,9 @@
-"use client"; // <-- Add this directive
+"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { IPost } from "@/types/types";
 import { PostCard } from "./PostCard";
-import LoadMore from "@/components/LoadMore"; // Ensure this import is correct
+import LoadMore from "@/components/LoadMore";
 
 interface PostsProps {
   initialPosts?: IPost[];
