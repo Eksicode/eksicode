@@ -31,7 +31,6 @@ model User {
   comments       Comment[]
   postLikes      PostLike[]
   notifications  Notification[]
-  jobs           Job[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 
@@ -189,7 +188,7 @@ model Menu {
   link       String
   subMenu    Int            @default(0)
   icon       String?
-  categories MenuCategory[] 
+  categories MenuCategory[]
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
 
@@ -201,7 +200,7 @@ model MenuCategory {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  menus     Menu[]   // Changed from Menu? to Menu[]
+  menus     Menu[] // Changed from Menu? to Menu[]
 
   @@map("menu_categories")
 }
@@ -220,18 +219,33 @@ model Notification {
   @@map("notifications")
 }
 
+model Company {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  website     String?
+  industry    String?
+  location    String?
+  logo        String?  // URL or path to the logo
+  jobs        Job[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("companies")
+}
+
 model Job {
-  id             Int                   @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   title          String
-  description    String
-  location       String
-  EmploymentType JobEmploymentTypeEnum
-  Department     String
-  salary         String
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  company        User?                 @relation(fields: [usersId], references: [id])
-  usersId        Int?
+  description    String? // Descriptions can be optional
+  location       String? // Locations can be optional
+  employmentType String? // Employment types can be optional
+  department     String? // Departments can be optional
+  salary         String? // Salary can be optional (consider a separate Salary model for more complex scenarios)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  companyId      Int      // Explicitly name the foreign key
+  company        Company  @relation(fields: [companyId], references: [id]) // Define the relation
 
   @@map("jobs")
 }
@@ -251,14 +265,6 @@ model Source {
 }
 
 // Enums List
-
-enum JobEmploymentTypeEnum {
-  fullTime
-  partTime
-  contract
-  temporary
-  internship
-}
 
 enum NotificationTypeEnum {
   yorum

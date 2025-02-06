@@ -9,6 +9,7 @@ import MenuRoute from './routes/menu.route';
 import MenuCategoryRoute from './routes/menu-category.route';
 import HashtagRoute from './routes/hashtag.route';
 import PostRoute from './routes/post.route';
+import JobRoute from './routes/job.route';
 // import AuthRoute from '@routes/auth.route';
 // import OAuthRoute from '@routes/oauth.route';
 // import RolesRoute from '@routes/roles.route';
@@ -23,6 +24,7 @@ const app = new App([
     new MenuCategoryRoute(),
     new HashtagRoute(),
     new PostRoute(),
+    new JobRoute(),
     // new RolesRoute(),
     // new PermissionsRoute(),
     // new AuthRoute(),
