@@ -41,7 +41,7 @@ export default async function Tags() {
         <SideMenu />
       </div>
       <div className="flex flex-wrap w-full justify-center text-center">
-        <div className="flex flex-col lg:flex-row xl:flex-row 2xl:flex-row items-center justify-between w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600 dark:bg-DarkerGrey dark:border-DarkLightGrey dark:text-white">
+        <div className="flex flex-col lg:flex-row items-center justify-between w-full bg-white mx-2 p-4 rounded-lg border-gray-300 border text-gray-600 dark:bg-DarkerGrey dark:border-DarkLightGrey dark:text-white">
           <div className="text-3xl text-bold">
             Etiketler
           </div>
@@ -58,7 +58,7 @@ export default async function Tags() {
         </div>
 
 
-        <div className="flex flex-wrap w-full justify-between mx-0 sm:mx-2">
+        <div className="flex flex-wrap w-full justify-between lg:mx-0 mx-2">
           {tags.data?.map((tag: Tag) => (
             <TagsCard key={tag.id} {...tag} />
           ))}

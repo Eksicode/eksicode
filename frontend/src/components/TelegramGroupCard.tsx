@@ -11,7 +11,7 @@ interface Group {
 
 const TelegramGroupCard = (group: Group) => {
   return (
-    <div className="relative grid content-between justify-items-center sm:w-full h-60 w-52 flex-col bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey border shadow-md rounded-lg p-4 m-2">
+    <div className="relative grid content-between justify-items-center w-full h-60 lg:w-52 flex-col bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey border shadow-md rounded-lg p-4 m-2">
       <Image
         src={group.icon}
         alt="eksi-code-logo"

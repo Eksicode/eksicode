@@ -18,7 +18,7 @@ const Nav = () => {
     <nav className="flex flex-wrap w-full justify-center z-50 sticky top-0 nav-sahdow bg-white dark:bg-DarkerGrey">
       {/* Menu */}
       {/* <div className="flex items-center sm:basis-full md:basis-full lg:basis-full basis-3/4 h-16 mx-10 sm:mx-4 justify-between"> */}
-      <div className="flex justify-between items-center h-16 mx-10 sm:mx-2 sm:basis-full md:basis-full lg:basis-full basis-3/4 ">
+      <div className="flex justify-between items-center h-16 md:mx-10 mx-2 basis-full md:basis-3/4 ">
         {/* Logo */}
         <div className="flex items-center">
           <Link className="flex content-center" href="/">
@@ -31,31 +31,31 @@ const Nav = () => {
           </Link>
         </div>
 
-        <div className="flex justify-center w-1/4 sm:w-1/2">
+        <div className="flex justify-center lg:w-1/4 w-1/2">
           <Search />
         </div>
 
         <div className="flex items-center justify-end">
           {/*  Desktop menu */}
-          <div className="flex flex-nowrap items-center text-center md:text-sm lg:text-sm">
+          <div className="flex flex-nowrap items-center text-center text-sm">
             {/*  Theme Switcher */}
-            <div className="mr-4 mt-1 hidden md:block lg:block xl:block 2xl:block">
+            <div className="mr-4 mt-1 hidden lg:block">
               <ThemeSwitch />
             </div>
 
             <Navlink
               variant="secondary"
               href="/dashboard/posts/yeni"
-              style="sm:hidden"
+              style="hidden lg:flex"
             >
               <div className="flex items-center">
                 <AiOutlineEdit className="h-5 w-5 mr-1" />
-                <span className="sm:hidden flex">Yeni Gönderi</span>
+                <span className="hidden lg:flex">Yeni Gönderi</span>
               </div>
             </Navlink>
             <Navlink
               variant="quaternary"
-              style="ml-3 pt-2 border border-white sm:hidden"
+              style="ml-3 pt-2 border border-white hidden lg:flex"
               href="/auth/uye-giris"
             >
               <div className="flex items-center">
@@ -65,7 +65,7 @@ const Nav = () => {
             </Navlink>
             <Navlink
               variant="primary"
-              style="ml-3 sm:hidden"
+              style="ml-3 hidden lg:flex"
               href="/auth/uye-ol"
             >
               <div className="flex items-center">
