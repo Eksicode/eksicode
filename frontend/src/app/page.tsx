@@ -10,7 +10,7 @@ const Page = () => {
       <div className="flex">
         <SideMenu />
       </div>
-      <div className="flex flex-wrap w-7/12 sm:w-full md:w-full mx-2">
+      <div className="flex flex-wrap lg:w-7/12 w-full mx-2">
         <Slider>
           {images.map((image, index) => {
             return (
@@ -23,7 +23,7 @@ const Page = () => {
             );
           })}
         </Slider>
-        <div className="sm:hidden flex mb-2 h-10 text-xs items-center">
+        <div className="hidden lg:flex w-full mb-2 h-10 text-xs items-center">
           <Navlink variant="tertiary" href="/uye-ol">
             İlgili
           </Navlink>
@@ -37,7 +37,7 @@ const Page = () => {
         <Posts />
       </div>
 
-      <div className="flex w-3/12 sm:hidden md:hidden">
+      <div className="lg:flex w-3/12 hidden">
         <aside className="w-full" aria-label="Sidebar-right">
           <div className="overflow-y-auto py-4 px-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
             <span className="w-full flex">
