@@ -48,7 +48,7 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   return (
     <div className="py-4 w-full px-1 mb-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
-      <div className="flex flex-wrap sm:basis-full basis-3/4 mx-3 sm:mx-2 justify-between">
+      <div className="flex flex-wrap basis-full lg:basis-3/4 md:mx-3 mx-2 justify-between">
         {/* Author Info */}
         <div className="flex items-center space-x-4 content-start">
           <Image
@@ -69,7 +69,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         </div>
 
         {/* Post Content */}
-        <div className="w-full ml-0 lg:ml-14 xl:ml-14 2xl:ml-14">
+        <div className="w-full ml-0 lg:ml-14">
           <h2 className="text-2xl my-2 font-bold">
             <Link href={`/posts/${slug}`}>{title}</Link>
           </h2>

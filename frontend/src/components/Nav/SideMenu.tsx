@@ -60,7 +60,7 @@ async function SideMenu() {
     menu = await fetchMenu();
   } catch (error) {
     return (
-      <aside className="w-64 sm:hidden" aria-label="Sidebar">
+      <aside className="w-64 hidden lg:block" aria-label="Sidebar">
         <div className="overflow-y-auto w-64 py-4 px-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
           <span className="text-sm font-semibold text-gray-500">
             Menu yüklenirken bir hata oluştu
@@ -71,7 +71,7 @@ async function SideMenu() {
   }
 
   return (
-    <aside className="w-64 sm:hidden" aria-label="Sidebar">
+    <aside className="w-64 hidden lg:block" aria-label="Sidebar">
       <div className="overflow-y-auto min-h-96 w-64 py-4 px-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
         <ul className="space-y-2">
           {menu.length === 0 && (

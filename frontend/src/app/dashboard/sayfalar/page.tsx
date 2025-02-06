@@ -13,9 +13,9 @@ async function DashboardPages() {
 
   return (
     <>
-      <div className="flex justify-between w-full items-center mb-5">
+      <div className="flex w-full justify-between items-center mb-5">
         <div>
-          <h1 className="mt-2 w-full">Sayfalar</h1>
+          <h1 className="mt-2">Sayfalar</h1>
         </div>
         <div>
           <Navlink href="/dashboard/sayfalar/yeni" variant="primary">

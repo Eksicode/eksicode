@@ -126,9 +126,10 @@ model PostCategory {
 }
 
 model HashTag {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  posts Post[]
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  posts    Post[]
+  sources  Source[]  @relation("SourceHashTags")
 
   @@map("hash_tags")
 }
@@ -251,15 +252,15 @@ model Job {
 }
 
 model Source {
-  id          Int      @id @default(autoincrement())
-  title       String   @unique
+  id          Int       @id @default(autoincrement())
+  title       String    @unique
   description String?
-  headers     String?
   url         String
   tgChannel   String?
   tgUser      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  hashtags    HashTag[] @relation("SourceHashTags")
 
   @@map("sources")
 }

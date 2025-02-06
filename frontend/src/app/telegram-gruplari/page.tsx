@@ -36,7 +36,7 @@ async function Groups() {
       <div className="flex">
         <SideMenu />
       </div>
-      <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
+      <div className="flex flex-wrap w-full justify-center text-center">
         <div className="flex flex-wrap justify-center w-full mx-2 p-4 rounded-lg border bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey">
           <h1 className="w-full text-3xl text-bold mb-4">Telegram Grupları</h1>
           <h2 className="w-full mb-4">
@@ -79,7 +79,7 @@ async function Groups() {
           </div>
         </div>
 
-        <div className="flex flex-wrap w-full justify-between sm:mx-2">
+        <div className="flex flex-wrap w-full justify-between mx-2">
           {groups.data.map((group: Group) => (
             <TelegramGroupCard
               key={group.id}
