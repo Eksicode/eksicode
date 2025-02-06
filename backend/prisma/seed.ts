@@ -4,12 +4,15 @@ import { telegramGroupsData } from "./telegramGroupsData";
 import { menuItems } from "./menuItemsData";
 import { pageCategories, pages } from "./pagesData";
 import { posts } from "./postsData";
+import { companiesData } from "./companiesData";
+import { jobsData } from "./jobsData";
 
 async function cleanDatabase() {
   console.log("Cleaning database...");
   await prisma.postLike.deleteMany({});
   await prisma.comment.deleteMany({});
   await prisma.post.deleteMany({});
+  await prisma.job.deleteMany({}); // Add this line
   await prisma.user.deleteMany({});
   await prisma.hashTag.deleteMany({});
   await prisma.postCategory.deleteMany({});
@@ -17,6 +20,52 @@ async function cleanDatabase() {
   await prisma.menuCategory.deleteMany({});
   await prisma.role.deleteMany({});
   await prisma.permission.deleteMany({});
+}
+
+async function seedCompanies() {
+  console.log("Seeding companies...");
+
+  for (const company of companiesData) {
+    const { id, ...companyData } = company;
+    await prisma.company.upsert({
+      where: { id: id },
+      update: {},
+      create: {
+        ...companyData,
+      },
+    });
+  }
+}
+
+
+// Removed duplicate seedCompanies function
+
+async function seedJobs() {
+  console.log("Seeding jobs...");
+
+  for (const job of jobsData) {
+    const { id, ...jobData } = job;
+
+    await prisma.job.upsert({
+      where: { id: job.id }, // Assuming job has an id
+      update: {
+        ...jobData,
+        createdAt: new Date(jobData.createdAt),
+        updatedAt: new Date(jobData.updatedAt),
+        company: {
+          connect: { id: jobData.company }
+        }
+      },
+      create: {
+        ...jobData,
+        createdAt: new Date(jobData.createdAt),
+        updatedAt: new Date(jobData.updatedAt),
+        company: {
+          connect: { id: jobData.company }
+        }
+      },
+    });
+  }
 }
 
 async function seedPermissions() {
@@ -260,6 +309,10 @@ async function main() {
     await seedTelegramGroups();
     await seedMenuCategoriesAndItems();
     await seedPageCategoriesAndPages();
+    await seedCompanies();
+    await seedJobs();
+
+    console.log("Seeding complete.");
 
     const { categories, tags } = await seedPostCategoriesAndTags();
     const users = await prisma.user.findMany();
