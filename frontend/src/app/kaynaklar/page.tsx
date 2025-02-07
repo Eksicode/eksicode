@@ -37,7 +37,7 @@ interface SourcesResponse {
 }
 
 export default async function Sources() {
-  const sourcesData: SourcesResponse = await getData("sources", false, 10);
+  const sourcesData = await getData<Source, Meta>("sources", false, 10);
 
   const formatHashtags = (hashtags: Hashtag[]): string => {
     return hashtags.map(hashtag => hashtag.name).join(", ");
