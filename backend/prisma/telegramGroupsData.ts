@@ -2,7 +2,7 @@ export const telegramGroupsData = [
     {
       id: 40,
       name: "Duyuru",
-      logo: "/duyuru.jpg",
+      logo: "duyuru.jpg",
       members: 279,
       link: "https://t.me/+T21XXkOQtaChSIIu",
       channel_id: "-1001332565854",
@@ -12,7 +12,7 @@ export const telegramGroupsData = [
     {
       id: 1,
       name: "Genel Konular",
-      logo: "/genel.jpg",
+      logo: "genel.jpg",
       members: 1024,
       link: "https://t.me/+PaBUhA5nqiM5ODk0",
       channel_id: "-1001364530781",
@@ -22,7 +22,7 @@ export const telegramGroupsData = [
     {
       id: 2,
       name: "JavaScript",
-      logo: "/javascript.jpg",
+      logo: "javascript.jpg",
       members: 1361,
       link: "https://t.me/+3FMaocsKi29mMmVk",
       channel_id: "-1001156686363",
@@ -32,7 +32,7 @@ export const telegramGroupsData = [
     {
       id: 3,
       name: "Python",
-      logo: "/python.jpg",
+      logo: "python.jpg",
       members: 1878,
       link: "https://t.me/+FbX-MPw6m-RjZmY0",
       channel_id: "-1001353326048",
@@ -42,7 +42,7 @@ export const telegramGroupsData = [
     {
       id: 5,
       name: "C++",
-      logo: "/cpp.jpg",
+      logo: "cpp.jpg",
       members: 669,
       link: "https://t.me/+vOSgQQRiR_BmZjlk",
       channel_id: "-1001210277059",
@@ -52,7 +52,7 @@ export const telegramGroupsData = [
     {
       id: 7,
       name: "C#",
-      logo: "/sisarp.jpg",
+      logo: "sisarp.jpg",
       members: 1235,
       link: "https://t.me/+T3NOZuA53mLjJ2sn",
       channel_id: "-1001332956774",
@@ -62,7 +62,7 @@ export const telegramGroupsData = [
     {
       id: 6,
       name: "C",
-      logo: "/si.jpg",
+      logo: "si.jpg",
       members: 672,
       link: "https://t.me/+TCrTe5oACSqOn9wj",
       channel_id: "-1001277875067",
@@ -72,7 +72,7 @@ export const telegramGroupsData = [
     {
       id: 13,
       name: "Yapay Zeka & Veri Bilimi",
-      logo: "/ai.jpg",
+      logo: "ai.jpg",
       members: 1415,
       link: "https://t.me/+TzBOieqmwvl0qELw",
       channel_id: "-1001328565897",
@@ -82,7 +82,7 @@ export const telegramGroupsData = [
     {
       id: 8,
       name: "Java",
-      logo: "/java.jpg",
+      logo: "java.jpg",
       members: 880,
       link: "https://t.me/+2zs8bUA8Gy8wYzFk",
       channel_id: "-1001389029475",
@@ -92,7 +92,7 @@ export const telegramGroupsData = [
     {
       id: 28,
       name: "Siber Güvenlik",
-      logo: "/cybersecurity.jpg",
+      logo: "cybersecurity.jpg",
       members: 903,
       link: "https://t.me/+VyOexoWKAawGpPSz",
       channel_id: "-1001461952198",
@@ -102,7 +102,7 @@ export const telegramGroupsData = [
     {
       id: 19,
       name: "Kariyer",
-      logo: "/career.jpg",
+      logo: "career.jpg",
       members: 1082,
       link: "https://t.me/+SSB8Zwi1bE182g2P",
       channel_id: "-1001226865767",
@@ -112,7 +112,7 @@ export const telegramGroupsData = [
     {
       id: 14,
       name: "Mobil Uygulama Geliştirme",
-      logo: "/mobile.jpg",
+      logo: "mobile.jpg",
       members: 910,
       link: "https://t.me/+TX6fHFZsIQe3dRRo",
       channel_id: "-1001300143900",
@@ -122,7 +122,7 @@ export const telegramGroupsData = [
     {
       id: 4,
       name: "PHP",
-      logo: "/php.jpg",
+      logo: "php.jpg",
       members: 540,
       link: "https://t.me/+CmXuuDNeG_wxNGI0",
       channel_id: "-1001211127698",
@@ -132,7 +132,7 @@ export const telegramGroupsData = [
     {
       id: 24,
       name: "Flutter",
-      logo: "/flutter.jpg",
+      logo: "flutter.jpg",
       members: 503,
       link: "https://t.me/+xamLQPMriU0xMWZk",
       channel_id: "-1001356411278",
@@ -142,7 +142,7 @@ export const telegramGroupsData = [
     {
       id: 11,
       name: "Linux",
-      logo: "/linux.jpg",
+      logo: "linux.jpg",
       members: 771,
       link: "https://t.me/+wvmaJhL1V6E5NjBk",
       channel_id: "-1001380409228",
@@ -152,7 +152,7 @@ export const telegramGroupsData = [
     {
       id: 12,
       name: "Windows",
-      logo: "/windows.jpg",
+      logo: "windows.jpg",
       members: 403,
       link: "https://t.me/+TQFnV8B4dyi6jFkE",
       channel_id: "-1001291937623",
@@ -162,7 +162,7 @@ export const telegramGroupsData = [
     {
       id: 36,
       name: "macOS",
-      logo: "/macos.jpg",
+      logo: "macos.jpg",
       members: 230,
       link: "https://t.me/+S_nguXHqhQgX8LEq",
       channel_id: "-1001274667193",
@@ -172,7 +172,7 @@ export const telegramGroupsData = [
     {
       id: 15,
       name: "Oyun Geliştirme",
-      logo: "/gamedevelopment.jpg",
+      logo: "gamedevelopment.jpg",
       members: 409,
       link: "https://t.me/+QuzKpAGPfBAUQ57G",
       channel_id: "-1001122814628",
@@ -182,7 +182,7 @@ export const telegramGroupsData = [
     {
       id: 10,
       name: "DevOps & Networking",
-      logo: "/devops.jpg",
+      logo: "devops.jpg",
       members: 539,
       link: "https://t.me/+ShYyjNmD8Awk5a9R",
       channel_id: "-1001242968716",
@@ -192,7 +192,7 @@ export const telegramGroupsData = [
     {
       id: 16,
       name: "UX/UI - Tasarım",
-      logo: "/ui-ux.jpg",
+      logo: "ui-ux.jpg",
       members: 502,
       link: "https://t.me/+BJZ6Ps88YEQwNmI0",
       channel_id: "-1001480553178",
@@ -202,7 +202,7 @@ export const telegramGroupsData = [
     {
       id: 9,
       name: "Ruby",
-      logo: "/ruby.jpg",
+      logo: "ruby.jpg",
       members: 134,
       link: "https://t.me/joinchat/UaU_HKsfRkllLYcm",
       channel_id: "-1001369784092",
@@ -212,7 +212,7 @@ export const telegramGroupsData = [
     {
       id: 18,
       name: "İngilizce",
-      logo: "/english.jpg",
+      logo: "english.jpg",
       members: 1112,
       link: "https://t.me/joinchat/azLsOBAhFDwwNDM0",
       channel_id: "-1001263722948",
@@ -222,7 +222,7 @@ export const telegramGroupsData = [
     {
       id: 37,
       name: "Almanca",
-      logo: "/german.jpg",
+      logo: "german.jpg",
       members: 350,
       link: "https://t.me/+RT5ym5P5Q-MP2OHR",
       channel_id: "-1001161720475",
@@ -232,7 +232,7 @@ export const telegramGroupsData = [
     {
       id: 34,
       name: "Eğitim",
-      logo: "/education.jpg",
+      logo: "education.jpg",
       members: 308,
       link: "https://t.me/eksicode_egitim",
       channel_id: "-1001142111543",
@@ -242,7 +242,7 @@ export const telegramGroupsData = [
     {
       id: 17,
       name: "Matematik & Algoritma",
-      logo: "/math.jpg",
+      logo: "math.jpg",
       members: 627,
       link: "https://t.me/+5TvKby41qug5N2Vk",
       channel_id: "-1001159983728",
@@ -252,7 +252,7 @@ export const telegramGroupsData = [
     {
       id: 21,
       name: "Go",
-      logo: "/go.jpg",
+      logo: "go.jpg",
       members: 306,
       link: "https://t.me/joinchat/VUlUEoUL9EE-pe3s",
       channel_id: "-1001430869010",
@@ -262,7 +262,7 @@ export const telegramGroupsData = [
     {
       id: 22,
       name: "Gömülü Sistemler & Robotik",
-      logo: "/embeded.jpg",
+      logo: "embeded.jpg",
       members: 487,
       link: "https://t.me/+VLq340MbEG0mB8H1",
       channel_id: "-1001421522915",
@@ -272,7 +272,7 @@ export const telegramGroupsData = [
     {
       id: 23,
       name: "Veritabanları",
-      logo: "/databases.jpg",
+      logo: "databases.jpg",
       members: 574,
       link: "https://t.me/joinchat/SWr2D9EEu--u5Sh6",
       channel_id: "-1001231746575",
@@ -282,7 +282,7 @@ export const telegramGroupsData = [
     {
       id: 33,
       name: "Bilişim Hukuku",
-      logo: "/law.jpg",
+      logo: "law.jpg",
       members: 291,
       link: "https://t.me/+RT5xaf56OGFxpz8X",
       channel_id: "-1001161720169",
@@ -292,7 +292,7 @@ export const telegramGroupsData = [
     {
       id: 25,
       name: "Rust",
-      logo: "/rust.jpg",
+      logo: "rust.jpg",
       members: 188,
       link: "https://t.me/+S0dUKJg1j7kQSpl4",
       channel_id: "-1001262965800",
@@ -302,7 +302,7 @@ export const telegramGroupsData = [
     {
       id: 26,
       name: "Blockchain",
-      logo: "/blockchain.jpg",
+      logo: "blockchain.jpg",
       members: 383,
       link: "https://t.me/+H83tVquLY1wyZWI8",
       channel_id: "-1001333212756",
@@ -312,7 +312,7 @@ export const telegramGroupsData = [
     {
       id: 27,
       name: "Cryptocurrency",
-      logo: "/cryiptocurrency.jpg",
+      logo: "cryiptocurrency.jpg",
       members: 182,
       link: "https://t.me/joinchat/Ssl5dka1tfJumbG8",
       channel_id: "-1001254717814",
@@ -322,7 +322,7 @@ export const telegramGroupsData = [
     {
       id: 30,
       name: "Matlab & Julia",
-      logo: "/matlab.jpg",
+      logo: "matlab.jpg",
       members: 371,
       link: "https://t.me/+zLdtsqlcGaJkMmY0",
       channel_id: "-1001476238342",
@@ -332,7 +332,7 @@ export const telegramGroupsData = [
     {
       id: 29,
       name: "PLC",
-      logo: "/plc.jpg",
+      logo: "plc.jpg",
       members: 306,
       link: "https://t.me/eksicode_plc",
       channel_id: "-1001260299968",
@@ -342,7 +342,7 @@ export const telegramGroupsData = [
     {
       id: 31,
       name: "Kotlin",
-      logo: "/kotlin.jpg",
+      logo: "kotlin.jpg",
       members: 245,
       link: "https://t.me/+Sp7WIV9vNwDwD4GC",
       channel_id: "-1001251923489",
@@ -352,7 +352,7 @@ export const telegramGroupsData = [
     {
       id: 32,
       name: "R",
-      logo: "/r.jpg",
+      logo: "r.jpg",
       members: 198,
       link: "https://t.me/+T9Lv6D6io36p14wS",
       channel_id: "-1001339224040",
@@ -362,7 +362,7 @@ export const telegramGroupsData = [
     {
       id: 35,
       name: "SAP",
-      logo: "/sap.jpg",
+      logo: "sap.jpg",
       members: 132,
       link: "https://t.me/+TMnqRfxwICopdDhY",
       channel_id: "-1001288301125",
@@ -372,7 +372,7 @@ export const telegramGroupsData = [
     {
       id: 39,
       name: "Swift",
-      logo: "/swift.jpg",
+      logo: "swift.jpg",
       members: 273,
       link: "https://t.me/+SCPMtSS_GRmoOzi0",
       channel_id: "-1001210305717",
@@ -382,7 +382,7 @@ export const telegramGroupsData = [
     {
       id: 38,
       name: "SEO & Dijital Pazarlama",
-      logo: "/digitalmarketing.jpg",
+      logo: "digitalmarketing.jpg",
       members: 209,
       link: "https://t.me/joinchat/4goulPjv3y82Y2U0",
       channel_id: "-1001166481081",
@@ -392,7 +392,7 @@ export const telegramGroupsData = [
     {
       id: 42,
       name: "Fizik",
-      logo: "/fizik.jpg",
+      logo: "fizik.jpg",
       members: 128,
       link: "https://t.me/joinchat/VvPbtU9VY_YDfBdS",
       channel_id: "-1001458822069",
@@ -402,7 +402,7 @@ export const telegramGroupsData = [
     {
       id: 43,
       name: "Kimya & Biyoloji",
-      logo: "/chemistry.jpg",
+      logo: "chemistry.jpg",
       members: 75,
       link: "https://t.me/+ULtdmsz6u2zAwmew",
       channel_id: "-1001354456474",
@@ -412,7 +412,7 @@ export const telegramGroupsData = [
     {
       id: 44,
       name: "Cad/Cam",
-      logo: "/cad-cam.jpg",
+      logo: "cad-cam.jpg",
       "icon": "ee",
       members: 66,
       link: "https://t.me/joinchat/S8AI-OmjKaqR9opX",
@@ -423,7 +423,7 @@ export const telegramGroupsData = [
     {
       id: 45,
       name: "Yazılım Analiz Tasarım",
-      logo: "/engineeringmanagement.jpg",
+      logo: "engineeringmanagement.jpg",
       members: 119,
       link: "https://t.me/+yh1iO8JNips1Njlk",
       channel_id: "-1001703214688",
@@ -433,7 +433,7 @@ export const telegramGroupsData = [
     {
       id: 46,
       name: "Delphi",
-      logo: "/delphi.jpg",
+      logo: "delphi.jpg",
       members: 24,
       link: "https://t.me/+QN-ionqtRsZmNzFk",
       channel_id: "-1001509310368",
@@ -443,7 +443,7 @@ export const telegramGroupsData = [
     {
       id: 20,
       name: "Geyik",
-      logo: "/geyik.jpg",
+      logo: "geyik.jpg",
       members: 139,
       link: "https://t.me/+iXeb0Ba8zPphMTQ0",
       channel_id: "-1001248972136",
