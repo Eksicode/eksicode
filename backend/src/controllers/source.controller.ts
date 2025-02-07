@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import SourceService from "../services/source.service";
-import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
+import { getPaginationParams } from "../utils/pagination";
 
 class SourceController {
     private sourceService = new SourceService();
@@ -17,11 +17,17 @@ class SourceController {
                 limit
             );
 
-            const meta = getPaginationMeta(count, page, limit);
+            // const meta = getPaginationMeta(count, page, limit);
 
             res.status(200).json({
                 data: sources,
-                meta,
+                meta: {
+                    total: count,
+                    skip,
+                    limit,
+                    currentPage: Math.floor(skip / limit) + 1,
+                    totalPages: Math.ceil(count / limit),
+                  },
                 message: "findAllSources",
             });
         } catch (error) {

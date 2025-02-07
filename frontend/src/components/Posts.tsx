@@ -49,10 +49,6 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
       setHasMore(newPosts.length === limit);
       setSkip((prevSkip) => prevSkip + limit);
 
-      console.log("Fetched posts:", newPosts);
-      console.log("Total posts:", totalPosts);
-      console.log("Has more:", hasMore);
-      console.log("Skip:", skip);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {

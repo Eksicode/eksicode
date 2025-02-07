@@ -326,19 +326,16 @@ async function main() {
     const permissions = await seedPermissions();
     const roles = await seedRoles(permissions);
     await seedUsers(roles);
+    const { categories, tags } = await seedPostCategoriesAndTags();
+    const users = await prisma.user.findMany();
+    await seedPosts(users, categories, tags);
     await seedTelegramGroups();
     await seedMenuCategoriesAndItems();
     await seedPageCategoriesAndPages();
     await seedCompanies();
     await seedJobs();
     await seedSources();
-
-    console.log("Seeding complete.");
-
-    const { categories, tags } = await seedPostCategoriesAndTags();
-    const users = await prisma.user.findMany();
-    await seedPosts(users, categories, tags);
-
+    
     console.log("Seeding completed successfully.");
   } catch (error) {
     console.error("Error during seeding:", error);
