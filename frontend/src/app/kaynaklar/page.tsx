@@ -11,11 +11,9 @@ interface sources {
   tgChannel: string | null;
 }
 
-
-
 async function getData() {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/telegrams", {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/sources", {
       next: { revalidate: 43200 },
     });
     if (!res.ok) {
@@ -27,16 +25,17 @@ async function getData() {
     return [];
   }
 }
-export default async function Sources() {
-  const telegrams = await getData();
-  const telegramsData = telegrams.data;
 
-  const sources = sourcesData.map((sources) => ({
-    Ad: sources.title,
-    Açıklama: sources.description,
-    Etiketler: sources.tags,
-    URL: sources.url,
-  }));
+export default async function Sources() {
+  const sources = await getData();
+  const sourcesData = sources.data;
+
+  // const sources = sourcesData.map((sources) => ({
+  //   Ad: sources.title,
+  //   Açıklama: sources.description,
+  //   Etiketler: sources.tags,
+  //   URL: sources.url,
+  // }));
 
   return (
     <div className="flex py-5 basis-3/4">
@@ -74,7 +73,7 @@ export default async function Sources() {
         Açıklama eklenecek.
         */}
         <DataTable
-          data={sources}
+          data={sourcesData}
           onView={false}
           onEdit={false}
           onDelete={false}

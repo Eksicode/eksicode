@@ -6,13 +6,15 @@ import { pageCategories, pages } from "./pagesData";
 import { posts } from "./postsData";
 import { companiesData } from "./companiesData";
 import { jobsData } from "./jobsData";
+import { sourcesData } from "./sourcesData";
 
 async function cleanDatabase() {
   console.log("Cleaning database...");
   await prisma.postLike.deleteMany({});
   await prisma.comment.deleteMany({});
   await prisma.post.deleteMany({});
-  await prisma.job.deleteMany({}); // Add this line
+  await prisma.job.deleteMany({});
+  await prisma.source.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.hashTag.deleteMany({});
   await prisma.postCategory.deleteMany({});
@@ -20,6 +22,7 @@ async function cleanDatabase() {
   await prisma.menuCategory.deleteMany({});
   await prisma.role.deleteMany({});
   await prisma.permission.deleteMany({});
+  await prisma.source.deleteMany({});
 }
 
 async function seedCompanies() {
@@ -36,9 +39,6 @@ async function seedCompanies() {
     });
   }
 }
-
-
-// Removed duplicate seedCompanies function
 
 async function seedJobs() {
   console.log("Seeding jobs...");
@@ -202,10 +202,8 @@ async function seedTelegramGroups() {
 async function seedMenuCategoriesAndItems() {
   console.log("Seeding menu categories and items...");
   
-  // Create a map to store category name -> id mapping
   const categoryMap = new Map();
   
-  // Create categories and store their IDs
   const categories = await Promise.all(
     ["main-menu", "footer-menu"].map(async (name) => {
       const category = await prisma.menuCategory.upsert({
@@ -299,6 +297,28 @@ async function seedPosts(users, categories, tags) {
   }
 }
 
+async function seedSources() {
+  console.log("Seeding sources...");
+
+  for (const source of sourcesData) {
+    const { id, ...sourceData } = source;
+    await prisma.source.upsert({
+      where: { id: id },
+      update: {
+      },
+      create: {
+        ...sourceData,
+        hashtags: {
+          connectOrCreate: sourceData.hashtags.map((name: string) => ({
+            where: { name },
+            create: { name },
+          })),
+        },
+      },
+    });
+  }
+}
+
 async function main() {
   try {
     await cleanDatabase();
@@ -311,6 +331,7 @@ async function main() {
     await seedPageCategoriesAndPages();
     await seedCompanies();
     await seedJobs();
+    await seedSources();
 
     console.log("Seeding complete.");
 

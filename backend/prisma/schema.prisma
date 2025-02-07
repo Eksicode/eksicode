@@ -126,10 +126,10 @@ model PostCategory {
 }
 
 model HashTag {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  posts    Post[]
-  sources  Source[]  @relation("SourceHashTags")
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  posts   Post[]
+  sources Source[] @relation("SourceHashTags")
 
   @@map("hash_tags")
 }
@@ -227,7 +227,7 @@ model Company {
   website     String?
   industry    String?
   location    String?
-  logo        String?  // URL or path to the logo
+  logo        String? // URL or path to the logo
   jobs        Job[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -245,7 +245,7 @@ model Job {
   salary         String? // Salary can be optional (consider a separate Salary model for more complex scenarios)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  companyId      Int      // Explicitly name the foreign key
+  companyId      Int // Explicitly name the foreign key
   company        Company  @relation(fields: [companyId], references: [id]) // Define the relation
 
   @@map("jobs")
@@ -258,9 +258,10 @@ model Source {
   url         String
   tgChannel   String?
   tgUser      String?
+  approved    Boolean   @default(false)
+  hashtags    HashTag[] @relation("SourceHashTags")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  hashtags    HashTag[] @relation("SourceHashTags")
 
   @@map("sources")
 }
