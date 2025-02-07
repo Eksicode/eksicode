@@ -4,20 +4,19 @@ import Link from "next/link";
 import Navlink from "@/components/Ui/NavLink";
 
 interface PaginationProps {
-  activePage: number;
-  totalPages: number;
-}
-
-interface PaginationProps {
+  total: number;
+  perPage: number;
   activePage: number;
   totalPages: number;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
+  total,
+  perPage,
   activePage,
   totalPages
 }: PaginationProps) => {
-  const generatePageLink = (page: number) => `/?page=${page}`;
+  const generatePageLink = (page: number) => `?page=${page}`;
 
   const currentPage: number = Number(activePage);
 

@@ -52,7 +52,7 @@ const DataTable: React.FC<DataTableProps> = ({
           )}
           {onEdit && (
             <div className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-              <div className="flex gap-2"><AiFillEdit className="h-4 w-4" />Düzenle</div>
+              <div className="flex gap-2"><AiFillEdit className="h-4 w-4" /> Düzenle</div>
             </div>
           )}
           {onDelete && (
@@ -77,7 +77,7 @@ const DataTable: React.FC<DataTableProps> = ({
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white tracking-wider"
               >
-                {column}
+                <span className="capitalize font-bold text-lg">{column}</span>
               </th>
             ))}
             {renderActions()}
@@ -89,7 +89,7 @@ const DataTable: React.FC<DataTableProps> = ({
               <tr key={index} className="bg-white dark:text-white dark:bg-DarkerGrey border-b hover:bg-gray-50 dark:hover:bg-DarkLightGrey">
                 {columns?.map((column) => (
                   <td key={column} className={` ${isUrl(DataParam[column]) === true ? "hover:underline underline-offset-1" : "underline-none"} px-6 py-4 text-wrap whitespace-nowrap`}>
-                    {isUrl(DataParam[column]) ? <Link href={DataParam[column]}>{DataParam[column]}</Link> : DataParam[column]}
+                    {isUrl(DataParam[column]) ? <Link href={DataParam[column]} target="_blank">{DataParam[column]}</Link> : DataParam[column]}
                   </td>
                 ))}
                 {renderActionCell()}
