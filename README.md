@@ -4,6 +4,12 @@
 Create ".env" file into the backend of the project from "sample.env" file.
 Create ".env" file into the frontend folder from "sample.env" file.
 
+docker run -d --name eksicode-postgres -e POSTGRESDB=eksicode -e POSTGRES_USER=eksicode -e POSTGRES_PASSWORD=eksicode -p 5432:5432 postgres:latest
+
+npx prisma generate
+npx prisma migrate dev
+npx prisma db seed
+
 # in the root folder run
 npm install
 npm run setup

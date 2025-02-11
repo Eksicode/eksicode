@@ -93,7 +93,7 @@ model Post {
   comments    Comment[]
   categories  PostCategory[]
   tags        HashTag[]
-  status      PostStatusEnum @default(draft)
+  status      String         @default("draft")
   slug        String         @unique
   approved    Boolean        @default(false)
   createdAt   DateTime       @default(now())
@@ -213,6 +213,7 @@ model Notification {
   type      NotificationTypeEnum
   userId    Int
   user      User                 @relation(fields: [userId], references: [id])
+  senderId  Int
   read      Boolean              @default(false)
   createdAt DateTime             @default(now())
   updatedAt DateTime             @updatedAt
@@ -283,8 +284,8 @@ enum MediaTypeEnum {
   document
 }
 
-enum PostStatusEnum {
-  draft
-  published
-  archived
-}
+// enum PostStatusEnum {
+//   draft
+//   published
+//   archived
+// }

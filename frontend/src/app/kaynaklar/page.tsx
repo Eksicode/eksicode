@@ -36,11 +36,12 @@ interface SourcesResponse {
   message: string;
 }
 
-export default async function Sources() {
-  const sourcesData = await getData<Source, Meta>("sources", false, 10);
+export default async function Sources({params}: {params: {page: any}}) {
+  const page = params.page ? parseInt(params.page) : 10;
+  const sourcesData = await getData<Source, Meta>("sources", false, page);
 
   const formatHashtags = (hashtags: Hashtag[]): string => {
-    return hashtags.map(hashtag => hashtag.name).join(", ");
+    return hashtags.map(hashtag => "#" + hashtag.name).join(", ");
   };
 
   const preparedData = sourcesData.data.map((source) => ({
