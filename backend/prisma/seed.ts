@@ -273,21 +273,24 @@ async function seedPostCategoriesAndTags() {
   return { categories, tags };
 }
 
-async function seedPosts() {
+async function seedPosts(users, categories, tags) {
   console.log("Seeding posts...");
   for (const post of posts) {
-    const postData = post;
+    const { tags: tagIds, categories: categoryIds, authorId, ...postData } = post;
 
     await prisma.post.upsert({
       where: { slug: post.slug },
       update: {},
       create: {
         ...postData,
+        author: {
+          connect: { id: users[authorId - 1].id }
+        },
         categories: {
-          connect: postData.categories.map((id: number) => ({ id }))
+          connect: categoryIds.map((index: number) => ({ id: categories[index].id }))
         },
         tags: {
-          connect: postData.tags.map((id: number) => ({ id }))
+          connect: tagIds.map((index: number) => ({ id: tags[index].id }))
         }
       },
     });
@@ -323,9 +326,13 @@ async function main() {
     const permissions = await seedPermissions();
     const roles = await seedRoles(permissions);
     await seedUsers(roles);
+    
+    // Get users after seeding them
+    const users = await prisma.user.findMany();
+    
     const { categories, tags } = await seedPostCategoriesAndTags();
-    await prisma.user.findMany();
-    await seedPosts();
+    await seedPosts(users, categories, tags);  // Pass all required data
+    
     await seedTelegramGroups();
     await seedMenuCategoriesAndItems();
     await seedPageCategoriesAndPages();

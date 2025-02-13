@@ -93,7 +93,7 @@ model Post {
   comments    Comment[]
   categories  PostCategory[]
   tags        HashTag[]
-  status      String         @default("draft")
+  status      String         @default("draft") // Changed back to String temporarily
   slug        String         @unique
   approved    Boolean        @default(false)
   createdAt   DateTime       @default(now())
@@ -228,7 +228,9 @@ model Company {
   website     String?
   industry    String?
   location    String?
-  logo        String? // URL or path to the logo
+  logo        String?
+  hrpage      String? // HR/Careers page URL
+  hrfields    String[] // Array of HR contact fields
   jobs        Job[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -237,17 +239,19 @@ model Company {
 }
 
 model Job {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   title          String
-  description    String? // Descriptions can be optional
-  location       String? // Locations can be optional
-  employmentType String? // Employment types can be optional
-  department     String? // Departments can be optional
-  salary         String? // Salary can be optional (consider a separate Salary model for more complex scenarios)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  companyId      Int // Explicitly name the foreign key
-  company        Company  @relation(fields: [companyId], references: [id]) // Define the relation
+  slug           String    @unique
+  description    String?
+  location       String?
+  employmentType String?
+  department     String?
+  salary         String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  validAt        DateTime?
+  companyId      Int
+  company        Company   @relation(fields: [companyId], references: [id])
 
   @@map("jobs")
 }

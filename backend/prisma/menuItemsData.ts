@@ -34,7 +34,7 @@ export const menuItems = [
     {
       id: 5,
       name: 'İş İlanları',
-      link: '/is-ilanlari',
+      link: '/kariyer',
       icon: 'AiOutlineUnorderedList',
       subMenu: 0,
       categories: [1],

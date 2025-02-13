@@ -106,15 +106,56 @@ class JobService {
    */
   public async getJobById(id: number): Promise<Job | null> {
     try {
-      return await this.prisma.job.findUnique({
-        where: { id },
-        include: {
-          company: true,
+      if (!id || isNaN(id)) {
+        throw new Error('Invalid job ID');
+      }
+
+      const job = await this.prisma.job.findUnique({
+        where: {
+          id: id
         },
+        include: {
+          company: true
+        }
       });
+
+      if (!job) {
+        throw new Error('Job not found');
+      }
+
+      return job;
     } catch (error) {
-      console.error(`Error fetching job with ID ${id}:`, error);
-      throw new Error("Unable to fetch job.");
+      throw error;
+    }
+  }
+
+  /**
+   * Fetch a specific job by its slug.
+   * @param slug - The slug of the job.
+   * @returns The job if found, or null if not.
+   */
+  public async getJobBySlug(slug: string): Promise<Job | null> {
+    try {
+      if (!slug) {
+        throw new Error('Invalid job slug');
+      }
+
+      const job = await this.prisma.job.findUnique({
+        where: {
+          slug: slug
+        },
+        include: {
+          company: true
+        }
+      });
+
+      if (!job) {
+        throw new Error('Job not found');
+      }
+
+      return job;
+    } catch (error) {
+      throw error;
     }
   }
 
