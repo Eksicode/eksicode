@@ -76,19 +76,22 @@ export class JobController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const jobId = parseInt(req.params.id, 10);
-      const job = await this.jobService.getJobById(jobId);
-
-      if (!job) {
-        res.status(404).json({ message: "Job not found" });
-      } else {
-        res.status(200).json(job);
+      const id = parseInt(req.params.id);
+      
+      if (isNaN(id)) {
+        res.status(400).json({ message: 'Invalid job ID format' });
+        return;
       }
+
+      const job = await this.jobService.getJobById(id);
+      
+      if (!job) {
+        res.status(404).json({ message: 'Job not found' });
+        return;
+      }
+
+      res.status(200).json(job);
     } catch (error) {
-      res.status(500).json({
-        message: "Internal server error",
-        error: error instanceof Error ? error.message : String(error),
-      });
       next(error);
     }
   };
@@ -188,6 +191,32 @@ export class JobController {
         message: "Internal server error",
         error: error instanceof Error ? error.message : String(error),
       });
+      next(error);
+    }
+  };
+
+  public getJobBySlug = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const { slug } = req.params;
+      
+      if (!slug) {
+        res.status(400).json({ message: 'Invalid job slug' });
+        return;
+      }
+
+      const job = await this.jobService.getJobBySlug(slug);
+      
+      if (!job) {
+        res.status(404).json({ message: 'Job not found' });
+        return;
+      }
+
+      res.status(200).json(job);
+    } catch (error) {
       next(error);
     }
   };

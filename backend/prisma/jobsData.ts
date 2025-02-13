@@ -2,6 +2,7 @@ export const jobsData = [
   {
     id: 1,
     title: "Software Engineer",
+    slug: "software-engineer-facebook",
     description:
       "Develop and maintain web applications using modern technologies.",
     location: "San Francisco, CA",
@@ -15,6 +16,7 @@ export const jobsData = [
   {
     id: 2,
     title: "Marketing Manager",
+    slug: "marketing-manager-amazon",
     description: "Lead digital marketing campaigns and brand strategy.",
     location: "New York, NY",
     employmentType: "FULLTIME",
@@ -27,6 +29,7 @@ export const jobsData = [
   {
     id: 3,
     title: "HR Intern",
+    slug: "hr-intern-apple",
     description: "Support recruitment and employee engagement initiatives.",
     location: "Remote",
     employmentType: "INTERNSHIP",
@@ -39,6 +42,7 @@ export const jobsData = [
   {
     id: 4,
     title: "Sales Representative",
+    slug: "sales-representative-google",
     description: "Sell products and services to potential customers.",
     location: "Los Angeles, CA",
     employmentType: "FULLTIME",
@@ -51,6 +55,7 @@ export const jobsData = [
   {
     id: 5,
     title: "Graphic Designer",
+    slug: "graphic-designer-microsoft",
     description: "Design and create visual elements for marketing materials.",
     location: "San Francisco, CA",
     employmentType: "FULLTIME",
@@ -63,6 +68,7 @@ export const jobsData = [
   {
     id: 6,
     title: "Customer Service Representative",
+    slug: "customer-service-representative-ibm",
     description: "Provide customer support and resolve issues.",
     location: "Remote",
     employmentType: "FULLTIME",
@@ -75,6 +81,7 @@ export const jobsData = [
   {
     id: 7,
     title: "Data Analyst",
+    slug: "data-analyst-ibm",
     description: "Analyze and interpret data to gain insights.",
     location: "Remote",
     employmentType: "FULLTIME",
@@ -87,6 +94,7 @@ export const jobsData = [
   {
     id: 8,
     title: "Product Manager",
+    slug: "product-manager-ibm",
     description: "Develop and manage product features and roadmap.",
     location: "San Francisco, CA",
     employmentType: "FULLTIME",
@@ -99,6 +107,7 @@ export const jobsData = [
   {
     id: 9,
     title: "Content Writer",
+    slug: "content-writer-ibm",
     description: "Create and edit content for various platforms and audiences.",
     location: "Remote",
     employmentType: "PARTTIME",
@@ -111,6 +120,7 @@ export const jobsData = [
   {
     id: 10,
     title: "Finance Analyst",
+    slug: "finance-analyst-ibm",
     description: "Analyze financial data and prepare reports for management.",
     location: "New York, NY",
     employmentType: "FULLTIME",
@@ -123,6 +133,7 @@ export const jobsData = [
   {
     id: 11,
     title: "UX Designer",
+    slug: "ux-designer-ibm",
     description: "Design user experiences for web and mobile applications.",
     location: "Remote",
     employmentType: "FULLTIME",
@@ -135,6 +146,7 @@ export const jobsData = [
   {
     id: 12,
     title: "Operations Manager",
+    slug: "operations-manager-ibm",
     description: "Oversee daily operations and manage team performance.",
     location: "Los Angeles, CA",
     employmentType: "FULLTIME",
@@ -147,6 +159,7 @@ export const jobsData = [
   {
     id: 13,
     title: "IT Support Specialist",
+    slug: "it-support-specialist-ibm",
     description: "Provide technical support and troubleshoot IT issues.",
     location: "Remote",
     employmentType: "FULLTIME",
@@ -159,6 +172,7 @@ export const jobsData = [
   {
     id: 14,
     title: "Sales Representative",
+    slug: "sales-representative-ibm",
     description: "Sell products and services to potential customers.",
     location: "Remote",
     employmentType: "FULLTIME",

@@ -19,11 +19,6 @@ const config: Config = {
         DarkLightGrey: "#353b43",
         DarkGrey: "#2d2d2d",
         DarkerGrey: "#262626",
-        menu: " #ecf0f3",
-        sText: "#666666",
-        bg: "#c5d6d8",
-        btnClr: "#2196f3",
-        darkTextGreen:"#82BF4E"
       },
       fontFamily: {
         eksifont: ["Montserrat", "sans-serif"],

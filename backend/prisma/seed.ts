@@ -6,13 +6,15 @@ import { pageCategories, pages } from "./pagesData";
 import { posts } from "./postsData";
 import { companiesData } from "./companiesData";
 import { jobsData } from "./jobsData";
+import { sourcesData } from "./sourcesData";
 
 async function cleanDatabase() {
   console.log("Cleaning database...");
   await prisma.postLike.deleteMany({});
   await prisma.comment.deleteMany({});
   await prisma.post.deleteMany({});
-  await prisma.job.deleteMany({}); // Add this line
+  await prisma.job.deleteMany({});
+  await prisma.source.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.hashTag.deleteMany({});
   await prisma.postCategory.deleteMany({});
@@ -20,6 +22,7 @@ async function cleanDatabase() {
   await prisma.menuCategory.deleteMany({});
   await prisma.role.deleteMany({});
   await prisma.permission.deleteMany({});
+  await prisma.source.deleteMany({});
 }
 
 async function seedCompanies() {
@@ -36,9 +39,6 @@ async function seedCompanies() {
     });
   }
 }
-
-
-// Removed duplicate seedCompanies function
 
 async function seedJobs() {
   console.log("Seeding jobs...");
@@ -202,10 +202,8 @@ async function seedTelegramGroups() {
 async function seedMenuCategoriesAndItems() {
   console.log("Seeding menu categories and items...");
   
-  // Create a map to store category name -> id mapping
   const categoryMap = new Map();
   
-  // Create categories and store their IDs
   const categories = await Promise.all(
     ["main-menu", "footer-menu"].map(async (name) => {
       const category = await prisma.menuCategory.upsert({
@@ -277,23 +275,45 @@ async function seedPostCategoriesAndTags() {
 
 async function seedPosts(users, categories, tags) {
   console.log("Seeding posts...");
-
   for (const post of posts) {
-    const { authorIndex, tagIndices, categoryIndices, ...postData } = post;
-    
-    await prisma.post.create({
-      data: {
+    const { tags: tagIds, categories: categoryIds, authorId, ...postData } = post;
+
+    await prisma.post.upsert({
+      where: { slug: post.slug },
+      update: {},
+      create: {
         ...postData,
-        slug: post.title.toLowerCase().replace(/ /g, "-"),
         author: {
-          connect: { id: users[authorIndex].id }
+          connect: { id: users[authorId - 1].id }
         },
         categories: {
-          connect: categoryIndices.map(index => ({ id: categories[index].id }))
+          connect: categoryIds.map((index: number) => ({ id: categories[index].id }))
         },
         tags: {
-          connect: tagIndices.map(index => ({ id: tags[index].id }))
+          connect: tagIds.map((index: number) => ({ id: tags[index].id }))
         }
+      },
+    });
+  }
+}
+
+async function seedSources() {
+  console.log("Seeding sources...");
+
+  for (const source of sourcesData) {
+    const { id, ...sourceData } = source;
+    await prisma.source.upsert({
+      where: { id: id },
+      update: {
+      },
+      create: {
+        ...sourceData,
+        hashtags: {
+          connectOrCreate: sourceData.hashtags.map((name: string) => ({
+            where: { name },
+            create: { name },
+          })),
+        },
       },
     });
   }
@@ -306,18 +326,20 @@ async function main() {
     const permissions = await seedPermissions();
     const roles = await seedRoles(permissions);
     await seedUsers(roles);
+    
+    // Get users after seeding them
+    const users = await prisma.user.findMany();
+    
+    const { categories, tags } = await seedPostCategoriesAndTags();
+    await seedPosts(users, categories, tags);  // Pass all required data
+    
     await seedTelegramGroups();
     await seedMenuCategoriesAndItems();
     await seedPageCategoriesAndPages();
     await seedCompanies();
     await seedJobs();
-
-    console.log("Seeding complete.");
-
-    const { categories, tags } = await seedPostCategoriesAndTags();
-    const users = await prisma.user.findMany();
-    await seedPosts(users, categories, tags);
-
+    await seedSources();
+    
     console.log("Seeding completed successfully.");
   } catch (error) {
     console.error("Error during seeding:", error);

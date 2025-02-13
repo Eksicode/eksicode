@@ -81,10 +81,8 @@ const DataTable: React.FC<DataTableProps> = ({
             </div>
           )}
           {onEdit && (
-            <div className="hover:underline cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-              <div onClick={() => openModal("edit", id)} className="flex gap-2">
-                <AiFillEdit className="h-4 w-4" /> Düzenle
-              </div>
+            <div className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
+              <div className="flex gap-2"><AiFillEdit className="h-4 w-4" /> Düzenle</div>
             </div>
           )}
           {onDelete && (
@@ -101,46 +99,43 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   return (
-    <>
-      {toast && <Toast onClose={() => setToast(null)} message={toast.message} type={toast.type} />}
-      <div className="overflow-x-auto mx-0 lg:mx-2 flex w-[250px] hover:bg-gray-50 dark:hover:bg-DarkLightGrey dark:border-DarkLightGrey mt-2 rounded-lg lg:w-full">
-        <table className="text-sm w-full text-left rtl:text-right text-gray-500 bg-white dark:bg-DarkerGrey">
-          <thead className="text-xs dark:text-white">
-            <tr>
-              {columns?.map((column) => (
-                <th
-                  key={column}
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white tracking-wider"
-                >
-                  {column}
-                </th>
-              ))}
-              {renderActions()}
-            </tr>
-          </thead>
-          <tbody>
-            {data?.length > 0 ? (
-              data?.map((DataParam, index) => (
-                <tr key={index} className="bg-white dark:text-white dark:bg-DarkerGrey border-b hover:bg-gray-50 dark:hover:bg-DarkLightGrey">
-                  {columns?.map((column) => (
-                    <td key={column} className={` ${isUrl(DataParam[column]) ? "hover:underline underline-offset-1" : "underline-none"} px-6 py-4 text-wrap whitespace-nowrap`}>
-                      {isUrl(DataParam[column]) ? <Link href={DataParam[column]}>{DataParam[column]}</Link> : DataParam[column]}
-                    </td>
-                  ))}
-                  {renderActionCell(DataParam.id)}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={columns.length + 1} className="text-center py-4">
-                  Veri bulunamadı.
-                </td>
+    <div className="overflow-x-auto mx-0 lg:mx-2 flex w-[250px] hover:bg-gray-50 dark:hover:bg-DarkLightGrey dark:border-DarkLightGrey mt-2 rounded-lg lg:w-full">
+      <table className="text-sm w-full text-left rtl:text-right text-gray-500 bg-white dark:bg-DarkerGrey">
+        <thead className="text-xs dark:text-white">
+          <tr>
+            {columns?.map((column) => (
+              <th
+                key={column}
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white tracking-wider"
+              >
+                {column}
+              </th>
+            ))}
+            {renderActions()}
+          </tr>
+        </thead>
+        <tbody>
+          {data?.length > 0 ? (
+            data?.map((DataParam, index) => (
+              <tr key={index} className="bg-white dark:text-white dark:bg-DarkerGrey border-b hover:bg-gray-50 dark:hover:bg-DarkLightGrey">
+                {columns?.map((column) => (
+                  <td key={column} className={` ${isUrl(DataParam[column]) === true ? "hover:underline underline-offset-1" : "underline-none"} px-6 py-4 text-wrap whitespace-nowrap`}>
+                    {isUrl(DataParam[column]) ? <Link href={DataParam[column]}>{DataParam[column]}</Link> : DataParam[column]}
+                  </td>
+                ))}
+                {renderActionCell(DataParam.id)}
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={columns.length + 1} className="text-center py-4">
+                Veri bulunamadı.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
       {showModal.visible && (
         <>
@@ -221,7 +216,6 @@ const DataTable: React.FC<DataTableProps> = ({
                   >
                     Kaydet
                   </Button>
-
                 )}
               </div>
             </div>
@@ -229,10 +223,9 @@ const DataTable: React.FC<DataTableProps> = ({
             onClick={() => setShowModal({ visible: false })}
           ></div>
           </div>
-         
         </>
       )}
-    </>
+    </div>
   );
 };
 

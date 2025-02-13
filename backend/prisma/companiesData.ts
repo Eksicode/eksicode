@@ -8,6 +8,8 @@ export const companiesData = [
     industry: "Technology",
     location: "Menlo Park, California",
     logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+    hrpage: "https://www.metacareers.com",
+    hrfields: ["careers@meta.com", "+1-555-META-HR", "@MetaCareers"],
   },
   {
     id: 2,
@@ -18,6 +20,8 @@ export const companiesData = [
     industry: "E-commerce, Cloud Computing",
     location: "Seattle, Washington",
     logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+    hrpage: "https://www.amazon.jobs",
+    hrfields: ["jobs@amazon.com", "+1-555-AMAZON", "@AmazonJobs"],
   },
   {
     id: 3,
@@ -27,7 +31,7 @@ export const companiesData = [
     website: "https://www.apple.com",
     industry: "Technology, Consumer Electronics",
     location: "Cupertino, California",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_%282016%29.svg",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
   },
   {
     id: 4,
@@ -37,7 +41,7 @@ export const companiesData = [
     website: "https://www.netflix.com",
     industry: "Entertainment, Streaming",
     location: "Los Gatos, California",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/0/09/Netflix_2015_logo.svg",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Netflix_2015_N_logo.svg",
   },
   {
     id: 5,
@@ -47,6 +51,6 @@ export const companiesData = [
     website: "https://www.google.com",
     industry: "Technology, Advertising, AI",
     location: "Mountain View, California",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/2/27/Google_logo.svg",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
   },
 ];

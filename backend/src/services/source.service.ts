@@ -17,7 +17,6 @@ class SourceService {
                     title: 'desc',
                 },
             });
-
             return { sources, count };
         } catch (error) {
             throw new HttpException(500, "Error fetching sources");
@@ -50,11 +49,9 @@ class SourceService {
             const sourceTitle = await this.prisma.source.findUnique({
                 where: { title: data.title },
             });
-
             if (sourceTitle) {
                 throw new HttpException(409, "Source already exists");
             };
-
             const source = await this.prisma.source.create({
                 data: {
                     ...data,
@@ -66,9 +63,7 @@ class SourceService {
                     hashtags: true
                 }
             });
-
             return source;
-
         } catch (error) {
             throw new HttpException(500, "Error creating source");
         }

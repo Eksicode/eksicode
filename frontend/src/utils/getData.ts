@@ -1,22 +1,20 @@
-interface Data {
-  [key: string]: any;
+interface BaseResponse<T, M> {
+  data: T[];
+  meta: M;
+  message: string;
 }
-interface Meta {
-  [key: string]: any;
-}
-async function getData(
+
+async function getData<T = any, M = any>(
   endPoint: string,
   summaryOnly?: boolean,
   limit?: number,
-  pageSize?: number,
   page?: number,
+  skip?: number,
   options: {
-    cache?: RequestCache; // no-store, no-cache, must-revalidate, proxy-revalidate
+    cache?: RequestCache;
     next?: { revalidate: number };
   } = { cache: "no-store" }
-  // } = { cache: 'no-store', next: { revalidate: 0 } }
-  // cache: RequestCache = "no-store",
-): Promise<{ data: Data[]; meta: Meta[] }> {
+): Promise<BaseResponse<T, M>> {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     if (!apiUrl) {
@@ -27,7 +25,7 @@ async function getData(
       summaryOnly: String(summaryOnly),
       ...(limit !== undefined && { limit: String(limit) }),
       ...(page !== undefined && { page: String(page) }),
-      ...(pageSize !== undefined && { pageSize: String(pageSize) }),
+      ...(skip !== undefined && { skip: String(skip) }),
     });
 
     console.log("queryParams", queryParams);
@@ -44,17 +42,14 @@ async function getData(
       console.error(
         `Failed to fetch data: ${response.status} ${response.statusText}`
       );
-      return { data: [], meta: [] };
+      return { data: [], meta: {} as M, message: "" };
     }
 
-    const jsonResponse = (await response.json()) as {
-      data: Data[];
-      meta: Meta[];
-    };
+    const jsonResponse = await response.json() as BaseResponse<T, M>;
     return jsonResponse;
   } catch (error) {
     console.error("Error fetching data:", error);
-    return { data: [], meta: [] };
+    return { data: [], meta: {} as M, message: "" };
   }
 }
 

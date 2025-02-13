@@ -58,6 +58,7 @@ jobs:
         command_timeout: 5m
         script: |
           cd /home/eksicode
+          git stash
           git pull origin main
           sudo docker compose down -v
           sudo docker system prune -a -f

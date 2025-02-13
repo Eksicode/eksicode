@@ -114,19 +114,26 @@ export class PostController {
     next: NextFunction
   ): Promise<void> => {
     try {
+      const term = req.params.term;
+      const hashtag = req.params.hashtag;
+
       const { skip, limit } = this.validatePaginationParams(req.query.skip, req.query.limit);
+
+      console.log(hashtag);
+
       const searchResult = await this.postService.searchPost(
-        req.params.term,
-        req.query.hashtags as string,
+        term,
+        hashtag,
         skip,
         limit
       );
 
       res.status(200).json({
-        data: searchResult,
+        data: searchResult.posts,
         count: searchResult.count,
         message: 'Posts retrieved successfully'
       });
+
     } catch (error) {
       const statusCode = error instanceof HttpException ? error.status : 500;
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -135,6 +142,7 @@ export class PostController {
         message: statusCode === 500 ? 'Internal server error' : errorMessage,
         error: errorMessage
       });
+
       next(error);
     }
   }
