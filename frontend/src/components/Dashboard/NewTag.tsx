@@ -1,156 +1,91 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Button from "@/components/Ui/Button";
+import addData from "@/utils/addData";
+import Toast from "@/components/Ui/Toast";
+import getData from "@/utils/getData";
 
 interface Tag {
   name: string;
-  description: string;
-  icon: string;
-  slug: string;
+  slug?: string;
 }
 
 const NewTag: React.FC<{ initialData?: Tag }> = ({ initialData }) => {
-  const [selectedValue, setSelectedValue] = useState<string | null>(null);
-  //const [categories, setCategories] = useState<any[]>([]) ;
+  const [toast, setToast] = React.useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
+  const formik = useFormik({
+    initialValues: {
+      name: initialData?.name || "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().trim().required("Başlık gereklidir"),
+    }),
+    validateOnBlur: true,
+    validateOnChange: true,
+    onSubmit: async (values, { resetForm }) => {
+      if (!values.name.trim()) {
+        setToast({ message: "Başlık boş olamaz!", type: "error" });
+        return;
+      }
 
-  const [tag, setTag] = useState<Tag>(
-    initialData || {
-      name: "",
-      slug: "",
-      description: "",
-      icon: "",
-    }
-  );
+      try {
+        const existingTagsResponse = await getData("hashtags");
+        const existingTags: Tag[] = existingTagsResponse.data.map((item: any) => ({ name: item.name }));
 
-  useEffect(() => {
-    const newSlug = tag.name.trim() ? createSlug(tag.name) : "";
-    setTag((prevPage) => ({ ...prevPage, slug: newSlug }));
-  }, [tag.name]);
+        const isTagExist = existingTags.some(
+          (existingTag: Tag) => existingTag.name.toLowerCase() === values.name.toLowerCase()
+        );
 
-
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
-    setTag((prevPage) => ({ ...prevPage, [name]: value }));
-  };
-
-  const handleClick = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    try {
-      const tokenResponse = await fetch('/api');
-      const data = await tokenResponse.json();
-
-      const token = data.token;
-      if (!token) {
-          console.error('Token is not available.');
+        if (isTagExist) {
+          setToast({ message: "Bu etiket zaten mevcut.", type: "error" });
           return;
-      }
-      const formData = new FormData();
-      formData.append("name", tag.name);
-      formData.append("slug", tag.slug);
-      formData.append("description", tag.description);
-      formData.append("icon", tag.icon);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tags`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        }
 
-      if (response.ok) {
-        console.log("Form submission successful!");
-      } else {
-        console.error("Form submission failed:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error during form submission:", error);
-    }
-  };
-  const createSlug = (title: string) => {
-    const turkishCharacters: { [key: string]: string } = {
-      ç: "c",
-      ğ: "g",
-      ı: "i",
-      ö: "o",
-      ş: "s",
-      ü: "u",
-      Ç: "C",
-      Ğ: "G",
-      İ: "I",
-      Ö: "O",
-      Ş: "S",
-      Ü: "U",
-    };
+        const newTag = { name: values.name.trim()};
+        const response = await addData("hashtags", newTag);
 
-    return title
-      .toLowerCase()
-      .replace(/[çğıöşü]/g, (match) => turkishCharacters[match])
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
-  };
+        if (response.success) {
+          setToast({ message: "Başarıyla eklendi!", type: "success" });
+          resetForm();
+        } else {
+          setToast({ message: response.message || "Bir hata oluştu.", type: "error" });
+        }
+      } catch (error) {
+        setToast({ message: "Bir hata oluştu!", type: "error" });
+      }
+    },
+  });
 
   return (
-    <form onSubmit={handleClick} className="flex flex-wrap">
-      <div className="flex basis-1/2 flex-wrap pr-7 gap-1.5">
-        <label htmlFor="name" className="text-sm font-medium flex basis-full">
-          Başlık:
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={tag.name}
-          onChange={handleChange}
-          className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 basis-full"
-        />
-
-        <label htmlFor="slug" className="text-sm font-medium w-full">
-          Slug:
-        </label>
-        <input
-          type="text"
-          id="slug"
-          name="slug"
-          value={tag.slug}
-          onChange={handleChange}
-          className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
-        />
-
-        <label htmlFor="icon" className="text-sm font-medium w-full">
-          Icon:
-        </label>
-        <input
-          type="text"
-          id="Icon"
-          name="icon"
-          value={tag.icon}
-          onChange={handleChange}
-          className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 basis-full"
-        />
-
-      </div>
-      <div className="flex basis-1/2 flex-col">
-        <label htmlFor="description" className="text-sm font-medium">
-          İçerik:
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          value={tag.description}
-          onChange={handleChange}
-          className="rounded-md border border-gray-300 p-2 h-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </div>
-      <div className="flex justify-end basis-full mt-10">
-        <Button onClick={() => { }} variant="primary" type="submit">
-          Kaydet
-        </Button>
-      </div>
-    </form>
+    <>
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <form onSubmit={formik.handleSubmit} className="flex flex-wrap">
+        <div className="flex basis-1/2 flex-wrap pr-7 gap-1.5">
+          <label htmlFor="name" className="text-sm font-medium flex basis-full">
+            Başlık:
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className="rounded-md border border-gray-300 p-2 "
+          />
+          {formik.touched.name && formik.errors.name ? (
+            <div className="text-red-500 text-sm">{formik.errors.name}</div>
+          ) : null}
+          <div className="flex basis-full mt-5">
+            <Button variant="primary" type="submit">
+              Kaydet
+            </Button>
+          </div>
+        </div>
+      </form>
+    </>
   );
 };
 
