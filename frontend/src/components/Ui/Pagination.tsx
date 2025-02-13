@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import React from "react";
 import Link from "next/link";
 import Navlink from "@/components/Ui/NavLink";
@@ -14,7 +14,7 @@ const Pagination: React.FC<PaginationProps> = ({
   total,
   perPage,
   activePage,
-  totalPages
+  totalPages,
 }: PaginationProps) => {
   const generatePageLink = (page: number) => `?page=${page}`;
 
@@ -112,10 +112,15 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className="w-full flex justify-center flex-wrap mt-10">
-      <div className="py-4 w-full px-1 mb-1 text-center">
-        <Navlink variant={"tertiary"} href={ generatePageLink(currentPage + 1)}>
-          Daha Fazla Yükle
-        </Navlink>
+      <div className="w-full px-1 mb-1 text-center">
+        {currentPage < totalPages && (
+          <Navlink
+            variant={"tertiary"}
+            href={generatePageLink(currentPage + 1)}
+          >
+            Daha Fazla Yükle
+          </Navlink>
+        )}
       </div>
 
       <nav

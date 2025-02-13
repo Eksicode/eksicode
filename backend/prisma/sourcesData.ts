@@ -23,7 +23,7 @@ export const sourcesData = [
     title: "GitHub",
     url: "https://github.com",
     description: "Code hosting and version control platform",
-    hashtags: ["code", "hosting", "version control"],
+    hashtags: ["code", "hosting", "versionControl"],
     approved: true,
     createdAt: "2023-09-17T10:45:00Z",
     updatedAt: "2023-09-17T10:45:00Z"
@@ -73,7 +73,7 @@ export const sourcesData = [
     title: "CSS-Tricks",
     url: "https://css-tricks.com",
     description: "CSS techniques and web design resources",
-    hashtags: ["css", "web design", "resources"],
+    hashtags: ["css", "webDesign", "resources"],
     approved: true,
     createdAt: "2023-09-22T15:15:00Z",
     updatedAt: "2023-09-22T15:15:00Z"

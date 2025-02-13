@@ -8,8 +8,8 @@ async function getData<T = any, M = any>(
   endPoint: string,
   summaryOnly?: boolean,
   limit?: number,
-  pageSize?: number,
   page?: number,
+  skip?: number,
   options: {
     cache?: RequestCache;
     next?: { revalidate: number };
@@ -25,7 +25,7 @@ async function getData<T = any, M = any>(
       summaryOnly: String(summaryOnly),
       ...(limit !== undefined && { limit: String(limit) }),
       ...(page !== undefined && { page: String(page) }),
-      ...(pageSize !== undefined && { pageSize: String(pageSize) }),
+      ...(skip !== undefined && { skip: String(skip) }),
     });
 
     console.log("queryParams", queryParams);

@@ -55,7 +55,7 @@ class PostService {
         take: Number(limit),
         select: selectFields,
         orderBy: [
-          { createdAt: "desc" }, // Primary sort by creation date
+          { createdAt: "desc" },
           { id: "desc" }, // Secondary sort by id
         ],
       }),
@@ -86,6 +86,7 @@ public async searchPost(
   skip: number = 0,
   limit: number = 10
 ): Promise<{ posts: IPost[]; count: number }> {
+  
   if (isEmpty(term) && isEmpty(hashtag)) {
     throw new HttpException(400, "Search term or hashtag is required");
   }
