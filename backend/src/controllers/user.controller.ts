@@ -44,7 +44,8 @@ class UserController {
 
   public createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user = await this.userService.createUser(req.body);
+      const { email, password, username } = req.body;
+      const user = await this.userService.createUser(email, password, username);
       res.status(201).json(user);
     } catch (error) {
       res.status(500).json({ message: error.message });

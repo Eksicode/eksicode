@@ -1,7 +1,15 @@
-import { PrismaClient, User, Prisma } from "@prisma/client";
+import { PrismaClient, User, Role } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import { HttpException } from '../exceptions/HttpException';
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 
 class UserService {
-  private prisma = new PrismaClient();
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
 
   /**
    * Get all users
@@ -35,6 +43,9 @@ class UserService {
               facebook: true,
               verified: true,
               emailVerified: true,
+              emailVerificationToken: true,
+              resetPasswordToken: true,
+              resetPasswordExpires: true,
               createdAt: true,
               updatedAt: true,
             }
@@ -54,13 +65,72 @@ class UserService {
     });
   }
 
+
   /**
    * Create a new user
    */
-  public async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
-      data,
+  public async createUser(email: string, password: string, username: string): Promise<User> {
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: email },
+          { username: username },
+        ],
+      },
     });
+
+    if (existingUser?.email === email) {
+      throw new HttpException(400, 'Email already in use');
+    }
+    if (existingUser?.username === username) {
+      throw new HttpException(400, 'Username already in use');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const emailToken = crypto.randomBytes(32).toString('hex');
+    const hashedEmailToken = await bcrypt.hash(emailToken, 10);
+
+    const userRole = await this.prisma.role.findUnique({ where: { name: 'user' } });
+
+    if (!userRole) {
+      throw new HttpException(500, 'Default user role not found');
+    }
+
+    const user = await this.prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        username: String(username),
+        emailVerificationToken: hashedEmailToken,
+        emailVerified: false,
+        roles: {
+          create: [{ roleId: userRole.id }],
+        },
+      },
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      to: email,
+      from: process.env.EMAIL_USER,
+      subject: 'Email Confirmation',
+      text: `You are receiving this because you (or someone else) have created an account.\n\n
+        Please click on the following link, or paste this into your browser to complete the process:\n\n
+        http://${process.env.FRONTEND_HOST}/confirm-email/${emailToken}\n\n
+        If you did not request this, please ignore this email.\n`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return user;
   }
 
   /**
@@ -81,6 +151,57 @@ class UserService {
       where: { id },
     });
   }
+
+  public async findUserByEmailUsername(userInfo: string): Promise<User | null> {
+    if (!userInfo) {
+      throw new HttpException(400, 'Email or username must be provided');
+    }
+    console.log(`Finding user by email: ${userInfo}`); // Add logging
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: userInfo },
+          { username: userInfo },
+        ]
+      },
+    });
+    console.log(`User found: ${user ? 'Yes' : 'No'}`); // Add logging
+    return user;
+  }
+
+  public async findUserByEmail(email: string): Promise<User | null> {
+    if (!email) {
+      throw new HttpException(400, 'Email must be provided');
+    }
+    console.log(`Finding user by email: ${email}`); // Add logging
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+    console.log(`User found: ${user ? 'Yes' : 'No'}`); // Add logging
+    return user;
+  }
+
+
+  public async assignRoleToUser(userId: number, roleId: number): Promise<void> {
+    await this.prisma.userRole.create({
+      data: {
+        userId,
+        roleId,
+      },
+    });
+  }
+
+  public async getUserRoles(userId: number): Promise<Role[]> {
+    const userRoles = await this.prisma.userRole.findMany({
+      where: { userId },
+      include: { role: true },
+    });
+    return userRoles.map(userRole => userRole.role);
+  }
+
+  // Additional methods for roles and permissions can be added here
 }
 
 export default UserService;

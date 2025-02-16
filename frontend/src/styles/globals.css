@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 @import "https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.bubble.css";
 
 @media (prefers-color-scheme: dark) {

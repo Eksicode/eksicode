@@ -16,7 +16,7 @@ interface SignUpValues {
 }
 
 const SignUpForm: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const [modalContent, setModalContent] = useState({
     title: "",
     text: "",
@@ -64,7 +64,7 @@ const SignUpForm: React.FC = () => {
   ) => {
     try {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/auth/signup",
+        process.env.NEXT_PUBLIC_API_URL + "/auth/register",
         {
           method: "POST",
           headers: {
@@ -225,13 +225,11 @@ const SignUpForm: React.FC = () => {
             >
               Üye Ol
             </Button>
-            <Modal
-              isOpen={showModal}
-              onClose={() => setShowModal(false)}
-              title={modalContent.title}
-              buttonText={modalContent.buttonText}
-              redUrl="/uye-giris"
-            />
+
+            <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={modalContent.title}>
+              <div>{modalContent.text}</div>
+              dsfdsfsdfsdfsd
+            </Modal>
           </Form>
         )}
       </Formik>

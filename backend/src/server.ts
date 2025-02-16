@@ -11,10 +11,9 @@ import HashtagRoute from './routes/hashtag.route';
 import PostRoute from './routes/post.route';
 import JobRoute from './routes/job.route';
 import SourceRoute from './routes/source.route';
-// import AuthRoute from '@routes/auth.route';
-// import OAuthRoute from '@routes/oauth.route';
-// import RolesRoute from '@routes/roles.route';
-// import PermissionsRoute from '@routes/permissions.route';
+import PermissionRoute from './routes/permission.route';
+import RoleRoute from './routes/role.route';
+import AuthRoute from './routes/auth.route';
 
 const app = new App([
     new IndexRoute(),
@@ -27,10 +26,9 @@ const app = new App([
     new PostRoute(),
     new JobRoute(),
     new SourceRoute(),
-    // new RolesRoute(),
-    // new PermissionsRoute(),
-    // new AuthRoute(),
-    // new OAuthRoute()
+    new RoleRoute(),
+    new PermissionRoute(),
+    new AuthRoute()
 ]);
 
 app.listen();
