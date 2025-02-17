@@ -208,14 +208,14 @@ const NewMenu: React.FC<{ initialData?: Menu }> = ({ initialData }) => {
                     </Button>
                 </div>
             </form>
-            <Modal
+            {/* <Modal
                 isOpen={isAddCategoryModalOpen}
                 onClose={closeAddCategoryModal}
                 title="Yeni Kategori Ekle"
                 buttonText="Ekle"
                 redUrl="/dashboard/menuler/yeni"
             >
-            </Modal>
+            </Modal> */}
         </div>
 
     );
