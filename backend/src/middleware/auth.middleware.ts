@@ -12,7 +12,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     if (err) {
       return next(new HttpException(401, 'Invalid token'));
     }
-    req.user = decoded; // Attach user info to request
+    req.user = decoded;
     next();
   });
 }; 
