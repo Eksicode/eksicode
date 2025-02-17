@@ -7,6 +7,7 @@ import { posts } from "./postsData";
 import { companiesData } from "./companiesData";
 import { jobsData } from "./jobsData";
 import { sourcesData } from "./sourcesData";
+import bcrypt from 'bcrypt';
 
 async function cleanDatabase() {
   console.log("Cleaning database...");
@@ -132,31 +133,16 @@ async function seedRoles(permissions) {
 async function seedUsers(roles) {
   console.log("Seeding users...");
 
+  const hashedAdminPassword = await bcrypt.hash("eksicode2025**", 10);
+
   const users = [
     {
+      id: 1,
       email: "admin@example.com",
       username: "admin",
-      password: "eksicode2025**",
+      password: hashedAdminPassword,
       roleId: roles.adminRole.id,
-    },
-    {
-      email: "mkltkn@gmail.com",
-      username: "mkltkn",
-      password: "eksicode2025**",
-      roleId: roles.userRole.id,
-    },
-    {
-      email: "john@example.com",
-      username: "John Doe",
-      password: "defaultpassword",
-      profilePicture: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-    },
-    {
-      email: "jane@example.com",
-      username: "Jane Smith",
-      password: "defaultpassword",
-      profilePicture: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane",
-    },
+    }
   ];
 
   for (const user of users) {

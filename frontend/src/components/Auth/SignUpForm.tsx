@@ -16,11 +16,12 @@ interface SignUpValues {
 }
 
 const SignUpForm: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const [modalContent, setModalContent] = useState({
     title: "",
     text: "",
     buttonText: "",
+    url: "",
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
@@ -64,7 +65,7 @@ const SignUpForm: React.FC = () => {
   ) => {
     try {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/auth/signup",
+        process.env.NEXT_PUBLIC_API_URL + "/auth/register",
         {
           method: "POST",
           headers: {
@@ -81,6 +82,7 @@ const SignUpForm: React.FC = () => {
           title: "Hesap oluşturuldu!",
           text: "E-posta adresinizi doğrulamak için lütfen e-posta hesabınıza gönderdiğimiz linke tıklayın.",
           buttonText: "Giriş Yap",
+          url: "/auth/uye-giris",
         });
         setShowModal(true);
         setIsFormValid(false);
@@ -97,6 +99,7 @@ const SignUpForm: React.FC = () => {
           title: "Hata!",
           text: errorMessage,
           buttonText: "Tekrar Dene",
+          url: "/auth/uye-ol",
         });
         setShowModal(true);
         console.error(errorMessage);
@@ -225,13 +228,25 @@ const SignUpForm: React.FC = () => {
             >
               Üye Ol
             </Button>
+
+
             <Modal
               isOpen={showModal}
               onClose={() => setShowModal(false)}
               title={modalContent.title}
-              buttonText={modalContent.buttonText}
-              redUrl="/uye-giris"
-            />
+            >
+              <div>{modalContent.title}</div>
+              <div>{modalContent.text}</div>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  router.push(modalContent.url);
+                }}
+                className="w-full mb-6"
+              >
+                {modalContent.buttonText}
+              </button>
+            </Modal>
           </Form>
         )}
       </Formik>

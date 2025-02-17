@@ -8,31 +8,34 @@ datasource db {
 }
 
 model User {
-  id             Int            @id @default(autoincrement())
-  email          String         @unique
-  password       String
-  firstName      String?
-  lastName       String?
-  username       String         @unique
-  profilePicture String?
-  birthday       DateTime?
-  telegramId     Int?
-  phoneNumber    String?
-  linkedin       String?
-  github         String?
-  website        String?
-  twitter        String?
-  instagram      String?
-  facebook       String?
-  verified       Boolean        @default(false)
-  emailVerified  Boolean        @default(false)
-  roles          UserRole[]
-  posts          Post[]
-  comments       Comment[]
-  postLikes      PostLike[]
-  notifications  Notification[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id                     Int            @id @default(autoincrement())
+  email                  String         @unique
+  password               String
+  firstName              String?
+  lastName               String?
+  username               String         @unique
+  profilePicture         String?
+  birthday               DateTime?
+  telegramId             Int?
+  phoneNumber            String?
+  linkedin               String?
+  github                 String?
+  website                String?
+  twitter                String?
+  instagram              String?
+  facebook               String?
+  verified               Boolean        @default(false)
+  emailVerificationToken String?
+  emailVerified          Boolean        @default(false)
+  resetPasswordToken     String?
+  roles                  UserRole[]
+  posts                  Post[]
+  comments               Comment[]
+  postLikes              PostLike[]
+  notifications          Notification[]
+  resetPasswordExpires   DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
 
   @@map("users")
 }

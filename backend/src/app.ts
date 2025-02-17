@@ -8,6 +8,9 @@ import { NODE_ENV, PORT } from "./config";
 import { Routes } from "./interfaces/routes.interface";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { ALLOWED_ORIGINS } from "./config";
+import AuthRoute from './routes/auth.route';
+import RoleRoute from './routes/role.route';
+import PermissionRoute from './routes/permission.route';
 
 class App {
   public app: express.Application;
@@ -91,6 +94,15 @@ class App {
     routes.forEach((route) => {
       this.app.use("/", route.router);
     });
+
+    const authRoute = new AuthRoute();
+    this.app.use(authRoute.path, authRoute.router);
+
+    const roleRoute = new RoleRoute();
+    this.app.use(roleRoute.path, roleRoute.router);
+
+    const permissionRoute = new PermissionRoute();
+    this.app.use(permissionRoute.path, permissionRoute.router);
   }
 
   private initializeErrorHandling() {
