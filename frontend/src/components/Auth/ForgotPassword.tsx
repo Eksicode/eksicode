@@ -108,13 +108,13 @@ const ForgotPassword: React.FC = () => {
             >
               Gönder
             </Button>
-            <Modal
+            {/* <Modal
               isOpen={showModal}
               onClose={() => setShowModal(false)}
               title={modalContent.title}
               buttonText={modalContent.buttonText}
               redUrl="/auth/sifremi-unuttum"
-            />
+            /> */}
           </Form>
         
       </Formik>
