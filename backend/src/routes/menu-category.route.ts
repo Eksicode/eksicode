@@ -13,9 +13,15 @@ class MenuCategoryRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.menuCategoryController.getAllMenuCategories);
-    this.router.get(`${this.path}/:id`, this.menuCategoryController.getMenuCategoryById);
-    
+    this.router.get(
+      `${this.path}`,
+      this.menuCategoryController.getAllMenuCategories
+    );
+    this.router.get(
+      `${this.path}/:id`,
+      this.menuCategoryController.getMenuCategoryById
+    );
+
     // Protected routes
     this.router.post(
       `${this.path}`,
@@ -35,4 +41,4 @@ class MenuCategoryRoute implements Routes {
   }
 }
 
-export default MenuCategoryRoute; 
+export default MenuCategoryRoute;

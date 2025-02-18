@@ -1,6 +1,7 @@
 import { Router } from "express";
 import PageController from "../controllers/page.controller";
 import { Routes } from "../interfaces/routes.interface";
+import authMiddleware from "../middlewares/auth.middleware";
 
 class UserRoute implements Routes {
   public path = "/pages";
@@ -15,9 +16,21 @@ class UserRoute implements Routes {
     this.router.get(`${this.path}`, this.pageController.getAllPages); // GET /pages
     // this.router.get(`${this.path}/:id`, this.pageController.getPageById); // GET /pages/:id
     this.router.get(`${this.path}/:slug`, this.pageController.getPageBySlug); // GET /pages/:slug
-    this.router.post(`${this.path}`, this.pageController.createPage); // POST /pages
-    this.router.put(`${this.path}/:id`, this.pageController.updatePage); // PUT /pages/:id
-    this.router.delete(`${this.path}/:id`, this.pageController.deletePage); // DELETE /pages/:id
+    this.router.post(
+      `${this.path}`,
+      authMiddleware,
+      this.pageController.createPage
+    ); // POST /pages
+    this.router.put(
+      `${this.path}/:id`,
+      authMiddleware,
+      this.pageController.updatePage
+    ); // PUT /pages/:id
+    this.router.delete(
+      `${this.path}/:id`,
+      authMiddleware,
+      this.pageController.deletePage
+    ); // DELETE /pages/:id
   }
 }
 

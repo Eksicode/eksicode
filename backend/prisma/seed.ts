@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, JobType, PostStatus } from "@prisma/client";
 const prisma = new PrismaClient();
 import { telegramGroupsData } from "./telegramGroupsData";
 import { menuItems } from "./menuItemsData";
@@ -17,7 +17,7 @@ async function cleanDatabase() {
   await prisma.job.deleteMany({});
   await prisma.source.deleteMany({});
   await prisma.user.deleteMany({});
-  await prisma.hashTag.deleteMany({});
+  await prisma.tag.deleteMany({});
   await prisma.postCategory.deleteMany({});
   await prisma.menu.deleteMany({});
   await prisma.menuCategory.deleteMany({});
@@ -45,26 +45,22 @@ async function seedJobs() {
   console.log("Seeding jobs...");
 
   for (const job of jobsData) {
-    const { id, ...jobData } = job;
+    const { id, employmentType, ...jobData } = job;
+    
+    const jobInput = {
+      ...jobData,
+      employmentType: employmentType as JobType,
+      createdAt: new Date(jobData.createdAt),
+      updatedAt: new Date(jobData.updatedAt),
+      company: {
+        connect: { id: jobData.company }
+      }
+    };
 
     await prisma.job.upsert({
-      where: { id: job.id }, // Assuming job has an id
-      update: {
-        ...jobData,
-        createdAt: new Date(jobData.createdAt),
-        updatedAt: new Date(jobData.updatedAt),
-        company: {
-          connect: { id: jobData.company }
-        }
-      },
-      create: {
-        ...jobData,
-        createdAt: new Date(jobData.createdAt),
-        updatedAt: new Date(jobData.updatedAt),
-        company: {
-          connect: { id: jobData.company }
-        }
-      },
+      where: { id },
+      update: jobInput,
+      create: jobInput
     });
   }
 }
@@ -244,62 +240,86 @@ async function seedPageCategoriesAndPages() {
 
 async function seedPostCategoriesAndTags() {
   console.log("Seeding post categories and tags...");
+  
+  // Create post categories with fixed IDs
+  const categoryData = [
+    { id: 0, name: "Technology" },
+    { id: 1, name: "Programming" },
+    { id: 2, name: "Web Development" },
+    { id: 3, name: "Data Science" }
+  ];
+
   const categories = await Promise.all(
-    ["Technology", "Programming", "Web Development", "Data Science"].map((name) =>
-      prisma.postCategory.create({ data: { name } })
+    categoryData.map((cat) =>
+      prisma.postCategory.upsert({
+        where: { id: cat.id },
+        update: { name: cat.name },
+        create: { id: cat.id, name: cat.name }
+      })
     )
   );
 
+  // Create tags with fixed IDs
+  const tagData = [
+    { id: 1, name: "javascript" },
+    { id: 2, name: "react" },
+    { id: 3, name: "nextjs" },
+    { id: 4, name: "typescript" },
+    { id: 5, name: "prisma" },
+    { id: 6, name: "database" }
+  ];
+
   const tags = await Promise.all(
-    ["javascript", "react", "nextjs", "typescript", "prisma", "database"].map((name) =>
-      prisma.hashTag.create({ data: { name } })
+    tagData.map((tag) =>
+      prisma.tag.upsert({
+        where: { id: tag.id },
+        update: { name: tag.name },
+        create: { id: tag.id, name: tag.name }
+      })
     )
   );
 
   return { categories, tags };
 }
 
-async function seedPosts(users, categories, tags) {
+async function seedPosts() {
   console.log("Seeding posts...");
   for (const post of posts) {
-    const { tags: tagIds, categories: categoryIds, authorId, ...postData } = post;
+    const { status, tags, categories, ...postData } = post;
+    
+    const postInput = {
+      ...postData,
+      status: status as PostStatus,
+      categories: {
+        connect: categories.map(id => ({ id }))
+      },
+      tags: {
+        connect: tags.map(id => ({ id }))
+      }
+    };
 
     await prisma.post.upsert({
       where: { slug: post.slug },
-      update: {},
-      create: {
-        ...postData,
-        author: {
-          connect: { id: users[authorId - 1].id }
-        },
-        categories: {
-          connect: categoryIds.map((index: number) => ({ id: categories[index].id }))
-        },
-        tags: {
-          connect: tagIds.map((index: number) => ({ id: tags[index].id }))
-        }
-      },
+      update: postInput,
+      create: postInput
     });
   }
 }
 
 async function seedSources() {
   console.log("Seeding sources...");
-
   for (const source of sourcesData) {
-    const { id, ...sourceData } = source;
+    const { tags, ...sourceData } = source;
+
     await prisma.source.upsert({
-      where: { id: id },
+      where: { id: source.id },
       update: {
+        ...sourceData,
+        updatedAt: new Date(),
       },
       create: {
         ...sourceData,
-        hashtags: {
-          connectOrCreate: sourceData.hashtags.map((name: string) => ({
-            where: { name },
-            create: { name },
-          })),
-        },
+        createdAt: new Date(),
       },
     });
   }
@@ -313,11 +333,8 @@ async function main() {
     const roles = await seedRoles(permissions);
     await seedUsers(roles);
     
-    // Get users after seeding them
-    const users = await prisma.user.findMany();
-    
-    const { categories, tags } = await seedPostCategoriesAndTags();
-    await seedPosts(users, categories, tags);  // Pass all required data
+    await seedPostCategoriesAndTags(); // Create categories and tags first
+    await seedPosts(); // Then create posts
     
     await seedTelegramGroups();
     await seedMenuCategoriesAndItems();
@@ -329,6 +346,7 @@ async function main() {
     console.log("Seeding completed successfully.");
   } catch (error) {
     console.error("Error during seeding:", error);
+    throw error; // Re-throw to see full error stack
   } finally {
     await prisma.$disconnect();
   }

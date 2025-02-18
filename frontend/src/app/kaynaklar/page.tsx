@@ -19,7 +19,7 @@ interface Source {
   approved: boolean;
   createdAt: string;
   updatedAt: string;
-  hashtags: Hashtag[];
+  tags: Hashtag[];
 }
 
 interface Meta {
@@ -40,16 +40,17 @@ export default async function Sources({params}: {params: {page: any}}) {
   const page = params.page ? parseInt(params.page) : 10;
   const sourcesData = await getData<Source, Meta>("sources", false, page);
 
-  const formatHashtags = (hashtags: Hashtag[]): string => {
-    return hashtags.map(hashtag => "#" + hashtag.name).join(", ");
+  const formatHashtags = (tags: Hashtag[]): string => {
+    return tags.map(hashtag => "#" + hashtag.name).join(", ");
   };
 
   const preparedData = sourcesData.data.map((source) => ({
     title: source.title,
     description: source.description,
     url: source.url,
-    hashtags: formatHashtags(source.hashtags),
+    hashtags: formatHashtags(source.tags),
   }));
+
 
   return (
     <div className="flex py-5 basis-3/4">

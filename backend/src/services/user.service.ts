@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { HttpException } from '../exceptions/HttpException';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
-
+import config from '../config';
 class UserService {
   private prisma: PrismaClient;
 
@@ -111,20 +111,20 @@ class UserService {
     });
 
     const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE,
+      service: config.email.service,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: config.email.user,
+        pass: config.email.password,
       },
     });
 
     const mailOptions = {
       to: email,
-      from: process.env.EMAIL_USER,
+      from: config.email.user,
       subject: 'Email Confirmation',
       text: `You are receiving this because you (or someone else) have created an account.\n\n
         Please click on the following link, or paste this into your browser to complete the process:\n\n
-        http://${process.env.FRONTEND_HOST}/confirm-email/${emailToken}\n\n
+        http://${config.frontendHost}/confirm-email/${emailToken}\n\n
         If you did not request this, please ignore this email.\n`,
     };
 

@@ -1,7 +1,7 @@
 import { PrismaClient, Post, Prisma } from "@prisma/client";
 import { isEmpty } from "../utils/util";
 import { HttpException } from "../exceptions/HttpException";
-import { IPost } from "../interfaces/post.interface";
+import { IPost, PostStatusEnum } from "../interfaces/post.interface";
 
 class PostService {
   private prisma: PrismaClient;
@@ -49,7 +49,7 @@ class PostService {
       this.prisma.post.findMany({
         where: {
           approved: true,
-          status: "published",
+          status: "PUBLISHED",
         },
         skip: Number(skip),
         take: Number(limit),
@@ -62,7 +62,7 @@ class PostService {
       this.prisma.post.count({
         where: {
           approved: true,
-          status: "published",
+          status: "PUBLISHED",
         },
       }),
     ]);
@@ -86,6 +86,7 @@ public async searchPost(
   skip: number = 0,
   limit: number = 10
 ): Promise<{ posts: IPost[]; count: number }> {
+  console.log("hashtag", hashtag);
   
   if (isEmpty(term) && isEmpty(hashtag)) {
     throw new HttpException(400, "Search term or hashtag is required");
@@ -157,6 +158,7 @@ public async searchPost(
     // Map posts to include userId in comments
     const mappedPosts = posts.map((post) => ({
       ...post,
+      status: post.status as unknown as PostStatusEnum,
       comments: post.comments.map((comment) => ({
         ...comment,
         userId: comment.author.id,

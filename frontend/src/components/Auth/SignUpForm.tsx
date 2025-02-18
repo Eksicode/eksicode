@@ -16,7 +16,7 @@ interface SignUpValues {
 }
 
 const SignUpForm: React.FC = () => {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({
     title: "",
     text: "",

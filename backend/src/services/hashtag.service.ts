@@ -1,4 +1,4 @@
-import { PrismaClient, HashTag } from "@prisma/client";
+import { PrismaClient, Tag } from "@prisma/client";
 import { HttpException } from "../exceptions/HttpException";
 
 class HashtagService {
@@ -6,8 +6,8 @@ class HashtagService {
 
     public async getAllHashtags(skip?: number, limit?: number) {
         try {
-            const count = await this.prisma.hashTag.count();
-            const hashTags = await this.prisma.hashTag.findMany({
+            const count = await this.prisma.tag.count();
+            const hashTags = await this.prisma.tag.findMany({
                 skip: skip || 0,
                 take: limit || undefined,
                 orderBy: {
@@ -21,9 +21,9 @@ class HashtagService {
         }
     }
 
-    public async getHashtagById(id: number): Promise<HashTag | null> {
+    public async getHashtagById(id: number): Promise<Tag | null> {
         try {
-            const hashTag = await this.prisma.hashTag.findUnique({
+            const hashTag = await this.prisma.tag.findUnique({
                 where: { id },
             });
 
@@ -37,10 +37,10 @@ class HashtagService {
         }
     }
 
-    public async createHashtag(data: { name: string }): Promise<HashTag> {
+    public async createHashtag(data: { name: string }): Promise<Tag> {
         try {
 
-            const hashTagName = await this.prisma.hashTag.findUnique({
+            const hashTagName = await this.prisma.tag.findUnique({
                 where: { name: data.name },
             });
 
@@ -48,7 +48,7 @@ class HashtagService {
                 throw new HttpException(409, "Hashtag already exists");
             }
             
-            const hashTag = await this.prisma.hashTag.create({
+            const hashTag = await this.prisma.tag.create({
                 data: {
                     name: data.name,
                 },
@@ -60,9 +60,9 @@ class HashtagService {
         }
     }
 
-    public async updateHashtag(id: number, data: { name: string }): Promise<HashTag> {
+    public async updateHashtag(id: number, data: { name: string }): Promise<Tag> {
         try {
-            const hashTag = await this.prisma.hashTag.update({
+            const hashTag = await this.prisma.tag.update({
                 where: { id },
                 data: {
                     name: data.name,
@@ -75,9 +75,9 @@ class HashtagService {
         }
     }
 
-    public async deleteHashtag(id: number): Promise<HashTag> {
+    public async deleteHashtag(id: number): Promise<Tag> {
         try {
-            const hashTag = await this.prisma.hashTag.delete({
+            const hashTag = await this.prisma.tag.delete({
                 where: { id },
             });
 
