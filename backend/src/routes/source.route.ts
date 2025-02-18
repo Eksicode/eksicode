@@ -2,7 +2,6 @@ import { Router } from "express";
 import SourceController from "../controllers/source.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
-import validationMiddleware from "../middlewares/validation.middleware";
 
 class SourceRoute implements Routes {
     public path = "/sources";
@@ -16,9 +15,9 @@ class SourceRoute implements Routes {
     private initializeRoutes() {
         this.router.get(`${this.path}`, this.sourceController.getAllSources);
         this.router.get(`${this.path}/:id`, this.sourceController.getSourceById);
-        this.router.post(`${this.path}`, this.sourceController.createSource);
-        this.router.put(`${this.path}/:id`, this.sourceController.updateSource);
-        this.router.delete(`${this.path}/:id`, this.sourceController.deleteSource);
+        this.router.post(`${this.path}`, authMiddleware, this.sourceController.createSource);
+        this.router.put(`${this.path}/:id`, authMiddleware, this.sourceController.updateSource);
+        this.router.delete(`${this.path}/:id`, authMiddleware, this.sourceController.deleteSource);
     };
 }
 

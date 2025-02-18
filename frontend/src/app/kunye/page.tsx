@@ -29,17 +29,7 @@ function page() {
                 target="_blank"
                 className="hover:underline ml-1"
               >
-                 MuharremGonel
-              </Link>
-            </p>
-            <p className="w-full my-2">
-              kodlayan:
-              <Link
-                href="https://github.com/hasanbelen35"
-                target="_blank"
-                className="hover:underline ml-1"
-              >
-                hasanbelen35
+                MuharremGonel
               </Link>
             </p>
 

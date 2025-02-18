@@ -119,7 +119,7 @@ export class PostController {
 
       const { skip, limit } = this.validatePaginationParams(req.query.skip, req.query.limit);
 
-      console.log(hashtag);
+      console.log("hashtag", hashtag);
 
       const searchResult = await this.postService.searchPost(
         term,

@@ -11,7 +11,7 @@ class SourceService {
                 skip: skip || 0,
                 take: limit || undefined,
                 include: {
-                    hashtags: true
+                    tags: true
                 },
                 orderBy: {
                     title: 'desc',
@@ -28,7 +28,7 @@ class SourceService {
             const source = await this.prisma.source.findUnique({
                 where: { id },
                 include: {
-                    hashtags: true
+                    tags: true
                 },
             });
             return source;
@@ -55,12 +55,12 @@ class SourceService {
             const source = await this.prisma.source.create({
                 data: {
                     ...data,
-                    hashtags: data.hashtags
+                    tags: data.hashtags
                         ? { connect: data.hashtags.map((name => ({ name }))) }
                         : undefined
                 },
                 include: {
-                    hashtags: true
+                    tags: true
                 }
             });
             return source;
@@ -82,12 +82,12 @@ class SourceService {
                 where: { id },
                 data: {
                     ...data,
-                    hashtags: data.hastags
+                    tags: data.hastags
                         ? { set: [], connect: data.hastags.map((name => ({ name }))) }
                         : undefined
                 },
                 include: {
-                    hashtags: true
+                    tags: true
                 }
             });
         } catch (error) {

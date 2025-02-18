@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import PermissionController from '../controllers/permission.controller';
 import { Routes } from '../interfaces/routes.interface';
+import authMiddleware from "../middlewares/auth.middleware";
 
 class PermissionRoute implements Routes {
   public path = '/permissions';
@@ -12,8 +13,8 @@ class PermissionRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.post(`${this.path}`, this.permissionController.createPermission);
-    this.router.get(`${this.path}`, this.permissionController.getAllPermissions);
+    this.router.post(`${this.path}`, authMiddleware, this.permissionController.createPermission);
+    this.router.get(`${this.path}`, authMiddleware, this.permissionController.getAllPermissions);
   }
 }
 

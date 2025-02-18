@@ -9,11 +9,11 @@ datasource db {
 
 model User {
   id                     Int            @id @default(autoincrement())
-  email                  String         @unique
-  password               String
+  email                  String         @unique @db.VarChar(255)
+  password               String         @db.VarChar(255)
   firstName              String?
   lastName               String?
-  username               String         @unique
+  username               String         @unique @db.VarChar(50)
   profilePicture         String?
   birthday               DateTime?
   telegramId             Int?
@@ -87,16 +87,16 @@ model RolePermission {
 
 model Post {
   id          Int            @id @default(autoincrement())
-  title       String
-  content     String
+  title       String         @db.VarChar(255)
+  content     String         @db.Text
   headerImage String?
   authorId    Int
   author      User           @relation(fields: [authorId], references: [id])
-  postLikes   PostLike[]
-  comments    Comment[]
-  categories  PostCategory[]
-  tags        HashTag[]
-  status      String         @default("draft") // Changed back to String temporarily
+  postLikes   PostLike[]     @relation("PostToPostLikes")
+  comments    Comment[]      @relation("PostToComments")
+  categories  PostCategory[] @relation("PostToCategories")
+  tags        Tag[]          @relation("PostToTags")
+  status      PostStatus     @default(DRAFT)
   slug        String         @unique
   approved    Boolean        @default(false)
   createdAt   DateTime       @default(now())
@@ -111,7 +111,7 @@ model Comment {
   authorId  Int
   postId    Int
   author    User     @relation(fields: [authorId], references: [id])
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation("PostToComments", fields: [postId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -121,20 +121,20 @@ model Comment {
 model PostCategory {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  posts     Post[]
+  posts     Post[]   @relation("PostToCategories")
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
   @@map("post_categories")
 }
 
-model HashTag {
+model Tag {
   id      Int      @id @default(autoincrement())
   name    String   @unique
-  posts   Post[]
-  sources Source[] @relation("SourceHashTags")
+  posts   Post[]   @relation("PostToTags")
+  sources Source[] @relation("SourceTags")
 
-  @@map("hash_tags")
+  @@map("tags")
 }
 
 model PostLike {
@@ -142,7 +142,7 @@ model PostLike {
   userId Int
   postId Int
   user   User @relation(fields: [userId], references: [id])
-  post   Post @relation(fields: [postId], references: [id])
+  post   Post @relation("PostToPostLikes", fields: [postId], references: [id])
 
   @@unique([userId, postId])
   @@map("post_likes")
@@ -247,7 +247,7 @@ model Job {
   slug           String    @unique
   description    String?
   location       String?
-  employmentType String?
+  employmentType JobType   @default(FULLTIME)
   department     String?
   salary         String?
   createdAt      DateTime  @default(now())
@@ -260,16 +260,16 @@ model Job {
 }
 
 model Source {
-  id          Int       @id @default(autoincrement())
-  title       String    @unique
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
   description String?
   url         String
   tgChannel   String?
   tgUser      String?
-  approved    Boolean   @default(false)
-  hashtags    HashTag[] @relation("SourceHashTags")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  approved    Boolean  @default(false)
+  tags        Tag[]    @relation("SourceTags") // Changed from tag[] to Tag[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("sources")
 }
@@ -291,8 +291,15 @@ enum MediaTypeEnum {
   document
 }
 
-// enum PostStatusEnum {
-//   draft
-//   published
-//   archived
-// }
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum JobType {
+  FULLTIME
+  PARTTIME
+  CONTRACT
+  INTERNSHIP
+}

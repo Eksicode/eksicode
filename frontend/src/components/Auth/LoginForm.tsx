@@ -5,22 +5,21 @@ import Button from "@/components/Ui/Button";
 import Link from "next/link";
 
 interface LoginFormValues {
-  email: string;
+  userInfo: string;
   password: string;
   rememberMe: boolean;
 }
 
 const LoginForm: React.FC = () => {
   const initialValues: LoginFormValues = {
-    email: "",
+    userInfo: "",
     password: "",
     rememberMe: false,
   };
 
   const validationSchema = Yup.object({
-    email: Yup.string()
-      .email("Geçerli bir e-posta adresi girin")
-      .required("E-posta adresi gereklidir"),
+    userInfo: Yup.string()
+      .required("E-posta adresi ya da kullanıcı adı gereklidir"),
     password: Yup.string().required("Şifre girmeniz gerekli..."),
   });
 
@@ -45,12 +44,12 @@ const LoginForm: React.FC = () => {
             <div className="mb-6">
               <Field
                 type="text"
-                name="email"
-                placeholder="E-posta Adresi"
+                name="userInfo"
+                placeholder="E-posta Adresi ya da kullanıcı adı"
                 className="form-control block w-full px-4 py-2 font-normal  bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
-                name="email"
+                name="userInfo"
                 component="div"
                 className="text-red-500 mt-1"
               />

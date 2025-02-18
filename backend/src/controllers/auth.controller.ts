@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import config from '../config';
 
 const prisma = new PrismaClient();
 
@@ -29,6 +30,11 @@ class AuthController {
   public login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { userInfo, password } = req.body;
+
+      if (!userInfo || !password) {
+        throw new HttpException(400, 'Email or username and password must be provided');
+      }
+
       console.log(`Login attempt with email: ${userInfo}`);
 
       const user = await this.userService.findUserByEmailUsername(userInfo);
@@ -45,7 +51,7 @@ class AuthController {
         throw new HttpException(401, 'Invalid credentials');
       }
 
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: '1h' });
       res.status(200).json({ token });
     } catch (error) {
       console.log(`Login error: ${error.message}`);
@@ -73,20 +79,20 @@ class AuthController {
       });
 
       const transporter = nodemailer.createTransport({
-        service: process.env.EMAIL_SERVICE,
+        service: config.email.service,
         auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
+          user: config.email.user,
+          pass: config.email.password,
         },
       });
 
       const mailOptions = {
         to: email,
-        from: process.env.EMAIL_USER,
+        from: email.user,
         subject: 'Password Reset',
         text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
           Please click on the following link, or paste this into your browser to complete the process:\n\n
-          http://${process.env.FRONTEND_HOST}/reset/${token}\n\n
+          http://${config.frontendHost}/reset/${token}\n\n
           If you did not request this, please ignore this email and your password will remain unchanged.\n`,
       };
 

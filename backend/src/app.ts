@@ -4,13 +4,12 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
-import { NODE_ENV, PORT } from "./config";
 import { Routes } from "./interfaces/routes.interface";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import { ALLOWED_ORIGINS } from "./config";
 import AuthRoute from './routes/auth.route';
 import RoleRoute from './routes/role.route';
 import PermissionRoute from './routes/permission.route';
+import config from "./config";
 
 class App {
   public app: express.Application;
@@ -20,8 +19,8 @@ class App {
 
   constructor(routes: Routes[]) {
     this.app = express();
-    this.env = NODE_ENV || "development";
-    this.port = PORT || 9000;
+    this.env = config.nodeEnv || "development";
+    this.port = config.port || 9000;
 
     this.prisma = new PrismaClient();
     this.connectToDatabase();
@@ -51,7 +50,7 @@ class App {
   }
 
   private initializeMiddlewares() {
-    const whitelist = ALLOWED_ORIGINS?.split(",") || [
+    const whitelist = config.allowedOrigins || [
       "https://eksicode.org",
       "https://demo.eksicode.org",
       "https://demo-api.eksicode.org",
@@ -63,7 +62,7 @@ class App {
         origin: function (origin, callback) {
           if (
             !origin ||
-            process.env.NODE_ENV === "development" ||
+            config.nodeEnv === "development" ||
             whitelist.includes(origin)
           ) {
             callback(null, true);

@@ -1,6 +1,6 @@
-import { NextFunction, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
-import { SECRET_KEY } from '../config';
+import jwtSecret from '../config';
 import { HttpException } from '../exceptions/HttpException';
 import { RequestWithUser } from '../interfaces/auth.interface';
 
@@ -9,7 +9,7 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
     const Authorization = req.cookies['Authorization'] || req.header('Authorization')?.split('Bearer ')[1];
 
     if (Authorization) {
-      const secretKey: string = SECRET_KEY || '';
+      const secretKey: string = jwtSecret.jwtSecret || '';
       const verificationResponse = verify(Authorization, secretKey) as any;
       req.user = verificationResponse;
       next();

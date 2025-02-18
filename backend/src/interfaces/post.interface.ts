@@ -1,8 +1,8 @@
 // Post status enum
-enum PostStatusEnum {
-  draft = 'draft',
-  published = 'published',
-  archived = 'archived'
+export enum PostStatusEnum {
+  draft = 'DRAFT',
+  published = 'PUBLISHED',
+  archived = 'ARCHIVED'
 }
 
 // User interface (referenced by Post)

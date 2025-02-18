@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { JobController } from "../controllers/job.controller";
 import { Routes } from "../interfaces/routes.interface";
-
+import authMiddleware from "../middlewares/auth.middleware";
 class JobRoute implements Routes {
   public path = "/jobs";
   public router = Router();
@@ -16,9 +16,21 @@ class JobRoute implements Routes {
     this.router.get(`${this.path}/id/:id`, this.jobController.getJobById); // GET /Jobs/:id
     this.router.get(`${this.path}/slug/:slug`, this.jobController.getJobBySlug); // GET /Jobs/:slug
     this.router.get(`${this.path}/search`, this.jobController.searchJobs); // GET /Jobs/search
-    this.router.post(`${this.path}`, this.jobController.createJob); // POST /Jobs
-    this.router.put(`${this.path}/:id`, this.jobController.updateJob); // PUT /Jobs/:id
-    this.router.delete(`${this.path}/:id`, this.jobController.deleteJob); // DELETE /Jobs/:id
+    this.router.post(
+      `${this.path}`,
+      authMiddleware,
+      this.jobController.createJob
+    ); // POST /Jobs
+    this.router.put(
+      `${this.path}/:id`,
+      authMiddleware,
+      this.jobController.updateJob
+    ); // PUT /Jobs/:id
+    this.router.delete(
+      `${this.path}/:id`,
+      authMiddleware,
+      this.jobController.deleteJob
+    ); // DELETE /Jobs/:id
   }
 }
 

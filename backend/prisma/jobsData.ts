@@ -6,7 +6,7 @@ export const jobsData = [
     description:
       "Develop and maintain web applications using modern technologies.",
     location: "San Francisco, CA",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Engineering",
     salary: "$120,000 - $150,000",
     createdAt: "2023-09-15T08:00:00Z",
@@ -19,7 +19,7 @@ export const jobsData = [
     slug: "marketing-manager-amazon",
     description: "Lead digital marketing campaigns and brand strategy.",
     location: "New York, NY",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Marketing",
     salary: "$80,000 - $100,000",
     createdAt: "2023-09-16T09:30:00Z",
@@ -32,7 +32,7 @@ export const jobsData = [
     slug: "hr-intern-apple",
     description: "Support recruitment and employee engagement initiatives.",
     location: "Remote",
-    employmentType: "INTERNSHIP",
+    employmentType: "INTERNSHIP", // Must match exactly with enum in schema
     department: "Human Resources",
     salary: "$20 hourly",
     createdAt: "2023-09-18T14:20:00Z",
@@ -45,7 +45,7 @@ export const jobsData = [
     slug: "sales-representative-google",
     description: "Sell products and services to potential customers.",
     location: "Los Angeles, CA",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Sales",
     salary: "$60,000 - $80,000",
     createdAt: "2023-09-19T11:45:00Z",
@@ -58,7 +58,7 @@ export const jobsData = [
     slug: "graphic-designer-microsoft",
     description: "Design and create visual elements for marketing materials.",
     location: "San Francisco, CA",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Design",
     salary: "$70,000 - $90,000",
     createdAt: "2023-09-20T15:30:00Z",
@@ -71,7 +71,7 @@ export const jobsData = [
     slug: "customer-service-representative-ibm",
     description: "Provide customer support and resolve issues.",
     location: "Remote",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Customer Service",
     salary: "$50,000 - $70,000",
     createdAt: "2023-09-21T09:00:00Z",
@@ -84,7 +84,7 @@ export const jobsData = [
     slug: "data-analyst-ibm",
     description: "Analyze and interpret data to gain insights.",
     location: "Remote",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Data Science",
     salary: "$80,000 - $100,000",
     createdAt: "2023-09-22T13:15:00Z",
@@ -97,7 +97,7 @@ export const jobsData = [
     slug: "product-manager-ibm",
     description: "Develop and manage product features and roadmap.",
     location: "San Francisco, CA",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Product Management",
     salary: "$90,000 - $110,000",
     createdAt: "2023-09-23T10:30:00Z",
@@ -110,7 +110,7 @@ export const jobsData = [
     slug: "content-writer-ibm",
     description: "Create and edit content for various platforms and audiences.",
     location: "Remote",
-    employmentType: "PARTTIME",
+    employmentType: "PARTTIME", // Must match exactly with enum in schema
     department: "Content",
     salary: "$25 hourly",
     createdAt: "2023-09-24T14:45:00Z",
@@ -123,7 +123,7 @@ export const jobsData = [
     slug: "finance-analyst-ibm",
     description: "Analyze financial data and prepare reports for management.",
     location: "New York, NY",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Finance",
     salary: "$70,000 - $90,000",
     createdAt: "2023-09-25T08:45:00Z",
@@ -136,7 +136,7 @@ export const jobsData = [
     slug: "ux-designer-ibm",
     description: "Design user experiences for web and mobile applications.",
     location: "Remote",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Design",
     salary: "$80,000 - $100,000",
     createdAt: "2023-09-26T11:00:00Z",
@@ -149,7 +149,7 @@ export const jobsData = [
     slug: "operations-manager-ibm",
     description: "Oversee daily operations and manage team performance.",
     location: "Los Angeles, CA",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Operations",
     salary: "$100,000 - $120,000",
     createdAt: "2023-09-27T15:00:00Z",
@@ -162,7 +162,7 @@ export const jobsData = [
     slug: "it-support-specialist-ibm",
     description: "Provide technical support and troubleshoot IT issues.",
     location: "Remote",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "IT",
     salary: "$60,000 - $80,000",
     createdAt: "2023-09-28T09:30:00Z",
@@ -175,7 +175,7 @@ export const jobsData = [
     slug: "sales-representative-ibm",
     description: "Sell products and services to potential customers.",
     location: "Remote",
-    employmentType: "FULLTIME",
+    employmentType: "FULLTIME", // Must match exactly with enum in schema
     department: "Sales",
     salary: "$55,000 - $75,000",
     createdAt: "2023-09-29T13:15:00Z",
