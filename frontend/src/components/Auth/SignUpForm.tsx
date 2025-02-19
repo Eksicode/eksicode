@@ -8,10 +8,10 @@ import { useRouter } from "next/navigation";
 import Modal from "@/components/Ui/Modal";
 
 interface SignUpValues {
-  name: string;
+  userName: string;
   email: string;
   password: string;
-  password_confirmation: string;
+  passwordConfirmation: string;
   userAgreement: boolean;
 }
 
@@ -27,15 +27,15 @@ const SignUpForm: React.FC = () => {
   const [isFormValid, setIsFormValid] = useState(false);
 
   const initialValues: SignUpValues = {
-    name: "",
+    userName: "",
     email: "",
     password: "",
-    password_confirmation: "",
+    passwordConfirmation: "",
     userAgreement: false,
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string()
+    userName: Yup.string()
       .matches(/^\S*$/, "Kullanıcı adında boşluk olmamalıdır")
       .matches(/^\w*$/, "Kullanıcı adında özel karakter olmamalıdır")
       .required("Kullanıcı adı gereklidir"),
@@ -134,12 +134,12 @@ const SignUpForm: React.FC = () => {
               <label htmlFor="name">Kullanıcı Adınız*</label>
               <Field
                 type="text"
-                name="name"
+                name="userName"
                 placeholder="johndoe"
                 className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
-                name="name"
+                name="userName"
                 component="div"
                 className="text-red-500 mt-1"
               />

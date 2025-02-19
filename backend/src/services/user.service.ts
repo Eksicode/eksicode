@@ -87,7 +87,6 @@ class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const emailToken = crypto.randomBytes(32).toString('hex');
     const hashedEmailToken = await bcrypt.hash(emailToken, 10);
 
@@ -97,6 +96,7 @@ class UserService {
       throw new HttpException(500, 'Default user role not found');
     }
 
+    // Create user first
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -104,31 +104,46 @@ class UserService {
         username: String(username),
         emailVerificationToken: hashedEmailToken,
         emailVerified: false,
-        roles: {
-          create: [{ roleId: userRole.id }],
-        },
       },
     });
 
-    const transporter = nodemailer.createTransport({
-      service: config.email.service,
-      auth: {
-        user: config.email.user,
-        pass: config.email.password,
+    // Then assign role
+    await this.prisma.userRole.create({
+      data: {
+        userId: user.id,
+        roleId: userRole.id,
       },
     });
 
-    const mailOptions = {
-      to: email,
-      from: config.email.user,
-      subject: 'Email Confirmation',
-      text: `You are receiving this because you (or someone else) have created an account.\n\n
-        Please click on the following link, or paste this into your browser to complete the process:\n\n
-        http://${config.frontendHost}/confirm-email/${emailToken}\n\n
-        If you did not request this, please ignore this email.\n`,
-    };
+    // Only attempt to send email if SMTP configuration is available
+    if (config.email?.user && config.email?.password && config.email?.service) {
+      try {
+        const transporter = nodemailer.createTransport({
+          service: config.email.service,
+          auth: {
+            user: config.email.user,
+            pass: config.email.password,
+          },
+        });
 
-    await transporter.sendMail(mailOptions);
+        const mailOptions = {
+          to: email,
+          from: config.email.user,
+          subject: 'Email Confirmation',
+          text: `You are receiving this because you (or someone else) have created an account.\n\n
+            Please click on the following link, or paste this into your browser to complete the process:\n\n
+            http://${config.frontendHost}/confirm-email/${emailToken}\n\n
+            If you did not request this, please ignore this email.\n`,
+        };
+
+        await transporter.sendMail(mailOptions);
+      } catch (error) {
+        console.error('Failed to send verification email:', error);
+        // Don't throw error, allow user creation to succeed even if email fails
+      }
+    } else {
+      console.warn('Email configuration not found. Skipping verification email.');
+    }
 
     return user;
   }
