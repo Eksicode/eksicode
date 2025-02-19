@@ -12,8 +12,10 @@ import Search from "@/components/Search/Search";
 import Navlink from "@/components/Ui/NavLink";
 import MobileMenu from "@/components/Nav/MobileMenu";
 import ThemeSwitch from "@/components/Nav/ThemeSwitch";
-
+import Notifications from "@/components/Nav/Notifications";
+import { useSession } from "next-auth/react";
 const Nav = () => {
+  const { data: session } = useSession();
   return (
     <nav className="flex flex-wrap w-full justify-center z-50 sticky top-0 nav-sahdow bg-white dark:bg-DarkerGrey">
       {/* Menu */}
@@ -43,59 +45,52 @@ const Nav = () => {
               <ThemeSwitch />
             </div>
 
-            <Navlink
-              variant="secondary"
-              href="/dashboard/posts/yeni"
-              style="hidden lg:flex"
-            >
-              <div className="flex items-center">
-                <AiOutlineEdit className="h-5 w-5 mr-1" />
-                <span className="hidden lg:flex">Yeni Gönderi</span>
-              </div>
-            </Navlink>
-            <Navlink
-              variant="quaternary"
-              style="ml-3 pt-2 border border-white hidden lg:flex"
-              href="/auth/uye-giris"
-            >
-              <div className="flex items-center">
-                <AiOutlineLogin className="h-5 w-5 mr-1" />{" "}
-                <span> Üye Girişi</span>
-              </div>
-            </Navlink>
-            <Navlink
-              variant="primary"
-              style="ml-3 hidden lg:flex"
-              href="/auth/uye-ol"
-            >
-              <div className="flex items-center">
-                <AiOutlineUserAdd className="h-5 w-5 mr-1" />{" "}
-                <span className="">Üye Ol</span>
-              </div>
-            </Navlink>
+            {!session && (
+              <>
+                <Navlink
+                  variant="quaternary"
+                  style="ml-3 pt-2 border border-white hidden lg:flex"
+                  href="/auth/uye-giris"
+                >
+                  <div className="flex items-center">
+                    <AiOutlineLogin className="h-5 w-5 mr-1" />{" "}
+                    <span> Üye Girişi</span>
+                  </div>
+                </Navlink>
+                <Navlink
+                  variant="primary"
+                  style="ml-3 hidden lg:flex"
+                  href="/auth/uye-ol"
+                >
+                  <div className="flex items-center">
+                    <AiOutlineUserAdd className="h-5 w-5 mr-1" />{" "}
+                    <span className="">Üye Ol</span>
+                  </div>
+                </Navlink>
+              </>
+            )}
 
-            <Link
-              className="inline-block relative mx-1"
-              href="/dashboard/bildirimler"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="sm:h-6 sm:w-6 h-8 w-8 hover:text-eksiCode text-dark dark:text-gray-300 dark:hover:text-eksiCode transition duration-300 ease-in-out text-4xl"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              <span className="animate-ping absolute top-1 right-0.5 block h-1 w-1 rounded-full ring-2 ring-green-800 bg-eksiCode"></span>
-            </Link>
-
-            <UserMenu />
+            {session && (
+              <>
+                <Navlink
+                  variant="secondary"
+                  href="/dashboard/posts/yeni"
+                  style="hidden lg:flex"
+                >
+                  <div className="flex items-center">
+                    <AiOutlineEdit className="h-5 w-5 mr-1" />
+                    <span className="hidden lg:flex">Yeni Gönderi</span>
+                  </div>
+                </Navlink>
+                <Notifications />
+                <UserMenu />
+              </>
+            )}
           </div>
           <MobileMenu />
         </div>
       </div>
-      <hr className="h-1 w-full border-t dark:border-DarkLightGrey"  />
+      <hr className="h-1 w-full border-t dark:border-DarkLightGrey" />
 
       <TelegramGroups />
     </nav>

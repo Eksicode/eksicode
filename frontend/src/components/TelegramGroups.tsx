@@ -5,6 +5,7 @@ import LoadingAnimation from "@/components/Ui/LoadingAnimation";
 import getData from "@/utils/getData";
 import { Tooltip } from "react-tooltip";
 import { AiOutlineEdit } from "react-icons/ai";
+import { useSession } from "next-auth/react";
 
 interface Group {
   id: number;
@@ -28,6 +29,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [logoCount, setLogoCount] = useState<number>(initialLogoCount);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +39,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
         const groups = fetchedPosts.data.map((item) => ({
           id: item.id,
           name: item.name,
-          icon: mediaURL+item.icon,
+          icon: mediaURL + item.icon,
           link: item.link,
         })) as Group[];
         setFetchedGroups(groups);
@@ -67,7 +69,6 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
   }, [logoCount, mobileWidth, initialLogoCount, logoWidth]);
 
   return (
-    
     <div className="flex items-center lg:w-full xl:w-3/4 2xl:w-3/4 md:w-full h-16 justify-between overflow-hidden ">
       {isMobile ? (
         <div className="flex w-full gap-2 justify-center">
@@ -78,7 +79,8 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
           >
             Bütün Telegram Grupları
           </Navlink>
-          <Navlink
+          {session && (
+            <Navlink
               variant="secondary"
               href="/dashboard/posts/yeni"
               style="block md:hidden lg:hidden xl:hidden 2xl:hidden"
@@ -88,6 +90,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
                 <span className="flex">Yeni Gönderi</span>
               </div>
             </Navlink>
+          )}
         </div>
       ) : (
         <>
@@ -97,7 +100,9 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
             </div>
           ) : (
             <>
-              <p className="text-eksiCodeMedium dark:text-eksiCodeLight">Telegram Grupları</p>
+              <p className="text-eksiCodeMedium dark:text-eksiCodeLight">
+                Telegram Grupları
+              </p>
               {fetchedGroups.length > 0 ? (
                 <>
                   {fetchedGroups.slice(0, logoCount).map((group: Group) => (
@@ -130,10 +135,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
                       />
                     </div>
                   ))}
-                  <Navlink
-                    variant="secondary"
-                    href="/telegram-gruplari"
-                  >
+                  <Navlink variant="secondary" href="/telegram-gruplari">
                     Bütün Gruplar
                   </Navlink>
                 </>
