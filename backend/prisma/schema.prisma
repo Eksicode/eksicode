@@ -24,7 +24,7 @@ model User {
   twitter                String?
   instagram              String?
   facebook               String?
-  verified               Boolean        @default(false)
+  verified               Boolean        @default(true)
   emailVerificationToken String?
   emailVerified          Boolean        @default(false)
   resetPasswordToken     String?

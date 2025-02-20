@@ -8,9 +8,9 @@ export default withAuth(
 
     // Check admin routes access
     if (path.startsWith("/admin")) {
-      const userRole = token?.user?.role;
-      if (!(userRole === "admin" || userRole === "superadmin")) {
-        return NextResponse.redirect(new URL("/", req.url));
+      const userRoles = (token?.roles as string[]) || [];
+      if (!userRoles.includes("admin") && !userRoles.includes("superadmin")) {
+        return NextResponse.next();
       }
     }
 
