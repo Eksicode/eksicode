@@ -1,6 +1,14 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+declare module "next-auth" {
+  interface User {
+    token: string;
+    roles: string[];
+    id: string;
+  }
+}
+
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
@@ -42,7 +50,7 @@ const handler = NextAuth({
   ],
   pages: {
     signIn: "/auth/uye-giris",
-    signOut: "/",
+    signOut: "/auth/uye-cikis",
     error: "/auth/error", // Error code passed in query string as ?error=
     verifyRequest: "/auth/verify-request", // (used for check email message)
     newUser: "/auth/uye-ol", // New users will be directed here on first sign in (leave the property out if not of interest)
@@ -51,7 +59,8 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.token;
-        token.user = user;
+        token.roles = user.roles;
+        token.userId = user.id;
       }
       return token;
     },

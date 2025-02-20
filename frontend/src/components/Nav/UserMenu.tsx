@@ -33,14 +33,6 @@ const UserMenu = () => {
     toggleMenu();
   };
 
-  // const handleSignOut = async () => {
-  //   try {
-  //     await signOut({ callbackUrl: "/", redirect: true });
-  //   } catch (error) {
-  //     console.error("Error signing out:", error);
-  //   }
-  // };
-
   return (
     <div
       className="relative hidden lg:inline-block text-left z-50"
@@ -96,18 +88,12 @@ const UserMenu = () => {
             >
               Ayarlar
             </Link>
-            <form method="POST" action="#">
-              <button
-                onClick={async () => {
-                  await signOut({ callbackUrl: "/", redirect: true });
-                  router.push("/");
-                }}
-                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey  w-full text-left"
-                type="submit"
-              >
-                Güvenli Çıkış
-              </button>
-            </form>
+            <button
+              onClick={() => signOut({ redirect: true, callbackUrl: "/auth/uye-cikis" })}
+              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey w-full text-left"
+            >
+              Güvenli Çıkış
+            </button>
           </div>
         </div>
       )}

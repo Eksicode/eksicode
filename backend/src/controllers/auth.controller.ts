@@ -43,6 +43,14 @@ class AuthController {
         throw new HttpException(401, 'Invalid credentials');
       }
 
+      if (!user.emailVerified) {
+        throw new HttpException(401, 'Please verify your email before logging in');
+      }
+
+      if (!user.verified) {
+        throw new HttpException(401, 'Your account is pending verification');
+      }
+
       console.log(`Stored hashed password: ${user.password}`);
       const isPasswordValid = await bcrypt.compare(password, user.password);
       console.log(`Password valid: ${isPasswordValid}`);
@@ -51,8 +59,16 @@ class AuthController {
         throw new HttpException(401, 'Invalid credentials');
       }
 
-      const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: '1h' });
-      res.status(200).json({ token });
+      const userRoles = await this.userService.getUserRoles(user.id);
+      const token = jwt.sign(
+        { 
+          id: user.id,
+          roles: userRoles.map(role => role.name)
+        }, 
+        config.jwtSecret, 
+        { expiresIn: '1h' }
+      );
+      res.status(200).json({ token })
     } catch (error) {
       console.log(`Login error: ${error.message}`);
       next(new HttpException(400, error.message));
