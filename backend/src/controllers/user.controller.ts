@@ -55,6 +55,13 @@ class UserController {
   public updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
+      const userId = req.user?.id;
+
+      if (id !== userId) {
+        res.status(403).json({ message: "You can only update your own profile" });
+        return;
+      }
+
       const user = await this.userService.updateUser(id, req.body);
       res.status(200).json(user);
     } catch (error) {
@@ -65,6 +72,13 @@ class UserController {
   public deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
+      const userId = req.user?.id;
+
+      if (id !== userId) {
+        res.status(403).json({ message: "You can only delete your own profile" });
+        return;
+      }
+
       const user = await this.userService.deleteUser(id);
       res.status(200).json({ message: "User deleted successfully", user });
     } catch (error) {

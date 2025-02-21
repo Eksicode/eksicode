@@ -89,7 +89,7 @@ const UserMenu = () => {
               Ayarlar
             </Link>
             <button
-              onClick={() => signOut({ redirect: true, callbackUrl: "/auth/uye-cikis" })}
+              onClick={() => signOut({ redirect: true, callbackUrl: `${process.env.NEXT_PUBLIC_URL}/auth/uye-cikis` })}
               className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey w-full text-left"
             >
               Güvenli Çıkış

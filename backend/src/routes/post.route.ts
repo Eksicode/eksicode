@@ -16,10 +16,25 @@ class PostRoute implements Routes {
     this.router.get(`${this.path}`, this.postController.getAllPosts); // GET /Posts
     // this.router.get(`${this.path}/:id`, this.pageController.getPageById); // GET /Posts/:id
     this.router.get(`${this.path}/:slug`, this.postController.getPostBySlug); // GET /Posts/:slug
-    this.router.get(`${this.path}/search`, this.postController.getPostsBySearch); // GET /Posts/:slug
-    this.router.post(`${this.path}`, authMiddleware, this.postController.createPost); // POST /Posts
-    this.router.put(`${this.path}/:id`, authMiddleware, this.postController.updatePost); // PUT /Posts/:id
-    this.router.delete(`${this.path}/:id`, authMiddleware, this.postController.deletePost); // DELETE /Posts/:id
+    this.router.get(
+      `${this.path}/search`,
+      this.postController.getPostsBySearch
+    ); // GET /Posts/:slug
+    this.router.post(
+      `${this.path}`,
+      authMiddleware,
+      this.postController.createPost
+    ); // POST /Posts
+    this.router.put(
+      `${this.path}/:id`,
+      authMiddleware,
+      this.postController.updatePost
+    ); // PUT /Posts/:id
+    this.router.delete(
+      `${this.path}/:id`,
+      authMiddleware,
+      this.postController.deletePost
+    ); // DELETE /Posts/:id
   }
 }
 

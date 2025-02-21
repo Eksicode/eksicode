@@ -166,6 +166,11 @@ export class PostController {
     }
   };
 
+  private async verifyPostOwnership(postId: number, userId: number): Promise<boolean> {
+    const post = await this.postService.getPostById(postId);
+    return post?.authorId === userId;
+  }
+
   public updatePost = async (
     req: Request,
     res: Response,
@@ -173,14 +178,28 @@ export class PostController {
   ): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
+      const userId = req.user?.id;
+
+      if (!userId) {
+        res.status(401).json({ message: "Authentication required" });
+        return;
+      }
+
+      const isOwner = await this.verifyPostOwnership(id, userId);
+      if (!isOwner) {
+        res.status(403).json({ message: "You can only update your own post" });
+        return;
+      }
+
       const post = await this.postService.updatePost(id, req.body);
-      res
-        .status(200)
-        .json({ data: post, message: "Post updated successfully" });
+      res.status(200).json({ data: post, message: "Post updated successfully" });
     } catch (error) {
-      res.status(500).json({
-        message: "Internal server error",
-        error: error instanceof Error ? error.message : String(error),
+      const statusCode = error instanceof HttpException ? error.status : 500;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      res.status(statusCode).json({
+        message: statusCode === 500 ? "Internal server error" : errorMessage,
+        error: errorMessage
       });
       next(error);
     }
@@ -193,12 +212,28 @@ export class PostController {
   ): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
+      const userId = req.user?.id;
+
+      if (!userId) {
+        res.status(401).json({ message: "Authentication required" });
+        return;
+      }
+
+      const isOwner = await this.verifyPostOwnership(id, userId);
+      if (!isOwner) {
+        res.status(403).json({ message: "You can only delete your own post" });
+        return;
+      }
+
       await this.postService.deletePost(id);
       res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
-      res.status(500).json({
-        message: "Internal server error",
-        error: error instanceof Error ? error.message : String(error),
+      const statusCode = error instanceof HttpException ? error.status : 500;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      res.status(statusCode).json({
+        message: statusCode === 500 ? "Internal server error" : errorMessage,
+        error: errorMessage
       });
       next(error);
     }

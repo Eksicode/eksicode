@@ -2,6 +2,8 @@ import { Router } from "express";
 import { JobController } from "../controllers/job.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
+import roleMiddleware from "../middlewares/role.middleware";
+
 class JobRoute implements Routes {
   public path = "/jobs";
   public router = Router();
@@ -19,16 +21,19 @@ class JobRoute implements Routes {
     this.router.post(
       `${this.path}`,
       authMiddleware,
+      roleMiddleware(['company', 'admin', 'superadmin']),
       this.jobController.createJob
     ); // POST /Jobs
     this.router.put(
       `${this.path}/:id`,
       authMiddleware,
+      roleMiddleware(['company','admin', 'superadmin']),
       this.jobController.updateJob
     ); // PUT /Jobs/:id
     this.router.delete(
       `${this.path}/:id`,
       authMiddleware,
+      roleMiddleware(['company', 'admin', 'superadmin']),
       this.jobController.deleteJob
     ); // DELETE /Jobs/:id
   }

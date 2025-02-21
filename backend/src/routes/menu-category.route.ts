@@ -2,6 +2,7 @@ import { Router } from "express";
 import MenuCategoryController from "../controllers/menu-category.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
+import roleMiddleware from "../middlewares/role.middleware";
 
 class MenuCategoryRoute implements Routes {
   public path = "/menu-categories";
@@ -26,16 +27,19 @@ class MenuCategoryRoute implements Routes {
     this.router.post(
       `${this.path}`,
       authMiddleware,
+      roleMiddleware(['admin', 'superadmin']),
       this.menuCategoryController.createMenuCategory
     );
     this.router.put(
       `${this.path}/:id`,
       authMiddleware,
+      roleMiddleware(['admin', 'superadmin']),
       this.menuCategoryController.updateMenuCategory
     );
     this.router.delete(
       `${this.path}/:id`,
       authMiddleware,
+      roleMiddleware(['admin', 'superadmin']),
       this.menuCategoryController.deleteMenuCategory
     );
   }
