@@ -10,7 +10,7 @@ export default withAuth(
     if (path.startsWith("/admin")) {
       const userRoles = (token?.roles as string[]) || [];
       if (!userRoles.includes("admin") && !userRoles.includes("superadmin")) {
-        return NextResponse.next();
+        return NextResponse.redirect(new URL("/", req.url));
       }
     }
 

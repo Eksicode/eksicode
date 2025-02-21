@@ -2,6 +2,7 @@ import { Router } from "express";
 import PageController from "../controllers/page.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
+import roleMiddleware from "../middlewares/role.middleware";
 
 class UserRoute implements Routes {
   public path = "/pages";
@@ -19,16 +20,19 @@ class UserRoute implements Routes {
     this.router.post(
       `${this.path}`,
       authMiddleware,
+      roleMiddleware(['admin', 'superadmin']),
       this.pageController.createPage
     ); // POST /pages
     this.router.put(
       `${this.path}/:id`,
       authMiddleware,
+      roleMiddleware(['admin', 'superadmin']),
       this.pageController.updatePage
     ); // PUT /pages/:id
     this.router.delete(
       `${this.path}/:id`,
       authMiddleware,
+      roleMiddleware(['admin', 'superadmin']),
       this.pageController.deletePage
     ); // DELETE /pages/:id
   }
