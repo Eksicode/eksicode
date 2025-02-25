@@ -1,19 +1,25 @@
 import { Request, Response, NextFunction } from "express";
 import UserService from "../services/user.service";
 import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
+import jwt from 'jsonwebtoken';
+import config from '../config';
 
 class UserController {
   private userService = new UserService();
 
-  public getAllUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getAllUsers = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { page, limit, skip } = getPaginationParams(req.query);
       const summaryOnly = req.query.summaryOnly === "true";
 
-      const { users, count }  = await this.userService.getAllUsers(
+      const { users, count } = await this.userService.getAllUsers(
         skip,
         limit,
-        summaryOnly,
+        summaryOnly
       );
 
       const meta = getPaginationMeta(count, page, limit);
@@ -31,7 +37,7 @@ class UserController {
   public getUserById = async (req: Request, res: Response): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
-      const user = await this.userService.getUserById(id);
+      const user = await this.userService.findUserById(id);
       if (!user) {
         res.status(404).json({ message: "User not found" });
       } else {
@@ -41,6 +47,53 @@ class UserController {
       res.status(500).json({ message: error.message });
     }
   };
+
+  public getUserData = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+        const token = req.header('Authorization')?.split('Bearer ')[1];
+
+        if (!token) {
+            res.status(401).json({ message: "No token provided" });
+            return;
+        }
+
+        const decoded = jwt.verify(token, config.jwtSecret) as { id: number | string };
+        
+        if (!decoded || !decoded.id) {
+            res.status(401).json({ message: "Invalid token structure" });
+            return;
+        }
+
+        const userId = Number(decoded.id);
+
+        if (isNaN(userId)) {
+            res.status(401).json({ message: "Invalid user ID in token" });
+            return;
+        }
+
+        const user = await this.userService.getUserData(userId);
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+    } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+            res.status(401).json({ message: "Invalid token" });
+        } else {
+            next(error);
+        }
+    }
+};
 
   public createUser = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -58,7 +111,9 @@ class UserController {
       const userId = req.user?.id;
 
       if (id !== userId) {
-        res.status(403).json({ message: "You can only update your own profile" });
+        res
+          .status(403)
+          .json({ message: "You can only update your own profile" });
         return;
       }
 
@@ -75,7 +130,9 @@ class UserController {
       const userId = req.user?.id;
 
       if (id !== userId) {
-        res.status(403).json({ message: "You can only delete your own profile" });
+        res
+          .status(403)
+          .json({ message: "You can only delete your own profile" });
         return;
       }
 

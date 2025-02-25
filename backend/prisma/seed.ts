@@ -187,7 +187,7 @@ async function seedMenuCategoriesAndItems() {
   const categoryMap = new Map();
   
   const categories = await Promise.all(
-    ["main-menu", "footer-menu"].map(async (name) => {
+    ["main", "footer", "dashboard", "admin"].map(async (name) => {
       const category = await prisma.menuCategory.upsert({
         where: { name },
         create: { name },

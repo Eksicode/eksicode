@@ -1,3 +1,4 @@
+"use client";
 import {
   AiOutlineUnorderedList,
   AiOutlineVideoCamera,
@@ -12,106 +13,104 @@ import { RiPagesLine } from "react-icons/ri";
 import { FaShareNodes } from "react-icons/fa6";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import { useSession } from "next-auth/react";
+
+interface MenuItem {
+  icon: React.ComponentType;
+  label: string;
+  path: string;
+}
+
+const menuItems: MenuItem[] = [
+  {
+    icon: MdDashboard,
+    label: "Dashboard",
+    path: "/dashboard"
+  },
+  {
+    icon: AiOutlineUnorderedList,
+    label: "Posts",
+    path: "/dashboard/posts"
+  },
+];
+
+const adminMenuItems: MenuItem[] = [
+  {
+    icon: FaUsers,
+    label: "Users",
+    path: "/dashboard/users"
+  },
+  {
+    icon: RiPagesLine,
+    label: "Pages",
+    path: "/dashboard/pages"
+  },
+  {
+    icon: BsMenuButtonWideFill,
+    label: "Menu",
+    path: "/dashboard/menu"
+  },
+];
+
+const settingsMenuItem: MenuItem = {
+  icon: AiFillSetting,
+  label: "Ayarlar",
+  path: "/dashboard/ayarlar"
+};
 
 const SideMenu = () => {
+  const { data: session, status } = useSession();
+  const isAdmin = status === "authenticated" && 
+    session?.user?.roles?.includes("admin") || 
+    session?.user?.roles?.includes("superadmin");
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      console.log("isAdmin", isAdmin);
+      console.log("session", session);
+      console.log("status", status);
+    }
+  }, [session, status, isAdmin]);
+
+  const loadingItems = Array(6).fill(null).map((_, index) => ({
+    id: `loading-${index}`,
+    className: "h-4 bg-gray-200 rounded dark:bg-gray-700"
+  }));
+
+  if (status === "loading") {
+    return (
+      <aside className="w-64 hidden lg:block" aria-label="Sidebar">
+        <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border text-gray-900 dark:text-white dark:bg-DarkerGrey dark:border-DarkLightGrey">
+          <div className="animate-pulse space-y-4">
+            {loadingItems.map((item) => (
+              <div key={item.id} className={item.className}></div>
+            ))}
+          </div>
+        </div>
+      </aside>
+    );
+  }
+
+  const renderMenuItem = ({ icon: Icon, label, path }: MenuItem) => (
+    <li key={path}>
+      <Link
+        href={path}
+        className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey"
+      >
+        <Icon  />
+        <span className="flex-1 ml-3 whitespace-nowrap">{label}</span>
+      </Link>
+    </li>
+  );
+
   return (
     <aside className="w-64 hidden lg:block" aria-label="Sidebar">
       <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border text-gray-900 dark:text-white dark:bg-DarkerGrey dark:border-DarkLightGrey">
         <ul className="space-y-2">
-          <li>
-            <Link
-              href="/dashboard"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey"
-            >
-              <MdDashboard className="text-lg mb-1" />
-              <span className="ml-3">Dashboard</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/sayfalar"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey"
-            >
-              <RiPagesLine className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Sayfalar</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/kullanicilar"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-            >
-              <FaUsers className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">
-                Kullanıcılar
-              </span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/posts"
-              className="flex items-center p-2 text-base font-normal rounded-lg  hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-            >
-              <AiOutlineUnorderedList className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Posts</span>
-            </Link>
-          </li>
-
-          <li>
-            <Link
-              href="/dashboard/roller"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey"
-            >
-              <FaShareNodes className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Roller</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/menuler"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-            >
-              <BsMenuButtonWideFill className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Menüler</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/etiketler"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-            >
-              <AiOutlineTag className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Etiketler</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/kaynaklar"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-            >
-              <GrResources className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Kaynaklar</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/kariyer"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-            >
-              <MdOutlineWorkOutline className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Kariyer</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/ayarlar"
-              className="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-            >
-              <AiFillSetting className="text-lg mb-1" />
-              <span className="flex-1 ml-3 whitespace-nowrap">Ayarlar</span>
-            </Link>
-          </li>
+          {menuItems.map(renderMenuItem)}
+          {isAdmin && adminMenuItems.map(renderMenuItem)}
+          {renderMenuItem(settingsMenuItem)}
         </ul>
       </div>
     </aside>

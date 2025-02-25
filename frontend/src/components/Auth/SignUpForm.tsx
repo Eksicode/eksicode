@@ -137,7 +137,7 @@ const SignUpForm: React.FC = () => {
                 type="text"
                 name="username"
                 placeholder="johndoe"
-                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
+                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:focus:text-white focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="username"
@@ -151,7 +151,7 @@ const SignUpForm: React.FC = () => {
                 type="text"
                 name="email"
                 placeholder="johndoe@example.com"
-                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
+                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:focus:text-white focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <ErrorMessage
                 name="email"
@@ -165,7 +165,7 @@ const SignUpForm: React.FC = () => {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Şifre"
-                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
+                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:focus:text-white focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <button
               type="button"
@@ -221,7 +221,7 @@ const SignUpForm: React.FC = () => {
                 type={showPassword ? "text" : "password"}
                 name="password_confirmation"
                 placeholder="Şifre Tekrar"
-                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
+                className="block w-full px-4 py-2 bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:focus:text-white focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
               />
               <button
               type="button"

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 import router from "next/router";
 
 const classNames = (...classes: string[]) => {
@@ -10,6 +11,30 @@ const classNames = (...classes: string[]) => {
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+          headers: {
+            'Authorization': `Bearer ${session?.accessToken}`,
+          },
+        });
+        if (response.ok) {
+          const userData = await response.json();
+          // Update session with additional user data if needed
+          // The existing session already has basic user info
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    if (session?.accessToken) {
+      fetchUserData();
+    }
+  }, [session]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -33,6 +58,11 @@ const UserMenu = () => {
     toggleMenu();
   };
 
+  const handleLogout = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    await signOut();
+  };
+
   return (
     <div
       className="relative hidden lg:inline-block text-left z-50"
@@ -44,18 +74,28 @@ const UserMenu = () => {
           className="flex justify-center outline-none focus:outline-none focus:border-none"
         >
           <span className="relative w-10 h-10 ml-2 overflow-hidden ring-2 ring-gray-300 bg-gray-100 rounded-full dark:bg-gray-600">
-            <svg
-              className="absolute w-12 h-12 text-gray-400 -left-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
+            {session?.user?.profilePicture ? (
+              <Image
+                src={session.user.profilePicture}
+                alt="Profile picture"
+                width={40}
+                height={40}
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <svg
+                className="absolute w-12 h-12 text-gray-400 -left-1"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            )}
           </span>
         </button>
       </div>
@@ -64,7 +104,7 @@ const UserMenu = () => {
         <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-DarkerGrey ring-1 ring-eksiCode">
           <div className="py-1">
             <span className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey ">
-              @Mkltkn
+              @ {session?.user?.username}
             </span>
             <hr className="border-t border-gray-300 hover:bg-gray-100" />
             <Link
@@ -89,7 +129,7 @@ const UserMenu = () => {
               Ayarlar
             </Link>
             <button
-              onClick={() => signOut({ redirect: true, callbackUrl: `${process.env.NEXT_PUBLIC_URL}/auth/uye-cikis` })}
+              onClick={handleLogout}
               className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey w-full text-left"
             >
               Güvenli Çıkış
