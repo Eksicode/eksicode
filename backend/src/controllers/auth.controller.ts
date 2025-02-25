@@ -17,6 +17,41 @@ class AuthController {
     this.userService = new UserService();
   }
 
+  public verify = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const token = req.header('Authorization')?.split('Bearer ')[1];
+      
+      if (!token) {
+        throw new HttpException(401, 'No token provided');
+      }
+
+      const decoded = jwt.verify(token, config.jwtSecret) as any;
+      const user = await this.userService.findUserById(decoded.id);
+
+      if (!user) {
+        throw new HttpException(401, 'User not found');
+      }
+
+      if (!user.verified || !user.emailVerified) {
+        throw new HttpException(401, 'User account is not verified');
+      }
+
+      const userRoles = await this.userService.getUserRoles(user.id);
+      
+      res.status(200).json({
+        userId: user.id,
+        roles: userRoles.map(role => role.name),
+        verified: true
+      });
+    } catch (error) {
+      if (error instanceof jwt.JsonWebTokenError) {
+        next(new HttpException(401, 'Invalid token'));
+      } else {
+        next(new HttpException(500, error.message));
+      }
+    }
+  };
+
   public register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { email, password, username } = req.body;
@@ -51,7 +86,6 @@ class AuthController {
         throw new HttpException(401, 'Your account is pending verification');
       }
 
-      console.log(`Stored hashed password: ${user.password}`);
       const isPasswordValid = await bcrypt.compare(password, user.password);
       console.log(`Password valid: ${isPasswordValid}`);
       if (!isPasswordValid) {
@@ -60,13 +94,16 @@ class AuthController {
       }
 
       const userRoles = await this.userService.getUserRoles(user.id);
+      const { rememberMe } = req.body;
+      const expiresIn = rememberMe ? '365d' : '1d';
+      
       const token = jwt.sign(
         { 
           id: user.id,
           roles: userRoles.map(role => role.name)
         }, 
         config.jwtSecret, 
-        { expiresIn: '1h' }
+        { expiresIn }
       );
       res.status(200).json({ token })
     } catch (error) {

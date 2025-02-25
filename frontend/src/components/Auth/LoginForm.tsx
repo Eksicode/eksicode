@@ -35,13 +35,14 @@ const LoginForm: React.FC = () => {
       const result = await signIn("credentials", {
         userInfo: values.userInfo,
         password: values.password,
+        rememberMe: values.rememberMe,
         redirect: false,
       });
 
       if (result?.error) {
-        setError("Giriş başarısız. Lütfen bilgilerinizi kontrol edin.");
+        setError("Giriş başarısız. Lütfen Bilgileri kontrol ediniz. " + result.error);
       } else {
-        router.push("/dashboard");
+        router.push("/");
         router.refresh();
       }
     } catch (error) {
@@ -57,7 +58,7 @@ const LoginForm: React.FC = () => {
           <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
         </div>
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-wrap max-w-96">
             {error}
           </div>
         )}
@@ -66,13 +67,13 @@ const LoginForm: React.FC = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Form className="mb-[200px] text-sm w-full">
+          <Form className="mb-[200px] text-sm w-full text-white">
             <div className="mb-6">
               <Field
                 type="text"
                 name="userInfo"
                 placeholder="E-posta Adresi ya da kullanıcı adı"
-                className="form-control block w-full px-4 py-2 font-normal bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
+                className="form-control block w-full px-4 py-2 font-normal bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:focus:text-white focus:bg-white focus:border-eksiCodeMedium focus:outline-none dark:text-white"
               />
               <ErrorMessage
                 name="userInfo"
@@ -86,7 +87,7 @@ const LoginForm: React.FC = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Şifre"
-                  className="form-control block w-full px-4 py-2 font-normal bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
+                  className="form-control block w-full px-4 py-2 font-normal bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 dark:focus:text-white focus:bg-white focus:border-eksiCodeMedium focus:outline-none dark:text-white"
                 />
                 <button
                   type="button"

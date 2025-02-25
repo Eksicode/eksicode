@@ -20,11 +20,10 @@ const roleMiddleware = (requiredRoles: string[]) => {
         include: { role: true }
       });
 
-      const userRoleNames = userRoles.map(ur => ur.role.name);
-
-      // Check if user has any of the required roles
+      const userRoleNames = userRoles.map(ur => ur.role.name.toLowerCase());
+      // Check if user has any of the required roles (case-insensitive)
       const hasRequiredRole = requiredRoles.some(role =>
-        userRoleNames.includes(role)
+        userRoleNames.includes(role.toLowerCase())
       );
 
       if (!hasRequiredRole) {

@@ -18,6 +18,7 @@ class AuthRoute implements Routes {
     this.router.post(`${this.path}/forgot-password`, authLimiter, this.authController.forgotPassword);
     this.router.post(`${this.path}/reset-password`, authLimiter, this.authController.resetPassword);
     this.router.get(`${this.path}/confirm-email/:token`, authLimiter, this.authController.confirmEmail);
+    this.router.get(`${this.path}/verify`, authLimiter, this.authController.verify);
   }
 }
 

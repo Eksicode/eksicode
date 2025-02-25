@@ -6,12 +6,9 @@ export default withAuth(
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
-    // Check admin routes access
-    if (path.startsWith("/admin")) {
-      const userRoles = (token?.roles as string[]) || [];
-      if (!userRoles.includes("admin") && !userRoles.includes("superadmin")) {
-        return NextResponse.redirect(new URL("/", req.url));
-      }
+    // Handle unauthenticated users for protected routes
+    if (!token && path.startsWith("/dashboard")) {
+      return NextResponse.redirect(new URL("/auth/uye-giris", req.url));
     }
 
     return NextResponse.next();
@@ -20,9 +17,13 @@ export default withAuth(
     callbacks: {
       authorized: ({ token }) => !!token,
     },
+    pages: {
+      signIn: "/auth/uye-giris",
+      error: "/auth/error",
+    },
   }
 );
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/auth/:path*"],
 };

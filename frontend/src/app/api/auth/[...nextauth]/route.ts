@@ -1,15 +1,25 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface User {
     token: string;
-    roles: string[];
-    id: string;
+    roles?: string[];
+    id?: string;
+  }
+  interface JWT {
+    roles?: string[];
+    accessToken: string;
+    userId?: string;
   }
 }
 
 const handler = NextAuth({
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 1 day by default
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -64,10 +74,57 @@ const handler = NextAuth({
       }
       return token;
     },
-    async session({ session, token }) {
-      session.user = token.user as any;
-      session.accessToken = token.accessToken as string;
-      return session;
+    async session({ session, token }: { session: any, token: JWT }) {
+      if (!token.accessToken) {
+        return { expires: session.expires };
+      }
+
+      try {
+        // Add caching mechanism to reduce frequent backend calls
+        const now = Date.now();
+        const lastCheck = (token as any).lastVerified || 0;
+        const checkInterval = 5 * 60 * 1000; // 5 minutes
+
+        if (now - lastCheck < checkInterval) {
+          // Use cached session data
+          session.user = {
+            ...session.user,
+            roles: token.roles,
+            id: token.userId,
+          };
+          session.accessToken = token.accessToken;
+          return session;
+        }
+
+        // Verify token and user roles against the backend
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token.accessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          // If verification fails, clear the session
+          return { expires: session.expires };
+        }
+
+        const verifiedData = await response.json();
+        (token as any).lastVerified = now;
+
+        // Update session with verified data
+        session.user = {
+          ...session.user,
+          roles: verifiedData.roles,
+          id: verifiedData.userId,
+        };
+        session.accessToken = token.accessToken;
+        return session;
+      } catch (error) {
+        console.error('Session verification error:', error);
+        // Return expired session on error
+        return { expires: session.expires };
+      }
     },
   },
 });

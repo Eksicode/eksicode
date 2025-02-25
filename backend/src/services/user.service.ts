@@ -59,12 +59,90 @@ class UserService {
   /**
    * Get user by ID
    */
-  public async getUserById(id: number): Promise<User | null> {
+async findUserById(id: number | string): Promise<Omit<User, 'password'> | null> {
+    const userId = typeof id === 'string' ? parseInt(id, 10) : id;
+
+    if (!userId || isNaN(userId)) {
+      console.log('Invalid user ID:', id);
+      return null;
+    }
+
+    console.log('Looking up user with ID:', userId);
+
     return this.prisma.user.findUnique({
-      where: { id },
+      where: {
+        id: userId
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        profilePicture: true,
+        birthday: true,
+        telegramId: true,
+        phoneNumber: true,
+        linkedin: true,
+        website: true,
+        github: true,
+        twitter: true,
+        instagram: true,
+        facebook: true,
+        verified: true,
+        emailVerified: true,
+        emailVerificationToken: true,
+        resetPasswordToken: true,
+        resetPasswordExpires: true,
+        roles: true,
+        createdAt: true,
+        updatedAt: true
+      }
     });
   }
 
+  public async getUserData(userId: number): Promise<Omit<User, 'password'> | null> {
+    console.log('=== getUserData Service Method ===');
+    console.log(`Received User ID: ${userId}`);
+    console.log(`Type of userId: ${typeof userId}`);
+    
+    if (!userId) {
+        console.log('Warning: No userId provided to getUserData');
+        return null;
+    }
+
+    const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            username: true,
+            profilePicture: true,
+            birthday: true,
+            telegramId: true,
+            phoneNumber: true,
+            linkedin: true,
+            website: true,
+            github: true,
+            twitter: true,
+            instagram: true,
+            facebook: true,
+            verified: true,
+            emailVerified: true,
+            emailVerificationToken: true,
+            resetPasswordToken: true,
+            resetPasswordExpires: true,
+            roles: true,
+            createdAt: true,
+            updatedAt: true
+        }
+    });
+
+    console.log('User found:', user ? 'Yes' : 'No');
+    return user;
+}
 
   /**
    * Create a new user
