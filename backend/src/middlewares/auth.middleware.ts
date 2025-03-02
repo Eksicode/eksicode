@@ -1,24 +1,45 @@
 import { Request, Response, NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
-import jwtSecret from '../config';
-import { HttpException } from '../exceptions/HttpException';
-import { RequestWithUser } from '../interfaces/auth.interface';
+import jwt from 'jsonwebtoken';
+import config from '../config';
 
-const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: number;
+    }
+  }
+}
+
+const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const Authorization = req.cookies['Authorization'] || req.header('Authorization')?.split('Bearer ')[1];
+    // Try cookie first
+    const tokenFromCookie = req.cookies['auth_token'];
+    
+    // Then try Authorization header
+    const tokenFromHeader = req.header('Authorization')?.replace('Bearer ', '');
+    
+    const token = tokenFromCookie || tokenFromHeader;
 
-    if (Authorization) {
-      const secretKey: string = jwtSecret.jwtSecret || '';
-      const verificationResponse = verify(Authorization, secretKey) as any;
-      req.user = verificationResponse;
+    if (!token) {
+      res.status(401).json({ message: 'Authentication required' });
+      return;
+    }
+
+    try {
+      const decoded = jwt.verify(token, config.jwtSecret) as { id: number };
+      req.userId = decoded.id;
       next();
-    } else {
-      next(new HttpException(404, 'Authentication token missing'));
+    } catch (error) {
+      res.status(401).json({ message: 'Invalid token' });
+      return;
     }
   } catch (error) {
-    next(new HttpException(401, 'Wrong authentication token'));
+    next(error);
   }
 };
 
-export default authMiddleware; 
+export default authMiddleware;

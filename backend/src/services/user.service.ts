@@ -59,16 +59,79 @@ class UserService {
   /**
    * Get user by ID
    */
-async findUserById(id: number | string): Promise<Omit<User, 'password'> | null> {
-    const userId = typeof id === 'string' ? parseInt(id, 10) : id;
-
-    if (!userId || isNaN(userId)) {
-      console.log('Invalid user ID:', id);
-      return null;
+  async findUserById(id: number | string, requestingUserId?: number) {
+    try {
+      const userId = this.validateUserId(id);
+      console.log(`Finding user by ID: ${userId}`);
+  
+      // Authorization check - only allow access if:
+      // 1. User is accessing their own profile (requestingUserId === userId), or
+      // 2. User has admin privileges
+      if (requestingUserId) {
+        if (requestingUserId !== userId) {
+          await this.verifyAdminAccess(requestingUserId);
+        }
+      } else {
+        // If no requestingUserId is provided, this means either:
+        // - The request is unauthenticated (should be handled by auth middleware)
+        // - Or there's a logic error in the calling code
+        console.warn('No requestingUserId provided, skipping permission check. This may be a security issue.');
+      }
+  
+      const user = await this.fetchUserWithDetails(userId);
+      
+      if (!user) {
+        throw new HttpException(404, `User not found with ID: ${userId}`);
+      }
+  
+      return user;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Error finding user', { originalError: error });
     }
-
-    console.log('Looking up user with ID:', userId);
-
+  }
+  
+  /**
+   * Validates and converts a user ID to a number
+   */
+  private validateUserId(id: number | string): number {
+    const userId = typeof id === 'string' ? parseInt(id, 10) : id;
+    
+    if (!Number.isInteger(userId) || userId <= 0) {
+      throw new HttpException(400, 'Invalid user ID', { providedId: id, parsedId: userId });
+    }
+    
+    return userId;
+  }
+  
+  /**
+   * Checks if the requesting user has admin privileges and throws an exception if not
+   */
+  private async verifyAdminAccess(userId: number): Promise<void> {
+    const isAdmin = await this.isUserAdmin(userId);
+    console.log(`Is Admin: ${isAdmin}`);
+    
+    if (!isAdmin) {
+      throw new HttpException(403, 'Access denied: You can only view your own profile');
+    }
+  }
+  
+  /**
+   * Determines if a user has admin privileges
+   */
+  private async isUserAdmin(userId: number): Promise<boolean> {
+    const userRoles = await this.getUserRoles(userId);
+    return userRoles.some(role => 
+      ['admin', 'superadmin'].includes(role.name.toLowerCase())
+    );
+  }
+  
+  /**
+   * Fetches a user with all relevant details
+   */
+  private async fetchUserWithDetails(userId: number) {
     return this.prisma.user.findUnique({
       where: {
         id: userId
@@ -76,9 +139,9 @@ async findUserById(id: number | string): Promise<Omit<User, 'password'> | null> 
       select: {
         id: true,
         email: true,
+        username: true,
         firstName: true,
         lastName: true,
-        username: true,
         profilePicture: true,
         birthday: true,
         telegramId: true,
@@ -91,59 +154,13 @@ async findUserById(id: number | string): Promise<Omit<User, 'password'> | null> 
         facebook: true,
         verified: true,
         emailVerified: true,
-        emailVerificationToken: true,
-        resetPasswordToken: true,
-        resetPasswordExpires: true,
         roles: true,
         createdAt: true,
         updatedAt: true
       }
     });
   }
-
-  public async getUserData(userId: number): Promise<Omit<User, 'password'> | null> {
-    console.log('=== getUserData Service Method ===');
-    console.log(`Received User ID: ${userId}`);
-    console.log(`Type of userId: ${typeof userId}`);
-    
-    if (!userId) {
-        console.log('Warning: No userId provided to getUserData');
-        return null;
-    }
-
-    const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-            profilePicture: true,
-            birthday: true,
-            telegramId: true,
-            phoneNumber: true,
-            linkedin: true,
-            website: true,
-            github: true,
-            twitter: true,
-            instagram: true,
-            facebook: true,
-            verified: true,
-            emailVerified: true,
-            emailVerificationToken: true,
-            resetPasswordToken: true,
-            resetPasswordExpires: true,
-            roles: true,
-            createdAt: true,
-            updatedAt: true
-        }
-    });
-
-    console.log('User found:', user ? 'Yes' : 'No');
-    return user;
-}
-
+  
   /**
    * Create a new user
    */

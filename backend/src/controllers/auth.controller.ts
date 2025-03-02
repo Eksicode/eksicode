@@ -105,7 +105,22 @@ class AuthController {
         config.jwtSecret, 
         { expiresIn }
       );
-      res.status(200).json({ token })
+
+      // Set cookie
+      res.cookie('auth_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: config.cookieExpiresIn,
+        sameSite: 'strict'
+      });
+
+      res.status(200).json({ 
+        success: true,
+        token, // Still send token for clients that prefer token-based auth
+        user: {
+          id: user.id,
+        }
+      });
     } catch (error) {
       console.log(`Login error: ${error.message}`);
       next(new HttpException(400, error.message));
