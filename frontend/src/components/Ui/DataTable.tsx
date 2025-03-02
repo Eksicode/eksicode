@@ -140,7 +140,7 @@ const DataTable: React.FC<DataTableProps> = ({
           )}
         </tbody>
       </table>
-
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       {showModal.visible && (
         <>
           <div className="fixed inset-0 z-50 bg-black bg-opacity-50">
