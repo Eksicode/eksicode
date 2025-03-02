@@ -76,14 +76,17 @@ const DataTable: React.FC<DataTableProps> = ({
         <td className="px-6 py-4 whitespace-nowrap flex gap-2">
           {onView && (
             <div className="hover:underline cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-              <div onClick={() => openModal("view", id)} className="flex gap-2">
+              <div
+                onClick={() => openModal("view", id)}
+                className="flex gap-2"
+              >
                 <AiFillEye className="h-4 w-4" /> Görüntüle
               </div>
             </div>
           )}
           {onEdit && (
-            <div className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-              <div className="flex gap-2"><AiFillEdit className="h-4 w-4" /> Düzenle</div>
+            <div className="px-6 py-3 cursor-pointer text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
+              <div onClick={() => openModal("edit", id)} className="flex gap-2"><AiFillEdit className="h-4 w-4" /> Düzenle</div>
             </div>
           )}
           {onDelete && (
@@ -221,8 +224,8 @@ const DataTable: React.FC<DataTableProps> = ({
               </div>
             </div>
             <div className="absolute inset-0 z-40"
-            onClick={() => setShowModal({ visible: false })}
-          ></div>
+              onClick={() => setShowModal({ visible: false })}
+            ></div>
           </div>
         </>
       )}

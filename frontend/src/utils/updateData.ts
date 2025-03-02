@@ -1,3 +1,4 @@
+import { getSession } from "next-auth/react";
 interface Data {
     [key: string]: any;
 }
@@ -9,6 +10,12 @@ async function updateData(
 ): Promise<Data | null> {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const session = await getSession();
+
+        if (!session) {
+            throw new Error("Session not found.");
+        }
+
         if (!apiUrl) {
             throw new Error("API URL is not defined in the environment variables.");
         }
@@ -17,6 +24,7 @@ async function updateData(
             method: "PUT", // veya PATCH, API'ne bağlı olarak değişebilir
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${session.accessToken}`,
             },
             body: JSON.stringify(updatedData),
         });
