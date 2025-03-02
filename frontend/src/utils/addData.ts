@@ -1,3 +1,4 @@
+import { getSession } from "next-auth/react";
 interface AddResponse {
     success: boolean;
     message?: string;
@@ -16,6 +17,12 @@ async function addData(
 ): Promise<AddResponse> {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const session = await getSession();
+
+        if (!session) {
+            throw new Error("Session not found.");
+        }
+
         if (!apiUrl) {
             throw new Error("API URL is not defined in the environment variables.");
         }
@@ -24,6 +31,7 @@ async function addData(
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${session.accessToken}`,
             },
             body: JSON.stringify(data),
             cache: options.cache,

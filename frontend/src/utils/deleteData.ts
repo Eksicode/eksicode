@@ -1,3 +1,4 @@
+import { getSession } from "next-auth/react";
 interface DeleteResponse {
     success: boolean;
     message?: string;
@@ -13,12 +14,21 @@ interface DeleteResponse {
   ): Promise<DeleteResponse> {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const session = await getSession();
+
+      if (!session) {
+        throw new Error("Session not found.");
+      }
+
       if (!apiUrl) {
         throw new Error("API URL is not defined in the environment variables.");
       }
   
       const response = await fetch(`${apiUrl}/${endPoint}/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
         cache: options.cache,
         next: options.next,
       });
@@ -38,4 +48,3 @@ interface DeleteResponse {
   }
   
   export default deleteData;
-  
