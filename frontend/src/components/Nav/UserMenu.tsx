@@ -10,28 +10,33 @@ const classNames = (...classes: string[]) => {
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userData, setUserData] = useState<{ username?: string; profilePicture?: string }>({});
   const menuRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        if (!session?.user?.id || !session?.accessToken) return;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${session.user.id}`, {
           headers: {
-            'Authorization': `Bearer ${session?.accessToken}`,
+            'Authorization': `Bearer ${session.accessToken}`,
           },
         });
         if (response.ok) {
-          const userData = await response.json();
-          // Update session with additional user data if needed
-          // The existing session already has basic user info
+          const fetchedUserData = await response.json();
+          setUserData({
+            username: fetchedUserData.username || session.user.username,
+            profilePicture: fetchedUserData.profilePicture || session.user.profilePicture
+          });
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
 
-    if (session?.accessToken) {
+    if (session?.accessToken && session?.user?.id) {
       fetchUserData();
     }
   }, [session]);
@@ -74,9 +79,9 @@ const UserMenu = () => {
           className="flex justify-center outline-none focus:outline-none focus:border-none"
         >
           <span className="relative w-10 h-10 ml-2 overflow-hidden ring-2 ring-gray-300 bg-gray-100 rounded-full dark:bg-gray-600">
-            {session?.user?.profilePicture ? (
+            {userData.profilePicture ? (
               <Image
-                src={session.user.profilePicture}
+                src={userData.profilePicture}
                 alt="Profile picture"
                 width={40}
                 height={40}
@@ -104,7 +109,7 @@ const UserMenu = () => {
         <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-DarkerGrey ring-1 ring-eksiCode">
           <div className="py-1">
             <span className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey ">
-              @ {session?.user?.username}
+              @ {userData.username || session?.user?.username}
             </span>
             <hr className="border-t border-gray-300 hover:bg-gray-100" />
             <Link

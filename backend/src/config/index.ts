@@ -11,7 +11,10 @@ const config = {
   // Authentication settings
   cookieExpiresIn: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
   tokenExpiresIn: 7 * 24 * 60 * 60, // 7 days in seconds
-  jwtSecret: process.env.JWT_SECRET,
+  jwtSecret: process.env.JWT_SECRET || (() => {
+    console.warn('WARNING: JWT_SECRET not set in environment variables');
+    return 'default-jwt-secret-do-not-use-in-production';
+  })(),
   authCodeSecret: process.env.AUTHENTICATION_CODE_SECRET_KEY,
   
   // Database settings
@@ -46,6 +49,9 @@ const config = {
   
   // Helper method to validate required configuration
   validate() {
+    if (!this.jwtSecret) {
+      throw new Error('JWT_SECRET is required');
+    }
     const required = [
       'jwtSecret',
       'databaseUrl',
@@ -64,3 +70,4 @@ const config = {
 config.validate();
 
 export default config;
+
