@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { JWT } from "next-auth/jwt";
+import { jwtDecode } from "jwt-decode";
 
 declare module "next-auth" {
   interface User {
@@ -51,7 +52,11 @@ const handler = NextAuth({
             throw new Error(user.message || "Authentication failed");
           }
 
-          return user;
+          return {
+            token: user.token,
+            roles: user.roles || [], // Eğer roller eksikse boş array ver
+            id: user.id || null, // ID eksikse null yap
+          };
         } catch (error) {
           throw new Error("Authentication failed");
         }
@@ -69,8 +74,9 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.token;
-        token.roles = user.roles;
-        token.userId = user.id;
+        const decoded = jwtDecode<{ roles?: string[], id?: string }>(user.token);
+        token.roles = decoded.roles || [];
+        token.userId = decoded.id || undefined;
       }
       return token;
     },
