@@ -53,7 +53,7 @@ const getIconComponent = (iconName: string): React.ComponentType | null => {
 const MobileMenu = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
-
+  const [roleId, setRoleId] = useState<number | null>(null);
   const [nav, setNav] = useState(false);
   const [menu, setMenu] = useState<Menu[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +61,7 @@ const MobileMenu = () => {
     pathname.startsWith("/dashboard") ? "dashboard" : "sayfalar"
   );
 
+  const user = session?.user;
   const handleNav = () => {
     setNav(!nav);
     if (!nav) {
@@ -93,6 +94,7 @@ const MobileMenu = () => {
     fetchMenu();
   }, []);
 
+
   const currentMenu = activeTab === "sayfalar" ? menu : dashboardMenuItem;
 
   return (
@@ -105,9 +107,8 @@ const MobileMenu = () => {
       {/* Mobile menu */}
       <div className={nav ? "block z-50" : "hidden"}>
         <div
-          className={`fixed lg:hidden top-0 z-50 right-0 bottom-0 min-h-screen h-full w-64 bg-white dark:bg-DarkGrey shadow-lg transform ${
-            nav ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 ease-in-out`}
+          className={`fixed lg:hidden top-0 z-50 right-0 bottom-0 min-h-screen h-full w-64 bg-white dark:bg-DarkGrey shadow-lg transform ${nav ? "translate-x-0" : "-translate-x-full"
+            } transition-transform duration-300 ease-in-out`}
         >
           <div className="flex w-full items-end justify-end">
             <div
@@ -122,26 +123,23 @@ const MobileMenu = () => {
           <div className="mx-5 flex justify-center border-b-2 gap-3 pb-1">
             <button
               onClick={() => setActiveTab("sayfalar")}
-              className={`px-4 py-2 rounded-md ${
-                activeTab === "sayfalar"
-                  ? "bg-eksiCode/60 hover:bg-eksiCode transition duration-300 ease-in-out"
-                  : ""
-              }`}
+              className={`px-4 py-2 rounded-md ${activeTab === "sayfalar"
+                ? "bg-eksiCode/60 hover:bg-eksiCode transition duration-300 ease-in-out"
+                : ""
+                }`}
             >
               Sayfalar
             </button>
-            {session && (
-              <button
-                onClick={() => setActiveTab("dashboard")}
-                className={`px-4 py-2 rounded-md ${
-                  activeTab === "dashboard"
-                    ? "bg-eksiCode/60 hover:bg-eksiCode transition duration-300 ease-in-out"
-                    : ""
+
+            <button
+              onClick={() => setActiveTab("dashboard")}
+              className={`px-4 py-2 rounded-md ${activeTab === "dashboard"
+                ? "bg-eksiCode/60 hover:bg-eksiCode transition duration-300 ease-in-out"
+                : ""
                 }`}
-              >
-                Dashboard
-              </button>
-            )}
+            >
+              Dashboard
+            </button>
           </div>
           {/* Menu List */}
           <div className="flex flex-col mx-5 z-20 h-[350px] overflow-auto text-ellipsis">
@@ -168,9 +166,8 @@ const MobileMenu = () => {
                       <Link
                         onClick={handleNav}
                         href={item.link}
-                        className={`${
-                          isActive ? " text-eksiCode" : ""
-                        } flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey`}
+                        className={`${isActive ? " text-eksiCode" : ""
+                          } flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey`}
                       >
                         {IconComponent && (
                           <IconComponent
@@ -204,9 +201,8 @@ const MobileMenu = () => {
       </div>
       {/* Background Overlay */}
       <div
-        className={`fixed lg:hidden inset-0 h-screen overflow-y-hidden bg-black bg-opacity-50 z-40 ${
-          nav ? "block" : "hidden"
-        } transition-opacity duration-300 ease-in-out`}
+        className={`fixed lg:hidden inset-0 h-screen overflow-y-hidden bg-black bg-opacity-50 z-40 ${nav ? "block" : "hidden"
+          } transition-opacity duration-300 ease-in-out`}
         onClick={handleNav}
       ></div>
     </>

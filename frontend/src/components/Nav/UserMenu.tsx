@@ -70,7 +70,7 @@ const UserMenu = () => {
 
   return (
     <div
-      className="relative hidden lg:inline-block text-left z-50"
+      className="relative text-left z-50"
       ref={menuRef}
     >
       <div>

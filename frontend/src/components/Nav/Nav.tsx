@@ -14,6 +14,7 @@ import MobileMenu from "@/components/Nav/MobileMenu";
 import ThemeSwitch from "@/components/Nav/ThemeSwitch";
 import Notifications from "@/components/Nav/Notifications";
 import { useSession } from "next-auth/react";
+
 const Nav = () => {
   const { data: session } = useSession();
   return (
@@ -87,6 +88,30 @@ const Nav = () => {
               </>
             )}
           </div>
+          {
+            !session && (
+              <>
+                <Navlink
+                  variant="quaternary"
+                  style="ml-3 pt-2 border border-white flex lg:hidden"
+                  href="/auth/uye-giris"
+                >
+                  <div className="flex items-center">
+                    <AiOutlineLogin className="h-5 w-5 mr-1" />{" "}
+                  </div>
+                </Navlink>
+                <Navlink
+                  variant="primary"
+                  style="ml-3 flex lg:hidden"
+                  href="/auth/uye-ol"
+                >
+                  <div className="flex items-center">
+                    <AiOutlineUserAdd className="h-5 w-5 mr-1" />
+                  </div>
+                </Navlink>
+              </>
+            )
+          }
           <MobileMenu />
         </div>
       </div>
