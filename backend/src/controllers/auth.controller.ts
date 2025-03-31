@@ -1,22 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
 import UserService from '../services/user.service';
+import EmailService from '../services/email.service';
 import jwt from 'jsonwebtoken';
 import { HttpException } from '../exceptions/HttpException';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
 import config from '../config';
+import { JwtPayload } from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
+// Define interfaces for better type safety
+interface TokenPayload extends JwtPayload {
+  id: number;
+  roles?: string[];
+}
+
 class AuthController {
   private userService: UserService;
+  private emailService: EmailService;
 
   constructor() {
     this.userService = new UserService();
+    this.emailService = new EmailService();
   }
 
+  /**
+   * Verify a user's token and return their information
+   */
   public verify = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const token = req.header('Authorization')?.split('Bearer ')[1];
@@ -25,7 +37,7 @@ class AuthController {
         throw new HttpException(401, 'No token provided');
       }
 
-      const decoded = jwt.verify(token, config.jwtSecret) as any;
+      const decoded = jwt.verify(token, config.jwtSecret) as TokenPayload;
       const user = await this.userService.findUserById(decoded.id);
 
       if (!user) {
@@ -40,12 +52,14 @@ class AuthController {
       
       res.status(200).json({
         userId: user.id,
-        roles: userRoles.map(role => role.name),
+        roles: userRoles,
         verified: true
       });
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
         next(new HttpException(401, 'Invalid token'));
+      } else if (error instanceof HttpException) {
+        next(error);
       } else {
         next(new HttpException(500, error.message));
       }
@@ -62,6 +76,9 @@ class AuthController {
     }
   };
 
+  /**
+   * Login a user and return a JWT token
+   */
   public login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { userInfo, password } = req.body;
@@ -70,7 +87,7 @@ class AuthController {
         throw new HttpException(400, 'Email or username and password must be provided');
       }
 
-      console.log(`Login attempt with email: ${userInfo}`);
+      console.log(`Login attempt with userInfo: ${userInfo}`);
 
       const user = await this.userService.findUserByEmailUsername(userInfo);
       if (!user) {
@@ -87,7 +104,6 @@ class AuthController {
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
-      console.log(`Password valid: ${isPasswordValid}`);
       if (!isPasswordValid) {
         console.log('Invalid password');
         throw new HttpException(401, 'Invalid credentials');
@@ -100,7 +116,7 @@ class AuthController {
       const token = jwt.sign(
         { 
           id: user.id,
-          roles: userRoles.map(role => role.name)
+          roles: userRoles
         }, 
         config.jwtSecret, 
         { expiresIn }
@@ -122,19 +138,31 @@ class AuthController {
         }
       });
     } catch (error) {
-      console.log(`Login error: ${error.message}`);
-      next(new HttpException(400, error.message));
+      if (error instanceof HttpException) {
+        next(error);
+      } else {
+        console.log(`Login error: ${error.message}`);
+        next(new HttpException(400, error.message));
+      }
     }
   };
 
+  /**
+   * Send a password reset email
+   */
   public forgotPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { email } = req.body;
 
     try {
+      if (!email) {
+        throw new HttpException(400, 'Email is required');
+      }
+
       const user = await prisma.user.findUnique({ where: { email } });
 
       if (!user) {
-        res.status(404).json({ message: 'User not found' });
+        // For security reasons, don't reveal if the user exists or not
+        res.status(200).json({ message: 'If a user with that email exists, a password reset link has been sent' });
         return;
       }
 
@@ -143,39 +171,47 @@ class AuthController {
 
       await prisma.user.update({
         where: { email },
-        data: { resetPasswordToken: hashedToken, resetPasswordExpires: new Date(Date.now() + 3600000) },
-      });
-
-      const transporter = nodemailer.createTransport({
-        service: config.email.service,
-        auth: {
-          user: config.email.user,
-          pass: config.email.password,
+        data: { 
+          resetPasswordToken: hashedToken, 
+          resetPasswordExpires: new Date(Date.now() + 3600000) // 1 hour
         },
       });
 
-      const mailOptions = {
-        to: email,
-        from: email.user,
-        subject: 'Password Reset',
-        text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
-          Please click on the following link, or paste this into your browser to complete the process:\n\n
-          http://${config.frontendHost}/reset/${token}\n\n
-          If you did not request this, please ignore this email and your password will remain unchanged.\n`,
-      };
+      const emailSent = await this.emailService.sendPasswordResetEmail(email, token);
 
-      await transporter.sendMail(mailOptions);
+      if (!emailSent) {
+        console.warn(`Failed to send password reset email to ${email}`);
+      }
 
-      res.status(200).json({ message: 'Password reset email sent' });
+      res.status(200).json({ 
+        message: 'If a user with that email exists, a password reset link has been sent' 
+      });
     } catch (error) {
-      next(new HttpException(500, 'Internal server error'));
+      if (error instanceof HttpException) {
+        next(error);
+      } else {
+        console.error('Password reset error:', error);
+        next(new HttpException(500, 'Internal server error'));
+      }
     }
   };
 
+  /**
+   * Reset a user's password using a token
+   */
   public resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { token, newPassword } = req.body;
 
     try {
+      if (!token || !newPassword) {
+        throw new HttpException(400, 'Token and new password are required');
+      }
+
+      // Validate password strength
+      if (newPassword.length < 8) {
+        throw new HttpException(400, 'Password must be at least 8 characters long');
+      }
+
       const user = await prisma.user.findFirst({
         where: {
           resetPasswordToken: token,
@@ -186,8 +222,7 @@ class AuthController {
       });
 
       if (!user) {
-        res.status(400).json({ message: 'Invalid or expired token' });
-        return;
+        throw new HttpException(400, 'Invalid or expired token');
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -203,14 +238,26 @@ class AuthController {
 
       res.status(200).json({ message: 'Password reset successful' });
     } catch (error) {
-      next(new HttpException(500, 'Internal server error'));
+      if (error instanceof HttpException) {
+        next(error);
+      } else {
+        console.error('Password reset error:', error);
+        next(new HttpException(500, 'Internal server error'));
+      }
     }
   };
 
+  /**
+   * Confirm a user's email address using a token
+   */
   public confirmEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { token } = req.params;
 
     try {
+      if (!token) {
+        throw new HttpException(400, 'Verification token is required');
+      }
+
       const user = await prisma.user.findFirst({
         where: {
           emailVerificationToken: token,
@@ -219,8 +266,7 @@ class AuthController {
       });
 
       if (!user) {
-        res.status(400).json({ message: 'Invalid or expired token' });
-        return;
+        throw new HttpException(400, 'Invalid or expired token');
       }
 
       await prisma.user.update({
@@ -228,12 +274,70 @@ class AuthController {
         data: {
           emailVerified: true,
           emailVerificationToken: null,
+          verified: true, // Also mark the user as verified
         },
       });
 
       res.status(200).json({ message: 'Email confirmed successfully' });
     } catch (error) {
-      next(new HttpException(500, 'Internal server error'));
+      if (error instanceof HttpException) {
+        next(error);
+      } else {
+        console.error('Email confirmation error:', error);
+        next(new HttpException(500, 'Internal server error'));
+      }
+    }
+  };
+
+  /**
+   * Resend verification email to a user
+   */
+  public resendVerificationEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { email } = req.body;
+
+    try {
+      if (!email) {
+        throw new HttpException(400, 'Email is required');
+      }
+
+      const user = await prisma.user.findUnique({ where: { email } });
+
+      if (!user) {
+        // For security reasons, don't reveal if the user exists or not
+        res.status(200).json({ message: 'If a user with that email exists, a verification email has been sent' });
+        return;
+      }
+
+      if (user.emailVerified) {
+        throw new HttpException(400, 'Email is already verified');
+      }
+
+      const emailToken = crypto.randomBytes(32).toString('hex');
+      const hashedEmailToken = await bcrypt.hash(emailToken, 10);
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          emailVerificationToken: hashedEmailToken,
+        },
+      });
+
+      const emailSent = await this.emailService.sendVerificationEmail(email, emailToken);
+
+      if (!emailSent) {
+        console.warn(`Failed to send verification email to ${email}`);
+      }
+
+      res.status(200).json({ 
+        message: 'If a user with that email exists, a verification email has been sent' 
+      });
+    } catch (error) {
+      if (error instanceof HttpException) {
+        next(error);
+      } else {
+        console.error('Resend verification email error:', error);
+        next(new HttpException(500, 'Internal server error'));
+      }
     }
   };
 }

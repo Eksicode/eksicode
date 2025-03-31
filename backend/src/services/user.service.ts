@@ -46,6 +46,8 @@ class UserService {
               emailVerificationToken: true,
               resetPasswordToken: true,
               resetPasswordExpires: true,
+              roles: true,
+              permissions: true,
               createdAt: true,
               updatedAt: true,
             }
@@ -122,10 +124,32 @@ class UserService {
    * Determines if a user has admin privileges
    */
   private async isUserAdmin(userId: number): Promise<boolean> {
-    const userRoles = await this.getUserRoles(userId);
-    return userRoles.some(role => 
-      ['admin', 'superadmin'].includes(role.name.toLowerCase())
-    );
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          roles: true,
+          permissions: true
+        }
+      });
+      
+      if (!user) return false;
+      
+      // Check if user has admin or superadmin role
+      const hasAdminRole = user.roles?.some(role => ['admin', 'superadmin'].includes(role));
+      if (hasAdminRole) return true;
+      
+      // Check if user has admin permissions
+      const adminPermissions = ['admin.access', 'admin.manage'];
+      const hasAdminPermission = user.permissions?.some(permission => 
+        adminPermissions.includes(permission)
+      );
+      
+      return hasAdminPermission || false;
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      return false;
+    }
   }
   
   /**
@@ -154,7 +178,7 @@ class UserService {
         facebook: true,
         verified: true,
         emailVerified: true,
-        roles: true,
+        roles: true,  // This will return string[] based on your schema
         createdAt: true,
         updatedAt: true
       }
@@ -185,13 +209,7 @@ class UserService {
     const emailToken = crypto.randomBytes(32).toString('hex');
     const hashedEmailToken = await bcrypt.hash(emailToken, 10);
 
-    const userRole = await this.prisma.role.findUnique({ where: { name: 'user' } });
-
-    if (!userRole) {
-      throw new HttpException(500, 'Default user role not found');
-    }
-
-    // Create user first
+    // Create user with default role
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -199,14 +217,7 @@ class UserService {
         username: String(username),
         emailVerificationToken: hashedEmailToken,
         emailVerified: false,
-      },
-    });
-
-    // Then assign role
-    await this.prisma.userRole.create({
-      data: {
-        userId: user.id,
-        roleId: userRole.id,
+        roles: ['user'], // Default role is already set in the schema
       },
     });
 
@@ -294,24 +305,169 @@ class UserService {
   }
 
 
-  public async assignRoleToUser(userId: number, roleId: number): Promise<void> {
-    await this.prisma.userRole.create({
+  public async assignRoleToUser(userId: number, roleName: string): Promise<void> {
+    // Validate role name
+    if (!['user', 'admin', 'superadmin', 'moderator'].includes(roleName)) {
+      throw new HttpException(400, 'Invalid role name');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { roles: true }
+    });
+    
+    if (!user) {
+      throw new HttpException(404, 'User not found');
+    }
+    
+    // Check if user already has this role
+    if (user.roles.includes(roleName)) {
+      return; // Role already assigned
+    }
+    
+    // Add the new role to the array
+    await this.prisma.user.update({
+      where: { id: userId },
       data: {
-        userId,
-        roleId,
-      },
+        roles: {
+          push: roleName
+        }
+      }
     });
   }
 
-  public async getUserRoles(userId: number): Promise<Role[]> {
-    const userRoles = await this.prisma.userRole.findMany({
-      where: { userId },
-      include: { role: true },
+  public async getUserRoles(userId: number): Promise<string[]> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { roles: true }
     });
-    return userRoles.map(userRole => userRole.role);
+    
+    if (!user) {
+      throw new HttpException(404, 'User not found');
+    }
+    
+    return user.roles;
   }
 
-  // Additional methods for roles and permissions can be added here
+  /**
+   * Remove a role from a user
+   */
+  public async removeRoleFromUser(userId: number, roleName: string): Promise<void> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { roles: true }
+      });
+      
+      if (!user) {
+        throw new HttpException(404, 'User not found');
+      }
+      
+      // Filter out the role to remove
+      const updatedRoles = user.roles.filter(role => role !== roleName);
+      
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          roles: updatedRoles
+        }
+      });
+    } catch (error) {
+      throw new HttpException(500, 'Failed to remove role from user', { originalError: error });
+    }
+  }
+
+  /**
+   * Check if a user has a specific permission
+   */
+  public async hasPermission(userId: number, permissionName: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { permissions: true, roles: true }
+    });
+    
+    if (!user) return false;
+
+    // Check direct permissions
+    if (user.permissions.includes(permissionName)) return true;
+
+    // Superadmin has all permissions
+    if (user.roles.includes('superadmin')) return true;
+
+    // Admin has most permissions except superadmin-specific ones
+    if (user.roles.includes('admin') && !permissionName.startsWith('superadmin.')) return true;
+
+    return false;
+  }
+
+  /**
+   * Get all permissions for a user
+   */
+  public async getUserPermissions(userId: number): Promise<string[]> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { permissions: true }
+    });
+    
+    return user?.permissions || [];
+  }
+  
+  /**
+   * Assign a permission to a user
+   */
+  public async assignPermissionToUser(userId: number, permissionName: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { permissions: true }
+    });
+    
+    if (!user) {
+      throw new HttpException(404, 'User not found');
+    }
+    
+    // Check if user already has this permission
+    if (user.permissions.includes(permissionName)) {
+      return; // Permission already assigned
+    }
+    
+    // Add the new permission to the array
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        permissions: {
+          push: permissionName
+        }
+      }
+    });
+  }
+  
+  /**
+   * Remove a permission from a user
+   */
+  public async removePermissionFromUser(userId: number, permissionName: string): Promise<void> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { permissions: true }
+      });
+      
+      if (!user) {
+        throw new HttpException(404, 'User not found');
+      }
+      
+      // Filter out the permission to remove
+      const updatedPermissions = user.permissions.filter(permission => permission !== permissionName);
+      
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          permissions: updatedPermissions
+        }
+      });
+    } catch (error) {
+      throw new HttpException(500, 'Failed to remove permission from user', { originalError: error });
+    }
+  }
 }
 
 export default UserService;

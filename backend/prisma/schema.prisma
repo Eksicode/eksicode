@@ -28,7 +28,9 @@ model User {
   emailVerificationToken String?
   emailVerified          Boolean        @default(false)
   resetPasswordToken     String?
-  roles                  UserRole[]
+  roles                  String[]       @default(["user"])
+  permissions            String[]       @default([])
+  userRoles              UserRole[]
   posts                  Post[]
   comments               Comment[]
   postLikes              PostLike[]
@@ -41,48 +43,54 @@ model User {
 }
 
 model Role {
-  id          Int              @id @default(autoincrement())
-  name        String           @unique
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
   description String?
-  permissions RolePermission[]
+  permissions Permission[]
   users       UserRole[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  endpoints   EndpointAccess[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("roles")
 }
 
 model Permission {
-  id          Int              @id @default(autoincrement())
-  name        String           @unique
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
   description String?
-  roles       RolePermission[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  roles       Role[]
+  endpoints   EndpointAccess[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("permissions")
 }
 
 model UserRole {
-  id     Int  @id @default(autoincrement())
-  userId Int
-  roleId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roleId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  role      Role     @relation(fields: [roleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, roleId])
   @@map("user_roles")
 }
 
-model RolePermission {
-  id           Int        @id @default(autoincrement())
-  roleId       Int
-  permissionId Int
-  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+model EndpointAccess {
+  id          Int      @id @default(autoincrement())
+  path        String
+  method      String
+  roles       Role[]
+  permissions Permission[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@unique([roleId, permissionId])
-  @@map("role_permissions")
+  @@unique([path, method])
+  @@map("endpoint_access")
 }
 
 model Post {

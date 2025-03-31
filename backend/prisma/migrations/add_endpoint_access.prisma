@@ -1,0 +1,49 @@
+-- CreateTable
+CREATE TABLE "endpoint_access" (
+    "id" SERIAL NOT NULL,
+    "path" TEXT NOT NULL,
+    "method" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "endpoint_access_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_EndpointAccessToRole" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_EndpointAccessToPermission" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "endpoint_access_path_method_key" ON "endpoint_access"("path", "method");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_EndpointAccessToRole_AB_unique" ON "_EndpointAccessToRole"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_EndpointAccessToRole_B_index" ON "_EndpointAccessToRole"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_EndpointAccessToPermission_AB_unique" ON "_EndpointAccessToPermission"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_EndpointAccessToPermission_B_index" ON "_EndpointAccessToPermission"("B");
+
+-- AddForeignKey
+ALTER TABLE "_EndpointAccessToRole" ADD CONSTRAINT "_EndpointAccessToRole_A_fkey" FOREIGN KEY ("A") REFERENCES "endpoint_access"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EndpointAccessToRole" ADD CONSTRAINT "_EndpointAccessToRole_B_fkey" FOREIGN KEY ("B") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EndpointAccessToPermission" ADD CONSTRAINT "_EndpointAccessToPermission_A_fkey" FOREIGN KEY ("A") REFERENCES "endpoint_access"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EndpointAccessToPermission" ADD CONSTRAINT "_EndpointAccessToPermission_B_fkey" FOREIGN KEY ("B") REFERENCES "permissions"("id") ON DELETE CASCADE ON UPDATE CASCADE;

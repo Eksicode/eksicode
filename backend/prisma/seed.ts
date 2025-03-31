@@ -75,7 +75,27 @@ async function seedPermissions() {
     data: { name: "DELETE_POST", description: "Can delete posts" },
   });
 
-  return { createPost, deletePost };
+  const viewUsers = await prisma.permission.create({
+    data: { name: "VIEW_USERS", description: "Can view all users" },
+  });
+
+  const viewUser = await prisma.permission.create({
+    data: { name: "VIEW_USER", description: "Can view user details" },
+  });
+
+  const createUser = await prisma.permission.create({
+    data: { name: "CREATE_USER", description: "Can create users" },
+  });
+
+  const updateUser = await prisma.permission.create({
+    data: { name: "UPDATE_USER", description: "Can update users" },
+  });
+
+  const deleteUser = await prisma.permission.create({
+    data: { name: "DELETE_USER", description: "Can delete users" },
+  });
+
+  return { createPost, deletePost, viewUsers, viewUser, createUser, updateUser, deleteUser };
 }
 
 async function seedRoles(permissions) {
@@ -325,6 +345,42 @@ async function seedSources() {
   }
 }
 
+async function seedEndpointAccess() {
+  console.log("Seeding endpoint access...");
+  const { endpointAccessData } = require('./endpointAccessData');
+
+  for (const endpoint of endpointAccessData) {
+    const { path, method, requiredRoles, requiredPermissions } = endpoint;
+
+    // Find role and permission records
+    const roles = await Promise.all(
+      requiredRoles.map(roleName =>
+        prisma.role.findUnique({ where: { name: roleName } })
+      )
+    );
+
+    const permissions = await Promise.all(
+      requiredPermissions.map(permName =>
+        prisma.permission.findUnique({ where: { name: permName } })
+      )
+    );
+
+    // Create endpoint access record
+    await prisma.endpointAccess.create({
+      data: {
+        path,
+        method,
+        requiredRoles: {
+          connect: roles.map(role => ({ id: role.id }))
+        },
+        requiredPermissions: {
+          connect: permissions.map(permission => ({ id: permission.id }))
+        }
+      }
+    });
+  }
+}
+
 async function main() {
   try {
     await cleanDatabase();
@@ -332,6 +388,7 @@ async function main() {
     const permissions = await seedPermissions();
     const roles = await seedRoles(permissions);
     await seedUsers(roles);
+    await seedEndpointAccess();
     
     await seedPostCategoriesAndTags(); // Create categories and tags first
     await seedPosts(); // Then create posts
