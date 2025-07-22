@@ -10,6 +10,21 @@ npx prisma generate
 npx prisma migrate dev
 npx prisma db seed
 
+# Use the new seeding system
+npm run seed
+
+# Development mode with debug logging
+npm run seed:dev
+
+# Clean database only
+npm run seed:clean
+
+# Test the seeding system
+tsx prisma/seeders/test-seeds.ts
+
+# Get system information
+tsx prisma/seeders/test-seeds.ts info
+
 # in the root folder run
 npm install
 npm run setup
