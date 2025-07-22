@@ -6,6 +6,21 @@ import { IPost, PostStatusEnum } from "../interfaces/post.interface";
 class PostService {
   private prisma: PrismaClient;
 
+  // Safe author selection - excludes sensitive data like passwords, emails, tokens, etc.
+  // This ensures that no sensitive user information is exposed through post-related endpoints.
+  // Fields excluded: password, email, telegramId, phoneNumber, emailVerificationToken, 
+  // resetPasswordToken, resetPasswordExpires, roles, permissions
+  private readonly safeAuthorSelect = {
+    id: true,
+    username: true,
+    firstName: true,
+    lastName: true,
+    profilePicture: true,
+    verified: true,
+    createdAt: true,
+    updatedAt: true,
+  };
+
   constructor() {
     this.prisma = new PrismaClient();
   }
@@ -28,6 +43,15 @@ class PostService {
           title: true,
           slug: true,
           createdAt: true,
+          author: {
+            select: this.safeAuthorSelect,
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         }
       : {
           id: true,
@@ -35,7 +59,9 @@ class PostService {
           content: true,
           headerImage: true,
           authorId: true,
-          author: true,
+          author: {
+            select: this.safeAuthorSelect,
+          },
           postLikes: true,
           comments: true,
           categories: true,
@@ -73,9 +99,10 @@ class PostService {
   }
 
   /**
- * Search posts by term or hashtag with pagination.
- * @param term - The search term (optional).
- * @param hashtag - The hashtag to search by (optional).
+ * Search posts by term or hashtag with comprehensive search across multiple fields.
+ * Searches in: post title, post content, author username, categories, and hashtags.
+ * @param term - The search term to look for across all searchable fields (optional).
+ * @param hashtag - The specific hashtag to search by (optional).
  * @param skip - Number of records to skip for pagination.
  * @param limit - Number of records to fetch.
  * @returns An object containing the list of posts and the total count.
@@ -86,50 +113,104 @@ public async searchPost(
   skip: number = 0,
   limit: number = 10
 ): Promise<{ posts: IPost[]; count: number }> {
-  console.log("hashtag", hashtag);
+  console.log("Search parameters:", { term, hashtag, skip, limit });
   
   if (isEmpty(term) && isEmpty(hashtag)) {
     throw new HttpException(400, "Search term or hashtag is required");
   }
 
   try {
-    const decodedTerm = term ? decodeURIComponent(term) : undefined;
-    const decodedHashtag = hashtag ? decodeURIComponent(hashtag) : undefined;
+    const decodedTerm = term ? decodeURIComponent(term).trim() : undefined;
+    const decodedHashtag = hashtag ? decodeURIComponent(hashtag).trim() : undefined;
+
+    console.log("Decoded search parameters:", { decodedTerm, decodedHashtag });
 
     // Define the base where clause
     const whereClause: any = {
       approved: true,
-      status: "published",
+      status: "PUBLISHED",
     };
 
     // Add search conditions based on term or hashtag
     if (decodedTerm) {
       whereClause.OR = [
+        // Search in post title
         {
           title: {
             contains: decodedTerm,
             mode: "insensitive",
           },
         },
+        // Search in post content
         {
           content: {
             contains: decodedTerm,
             mode: "insensitive",
           },
         },
+        // Search in author username
+        {
+          author: {
+            username: {
+              contains: decodedTerm,
+              mode: "insensitive",
+            },
+          },
+        },
+        // Search in categories
+        {
+          categories: {
+            some: {
+              name: {
+                contains: decodedTerm,
+                mode: "insensitive",
+              },
+            },
+          },
+        },
+        // Search in tags/hashtags
+        {
+          tags: {
+            some: {
+              name: {
+                contains: decodedTerm,
+                mode: "insensitive",
+              },
+            },
+          },
+        },
       ];
     }
 
+    // If specific hashtag search is requested
     if (decodedHashtag) {
-      whereClause.tags = {
-        some: {
-          name: {
-            contains: decodedHashtag,
-            mode: "insensitive",
+      // If we already have term conditions, we need to combine them properly
+      if (decodedTerm) {
+        // Add hashtag condition to existing OR conditions
+        whereClause.OR.push({
+          tags: {
+            some: {
+              name: {
+                contains: decodedHashtag,
+                mode: "insensitive",
+              },
+            },
           },
-        },
-      };
+        });
+      } else {
+        // If only hashtag search, create a simple condition
+        whereClause.tags = {
+          some: {
+            name: {
+              contains: decodedHashtag,
+              mode: "insensitive",
+            },
+          },
+        };
+      }
     }
+
+    console.log("Final where clause:", JSON.stringify(whereClause, null, 2));
 
     // Fetch paginated posts
     const [posts, count] = await Promise.all([
@@ -138,11 +219,15 @@ public async searchPost(
         skip: Number(skip),
         take: Number(limit),
         include: {
-          author: true,
+          author: {
+            select: this.safeAuthorSelect,
+          },
           postLikes: true,
           comments: {
             include: {
-              author: true,
+              author: {
+                select: this.safeAuthorSelect,
+              },
             },
           },
           categories: true,
@@ -181,6 +266,21 @@ public async searchPost(
     try {
       return await this.prisma.post.findUnique({
         where: { id },
+        include: {
+          author: {
+            select: this.safeAuthorSelect,
+          },
+          postLikes: true,
+          comments: {
+            include: {
+              author: {
+                select: this.safeAuthorSelect,
+              },
+            },
+          },
+          categories: true,
+          tags: true,
+        },
       });
     } catch (error) {
       console.error(`Error fetching post with ID ${id}:`, error);
@@ -197,6 +297,21 @@ public async searchPost(
     try {
       return await this.prisma.post.findUnique({
         where: { slug },
+        include: {
+          author: {
+            select: this.safeAuthorSelect,
+          },
+          postLikes: true,
+          comments: {
+            include: {
+              author: {
+                select: this.safeAuthorSelect,
+              },
+            },
+          },
+          categories: true,
+          tags: true,
+        },
       });
     } catch (error) {
       console.error(`Error fetching post with ID ${slug}:`, error);

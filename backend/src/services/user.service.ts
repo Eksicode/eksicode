@@ -7,6 +7,28 @@ import config from '../config';
 class UserService {
   private prisma: PrismaClient;
 
+  // Safe user selection - excludes sensitive data like passwords, emails, tokens, etc.
+  private readonly safeUserSelect = {
+    id: true,
+    firstName: true,
+    lastName: true,
+    username: true,
+    profilePicture: true,
+    birthday: true,
+    linkedin: true,
+    website: true,
+    github: true,
+    twitter: true,
+    instagram: true,
+    facebook: true,
+    verified: true,
+    emailVerified: true,
+    roles: true,
+    permissions: true,
+    createdAt: true,
+    updatedAt: true,
+  };
+
   constructor() {
     this.prisma = new PrismaClient();
   }
@@ -18,7 +40,7 @@ class UserService {
     skip: number,
     limit: number,
     summaryOnly: boolean
-  ): Promise<{ users: User[]; count: number }> {
+  ): Promise<{ users: Partial<User>[]; count: number }> {
     const [users, count] = await Promise.all([
       this.prisma.user.findMany({
         skip,
@@ -26,32 +48,12 @@ class UserService {
         select: summaryOnly
           ? {
               id: true,
-              email: true,
-              password: true,
-              firstName: true,
-              lastName: true,
               username: true,
               profilePicture: true,
-              birthday: true,
-              telegramId: true,
-              phoneNumber: true,
-              linkedin: true,
-              website: true,
-              github: true,
-              twitter: true,
-              instagram: true,
-              facebook: true,
               verified: true,
-              emailVerified: true,
-              emailVerificationToken: true,
-              resetPasswordToken: true,
-              resetPasswordExpires: true,
-              roles: true,
-              permissions: true,
               createdAt: true,
-              updatedAt: true,
             }
-          : undefined,
+          : this.safeUserSelect,
       }),
       this.prisma.user.count(),
     ]);

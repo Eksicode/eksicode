@@ -1,88 +1,80 @@
 "use client";
 import { IPost } from "@/types/types";
 import { PostCard } from "@/components/PostCard";
-import { Suspense, useState, useEffect } from "react";
-import LoadMore from "@/components/LoadMore";
+import { Suspense } from "react";
+import Pagination from "@/components/Pagination";
+import type { SearchResponse } from "@/services/searchService";
 
 interface SearchResultsProps {
+  searchResults: SearchResponse;
   searchTerm: string;
+  currentPage: number;
 }
 
-interface ApiResponse {
-  data: IPost[];
-  message: string;
-}
+export function SearchResults({ searchResults, searchTerm, currentPage }: SearchResultsProps) {
+  const { posts, meta, message } = searchResults;
 
-export function SearchResults({ searchTerm }: SearchResultsProps) {
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const limit = 10;
-
-  const fetchPosts = async () => {
-    try {
-      const skip = (page - 1) * limit;
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/posts/search/${searchTerm}?skip=${skip}&limit=${limit}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText}`);
-      }
-
-      const { data, message }: ApiResponse = await response.json();
-      setPosts((prevPosts) => [...prevPosts, ...data]);
-      setTotalCount(data.length);
-      console.log(message);
-    } catch (error) {
-      console.error("Error searching posts:", error);
-      setError("Failed to search posts");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, [searchTerm, page]);
-
-  const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  if (isLoading && page === 1) {
-    return <div className="text-center py-8">Yükleniyor...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center py-8 text-red-500">{error}</div>;
-  }
-
-  if (!posts.length) {
-    return <div className="text-center py-8">Sonuç Bulunamadı</div>;
+  // Empty state
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="mb-4">
+          <svg
+            className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Sonuç Bulunamadı
+        </h3>
+        <p className="text-gray-500 dark:text-gray-400">
+          "{searchTerm}" için hiç sonuç bulunamadı. Farklı anahtar kelimeler deneyin.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <Suspense fallback={<div>Yükleniyor...</div>}>
-      <LoadMore
-        onLoadMore={handleLoadMore}
-        hasMore={posts.length < totalCount}
-        loading={isLoading}
-      >
+    <Suspense fallback={<div className="text-center py-8">Yükleniyor...</div>}>
+      <div className="space-y-6">
+        {/* Results Info */}
+        <div className="bg-white dark:bg-DarkerGrey border border-gray-300 dark:border-DarkLightGrey rounded-lg p-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Sayfa {meta.page} / {meta.totalPages} - Toplam {meta.total} sonuç
+          </p>
+        </div>
+
+        {/* Posts */}
         <div className="space-y-4">
           {posts.map((post: IPost) => (
             <PostCard
               key={post.id}
               post={post}
-              onLike={(id: string) => console.log("Like:", id)}
-              onComment={(id: string) => console.log("Comment:", id)}
-              onSave={(id: string) => console.log("Save:", id)}
+              onLike={(postId: number) => console.log("Like:", postId)}
+              onComment={(postId: number) => console.log("Comment:", postId)}
+              onSave={(postId: number) => console.log("Save:", postId)}
             />
           ))}
         </div>
-      </LoadMore>
+
+        {/* Pagination */}
+        {meta.totalPages > 1 && (
+          <Pagination 
+            meta={meta} 
+            baseUrl={`/arama?q=${encodeURIComponent(searchTerm)}`}
+          />
+        )}
+      </div>
     </Suspense>
   );
 }

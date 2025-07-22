@@ -13,25 +13,51 @@ class HashtagService {
                 orderBy: {
                     name: 'desc',
                 },
+                include: {
+                    _count: {
+                        select: {
+                            posts: true
+                        }
+                    }
+                }
             });
 
-            return { hashTags, count };
+            // Transform to include postCount
+            const transformedHashTags = hashTags.map(tag => ({
+                id: tag.id,
+                name: tag.name,
+                postCount: tag._count.posts
+            }));
+
+            return { hashTags: transformedHashTags, count };
         } catch (error) {
             throw new HttpException(500, "Error fetching hashtags");
         }
     }
 
-    public async getHashtagById(id: number): Promise<Tag | null> {
+    public async getHashtagById(id: number): Promise<any> {
         try {
             const hashTag = await this.prisma.tag.findUnique({
                 where: { id },
+                include: {
+                    _count: {
+                        select: {
+                            posts: true
+                        }
+                    }
+                }
             });
 
             if (!hashTag) {
                 throw new HttpException(404, "Hashtag not found");
             }
 
-            return hashTag;
+            // Transform to include postCount
+            return {
+                id: hashTag.id,
+                name: hashTag.name,
+                postCount: hashTag._count.posts
+            };
         } catch (error) {
             throw new HttpException(500, "Error fetching hashtag");
         }
