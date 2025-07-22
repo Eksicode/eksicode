@@ -7,29 +7,13 @@ import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 import { BiBookmarkAltPlus } from "react-icons/bi";
 import ppImage from "../../public/images/pp-image.png";
 import { formatDate } from "@/utils/utils";
-
-interface Author {
-  id: string;
-  name: string;
-  image?: string;
-  joinedDate?: string;
-}
+import { IPost } from "@/types/types";
 
 interface PostCardProps {
-  post: {
-    id: string;
-    title: string;
-    content: string;
-    author: Author;
-    tags?: { id: string; name: string }[];
-    likes?: number;
-    slug?: string;
-    comments?: { id: string }[];
-    createdAt?: string;
-  };
-  onLike?: (postId: string) => void;
-  onComment?: (postId: string) => void;
-  onSave?: (postId: string) => void;
+  post: IPost;
+  onLike?: (postId: number) => void;
+  onComment?: (postId: number) => void;
+  onSave?: (postId: number) => void;
 }
 
 export const PostCard: React.FC<PostCardProps> = ({
@@ -43,7 +27,8 @@ export const PostCard: React.FC<PostCardProps> = ({
     title,
     slug,
     author,
-    tags = []
+    tags = [],
+    createdAt
   } = post;
 
   return (
@@ -52,17 +37,17 @@ export const PostCard: React.FC<PostCardProps> = ({
         {/* Author Info */}
         <div className="flex items-center space-x-4 content-start">
           <Image
-            src={author.image || ppImage}
-            alt={`${author.name}'s avatar`}
+            src={author.profilePicture || ppImage}
+            alt={`${author.username}'s avatar`}
             className="rounded-full border-2"
             width={40}
             height={40}
           />
           <div className="space-y-1 font-medium">
-            <div>{author.name}</div>
-            {author.joinedDate && (
+            <div>{author.username}</div>
+            {createdAt && (
               <p className="text-xs text-muted-foreground">
-                Joined {formatDate(author.joinedDate)}
+                {formatDate(createdAt)}
               </p>
             )}
           </div>

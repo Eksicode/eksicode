@@ -1,0 +1,3220 @@
+{
+	"info": {
+		"_postman_id": "e931265a-0286-410a-8326-9b3b4ce372bd",
+		"name": "eksicode",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29710060",
+		"_collection_link": "https://warped-astronaut-819432.postman.co/workspace/New-Team-Workspace~ca54bda1-4c20-43dd-b651-1f10756b95cd/collection/29710060-e931265a-0286-410a-8326-9b3b4ce372bd?action=share&source=collection_link&creator=29710060"
+	},
+	"item": [
+		{
+			"name": "Index",
+			"item": [
+				{
+					"name": "API Health Check",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userInfo\": \"user\",\n  \"password\": \"eksicode2025**\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/login",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDgxMDMwODAsImV4cCI6MTcwODEwNjY4MCwibmJmIjoxNzA4MTAzMDgwLCJqdGkiOiJrRkNhbUJ6VmRURHpZNlZYIiwic3ViIjoiMTAiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.h2Flj4_FY6DE5Gq3Un7kD3uqR4JRHcEK6IUaxWhXT-0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/auth/refresh",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "test2@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Eksicode2025**",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "test2",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "Eksicode2025**",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/register",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password Reset Link Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "dgkdev06@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/forgot-password",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password Reset Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "d574d841a5902092fc1873baddedf78cfa9dd45ea824d5adbcb54a048249a2b7",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "dgkdev06@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "admin123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/reset-password",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/auth/verify",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Email Verification",
+			"item": [
+				{
+					"name": "Confirm Verify Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/verify-email/7/76249a8bd3844a8b3511399fff9fc6c501871a9a?expires=1709566446&signature=1a00370483660a2e4a9fafa13471fc933a4b774115f61099f6d1731adba889e8&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1NjIzNDIsImV4cCI6MTcwOTU2NTk0MiwibmJmIjoxNzA5NTYyMzQyLCJqdGkiOiI1bmZHQUIzWll2TW1kM0x6Iiwic3ViIjoiNyIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.mM4_eUCbhnnmkcZR8CPbt0h2jb40reue6MbKPShFgB0",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"verify-email",
+								"7",
+								"76249a8bd3844a8b3511399fff9fc6c501871a9a"
+							],
+							"query": [
+								{
+									"key": "expires",
+									"value": "1709566446"
+								},
+								{
+									"key": "signature",
+									"value": "1a00370483660a2e4a9fafa13471fc933a4b774115f61099f6d1731adba889e8"
+								},
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1NjIzNDIsImV4cCI6MTcwOTU2NTk0MiwibmJmIjoxNzA5NTYyMzQyLCJqdGkiOiI1bmZHQUIzWll2TW1kM0x6Iiwic3ViIjoiNyIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.mM4_eUCbhnnmkcZR8CPbt0h2jb40reue6MbKPShFgB0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Verification Email Link",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvc2lnbnVwIiwiaWF0IjoxNzA5NTYzODE1LCJleHAiOjE3MDk1Njc0MTUsIm5iZiI6MTcwOTU2MzgxNSwianRpIjoiVHhGMEZ4VWtJekl5ZkhxeSIsInN1YiI6IjgiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.jJJZ2x8c5wIGCziel-QJj8B-7a6LqNu_F4n106wNUnw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/email/verification-notification",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"email",
+								"verification-notification"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Roles",
+			"item": [
+				{
+					"name": "Get All Roles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MTMzNzI4ODAsImV4cCI6MTcxMzM3NjQ4MCwibmJmIjoxNzEzMzcyODgwLCJqdGkiOiJNZnpsQ2hlb0toMWFIZlp5Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.lzq93G5b0_yU0JdGBSLSjST3ruC00dOL51TVdEO_030",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/roles",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Role Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MTMzNzI4ODAsImV4cCI6MTcxMzM3NjQ4MCwibmJmIjoxNzEzMzcyODgwLCJqdGkiOiJNZnpsQ2hlb0toMWFIZlp5Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.lzq93G5b0_yU0JdGBSLSjST3ruC00dOL51TVdEO_030",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Test",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Test User",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/roles",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Role By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MTMzNzI4ODAsImV4cCI6MTcxMzM3NjQ4MCwibmJmIjoxNzEzMzcyODgwLCJqdGkiOiJNZnpsQ2hlb0toMWFIZlp5Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.lzq93G5b0_yU0JdGBSLSjST3ruC00dOL51TVdEO_030",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/roles/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"roles",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MTMzNzI4ODAsImV4cCI6MTcxMzM3NjQ4MCwibmJmIjoxNzEzMzcyODgwLCJqdGkiOiJNZnpsQ2hlb0toMWFIZlp5Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.lzq93G5b0_yU0JdGBSLSjST3ruC00dOL51TVdEO_030",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Test Name Update",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Test Desc. Update",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/roles/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"roles",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permissions",
+			"item": [
+				{
+					"name": "Get All Permissions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/permissions",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Permission",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"create_post\",\n  \"description\": \"Permission to create new posts\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/permissions",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Menus",
+			"item": [
+				{
+					"name": "Get All Menu",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/menus",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Menu Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDkzOTUyMjQsImV4cCI6MTcwOTM5ODgyNCwibmJmIjoxNzA5Mzk1MjI0LCJqdGkiOiJnSHpJZGk4bFdrclBNUkNsIiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.K1lNrCeQhWaR_RHRvMTAiol_zTc21cb2uStjq-4Otcg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "test menu 3",
+									"type": "text"
+								},
+								{
+									"key": "main",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "icon",
+									"value": "test icon",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/menus",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Menu By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDkzOTQ5OTksImV4cCI6MTcwOTM5ODU5OSwibmJmIjoxNzA5Mzk0OTk5LCJqdGkiOiJmTGVFalV2TFNXTFJuemdwIiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.YX0_8ilvSNSZP9Zomha4G1Yy2VxgCHngfLtOuz8wezI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Home",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "icon",
+									"value": "AiOutlineHome",
+									"type": "text"
+								},
+								{
+									"key": "main",
+									"value": "0",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/menus/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menus",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Menu By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/menus/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menus",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Menus by Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/menus/category/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menus",
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Menu Categories",
+			"item": [
+				{
+					"name": "Get All Menu Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/menu-categories",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menu-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Menu Category By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/menu-categories/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menu-categories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Menu Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Main Navigation\",\n  \"description\": \"Primary navigation menu category\",\n  \"slug\": \"main-navigation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/menu-categories",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menu-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Menu Category By ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Navigation\",\n  \"description\": \"Updated navigation menu category\",\n  \"slug\": \"updated-navigation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/menu-categories/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menu-categories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Menu Category By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/menu-categories/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"menu-categories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pages",
+			"item": [
+				{
+					"name": "Get All Pages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/pages",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"pages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Page",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2RlbW8tYXBpLmVrc2ljb2RlLm9yZy9hcGkvYXV0aC9sb2dpbiIsImlhdCI6MTcxMzc4NjcyMywiZXhwIjoxNzEzNzkwMzIzLCJuYmYiOjE3MTM3ODY3MjMsImp0aSI6IlBtQTNKM2ZWdXFxa0E5WVkiLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.PDVgg7IT5wOLQFAOKwRFNF3RxRDIWheeYUQXzHwd8ys",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "This is new page 2",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+									"type": "text"
+								},
+								{
+									"key": "page_category",
+									"value": "Computer",
+									"type": "text"
+								},
+								{
+									"key": "header_image",
+									"type": "file",
+									"src": "postman-cloud:///1eed4010-099a-4870-af92-d0124b2d5ea6"
+								},
+								{
+									"key": "slug",
+									"value": "test1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/pages",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"pages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Page By Slug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/pages/amacimiz",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"pages",
+								"amacimiz"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Page By Slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDg4ODA5NTEsImV4cCI6MTcwODg4NDU1MSwibmJmIjoxNzA4ODgwOTUxLCJqdGkiOiJXVWV6VldNZmI2dmdSbVg3Iiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.LphnLg3fIuyDpICI8exByQZfhhxIaoyOo_DshEvFBN0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "This is update page",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+									"type": "text"
+								},
+								{
+									"key": "page_category_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "header_image",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/pages/this-is-update-page",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"pages",
+								"this-is-update-page"
+							],
+							"query": [
+								{
+									"key": "_method",
+									"value": "PUT",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Page Categories",
+			"item": [
+				{
+					"name": "Get All Page Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/page-categories?count=total",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"page-categories"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "total"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Page Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1MDc0MTgsImV4cCI6MTcwOTUxMTAxOCwibmJmIjoxNzA5NTA3NDE4LCJqdGkiOiJOYUhxeFRUa0dtQzFZbkZ1Iiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.eimDRCsSYYbFwioKXr98dLJCSmxykt9bmgq4JruKcK4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Main",
+									"type": "text"
+								},
+								{
+									"key": "main",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/page-categories",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"page-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Page Category By Slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1MDc0MTgsImV4cCI6MTcwOTUxMTAxOCwibmJmIjoxNzA5NTA3NDE4LCJqdGkiOiJOYUhxeFRUa0dtQzFZbkZ1Iiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.eimDRCsSYYbFwioKXr98dLJCSmxykt9bmgq4JruKcK4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Main",
+									"type": "text"
+								},
+								{
+									"key": "main",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "main",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/page-categories/null",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"page-categories",
+								"null"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category By Slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDgzNTQwNTksImV4cCI6MTcwODM1NzY1OSwibmJmIjoxNzA4MzU0MDU5LCJqdGkiOiJXWjRZdEdMMDdqWTd4dTBRIiwic3ViIjoiMTAiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.ZTMIh6JT6G1l9pP1IK2uD-9Fy_eIVTICBM6o81zC9aQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/page-categories/null",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"page-categories",
+								"null"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Get All Posts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/posts?summaryOnly=false&limit=5&skip=1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"posts"
+							],
+							"query": [
+								{
+									"key": "summaryOnly",
+									"value": "false"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "skip",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Post By Slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1MDc0MTgsImV4cCI6MTcwOTUxMTAxOCwibmJmIjoxNzA5NTA3NDE4LCJqdGkiOiJOYUhxeFRUa0dtQzFZbkZ1Iiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.eimDRCsSYYbFwioKXr98dLJCSmxykt9bmgq4JruKcK4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/posts/data-modeling-with-prisma-and-typescript",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"posts",
+								"data-modeling-with-prisma-and-typescript"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Post",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/posts/search?hashtag=typescript",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"posts",
+								"search"
+							],
+							"query": [
+								{
+									"key": "hashtag",
+									"value": "typescript"
+								},
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "skip",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By Slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDgzNTU0NjIsImV4cCI6MTcwODM1OTA2MiwibmJmIjoxNzA4MzU1NDYyLCJqdGkiOiJwcGlpQ1dDZnJBdDRGakdtIiwic3ViIjoiMTAiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.4UL6Us2FkUbyN_vvpnavsReKI-Pfdx156KYggoohD5A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"title\": \"rerum tes\",\n        \"post\": \"Quia dolor doloremque repudiandae nam temporibus labore dolor. Ipsum sapiente ullam facilis qui libero. Voluptatem eaque unde quia sunt minima. Test Slug\",\n        \"user_id\": 8,\n        \"status\": false,\n        \"tag_id\": 1,\n        \"category_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/posts/rerum",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"posts",
+								"rerum"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1MDc0MTgsImV4cCI6MTcwOTUxMTAxOCwibmJmIjoxNzA5NTA3NDE4LCJqdGkiOiJOYUhxeFRUa0dtQzFZbkZ1Iiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.eimDRCsSYYbFwioKXr98dLJCSmxykt9bmgq4JruKcK4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/xxx/Pictures/eksi-code-logo.cfcd7e85.png"
+								},
+								{
+									"key": "title",
+									"value": "Şişarp da fena değil",
+									"type": "text"
+								},
+								{
+									"key": "post",
+									"value": "Şişarp da fena değil Şişarp da fena değil",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "[2,3,4,7]",
+									"type": "text"
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "sisarp-da-fena-degil",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/posts",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hashtags",
+			"item": [
+				{
+					"name": "Get All Tags",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/hashtags",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"hashtags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Tag Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MTMzNzI4ODAsImV4cCI6MTcxMzM3NjQ4MCwibmJmIjoxNzEzMzcyODgwLCJqdGkiOiJNZnpsQ2hlb0toMWFIZlp5Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.lzq93G5b0_yU0JdGBSLSjST3ruC00dOL51TVdEO_030",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Tag Test 111222333",
+									"type": "text"
+								},
+								{
+									"key": "icon",
+									"value": "test111222333",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "test111222333",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "tag-test-1111222333",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/hashtags",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"hashtags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Tag By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDkyMzM1OTYsImV4cCI6MTcwOTIzNzE5NiwibmJmIjoxNzA5MjMzNTk2LCJqdGkiOiJjRVBMcldncFhqWGhHU1gyIiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.9WiJHZh-VrqQAfw8QXigDR1aK5-mlM7LhvEWAZ2xM0s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Tag Test Update",
+									"type": "text"
+								},
+								{
+									"key": "icon",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/hashtags/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"hashtags",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Tag By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/hashtags/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"hashtags",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tag By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/hashtags/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"hashtags",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Get All Comments By Post",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/post/qui/comments",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"qui",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Comment By Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDg1MTQ4ODYsImV4cCI6MTcwODUxODQ4NiwibmJmIjoxNzA4NTE0ODg2LCJqdGkiOiJHZzlweFk0Sk14bFVXaUc3Iiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.rh4iewVyvr-GA5uJujl9SAIos1URcZAsD5p3UhP-H8Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "main",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Test comment",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "post_id",
+									"value": "7",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/post/qui/comments",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"qui",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Comment Post By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/post/qui/comments/11",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"qui",
+								"comments",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Comment Post By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDg1MTQ4ODYsImV4cCI6MTcwODUxODQ4NiwibmJmIjoxNzA4NTE0ODg2LCJqdGkiOiJHZzlweFk0Sk14bFVXaUc3Iiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.rh4iewVyvr-GA5uJujl9SAIos1URcZAsD5p3UhP-H8Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "main",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Update Test Comment 2",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "post_id",
+									"value": "7",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/post/qui/comments/11",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"qui",
+								"comments",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/categories?count=total",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"categories"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "total"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1MDcyMjYsImV4cCI6MTcwOTUxMDgyNiwibmJmIjoxNzA5NTA3MjI2LCJqdGkiOiJ4UmN5Njk1ZTRIdDFiZW5WIiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.TvQmaEqbjxDbszkbsoMlj-jPSxH5KP0zOcYtw1ZwWts",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Computer",
+									"type": "text"
+								},
+								{
+									"key": "main",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "Computer",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/categories",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By Slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1MDc0MTgsImV4cCI6MTcwOTUxMTAxOCwibmJmIjoxNzA5NTA3NDE4LCJqdGkiOiJOYUhxeFRUa0dtQzFZbkZ1Iiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.eimDRCsSYYbFwioKXr98dLJCSmxykt9bmgq4JruKcK4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"occaecati yeni\",\n    \"main\": 5,\n    \"category_id\": 1,\n    \"main_id\": 0,\n    \"slug\": \"occaecati-yeni\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/categories/occaecati",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"categories",
+								"occaecati"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category By Slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDgzNTQwNTksImV4cCI6MTcwODM1NzY1OSwibmJmIjoxNzA4MzU0MDU5LCJqdGkiOiJXWjRZdEdMMDdqWTd4dTBRIiwic3ViIjoiMTAiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.ZTMIh6JT6G1l9pP1IK2uD-9Fy_eIVTICBM6o81zC9aQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/categories/occaecati-yeni",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"categories",
+								"occaecati-yeni"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Telegram Groups",
+			"item": [
+				{
+					"name": "Get All Groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/telegrams?summaryOnly=false&limit=100&pageSize=10",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"telegrams"
+							],
+							"query": [
+								{
+									"key": "summaryOnly",
+									"value": "false"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk5MzI3MTYsImV4cCI6MTcwOTkzNjMxNiwibmJmIjoxNzA5OTMyNzE2LCJqdGkiOiJJWDB5WkczVjJWM0ZOSDhNIiwic3ViIjoiNiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.-NiRaa08IiVqQtARPLX3tW6Eb1XsorTnFwWPZF_fHkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"name\": \"Genel Konular 1\",\n\"logo\": \"https://eksicode-images.s3.eu-central-1.amazonaws.com/genel.jpg\",\n\"icon\": \"\",\n\"members\": 1029,\n\"link\": \"https://t.me/+PaBUhA5nqiM5ODk0\",\n\"channel_id\": \"-1001364530781\",\n\"list_order\": 3,\n\"description\": \"Yazılım hakkında genel konular.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/telegrams",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"telegrams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Group By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/telegrams/3",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"telegrams",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDgzNTQwNTksImV4cCI6MTcwODM1NzY1OSwibmJmIjoxNzA4MzU0MDU5LCJqdGkiOiJXWjRZdEdMMDdqWTd4dTBRIiwic3ViIjoiMTAiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.ZTMIh6JT6G1l9pP1IK2uD-9Fy_eIVTICBM6o81zC9aQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"name\": \"Test Genel Konular\",\n\"logo\": \"Test https://eksicode-images.s3.eu-central-1.amazonaws.com/genel.jpg\",\n\"icon\": \"\",\n\"members\": 2029,\n\"link\": \"https://t.me/+PaBUhA5nqiM5ODk0\",\n\"channel_id\": \"-1001364530782\",\n\"list_order\": 1,\n\"description\": \"Test Yazılım hakkında genel konular.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/telegrams/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"telegrams",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Group By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/telegrams/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"telegrams",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sources",
+			"item": [
+				{
+					"name": "Get All Sources",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/sources",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"sources"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Source Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDkwMzM3OTAsImV4cCI6MTcwOTAzNzM5MCwibmJmIjoxNzA5MDMzNzkwLCJqdGkiOiJHSUV5RnlwTGowYnhxQ0lhIiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.rq8DaaFE05HBUke0B_eBO9nRRqcAMck_HQfSl0ZQFTI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "doc_name",
+									"value": "Test Soruce 2",
+									"type": "text"
+								},
+								{
+									"key": "approved",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "doc_creator_tg",
+									"value": "457779893",
+									"type": "text"
+								},
+								{
+									"key": "doc_link",
+									"value": "https://api.eksicode.org/kaynaklars",
+									"type": "text"
+								},
+								{
+									"key": "lat_edit",
+									"value": "2020-01-31T08:45:43.000Z",
+									"type": "text"
+								},
+								{
+									"key": "doc_tg_ch",
+									"value": "-1001211127698",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "false",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/sources",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"sources"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Source By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDkwMzM3OTAsImV4cCI6MTcwOTAzNzM5MCwibmJmIjoxNzA5MDMzNzkwLCJqdGkiOiJHSUV5RnlwTGowYnhxQ0lhIiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.rq8DaaFE05HBUke0B_eBO9nRRqcAMck_HQfSl0ZQFTI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "doc_name",
+									"value": "Test Soruce 2 Update",
+									"type": "text"
+								},
+								{
+									"key": "approved",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "doc_creator_tg",
+									"value": "457779893",
+									"type": "text"
+								},
+								{
+									"key": "doc_link",
+									"value": "https://api.eksicode.org/kaynaklars",
+									"type": "text"
+								},
+								{
+									"key": "lat_edit",
+									"value": "2020-01-31T08:45:43.000Z",
+									"type": "text"
+								},
+								{
+									"key": "doc_tg_ch",
+									"value": "-1001211127698",
+									"type": "text"
+								},
+								{
+									"key": "active",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/sources/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"sources",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Source By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/sources/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"sources",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Source By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/sources/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"sources",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jobs",
+			"item": [
+				{
+					"name": "Get All Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/jobs?summaryOnly=false&limit=1&skip=1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "summaryOnly",
+									"value": "false"
+								},
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "skip",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Job Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDkwNTg1NDEsImV4cCI6MTcwOTA2MjE0MSwibmJmIjoxNzA5MDU4NTQxLCJqdGkiOiJKNFFpWW9ya2xwcVlSbk5iIiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.EH-ye5kBU0oj4l0UgIOibWzua_RGn8jdpMKq4LWQPPQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "We Are Looking For PHP Developer",
+									"type": "text"
+								},
+								{
+									"key": "technology",
+									"value": "php, laravel, js, nodejs",
+									"type": "text"
+								},
+								{
+									"key": "contract_type",
+									"value": "Surekli",
+									"type": "text"
+								},
+								{
+									"key": "experience_level",
+									"value": "Junior-Mid",
+									"type": "text"
+								},
+								{
+									"key": "requirements",
+									"value": "At Bundle, we believe that staying informed should be easy and enjoyable. That's why we created Bundle - a top-rated content aggregator that personalizes the news and content reading experience for our ~2 million monthly active users. Thanks to our innovative approach and technology, Bundle speeds up access to accurate news and has grown at an annual average rate of 60 percent in Turkey and is active also in Germany.\n\n\nAs the world continues to evolve, Bundle users rely on us to keep them informed and up-to-date. We are passionate about delivering the latest news at their fingertips, and we're seeking a Java Developer to join our talented engineering team. Our goal is to simplify our tech stack and set the stage for future growth, and we need your help to achieve it.",
+									"type": "text"
+								},
+								{
+									"key": "company_name",
+									"value": "Navisio",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Turkey",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "Ankara",
+									"type": "text"
+								},
+								{
+									"key": "remote",
+									"value": "Hibrit Calisma",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Altindag",
+									"type": "text"
+								},
+								{
+									"key": "salary",
+									"value": "Aylik 30000-45000 TL",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "omer@navisio.net",
+									"type": "text"
+								},
+								{
+									"key": "website",
+									"value": "http://navisio.net/",
+									"type": "text"
+								},
+								{
+									"key": "validity_date",
+									"value": "2020-01-31T08:45:43.000Z",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/jobs",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Job Request By Slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDkwNTg1NDEsImV4cCI6MTcwOTA2MjE0MSwibmJmIjoxNzA5MDU4NTQxLCJqdGkiOiJKNFFpWW9ya2xwcVlSbk5iIiwic3ViIjoiNSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.EH-ye5kBU0oj4l0UgIOibWzua_RGn8jdpMKq4LWQPPQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "We Are Looking For JavaScript Developer",
+									"type": "text"
+								},
+								{
+									"key": "technology",
+									"value": "js, nodejs, express",
+									"type": "text"
+								},
+								{
+									"key": "contract_type",
+									"value": "Surekli",
+									"type": "text"
+								},
+								{
+									"key": "experience_level",
+									"value": "Junior-Mid",
+									"type": "text"
+								},
+								{
+									"key": "requirements",
+									"value": "At Bundle, we believe that staying informed should be easy and enjoyable. That's why we created Bundle - a top-rated content aggregator that personalizes the news and content reading experience for our ~2 million monthly active users. Thanks to our innovative approach and technology, Bundle speeds up access to accurate news and has grown at an annual average rate of 60 percent in Turkey and is active also in Germany.\n\n\nAs the world continues to evolve, Bundle users rely on us to keep them informed and up-to-date. We are passionate about delivering the latest news at their fingertips, and we're seeking a Java Developer to join our talented engineering team. Our goal is to simplify our tech stack and set the stage for future growth, and we need your help to achieve it.",
+									"type": "text"
+								},
+								{
+									"key": "company_name",
+									"value": "Navisio",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Turkey",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "Ankara",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Cankaya",
+									"type": "text"
+								},
+								{
+									"key": "remote",
+									"value": "Hibrit Calisma",
+									"type": "text"
+								},
+								{
+									"key": "salary",
+									"value": "Aylik 30000-45000 TL",
+									"type": "text"
+								},
+								{
+									"key": "contact",
+									"value": "omer@navisio.net",
+									"type": "text"
+								},
+								{
+									"key": "website",
+									"value": "https://navisio.net/",
+									"type": "text"
+								},
+								{
+									"key": "validity_date",
+									"value": "2020-01-31T08:45:43.000Z",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/jobs/this-is-new-job-entry",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"jobs",
+								"this-is-new-job-entry"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job By Slug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/jobs/slug/customer-service-representative-ibm",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"jobs",
+								"slug",
+								"customer-service-representative-ibm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/jobs/id/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"jobs",
+								"id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/jobs/search?q=developer&location=remote&company=ibm",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"jobs",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "developer",
+									"description": "Search query"
+								},
+								{
+									"key": "location",
+									"value": "remote",
+									"description": "Job location"
+								},
+								{
+									"key": "company",
+									"value": "ibm",
+									"description": "Company name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Job By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/jobs/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"jobs",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search Post",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/search/posts?query=fena",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"search",
+								"posts"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "fena"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get all Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzM5ODg0NTYxLCJleHAiOjE3Mzk4ODgxNjF9.VpexcBcMRCNYdKxx2Wxmryll926nZ0A0ItKfc86Naw8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/users?count=100",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwicm9sZXMiOlsidXNlciJdLCJpYXQiOjE3NDA1MjM5MjMsImV4cCI6MTc0MDYxMDMyM30.A1IF4Sx0-889cU3FahbXmo95780S4VXL05AB8rQ9Pac",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/users/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MTMwNDAyMTksImV4cCI6MTcxMzA0MzgxOSwibmJmIjoxNzEzMDQwMjE5LCJqdGkiOiI1SWwyT3NNYk1HTFk3a1FnIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.8PCcLaSAOpR-42_COBxBN4pLqBK6bjuGCkiOaZQs9r8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/users/8",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2RlbW8tYXBpLmVrc2ljb2RlLm9yZy9hcGkvYXV0aC9sb2dpbiIsImlhdCI6MTcxMzUzNjgwNSwiZXhwIjoxNzEzNTQwNDA1LCJuYmYiOjE3MTM1MzY4MDUsImp0aSI6IlI3Q3RFbTdTbkxqdkw5TDQiLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.gMi-yT_Cvrp3KaAwMPndDnpmXjbBt_10vszFdnPEaLo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "dgkdev1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "dgkdev061@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "profile_photo",
+									"type": "file",
+									"src": "postman-cloud:///1eed403c-1c5c-4c20-9bca-5392c064bb7a"
+								},
+								{
+									"key": "_method",
+									"value": "PUT",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/users/2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": "https://demo-api.eksicode.org/api",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "API_URL",
+			"value": "http://localhost:9000",
+			"type": "string"
+		}
+	]
+}

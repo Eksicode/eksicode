@@ -1,5 +1,12 @@
 export interface IAuthor {
-  id: string;
+  id?: string;
+  name?: string;
+  username: string;
+  profilePicture: string | null;
+}
+
+export interface ITag {
+  id: number;
   name: string;
 }
 
@@ -11,13 +18,15 @@ export interface IComment {
 }
 
 export interface IPost {
-  id: string;
+  id: number;
   title: string;
-  content: string;
+  slug: string;
+  content?: string; // Optional for summary response
   author: IAuthor;
-  postLikes: any[];
-  image: string;
-  comments: IComment[];
-  categories: any[];
-  tags: any[];
+  createdAt: string;
+  postLikes?: any[];
+  image?: string;
+  comments?: IComment[];
+  categories?: any[];
+  tags: ITag[];
 }

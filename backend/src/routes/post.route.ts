@@ -15,11 +15,11 @@ class PostRoute implements Routes {
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.postController.getAllPosts); // GET /Posts
     // this.router.get(`${this.path}/:id`, this.pageController.getPageById); // GET /Posts/:id
-    this.router.get(`${this.path}/:slug`, this.postController.getPostBySlug); // GET /Posts/:slug
     this.router.get(
       `${this.path}/search`,
       this.postController.getPostsBySearch
-    ); // GET /Posts/:slug
+    ); // GET /Posts/search
+    this.router.get(`${this.path}/:slug`, this.postController.getPostBySlug); // GET /Posts/:slug
     this.router.post(
       `${this.path}`,
       authMiddleware,

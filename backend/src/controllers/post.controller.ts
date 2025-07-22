@@ -114,12 +114,12 @@ export class PostController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const term = req.params.term;
-      const hashtag = req.params.hashtag;
+      const term = req.query.term as string;
+      const hashtag = req.query.hashtag as string;
 
       const { skip, limit } = this.validatePaginationParams(req.query.skip, req.query.limit);
 
-      console.log("hashtag", hashtag);
+      console.log("Search parameters:", { term, hashtag, skip, limit });
 
       const searchResult = await this.postService.searchPost(
         term,
