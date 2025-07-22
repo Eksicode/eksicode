@@ -6,9 +6,7 @@ import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 import { Routes } from "./interfaces/routes.interface";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import AuthRoute from './routes/auth.route';
-import RoleRoute from './routes/role.route';
-import PermissionRoute from './routes/permission.route';
+import EmailService from './services/email.service';
 import config from "./config";
 
 class App {
@@ -16,16 +14,18 @@ class App {
   public env: string;
   public port: string | number;
   private prisma: PrismaClient;
+  private emailService: EmailService;
 
-  constructor(routes: Routes[]) {
+  constructor(routes: (prisma: PrismaClient, emailService: EmailService) => Routes[]) {
     this.app = express();
     this.env = config.nodeEnv || "development";
     this.port = config.port || 9000;
 
     this.prisma = new PrismaClient();
+    this.emailService = new EmailService();
     this.connectToDatabase();
     this.initializeMiddlewares();
-    this.initializeRoutes(routes);
+    this.initializeRoutes(routes(this.prisma, this.emailService));
     this.initializeErrorHandling();
   }
 
@@ -93,15 +93,6 @@ class App {
     routes.forEach((route) => {
       this.app.use("/", route.router);
     });
-
-    const authRoute = new AuthRoute();
-    this.app.use(authRoute.path, authRoute.router);
-
-    const roleRoute = new RoleRoute();
-    this.app.use(roleRoute.path, roleRoute.router);
-
-    const permissionRoute = new PermissionRoute();
-    this.app.use(permissionRoute.path, permissionRoute.router);
   }
 
   private initializeErrorHandling() {

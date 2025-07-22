@@ -1,12 +1,15 @@
 import nodemailer from 'nodemailer';
+import fs from 'fs';
+import path from 'path';
 import config from '../config';
 
 class EmailService {
   private transporter: nodemailer.Transporter;
+  private isConfigured: boolean;
 
   constructor() {
-    // Initialize the transporter if email configuration is available
-    if (config.email?.user && config.email?.password && config.email?.service) {
+    this.isConfigured = !!(config.email?.user && config.email?.password && config.email?.service);
+    if (this.isConfigured) {
       this.transporter = nodemailer.createTransport({
         service: config.email.service,
         auth: {
@@ -17,33 +20,34 @@ class EmailService {
     }
   }
 
-  /**
-   * Check if email service is configured
-   */
-  public isConfigured(): boolean {
-    return !!this.transporter;
+  private async getTemplate(templateName: string, data: Record<string, string>): Promise<string> {
+    const templatePath = path.join(__dirname, '..', 'templates', `${templateName}.html`);
+    let template = fs.readFileSync(templatePath, 'utf-8');
+    for (const key in data) {
+      template = template.replace(new RegExp(`{{${key}}}`, 'g'), data[key]);
+    }
+    return template;
   }
-
-  /**
-   * Send an email
-   */
+  
   public async sendEmail(
     to: string,
     subject: string,
-    text: string,
+    template: string,
+    data: Record<string, string>,
     from: string = config.email?.user
   ): Promise<boolean> {
-    if (!this.isConfigured()) {
+    if (!this.isConfigured) {
       console.warn('Email configuration not found. Skipping email sending.');
       return false;
     }
 
     try {
+      const html = await this.getTemplate(template, data);
       const mailOptions = {
         to,
         from,
         subject,
-        text,
+        html,
       };
 
       await this.transporter.sendMail(mailOptions);
@@ -54,36 +58,14 @@ class EmailService {
     }
   }
 
-  /**
-   * Send a password reset email
-   */
   public async sendPasswordResetEmail(email: string, token: string): Promise<boolean> {
     const resetUrl = `http://${config.frontendHost}/reset/${token}`;
-    const text = `You are receiving this because you (or someone else) have requested the reset of the password for your account.
-
-Please click on the following link, or paste this into your browser to complete the process:
-
-${resetUrl}
-
-If you did not request this, please ignore this email and your password will remain unchanged.`;
-
-    return this.sendEmail(email, 'Password Reset', text);
+    return this.sendEmail(email, 'Password Reset', 'passwordReset', { resetUrl });
   }
 
-  /**
-   * Send an email verification email
-   */
-  public async sendVerificationEmail(email: string, token: string): Promise<boolean> {
+  public async sendVerificationEmail(email: string, token:string): Promise<boolean> {
     const verificationUrl = `http://${config.frontendHost}/confirm-email/${token}`;
-    const text = `You are receiving this because you (or someone else) have created an account.
-
-Please click on the following link, or paste this into your browser to complete the process:
-
-${verificationUrl}
-
-If you did not request this, please ignore this email.`;
-
-    return this.sendEmail(email, 'Email Confirmation', text);
+    return this.sendEmail(email, 'Email Confirmation', 'emailVerification', { verificationUrl });
   }
 }
 

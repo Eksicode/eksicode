@@ -1,4 +1,4 @@
-import { PrismaClient, Source } from "@prisma/client";
+import { Prisma, PrismaClient, Source } from "@prisma/client";
 import { HttpException } from "../exceptions/HttpException";
 
 class SourceService {
@@ -36,6 +36,42 @@ class SourceService {
             throw new HttpException(500, "Error fetching source");
         }
     };
+
+    public async searchSources(searchTerm: string, skip?: number, limit?: number) {
+        try {
+            const whereClause = {
+                OR: [
+                    {
+                        title: {
+                            contains: searchTerm,
+                            mode: 'insensitive' as const,
+                        }
+                    },
+                    {
+                        description: {
+                            contains: searchTerm,
+                            mode: 'insensitive' as const,
+                        }
+                    }
+                ]
+            };
+            const count = await this.prisma.source.count({ where: whereClause });
+            const sources = await this.prisma.source.findMany({
+                where: whereClause,
+                skip: skip || 0,
+                take: limit || undefined,
+                include: {
+                    tags: true
+                },
+                orderBy: {
+                    title: 'desc',
+                },
+            });
+            return { sources, count };
+        } catch (error) {
+            throw new HttpException(500, "Error searching sources");
+        }
+    }
 
     public async createSource(data: {
         title: string,

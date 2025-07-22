@@ -1,11 +1,12 @@
 import { PrismaClient, User, Role } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { HttpException } from '../exceptions/HttpException';
-import nodemailer from 'nodemailer';
 import crypto from 'crypto';
+import EmailService from './email.service';
 import config from '../config';
 class UserService {
   private prisma: PrismaClient;
+  private emailService: EmailService;
 
   // Safe user selection - excludes sensitive data like passwords, emails, tokens, etc.
   private readonly safeUserSelect = {
@@ -29,8 +30,9 @@ class UserService {
     updatedAt: true,
   };
 
-  constructor() {
-    this.prisma = new PrismaClient();
+  constructor(prisma: PrismaClient, emailService: EmailService) {
+    this.prisma = prisma;
+    this.emailService = emailService;
   }
 
   /**
@@ -222,36 +224,8 @@ class UserService {
         roles: ['user'], // Default role is already set in the schema
       },
     });
-
-    // Only attempt to send email if SMTP configuration is available
-    if (config.email?.user && config.email?.password && config.email?.service) {
-      try {
-        const transporter = nodemailer.createTransport({
-          service: config.email.service,
-          auth: {
-            user: config.email.user,
-            pass: config.email.password,
-          },
-        });
-
-        const mailOptions = {
-          to: email,
-          from: config.email.user,
-          subject: 'Email Confirmation',
-          text: `You are receiving this because you (or someone else) have created an account.\n\n
-            Please click on the following link, or paste this into your browser to complete the process:\n\n
-            http://${config.frontendHost}/confirm-email/${emailToken}\n\n
-            If you did not request this, please ignore this email.\n`,
-        };
-
-        await transporter.sendMail(mailOptions);
-      } catch (error) {
-        console.error('Failed to send verification email:', error);
-        // Don't throw error, allow user creation to succeed even if email fails
-      }
-    } else {
-      console.warn('Email configuration not found. Skipping verification email.');
-    }
+    
+    await this.emailService.sendVerificationEmail(email, emailToken);
 
     return user;
   }
@@ -279,7 +253,7 @@ class UserService {
     if (!userInfo) {
       throw new HttpException(400, 'Email or username must be provided');
     }
-    console.log(`Finding user by email: ${userInfo}`); // Add logging
+    console.log(`Finding user by email or username: ${userInfo}`);
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [
@@ -288,7 +262,12 @@ class UserService {
         ]
       },
     });
-    console.log(`User found: ${user ? 'Yes' : 'No'}`); // Add logging
+
+    if (user && !user.emailVerified) {
+      throw new HttpException(401, 'Please verify your email before logging in.');
+    }
+
+    console.log(`User found: ${user ? 'Yes' : 'No'}`);
     return user;
   }
 
@@ -468,6 +447,95 @@ class UserService {
       });
     } catch (error) {
       throw new HttpException(500, 'Failed to remove permission from user', { originalError: error });
+    }
+  }
+
+  /**
+   * Verify user email with token
+   */
+  public async verifyEmail(token: string): Promise<{ success: boolean; message: string }> {
+    try {
+      // Find all users with email verification tokens
+      const users = await this.prisma.user.findMany({
+        where: {
+          emailVerificationToken: { not: null },
+          emailVerified: false
+        }
+      });
+
+      // Check token against all users (since tokens are hashed)
+      for (const user of users) {
+        if (user.emailVerificationToken) {
+          const isTokenValid = await bcrypt.compare(token, user.emailVerificationToken);
+          
+          if (isTokenValid) {
+            // Update user as verified and remove token
+            await this.prisma.user.update({
+              where: { id: user.id },
+              data: {
+                emailVerified: true,
+                emailVerificationToken: null
+              }
+            });
+
+            return {
+              success: true,
+              message: 'Email verified successfully'
+            };
+          }
+        }
+      }
+
+      throw new HttpException(400, 'Invalid or expired verification token');
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Error verifying email', { originalError: error });
+    }
+  }
+
+  /**
+   * Resend email verification
+   */
+  public async resendEmailVerification(email: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email }
+      });
+
+      if (!user) {
+        throw new HttpException(404, 'User not found');
+      }
+
+      if (user.emailVerified) {
+        throw new HttpException(400, 'Email is already verified');
+      }
+
+      // Generate new verification token
+      const emailToken = crypto.randomBytes(32).toString('hex');
+      const hashedEmailToken = await bcrypt.hash(emailToken, 10);
+
+      // Update user with new token
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          emailVerificationToken: hashedEmailToken
+        }
+      });
+
+      // Send verification email
+      await this.emailService.sendVerificationEmail(email, emailToken);
+
+      return {
+        success: true,
+        message: 'Verification email sent'
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Error resending verification email', { originalError: error });
     }
   }
 }

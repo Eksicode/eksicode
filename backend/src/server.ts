@@ -1,5 +1,10 @@
 import 'module-alias/register';
 import App from './app';
+import cluster from 'cluster';
+import os from 'os';
+import { PrismaClient } from '@prisma/client';
+import EmailService from './services/email.service';
+import UserService from './services/user.service';
 
 import IndexRoute from './routes/index.route';
 import UserRoute from './routes/user.route';
@@ -15,20 +20,38 @@ import PermissionRoute from './routes/permission.route';
 import RoleRoute from './routes/role.route';
 import AuthRoute from './routes/auth.route';
 
-const app = new App([
-    new IndexRoute(),
-    new UserRoute(),
-    new TelegramRoute(),
-    new PageRoute(),
-    new MenuRoute(),
-    new MenuCategoryRoute(),
-    new HashtagRoute(),
-    new PostRoute(),
-    new JobRoute(),
-    new SourceRoute(),
-    new RoleRoute(),
-    new PermissionRoute(),
-    new AuthRoute()
-]);
+const numCPUs = os.cpus().length;
 
-app.listen();
+if (cluster.isPrimary) {
+  console.log(`Primary ${process.pid} is running`);
+
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+    const app = new App((prisma: PrismaClient, emailService: EmailService) => {
+        const userService = new UserService(prisma, emailService);
+        return [
+            new IndexRoute(),
+            new UserRoute(userService),
+            new TelegramRoute(),
+            new PageRoute(),
+            new MenuRoute(),
+            new MenuCategoryRoute(),
+            new HashtagRoute(),
+            new PostRoute(),
+            new JobRoute(),
+            new SourceRoute(),
+            new RoleRoute(),
+            new PermissionRoute(),
+            new AuthRoute(userService)
+        ];
+    });
+
+    app.listen();
+}

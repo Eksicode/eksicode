@@ -1,14 +1,18 @@
 "use client";
 import React, { useState } from "react";
-import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import Button from "@/components/Ui/Button";
 import Link from "next/link";
 import Modal from "@/components/Ui/Modal";
 
-interface ForgotPasswordValues {
-  email: string;
-}
+// Zod validation schema
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Geçerli bir e-posta adresi girin").min(1, "E-posta adresi gereklidir"),
+});
+
+type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -18,20 +22,19 @@ const ForgotPassword: React.FC = () => {
     buttonText: "",
   });
 
-  const initialValues: ForgotPasswordValues = {
-    email: "",
-  };
-
-  const validationSchema = Yup.object({
-    email: Yup.string()
-      .email("Geçerli bir e-posta adresi girin")
-      .required("E-posta adresi gereklidir"),
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ForgotPasswordValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
   });
 
-  const handleSubmit = async (
-    values: ForgotPasswordValues,
-    actions: FormikHelpers<ForgotPasswordValues>
-  ) => {
+  const onSubmit = async (values: ForgotPasswordValues) => {
     try {
       const response = await fetch(
         process.env.NEXT_PUBLIC_API_URL + "/forgot-password",
@@ -46,7 +49,7 @@ const ForgotPassword: React.FC = () => {
       );
 
       if (response.ok) {
-        actions.resetForm();
+        reset();
         setModalContent({
           title: "Şifre Hatırlatma!",
           text: "Şifre Hatırlatma Epostası Gönderildi. Eğer girdiğiniz e-posta adresi doğru ise e-posta hesabınıza gönderdiğimiz linke tıklayın.",
@@ -80,44 +83,37 @@ const ForgotPassword: React.FC = () => {
         <h1 className="mb-2 text-xl">Şifre Hatırlatma</h1>
         <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
       </div>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-          <Form className="space-y-4">
-            <div className="flex flex-col space-y-1">
-              <Field
-                type="email"
-                id="email"
-                name="email"
-                placeholder="E-posta adresinizi girin"
-                className="px-3 py-2 font-normal bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-sm"
-              />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex flex-col space-y-1">
+          <input
+            {...register("email")}
+            type="email"
+            id="email"
+            placeholder="E-posta adresinizi girin"
+            className="px-3 py-2 font-normal bg-white dark:bg-DarkerGrey bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-eksiCodeMedium focus:outline-none"
+          />
+          {errors.email && (
+            <div className="text-red-500 text-sm">
+              {errors.email.message}
             </div>
-            <Button
-              type="submit"
-              onClick={() => {}}
-              variant="secondary"
-              style="w-full mb-6"
-            >
-              Gönder
-            </Button>
-            {/* <Modal
-              isOpen={showModal}
-              onClose={() => setShowModal(false)}
-              title={modalContent.title}
-              buttonText={modalContent.buttonText}
-              redUrl="/auth/sifremi-unuttum"
-            /> */}
-          </Form>
-        
-      </Formik>
+          )}
+        </div>
+        <Button
+          type="submit"
+          onClick={() => {}}
+          variant="secondary"
+          style="w-full mb-6"
+        >
+          Gönder
+        </Button>
+        {/* <Modal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          title={modalContent.title}
+          buttonText={modalContent.buttonText}
+          redUrl="/auth/sifremi-unuttum"
+        /> */}
+      </form>
       <div className="text-center mt-4">
         <Link href="/auth/uye-giris" className="text-sm hover:underline">
           Üye Girişi Yap

@@ -3,11 +3,8 @@ import UserService from '../services/user.service';
 import jwt from 'jsonwebtoken';
 import { HttpException } from '../exceptions/HttpException';
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
 import config from '../config';
 import tokenBlacklistService from '../services/tokenBlacklist.service';
-
-const prisma = new PrismaClient();
 
 interface TokenPayload {
   id: number;
@@ -16,8 +13,8 @@ interface TokenPayload {
 class AuthController {
   private userService: UserService;
 
-  constructor() {
-    this.userService = new UserService();
+  constructor(userService: UserService) {
+    this.userService = userService;
   }
 
   /**
@@ -26,56 +23,20 @@ class AuthController {
   public register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { email, password, username } = req.body;
-
-      if (!email || !password || !username) {
-        throw new HttpException(400, 'Email, password, and username are required');
-      }
-
-      if (password.length < 8) {
-        throw new HttpException(400, 'Password must be at least 8 characters long');
-      }
-
-      // Check if user already exists
-      const existingUser = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { email },
-            { username }
-          ]
-        }
-      });
-
-      if (existingUser) {
-        throw new HttpException(409, 'User with this email or username already exists');
-      }
-
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 12);
-
-      // Create user
-      const user = await prisma.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          username,
-          verified: true,  // No email verification - keep it simple
-          emailVerified: true
-        },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          createdAt: true
-        }
-      });
+      const user = await this.userService.createUser(email, password, username);
 
       res.status(201).json({
         success: true,
-        message: 'User registered successfully',
-        user
+        message: 'User registered successfully. Please check your email to verify your account.',
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          emailVerified: user.emailVerified
+        }
       });
     } catch (error) {
-      next(error instanceof HttpException ? error : new HttpException(500, 'Registration failed'));
+      next(error);
     }
   };
 
@@ -91,14 +52,7 @@ class AuthController {
       }
 
       // Find user by email or username
-      const user = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { email: userInfo },
-            { username: userInfo }
-          ]
-        }
-      });
+      const user = await this.userService.findUserByEmailUsername(userInfo);
 
       if (!user) {
         throw new HttpException(401, 'Invalid credentials');
@@ -128,7 +82,7 @@ class AuthController {
         }
       });
     } catch (error) {
-      next(error instanceof HttpException ? error : new HttpException(500, 'Login failed'));
+      next(error);
     }
   };
 
@@ -143,21 +97,7 @@ class AuthController {
         throw new HttpException(401, 'Authentication required');
       }
 
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-          profilePicture: true,
-          verified: true,
-          roles: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      });
+      const user = await this.userService.findUserById(userId);
 
       if (!user) {
         throw new HttpException(404, 'User not found');
@@ -168,7 +108,7 @@ class AuthController {
         user
       });
     } catch (error) {
-      next(error instanceof HttpException ? error : new HttpException(500, 'Failed to get user info'));
+      next(error);
     }
   };
 
@@ -210,6 +150,50 @@ class AuthController {
       });
     } catch (error) {
       next(error instanceof HttpException ? error : new HttpException(500, 'Failed to get blacklist stats'));
+    }
+  };
+
+  /**
+   * Verify user email with token
+   */
+  public verifyEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { token } = req.params;
+
+      if (!token) {
+        throw new HttpException(400, 'Verification token is required');
+      }
+
+      const result = await this.userService.verifyEmail(token);
+
+      res.status(200).json({
+        success: result.success,
+        message: result.message
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Resend email verification
+   */
+  public resendEmailVerification = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        throw new HttpException(400, 'Email is required');
+      }
+
+      const result = await this.userService.resendEmailVerification(email);
+
+      res.status(200).json({
+        success: result.success,
+        message: result.message
+      });
+    } catch (error) {
+      next(error);
     }
   };
 }

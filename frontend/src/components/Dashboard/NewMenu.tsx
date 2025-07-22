@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@/components/Ui/Button";
 import Modal from "@/components/Ui/Modal";
+import { useAuth } from "@/hooks/useAuth";
 
 
 interface Menu {
@@ -19,6 +20,7 @@ interface Main {
 }
 
 const NewMenu: React.FC<{ initialData?: Menu }> = ({ initialData }) => {
+    const { token } = useAuth();
     const [selectedValue, setSelectedValue] = useState<string | null>(null);
     const [main, setMain] = useState([] as Main[]);
     //const [categories, setCategories] = useState<any[]>([]) ;
@@ -86,19 +88,17 @@ const NewMenu: React.FC<{ initialData?: Menu }> = ({ initialData }) => {
     const handleClick = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-            const tokenResponse = await fetch('/api');
-            const data = await tokenResponse.json();
-
-            const token = data.token;
             if (!token) {
                 console.error('Token is not available.');
                 return;
             }
+            
             const formData = new FormData();
             formData.append("name", menu.name);
             formData.append("slug", menu.slug);
             formData.append("main", menu.main);
             formData.append("icon", menu.icon);
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menus`, {
                 method: "POST",
                 body: formData,

@@ -3,16 +3,18 @@ import AuthController from '../controllers/auth.controller';
 import { Routes } from '../interfaces/routes.interface';
 import authLimiter from '../middlewares/rateLimiter';
 import authMiddleware from '../middlewares/auth.middleware';
-import validationMiddleware from '../middlewares/validation.middleware';
-import { RegisterDto, LoginDto } from '../types/auth.dto';
+import { validate } from '../middlewares/zod.middleware';
+import { registerSchema, loginSchema, resendVerificationSchema, verifyEmailSchema } from '../types/auth.zod';
+import UserService from '../services/user.service';
 
 class AuthRoute implements Routes {
   public path = '/auth';
   public router = Router();
-  public authController = new AuthController();
+  public authController: AuthController;
 
-  constructor() {
-    this.initializeRoutes(); 
+  constructor(userService: UserService) {
+    this.authController = new AuthController(userService);
+    this.initializeRoutes();
   }
 
   private initializeRoutes() {
@@ -20,15 +22,29 @@ class AuthRoute implements Routes {
     this.router.post(
       `${this.path}/register`, 
       authLimiter, 
-      validationMiddleware(RegisterDto, 'body'),
+      validate(registerSchema),
       this.authController.register
     );
     
     this.router.post(
       `${this.path}/login`, 
       authLimiter, 
-      validationMiddleware(LoginDto, 'body'),
+      validate(loginSchema),
       this.authController.login
+    );
+
+    // Email verification routes
+    this.router.get(
+      `${this.path}/verify-email/:token`,
+      validate(verifyEmailSchema),
+      this.authController.verifyEmail
+    );
+
+    this.router.post(
+      `${this.path}/resend-verification`,
+      authLimiter,
+      validate(resendVerificationSchema),
+      this.authController.resendEmailVerification
     );
     
     // Protected routes

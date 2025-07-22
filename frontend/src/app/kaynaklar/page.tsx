@@ -1,69 +1,85 @@
 import React from "react";
 import SideMenu from "@/components/Nav/SideMenu";
 import DataTable from "@/components/Ui/DataTable";
-import getData from "@/utils/getData";
-import Pagination from "@/components/Ui/Pagination";
+import Pagination from "@/components/Pagination";
+import SourcesSearch from "@/components/SourcesSearch";
+import { getAllSources, searchSources } from "@/services/sourceService";
+import type { Source, Hashtag } from "@/services/sourceService";
 
-interface Hashtag {
-  id: number;
-  name: string;
+interface SearchParams {
+  page?: string;
+  limit?: string;
+  search?: string;
 }
 
-interface Source {
-  id: number;
-  title: string;
-  description: string;
-  url: string;
-  tgChannel: string | null;
-  tgUser: string | null;
-  approved: boolean;
-  createdAt: string;
-  updatedAt: string;
-  tags: Hashtag[];
+interface SourcesPageProps {
+  searchParams: SearchParams;
 }
 
-interface Meta {
-  total: number;
-  skip: number;
-  limit: number;
-  currentPage: number;
-  totalPages: number;
-}
+export default async function Sources({ searchParams }: SourcesPageProps) {
+  // Extract pagination parameters from search params
+  const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+  const limit = searchParams.limit ? parseInt(searchParams.limit, 10) : 10;
+  const searchQuery = searchParams.search || "";
 
-interface SourcesResponse {
-  data: Source[];
-  meta: Meta;
-  message: string;
-}
-
-export default async function Sources({params}: {params: {page: any}}) {
-  const page = params.page ? parseInt(params.page) : 10;
-  const sourcesData = await getData<Source, Meta>("sources", false, page);
+  // Fetch sources using the service
+  const sourcesData = searchQuery
+    ? await searchSources(searchQuery, page, limit)
+    : await getAllSources(page, limit, {
+        next: { revalidate: 43200 }, // 12 hours cache
+      });
 
   const formatHashtags = (tags: Hashtag[]): string => {
     return tags.map(hashtag => "#" + hashtag.name).join(", ");
   };
 
-  const preparedData = sourcesData.data.map((source) => ({
+  const preparedData = sourcesData.data.map((source: Source) => ({
     title: source.title,
     description: source.description,
     url: source.url,
     hashtags: formatHashtags(source.tags),
   }));
 
+  // Show error state if no data
+  if (!sourcesData.data || sourcesData.data.length === 0) {
+    return (
+      <div className="flex py-5 basis-3/4">
+        <SideMenu />
+        <div className="flex flex-wrap w-full justify-center text-center">
+          <div className="flex flex-col items-center justify-center w-full bg-white mx-2 p-8 rounded-lg border-gray-300 border text-gray-600 dark:bg-DarkerGrey dark:border-DarkLightGrey dark:text-white">
+            <h2 className="text-2xl font-bold mb-4">Kaynak Bulunamadı</h2>
+            <p className="text-gray-500">
+              {searchQuery 
+                ? `"${searchQuery}" araması için sonuç bulunamadı.`
+                : "Henüz hiç kaynak eklenmemiş veya veriler yüklenirken bir hata oluştu."
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex py-5 basis-3/4">
       <SideMenu />
       <div className="flex flex-wrap w-full justify-center text-left">
         <div className="flex flex-wrap items-center justify-center md:justify-between w-full bg-white dark:bg-DarkerGrey dark:border-DarkLightGrey mx-2 p-4 rounded-lg border-gray-300 border text-gray-600 dark:text-white">
-          <h1 className="flex text-3xl text-bold text-left">Kaynaklar</h1>
+          <div className="text-3xl text-bold mb-4 lg:mb-0">
+            Kaynaklar
+            {sourcesData.meta && (
+              <span className="text-sm font-normal ml-2 text-gray-500">
+                ({sourcesData.meta.total} kaynak)
+              </span>
+            )}
+            {searchQuery && (
+              <span className="text-lg font-normal ml-2 text-blue-600 dark:text-blue-400">
+                "{searchQuery}" için sonuçlar
+              </span>
+            )}
+          </div>
           <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Ara"
-              className="placeholder:text-gray-900 bg-white dark:placeholder:text-white dark:bg-DarkerGrey border-b border-eksiCode p-2.5 text-sm"
-            />
+            <SourcesSearch className="max-w-md" />
           </div>
         </div>
 
@@ -74,12 +90,10 @@ export default async function Sources({params}: {params: {page: any}}) {
           onDelete={false}
         />
         
-        <Pagination
-          total={sourcesData.meta.total}
-          totalPages={sourcesData.meta.totalPages}
-          perPage={sourcesData.meta.limit}
-          activePage={sourcesData.meta.currentPage}
-        />
+        {/* Pagination */}
+        {sourcesData.meta && (
+          <Pagination meta={sourcesData.meta} baseUrl="/kaynaklar" />
+        )}
       </div>
     </div>
   );

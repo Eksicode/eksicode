@@ -11,10 +11,10 @@ import { BsMenuButtonWideFill } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa";
 import { RiPagesLine } from "react-icons/ri";
 import { FaShareNodes } from "react-icons/fa6";
-import getData from "@/utils/getData";
 import Link from "next/link";
-import React, { useEffect } from "react";
-import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import authService from "@/services/authService";
 
 interface MenuItem {
   icon: React.ComponentType;
@@ -80,27 +80,34 @@ const settingsMenuItem: MenuItem = {
 };
 
 const SideMenu = () => {
-  const { data: session, status } = useSession();
-  const [isAdmin, setIsAdmin] = React.useState<boolean | null>(null);
+  const { user, token, isLoading } = useAuth();
+  const [userDetails, setUserDetails] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (token && user?.id) {
+        try {
+          const userInfo = await authService.getCurrentUser(token);
+          if (userInfo) {
+            setUserDetails(userInfo);
+            setIsAdmin(userInfo.roles?.includes("admin") || userInfo.roles?.includes("superadmin") || false);
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      }
+    };
 
-    useEffect(() => {
-    if (status === "authenticated") {
-      const adminStatus = session?.user?.roles?.includes("superadmin") ?? false;
-      setIsAdmin(adminStatus);
-      console.log("isAdmin", adminStatus);
-      console.log("session", session);
-      console.log("status", status);
-    }
-  }, [session, status]);
-
+    fetchUserDetails();
+  }, [token, user?.id]);
 
   const loadingItems = Array(6).fill(null).map((_, index) => ({
     id: `loading-${index}`,
     className: "h-4 bg-gray-200 rounded dark:bg-gray-700"
   }));
 
-  if (status === "loading") {
+  if (isLoading || !userDetails) {
     return (
       <aside className="w-64 hidden lg:block" aria-label="Sidebar">
         <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border text-gray-900 dark:text-white dark:bg-DarkerGrey dark:border-DarkLightGrey">

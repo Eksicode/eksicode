@@ -72,7 +72,8 @@
 								"auth",
 								"login"
 							]
-						}
+						},
+						"description": "Login with username/email and password. Note: Users must verify their email address before they can login. If email is not verified, login will be rejected with 401 error."
 					},
 					"response": []
 				},
@@ -127,30 +128,13 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "email",
-									"value": "test2@gmail.com",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "Eksicode2025**",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "test2",
-									"type": "text"
-								},
-								{
-									"key": "password_confirmation",
-									"value": "Eksicode2025**",
-									"type": "text",
-									"disabled": true
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Eksicode2025**\",\n  \"username\": \"testuser\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{API_URL}}/auth/register",
@@ -161,7 +145,8 @@
 								"auth",
 								"register"
 							]
-						}
+						},
+						"description": "Register a new user. After successful registration, an email verification link will be sent to the provided email address. The user must verify their email before they can login."
 					},
 					"response": []
 				},
@@ -291,7 +276,74 @@
 			"name": "Email Verification",
 			"item": [
 				{
-					"name": "Confirm Verify Email",
+					"name": "Verify Email with Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/auth/verify-email/:token",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"verify-email",
+								":token"
+							],
+							"variable": [
+								{
+									"key": "token",
+									"value": "verification-token-here",
+									"description": "Email verification token from email"
+								}
+							]
+						},
+						"description": "Verify user email using the token sent to their email address"
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Email Verification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/resend-verification",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"resend-verification"
+							]
+						},
+						"description": "Resend email verification to the specified email address"
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Verify Email (Legacy)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -319,12 +371,13 @@
 									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDk1NjIzNDIsImV4cCI6MTcwOTU2NTk0MiwibmJmIjoxNzA5NTYyMzQyLCJqdGkiOiI1bmZHQUIzWll2TW1kM0x6Iiwic3ViIjoiNyIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.mM4_eUCbhnnmkcZR8CPbt0h2jb40reue6MbKPShFgB0"
 								}
 							]
-						}
+						},
+						"description": "Legacy email verification endpoint (kept for backward compatibility)"
 					},
 					"response": []
 				},
 				{
-					"name": "Send Verification Email Link",
+					"name": "Send Verification Email Link (Legacy)",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -347,7 +400,8 @@
 								"email",
 								"verification-notification"
 							]
-						}
+						},
+						"description": "Legacy endpoint for sending verification email (kept for backward compatibility)"
 					},
 					"response": []
 				}
@@ -2301,6 +2355,37 @@
 							],
 							"path": [
 								"sources"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Sources",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/sources/search?q=test",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"sources",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "test",
+									"description": "Search term for sources"
+								}
 							]
 						}
 					},

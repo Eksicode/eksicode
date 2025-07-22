@@ -5,7 +5,7 @@ import TagsCard from "@/components/TagsCard";
 import Button from "@/components/Ui/Button";
 import Navlink from "@/components/Ui/NavLink";
 import Pagination from "@/components/Pagination";
-import HashtagSearch from "@/components/HashtagSearch";
+import EtiketlerSearch from "@/components/EtiketlerSearch";
 import { getAllHashtags, searchHashtags } from "@/services/hashtagService";
 import type { Hashtag } from "@/types/hashtag.types";
 
@@ -23,10 +23,10 @@ export default async function Tags({ searchParams }: TagsPageProps) {
   // Extract pagination parameters from search params
   const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
   const limit = searchParams.limit ? parseInt(searchParams.limit, 10) : 50;
-  const searchQuery = searchParams.search || '';
+  const searchQuery = searchParams.search || "";
 
   // Fetch hashtags using the service
-  const hashtagsResponse = searchQuery 
+  const hashtagsResponse = searchQuery
     ? await searchHashtags(searchQuery, page, limit)
     : await getAllHashtags(page, limit, {
         next: { revalidate: 43200 }, // 12 hours cache
@@ -43,7 +43,8 @@ export default async function Tags({ searchParams }: TagsPageProps) {
           <div className="flex flex-col items-center justify-center w-full bg-white mx-2 p-8 rounded-lg border-gray-300 border text-gray-600 dark:bg-DarkerGrey dark:border-DarkLightGrey dark:text-white">
             <h2 className="text-2xl font-bold mb-4">Etiket Bulunamadı</h2>
             <p className="text-gray-500">
-              Henüz hiç etiket eklenmemiş veya veriler yüklenirken bir hata oluştu.
+              Henüz hiç etiket eklenmemiş veya veriler yüklenirken bir hata
+              oluştu.
             </p>
           </div>
         </div>
@@ -71,21 +72,15 @@ export default async function Tags({ searchParams }: TagsPageProps) {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="secondary"
-              children="Takipteki Etiketler"
-            />
-            <Button
-              variant="secondary"
-              children="Gizli Etiketler"
-            />
-          </div>
-        </div>
 
-        {/* Search Bar */}
-        <div className="w-full mx-2 mb-4">
-          <HashtagSearch className="max-w-md" />
+          <div className="flex items-center gap-2">
+            {/* Search Bar */}
+            <div className="w-full mx-2 mb-4">
+              <EtiketlerSearch className="max-w-md" />
+            </div>
+            <Button variant="secondary" children="Takipteki Etiketler" />
+            <Button variant="secondary" children="Gizli Etiketler" />
+          </div>
         </div>
 
         <div className="flex flex-wrap w-full justify-between lg:mx-0 mx-2">
