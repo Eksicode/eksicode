@@ -53,6 +53,42 @@ class SourceController {
         };
     };
 
+    public searchSources = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
+        try {
+            const { q } = req.query;
+            const { page, limit, skip } = getPaginationParams(req.query);
+
+            if (!q || typeof q !== "string") {
+                res.status(400).json({ message: "Search term is required" });
+                return;
+            }
+
+            const { sources, count } = await this.sourceService.searchSources(
+                q,
+                skip,
+                limit
+            );
+
+            res.status(200).json({
+                data: sources,
+                meta: {
+                    total: count,
+                    skip,
+                    limit,
+                    currentPage: Math.floor(skip / limit) + 1,
+                    totalPages: Math.ceil(count / limit),
+                },
+                message: "searchSources",
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
+
     public createSource = async (
         req: Request,
         res: Response,

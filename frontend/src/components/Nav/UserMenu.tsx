@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { signOut, useSession } from "next-auth/react";
-import router from "next/router";
+import { signOut } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
+import authService from "@/services/authService";
 
 const classNames = (...classes: string[]) => {
   return classes.filter(Boolean).join(" ");
@@ -12,23 +13,18 @@ const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [userData, setUserData] = useState<{ username?: string; profilePicture?: string }>({});
   const menuRef = useRef<HTMLDivElement>(null);
-  const { data: session } = useSession();
+  const { user, token } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        if (!session?.user?.id || !session?.accessToken) return;
+        if (!user?.id || !token) return;
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${session.user.id}`, {
-          headers: {
-            'Authorization': `Bearer ${session.accessToken}`,
-          },
-        });
-        if (response.ok) {
-          const fetchedUserData = await response.json();
+        const userInfo = await authService.getCurrentUser(token);
+        if (userInfo) {
           setUserData({
-            username: fetchedUserData.username || session.user.username,
-            profilePicture: fetchedUserData.profilePicture || session.user.profilePicture
+            username: userInfo.username || user.username,
+            profilePicture: userInfo.profilePicture
           });
         }
       } catch (error) {
@@ -36,10 +32,8 @@ const UserMenu = () => {
       }
     };
 
-    if (session?.accessToken && session?.user?.id) {
-      fetchUserData();
-    }
-  }, [session]);
+    fetchUserData();
+  }, [user, token]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -109,7 +103,7 @@ const UserMenu = () => {
         <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-DarkerGrey ring-1 ring-eksiCode">
           <div className="py-1">
             <span className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey ">
-              @ {userData.username || session?.user?.username}
+              @ {userData.username || user?.username}
             </span>
             <hr className="border-t border-gray-300 hover:bg-gray-100" />
             <Link

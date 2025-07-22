@@ -12,6 +12,8 @@ const Footer = () => {
                 <div className='flex justify-center mb-5'>
                     <a href="/sayfalar/kurallar" className="hover:underline hover:underline-offset-0">Grup Kuralları </a>
                     &#160; | &#160;
+                    <a href="/sayfalar/kullanici-sozlesmesi" className="hover:underline hover:underline-offset-0">Kullanıcı Sözleşmesi</a>
+                    &#160; | &#160;
                     <a className="hover:underline hover:underline-offset-0" href="/sayfalar/gizlilik">Gizlilik Politakası</a>
                     &#160; | &#160;
                     <a className="hover:underline hover:underline-offset-0" href="/kunye">Künye</a>

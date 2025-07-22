@@ -1,36 +1,34 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { JWT } from "next-auth/jwt";
-import { jwtDecode } from "jwt-decode";
 
 declare module "next-auth" {
   interface User {
     token: string;
-    roles?: string[];
-    id?: string;
+  }
+  interface Session {
+    accessToken: string;
   }
   interface JWT {
-    roles?: string[];
     accessToken: string;
-    userId?: string;
   }
 }
 
 const handler = NextAuth({
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 1 day by default
+    maxAge: 7 * 24 * 60 * 60, // 7 days to match backend
   },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
         userInfo: { label: "Email/Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.userInfo || !credentials?.password) {
-          throw new Error("Missing credentials");
+          return null;
         }
 
         try {
@@ -46,19 +44,21 @@ const handler = NextAuth({
             }
           );
 
-          const user = await res.json();
+          const data = await res.json();
 
-          if (!res.ok) {
-            throw new Error(user.message || "Authentication failed");
+          if (!res.ok || !data.success) {
+            return null;
           }
 
           return {
-            token: user.token,
-            roles: user.roles || [], // Eğer roller eksikse boş array ver
-            id: user.id || null, // ID eksikse null yap
+            id: data.user.id.toString(),
+            username: data.user.username,
+            email: data.user.email,
+            token: data.token,
           };
         } catch (error) {
-          throw new Error("Authentication failed");
+          console.error("Authentication error:", error);
+          return null;
         }
       },
     }),
@@ -66,70 +66,44 @@ const handler = NextAuth({
   pages: {
     signIn: "/auth/uye-giris",
     signOut: "/auth/uye-cikis",
-    error: "/auth/error", // Error code passed in query string as ?error=
-    verifyRequest: "/auth/verify-request", // (used for check email message)
-    newUser: "/auth/uye-ol", // New users will be directed here on first sign in (leave the property out if not of interest)
+    error: "/auth/error",
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.token;
-        const decoded = jwtDecode<{ roles?: string[], id?: string }>(user.token);
-        token.roles = decoded.roles || [];
-        token.userId = decoded.id || undefined;
+        token.id = user.id;
+        token.name = user.username;
+        token.email = user.email;
       }
       return token;
     },
-    async session({ session, token }: { session: any, token: JWT }) {
-      if (!token.accessToken) {
-        return { expires: session.expires };
-      }
-
-      try {
-        // Add caching mechanism to reduce frequent backend calls
-        const now = Date.now();
-        const lastCheck = (token as any).lastVerified || 0;
-        const checkInterval = 5 * 60 * 1000; // 5 minutes
-
-        if (now - lastCheck < checkInterval) {
-          // Use cached session data
-          session.user = {
-            ...session.user,
-            roles: token.roles,
-            id: token.userId,
-          };
-          session.accessToken = token.accessToken;
-          return session;
-        }
-
-        // Verify token and user roles against the backend
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token.accessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          // If verification fails, clear the session
-          return { expires: session.expires };
-        }
-
-        const verifiedData = await response.json();
-        (token as any).lastVerified = now;
-
-        // Update session with verified data
-        session.user = {
-          ...session.user,
-          roles: verifiedData.roles,
-          id: verifiedData.userId,
-        };
+    async session({ session, token }) {
+      if (token.accessToken) {
         session.accessToken = token.accessToken;
-        return session;
-      } catch (error) {
-        console.error('Session verification error:', error);
-        // Return expired session on error
-        return { expires: session.expires };
+        if (session.user) {
+          session.user.id = token.id as string;
+          session.user.name = token.name as string;
+          session.user.email = token.email as string;
+        }
+      }
+      return session;
+    },
+  },
+  events: {
+    async signOut({ token }) {
+      // Call backend logout to blacklist token
+      if (token?.accessToken) {
+        try {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token.accessToken}`,
+            },
+          });
+        } catch (error) {
+          console.error("Logout error:", error);
+        }
       }
     },
   },

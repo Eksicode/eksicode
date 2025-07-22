@@ -5,7 +5,11 @@ import jwt from 'jsonwebtoken';
 import config from '../config';
 import { HttpException } from '../exceptions/HttpException';
 class UserController {
-  private userService = new UserService();
+  private userService: UserService;
+
+  constructor(userService: UserService) {
+    this.userService = userService;
+  }
 
   public getAllUsers = async (
     req: Request,

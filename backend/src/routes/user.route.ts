@@ -4,13 +4,15 @@ import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
 import roleMiddleware from "../middlewares/role.middleware";
 import selfMiddleware from "../middlewares/self.middleware";
+import UserService from "../services/user.service";
 
 class UserRoute implements Routes {
   public path = "/users";
   public router = Router();
-  public userController = new UserController();
+  public userController: UserController;
 
-  constructor() {
+  constructor(userService: UserService) {
+    this.userController = new UserController(userService);
     this.initializeRoutes();
   }
 

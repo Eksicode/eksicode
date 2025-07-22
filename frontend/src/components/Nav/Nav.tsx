@@ -13,10 +13,10 @@ import Navlink from "@/components/Ui/NavLink";
 import MobileMenu from "@/components/Nav/MobileMenu";
 import ThemeSwitch from "@/components/Nav/ThemeSwitch";
 import Notifications from "@/components/Nav/Notifications";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Nav = () => {
-  const { data: session } = useSession();
+  const { isAuthenticated } = useAuth();
   return (
     <nav className="flex flex-wrap w-full justify-center z-50 sticky top-0 nav-sahdow bg-white dark:bg-DarkerGrey">
       {/* Menu */}
@@ -46,7 +46,7 @@ const Nav = () => {
               <ThemeSwitch />
             </div>
 
-            {!session && (
+            {!isAuthenticated && (
               <>
                 <Navlink
                   variant="quaternary"
@@ -71,7 +71,7 @@ const Nav = () => {
               </>
             )}
 
-            {session && (
+            {isAuthenticated && (
               <>
                 <Navlink
                   variant="secondary"
@@ -89,7 +89,7 @@ const Nav = () => {
             )}
           </div>
           {
-            !session && (
+            !isAuthenticated && (
               <>
                 <Navlink
                   variant="quaternary"

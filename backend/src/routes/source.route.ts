@@ -14,6 +14,7 @@ class SourceRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.sourceController.getAllSources);
+    this.router.get(`${this.path}/search`, this.sourceController.searchSources);
     this.router.get(`${this.path}/:id`, this.sourceController.getSourceById);
     this.router.post(
       `${this.path}`,

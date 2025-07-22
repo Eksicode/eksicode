@@ -13,7 +13,7 @@ import Link from "next/link";
 import getData from "@/utils/getData";
 import { usePathname } from "next/navigation";
 import ThemeSwitch from "./ThemeSwitch";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Menu {
   id: number;
@@ -51,7 +51,7 @@ const getIconComponent = (iconName: string): React.ComponentType | null => {
 };
 
 const MobileMenu = () => {
-  const { data: session } = useSession();
+  const { user: authUser, isAuthenticated } = useAuth();
   const pathname = usePathname();
   const [roleId, setRoleId] = useState<number | null>(null);
   const [nav, setNav] = useState(false);
@@ -61,7 +61,7 @@ const MobileMenu = () => {
     pathname.startsWith("/dashboard") ? "dashboard" : "sayfalar"
   );
 
-  const user = session?.user;
+
   const handleNav = () => {
     setNav(!nav);
     if (!nav) {
