@@ -19,7 +19,8 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        password: ${{ secrets.PASSWORD }}
+        # key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         timeout: 60s
         command_timeout: 10m
