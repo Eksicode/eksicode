@@ -6,8 +6,9 @@ import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 import { Routes } from "./interfaces/routes.interface";
 import { errorMiddleware } from "./middlewares/error.middleware";
-import EmailService from './services/email.service';
+import EmailService from "./services/email.service";
 import config from "./config";
+import compression from "compression";
 
 class App {
   public app: express.Application;
@@ -50,6 +51,9 @@ class App {
   }
 
   private initializeMiddlewares() {
+    this.app.set("trust proxy", 1);
+    this.app.use(compression() as any);
+
     const defaultWhitelist = [
       "http://localhost:3000",
       "https://eksicode.org",
@@ -63,30 +67,35 @@ class App {
     const whitelist = [...new Set([...defaultWhitelist, ...envOrigins])];
 
     this.app.use(morgan("dev"));
+
     this.app.use(
       cors({
         origin: function (origin, callback) {
-          // allow requests with no origin (like mobile apps or curl requests)
-          if (!origin) return callback(null, true);
-          if (config.nodeEnv === "development" || whitelist.includes(origin)) {
+          if (!origin || config.nodeEnv === "development" || whitelist.includes(origin)) {
             callback(null, true);
           } else {
             callback(new Error("Not allowed by CORS"));
           }
         },
-        credentials: true
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
       })
     );
+
     this.app.use(function (req, res, next) {
+      const origin = req.headers.origin;
+      if (origin && (config.nodeEnv === "development" || whitelist.includes(origin))) {
+        res.header("Access-Control-Allow-Origin", origin);
+      }
+
       res.header("Access-Control-Allow-Credentials", "true");
       res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
-      );
+      res.header("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json,Authorization");
       res.header("Cache-Control", "no-store,no-cache,must-revalidate");
       next();
     });
+
     this.app.use(helmet());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
