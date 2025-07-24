@@ -3,6 +3,8 @@ import DataTable from "@/components/Ui/DataTable";
 import Navlink from "@/components/Ui/NavLink";
 import getData from "@/utils/getData";
 
+export const dynamic = "force-dynamic";
+
 async function Users() {
   const usersData = await getData("users", true, 10);
 

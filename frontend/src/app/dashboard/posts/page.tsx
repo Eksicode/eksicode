@@ -1,7 +1,9 @@
 import React from "react";
 import DataTable from "@/components/Ui/DataTable";
-import getData from "@/utils/getData";
 import Navlink from "@/components/Ui/NavLink";
+import getData from "@/utils/getData";
+
+export const dynamic = "force-dynamic";
 
 async function DashboardPosts() {
   const postsData = await getData("posts", true, 10);

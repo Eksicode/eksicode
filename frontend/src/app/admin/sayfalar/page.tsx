@@ -3,7 +3,9 @@ import DataTable from "@/components/Ui/DataTable";
 import Navlink from "@/components/Ui/NavLink";
 import getData from "@/utils/getData";
 
-async function DashboardPages() {
+export const dynamic = "force-dynamic";
+
+async function Pages() {
   const pagesData = await getData("pages", true, 10);
 
   const preparedData = pagesData.data.map((page) => ({
@@ -33,4 +35,4 @@ async function DashboardPages() {
   );
 }
 
-export default DashboardPages;
+export default Pages;
