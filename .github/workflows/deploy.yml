@@ -54,7 +54,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.SERVER_PASSWORD }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         command_timeout: 5m
         script: |
           cd /home/eksicode
@@ -63,6 +63,7 @@ jobs:
           git pull origin main
           sudo docker compose down -v
           sudo docker system prune -a -f
+          sudo docker volume prune -a -f
           sudo docker compose -f docker-compose.yml up --build -d
           sudo docker compose logs -f
           sudo docker ps -a

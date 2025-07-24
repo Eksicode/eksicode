@@ -8,6 +8,8 @@ npm-debug.log
 yarn-error.log
 /.pnp
 .pnp.js
+deploy_key
+deploy_key.pub
 
 # Laravel 4 specific
 bootstrap/compiled.php
