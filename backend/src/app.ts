@@ -93,6 +93,17 @@ class App {
       res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
       res.header("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json,Authorization");
       res.header("Cache-Control", "no-store,no-cache,must-revalidate");
+
+      // Ensure CORS headers are set on error responses too
+      const originalSend = res.send;
+      res.send = function(body) {
+        if (origin && (config.nodeEnv === "development" || whitelist.includes(origin))) {
+          res.header("Access-Control-Allow-Origin", origin);
+        }
+        res.header("Access-Control-Allow-Credentials", "true");
+        return originalSend.call(this, body);
+      };
+
       next();
     });
 
