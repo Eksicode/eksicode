@@ -1,7 +1,7 @@
 import { Prisma, PostStatus } from "@prisma/client";
 import { BaseSeeder } from "./base-seeder";
 import { SEED_CONFIG } from "../config/seed-config";
-import { posts } from "../../postsData";
+import { posts } from "../datas/postsData";
 
 type PostData = {
   title: string;

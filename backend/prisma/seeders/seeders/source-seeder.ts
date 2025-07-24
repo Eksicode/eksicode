@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { BaseSeeder } from "./base-seeder";
-import { sourcesData } from "../../sourcesData";
+import { sourcesData } from "../datas/sourcesData";
 
 /**
  * Seeder for sources

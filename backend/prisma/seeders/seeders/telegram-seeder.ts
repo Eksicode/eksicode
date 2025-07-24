@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { BaseSeeder } from "./base-seeder";
-import { telegramGroupsData } from "../../telegramGroupsData";
+import { telegramGroupsData } from "../datas/telegramGroupsData";
 
 /**
  * Seeder for telegram groups

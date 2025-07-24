@@ -22,6 +22,9 @@ async function main() {
     // Run seeding in transaction for data consistency
     await prisma.$transaction(async (tx) => {
       await orchestrator.seedAll(tx);
+    }, {
+      maxWait: 30000, // 30 seconds
+      timeout: 30000, // 30 seconds
     });
     
     logger.success("✅ Database seeding completed successfully!");

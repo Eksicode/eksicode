@@ -1,7 +1,7 @@
 import { Prisma, JobType } from "@prisma/client";
 import { BaseSeeder } from "./base-seeder";
 import { SEED_CONFIG } from "../config/seed-config";
-import { companiesData } from "../../companiesData";
+import { companiesData } from "../datas/companiesData";
 
 /**
  * Seeder for companies

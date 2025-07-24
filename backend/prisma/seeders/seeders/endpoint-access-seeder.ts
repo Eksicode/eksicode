@@ -9,8 +9,8 @@ export class EndpointAccessSeeder extends BaseSeeder {
     this.logger.info("Seeding endpoint access...");
 
     try {
-      // Try to require the endpoint access data
-      const { endpointAccessData } = require('../../endpointAccessData');
+      // Try to import the endpoint access data
+      const { endpointAccessData } = await import('../datas/endpointAccessData');
 
       const endpoints = await this.processBatch(
         endpointAccessData,

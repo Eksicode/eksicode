@@ -50,27 +50,31 @@ class App {
   }
 
   private initializeMiddlewares() {
-    const whitelist = config.allowedOrigins || [
+    const defaultWhitelist = [
+      "http://localhost:3000",
       "https://eksicode.org",
+      "https://www.eksicode.org",
       "https://demo.eksicode.org",
-      "https://demo-api.eksicode.org",
+      "https://api.eksicode.org",
       "https://api-demo.eksicode.org"
     ];
+
+    const envOrigins = config.allowedOrigins || [];
+    const whitelist = [...new Set([...defaultWhitelist, ...envOrigins])];
+
     this.app.use(morgan("dev"));
     this.app.use(
       cors({
         origin: function (origin, callback) {
-          if (
-            !origin ||
-            config.nodeEnv === "development" ||
-            whitelist.includes(origin)
-          ) {
+          // allow requests with no origin (like mobile apps or curl requests)
+          if (!origin) return callback(null, true);
+          if (config.nodeEnv === "development" || whitelist.includes(origin)) {
             callback(null, true);
           } else {
             callback(new Error("Not allowed by CORS"));
           }
         },
-        credentials: true,
+        credentials: true
       })
     );
     this.app.use(function (req, res, next) {

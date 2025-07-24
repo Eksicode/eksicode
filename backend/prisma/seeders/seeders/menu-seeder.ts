@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { BaseSeeder } from "./base-seeder";
 import { SEED_CONFIG } from "../config/seed-config";
-import { menuItems } from "../../menuItemsData";
+import { menuItems } from "../datas/menuItemsData";
 
 /**
  * Seeder for menu categories and menu items

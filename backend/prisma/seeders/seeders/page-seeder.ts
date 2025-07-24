@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { BaseSeeder } from "./base-seeder";
-import { pageCategories, pages } from "../../pagesData";
+import { pageCategories, pages } from "../datas/pagesData";
 
 /**
  * Seeder for page categories and pages
