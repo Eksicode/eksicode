@@ -3,12 +3,12 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import { PrismaClient } from "@prisma/client";
 import { Routes } from "./interfaces/routes.interface";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import EmailService from "./services/email.service";
 import config from "./config";
-import compression from "compression";
 
 class App {
   public app: express.Application;
@@ -33,6 +33,7 @@ class App {
   public listen() {
     this.app.listen(this.port, () => {
       console.log(`🚀 App listening on the port ${this.port}`);
+      console.log("🧿🧿🧿🧿🧿🧿🧿🧿🧿🧿🧿🧿🧿🧿");
     });
   }
 
@@ -51,10 +52,39 @@ class App {
   }
 
   private initializeMiddlewares() {
-    this.app.set("trust proxy", 1);
-    this.app.use(compression() as any);
-
-    const defaultWhitelist = [
+    // Trust proxy - configure to trust only the nginx container
+    // In Docker networking, nginx container will be on the same network
+    // We trust the first proxy (nginx) but not unlimited proxies
+    this.app.set('trust proxy', 1);
+    
+    // Enable response compression early in the middleware stack
+    this.app.use(compression({
+      level: 6, // Compression level (0-9, where 9 is best compression but slowest)
+      threshold: 1024, // Only compress responses larger than 1KB
+      filter: (req, res) => {
+        // Don't compress if client doesn't support it
+        if (req.headers['x-no-compression']) {
+          return false;
+        }
+        
+        // Don't compress images, videos, or already compressed files
+        const contentType = res.getHeader('Content-Type');
+        if (typeof contentType === 'string' && (
+          contentType.includes('image/') ||
+          contentType.includes('video/') ||
+          contentType.includes('application/zip') ||
+          contentType.includes('application/gzip') ||
+          contentType.includes('application/pdf')
+        )) {
+          return false;
+        }
+        
+        // Use default compression filter for everything else
+        return compression.filter(req, res);
+      }
+    }) as any);
+    
+    const whitelist = config.allowedOrigins || [
       "http://localhost:3000",
       "https://eksicode.org",
       "https://www.eksicode.org",
@@ -62,16 +92,21 @@ class App {
       "https://api.eksicode.org",
       "https://api-demo.eksicode.org"
     ];
-
-    const envOrigins = config.allowedOrigins || [];
-    const whitelist = [...new Set([...defaultWhitelist, ...envOrigins])];
-
+    
     this.app.use(morgan("dev"));
-
+    
+    // Add CORS pre-flight handling
+    this.app.options('*', cors() as any);
+    
+    // Configure CORS with proper error handling
     this.app.use(
       cors({
         origin: function (origin, callback) {
-          if (!origin || config.nodeEnv === "development" || whitelist.includes(origin)) {
+          if (
+            !origin ||
+            config.nodeEnv === "development" ||
+            whitelist.includes(origin)
+          ) {
             callback(null, true);
           } else {
             callback(new Error("Not allowed by CORS"));
@@ -79,34 +114,34 @@ class App {
         },
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+        exposedHeaders: ["Content-Length", "X-Requested-With", "Authorization"],
       })
     );
-
+    
+    // Ensure CORS headers are set on all responses, including errors
     this.app.use(function (req, res, next) {
-      const origin = req.headers.origin;
-      if (origin && (config.nodeEnv === "development" || whitelist.includes(origin))) {
-        res.header("Access-Control-Allow-Origin", origin);
-      }
-
-      res.header("Access-Control-Allow-Credentials", "true");
-      res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-      res.header("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json,Authorization");
-      res.header("Cache-Control", "no-store,no-cache,must-revalidate");
-
-      // Ensure CORS headers are set on error responses too
-      const originalSend = res.send;
-      res.send = function(body) {
+      // Ensure the CORS headers are sent with every response, even errors
+      const origSend = res.send;
+      res.send = function (body) {
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+        res.header(
+          "Access-Control-Allow-Headers",
+          "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json,Authorization"
+        );
+        res.header("Cache-Control", "no-store,no-cache,must-revalidate");
+        
+        // Ensure Access-Control-Allow-Origin is set properly
+        const origin = req.headers.origin;
         if (origin && (config.nodeEnv === "development" || whitelist.includes(origin))) {
           res.header("Access-Control-Allow-Origin", origin);
         }
-        res.header("Access-Control-Allow-Credentials", "true");
-        return originalSend.call(this, body);
+        
+        return origSend.call(res, body);
       };
-
       next();
     });
-
+    
     this.app.use(helmet());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
