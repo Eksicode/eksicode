@@ -22,7 +22,7 @@ export default async function Post({ params }: { params: { post: string } }) {
 
     console.log("postData:", postData)
 
-    const sanitizedContent = DOMPurify.sanitize(postData.content);
+    const sanitizedContent = DOMPurify.sanitize(postData.content || "");
 
     return (
       <>
