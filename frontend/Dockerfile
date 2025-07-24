@@ -14,10 +14,10 @@ FROM node:lts-alpine3.20 AS release
 
 WORKDIR /app
 
+COPY --from=base /app/public ./public
 COPY --from=base /app/node_modules ./node_modules
-
 COPY --from=base /app/package.json ./package.json
-
+COPY --from=base /app/next.config.mjs ./next.config.mjs
 COPY --from=base /app/.next ./.next
 
 EXPOSE 3000
