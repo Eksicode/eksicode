@@ -28,11 +28,11 @@ class PagesController {
         message: "findPages",
       });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      next(error);
     }
   };
 
-  public getPageBySlug = async (req: Request, res: Response): Promise<void> => {
+  public getPageBySlug = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const slug = req.params.slug;
       const page = await this.pageService.getPageBySlug(slug);
@@ -42,7 +42,7 @@ class PagesController {
         res.status(200).json(page);
       }
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      next(error);
     }
   };
 
@@ -60,32 +60,32 @@ class PagesController {
 //     }
 //   };
 
-  public createPage = async (req: Request, res: Response): Promise<void> => {
+  public createPage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const page = await this.pageService.createPage(req.body);
       res.status(201).json(page);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      next(error);
     }
   };
 
-  public updatePage = async (req: Request, res: Response): Promise<void> => {
+  public updatePage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
       const page = await this.pageService.updatePage(id, req.body);
       res.status(200).json(page);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      next(error);
     }
   };
 
-  public deletePage = async (req: Request, res: Response): Promise<void> => {
+  public deletePage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
-      const page = await this.pageService.deletePage(id);
-      res.status(200).json({ message: "Page deleted successfully", page });
+      await this.pageService.deletePage(id);
+      res.status(200).json({ message: "Page deleted successfully" });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      next(error);
     }
   };
 }
