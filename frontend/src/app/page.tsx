@@ -24,13 +24,13 @@ const Page = () => {
           })}
         </Slider>
         <div className="hidden lg:flex w-full mb-2 h-10 text-xs items-center">
-          <Navlink variant="tertiary" href="/uye-ol">
+          <Navlink variant="tertiary" href="/">
             İlgili
           </Navlink>
-          <Navlink variant="tertiary" style="ml-3" href="/uye-ol">
+          <Navlink variant="tertiary" style="ml-3" href="/">
             En Yeniler
           </Navlink>
-          <Navlink variant="tertiary" style="ml-3" href="/uye-ol">
+          <Navlink variant="tertiary" style="ml-3" href="/">
             En Beğenilenler
           </Navlink>
         </div>

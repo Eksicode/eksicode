@@ -7,13 +7,13 @@ function Notifications() {
     <>
       <h1 className="mt-2">Bildirimler</h1>
       <div className="flex mb-2 gap-2 h-10 text-xs items-center">
-        <Navlink variant="tertiary" href="/uye-ol">
+        <Navlink variant="tertiary" href="/">
           Tümü
         </Navlink>
-        <Navlink variant="tertiary" href="/uye-ol">
+        <Navlink variant="tertiary" href="/">
           Yorumlar
         </Navlink>
-        <Navlink variant="tertiary" href="/uye-ol">
+        <Navlink variant="tertiary" href="/">
           Gönderiler
         </Navlink>
       </div>
