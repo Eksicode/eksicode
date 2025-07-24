@@ -30,7 +30,7 @@ async function SideMenu() {
     try {
       // const fetchedMenu = await getData("menus", true, 0, 0, 0, { cache: "no-cache" });
       const fetchedMenu = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/menus?summaryOnly=true&limit=0&page=0&pageSize=0`
+        `${process.env.NEXT_PUBLIC_API_URL}/menus?summaryOnly=true`
       )
         .then((res) => res.json())
         .catch((error) => {
