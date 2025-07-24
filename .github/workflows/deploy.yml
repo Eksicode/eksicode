@@ -12,58 +12,39 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-    
-    - name: Set up Docker Compose
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.x'
-    
-    - name: Install Docker and Docker Compose
-      run: |
-        # Remove any existing Docker installations
-        sudo apt-get remove -y docker docker-engine docker.io containerd runc
-        
-        # Install dependencies
-        sudo apt-get update
-        sudo apt-get install -y \
-            ca-certificates \
-            curl \
-            gnupg \
-            lsb-release
-        
-        # Add Docker's official GPG key
-        sudo mkdir -p /etc/apt/keyrings
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-        
-        # Set up the Docker repository
-        echo \
-          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-          $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        
-        # Install Docker Engine
-        sudo apt-get update
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-        
-        # Install Docker Compose standalone
-        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
+      uses: actions/checkout@v4
     
     - name: SSH Deploy to Server
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        command_timeout: 5m
+        port: 22
+        timeout: 60s
+        command_timeout: 10m
         script: |
+          # Navigate to project directory
           cd /home/eksicode
+          
+          # Backup any local changes and update code
           git stash
-          git switch main
+          git checkout main
           git pull origin main
-          sudo docker compose down -v
-          sudo docker system prune -a -f
-          sudo docker volume prune -a -f
+          
+          # Clean up Docker resources
+          sudo docker compose down --volumes --remove-orphans || true
+          sudo docker system prune -af --volumes
+          
+          # Build and deploy
           sudo docker compose -f docker-compose.yml up --build -d
-          sudo docker compose logs -f
+          
+          # Show deployment status
+          echo "=== Container Status ==="
+          sudo docker compose ps
+          
+          echo "=== Recent Logs ==="
+          sudo docker compose logs --tail=50
+          
+          echo "=== System Status ==="
           sudo docker ps -a
