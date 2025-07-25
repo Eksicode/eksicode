@@ -39,6 +39,9 @@ const config = {
   
   // Email settings
   email: {
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: process.env.EMAIL_SECURE,
     service: process.env.EMAIL_SERVICE,
     user: process.env.EMAIL_USER,
     password: process.env.EMAIL_PASS,

@@ -2,7 +2,6 @@ import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
 import config from '../config';
-
 class EmailService {
   private transporter: nodemailer.Transporter;
   private isConfigured: boolean;
@@ -11,7 +10,9 @@ class EmailService {
     this.isConfigured = !!(config.email?.user && config.email?.password && config.email?.service);
     if (this.isConfigured) {
       this.transporter = nodemailer.createTransport({
-        service: config.email.service,
+        host: config.email.host,
+        port: config.email.port,
+        secure: config.email.secure,
         auth: {
           user: config.email.user,
           pass: config.email.password,
