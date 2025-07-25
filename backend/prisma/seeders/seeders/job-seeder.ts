@@ -13,13 +13,14 @@ export class JobSeeder extends BaseSeeder {
     const jobs = await this.processBatch(
       jobsData,
       async (job: any, tx) => {
-        const { id, employmentType, company, ...jobData } = job;
+        const { id, employmentType, company, validAt, ...jobData } = job;
         
         const jobInput = {
           ...jobData,
           employmentType: employmentType as JobType,
           createdAt: new Date(jobData.createdAt),
           updatedAt: new Date(jobData.updatedAt),
+          validAt: validAt ? new Date(validAt) : null, // Handle the new validAt field
           companyId: company // Use companyId instead of company relation
         };
 

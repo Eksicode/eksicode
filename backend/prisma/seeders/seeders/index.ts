@@ -12,3 +12,7 @@ export { MenuSeeder } from './menu-seeder';
 export { PageSeeder } from './page-seeder';
 export { SourceSeeder } from './source-seeder';
 export { EndpointAccessSeeder } from './endpoint-access-seeder';
+export { MediaSeeder } from './media-seeder';
+export { CommentSeeder } from './comment-seeder';
+export { PostLikeSeeder } from './post-like-seeder';
+export { NotificationSeeder } from './notification-seeder';

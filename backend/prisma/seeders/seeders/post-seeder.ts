@@ -34,11 +34,12 @@ export class PostSeeder extends BaseSeeder {
     const createdPosts = await this.processBatch(
       posts as PostData[],
       async (postData: PostData, tx) => {
-        const { status, tags, categories, ...postInfo } = postData;
+        const { status, tags, categories, headerImage, ...postInfo } = postData;
         
         const postInput = {
           ...postInfo,
           authorId: adminUser.id, // Use the actual admin user ID
+          headerImageId: null, // Will be set when media seeder is implemented
           status: status as PostStatus,
           categories: {
             connect: categories.map(id => ({ id }))

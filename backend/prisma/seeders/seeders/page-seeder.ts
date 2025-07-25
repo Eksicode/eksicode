@@ -45,20 +45,25 @@ export class PageSeeder extends BaseSeeder {
     const pageItems = await this.processBatch(
       pages,
       async (page: any, tx) => {
-        const { categories, ...pageData } = page;
+        const { categories, headerImg, ...pageData } = page;
+        
+        const pageInput = {
+          ...pageData,
+          headerImgId: null, // Will be set when media seeder is implemented
+        };
         
         return await this.safeUpsert(
           () => tx.page.upsert({
             where: { slug: pageData.slug },
             update: {
-              ...pageData,
+              ...pageInput,
               categories: { 
                 set: [], // Clear existing categories
                 connect: categories.map((name: string) => ({ name })) 
               }
             },
             create: { 
-              ...pageData, 
+              ...pageInput, 
               categories: { 
                 connect: categories.map((name: string) => ({ name })) 
               } 

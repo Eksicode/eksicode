@@ -39,6 +39,7 @@ export class DatabaseCleaner {
         { model: 'pageCategory', name: 'Page Categories' },
         { model: 'telegramGroup', name: 'Telegram Groups' },
         { model: 'company', name: 'Companies' },
+        { model: 'media', name: 'Media' },
       ];
 
       for (const { model, name } of cleanupOrder) {
@@ -72,7 +73,11 @@ export class DatabaseCleaner {
         'permissions_id_seq',
         'posts_id_seq',
         'companies_id_seq',
-        'jobs_id_seq'
+        'jobs_id_seq',
+        'media_id_seq',
+        'comments_id_seq',
+        'post_likes_id_seq',
+        'notifications_id_seq'
       ];
 
       for (const sequence of sequences) {

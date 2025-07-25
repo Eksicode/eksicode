@@ -37,13 +37,25 @@ export class UserSeeder extends BaseSeeder {
       throw new Error(`Invalid admin username: ${SEED_CONFIG.defaultAdmin.username}`);
     }
 
-    // Create admin user
+    // Create admin user with new fields
     const adminUser = await this.safeUpsert(
       () => tx.user.upsert({
         where: { email: SEED_CONFIG.defaultAdmin.email },
         update: {
           username: SEED_CONFIG.defaultAdmin.username,
           password: hashedPassword,
+          firstName: null,
+          lastName: null,
+          profilePictureId: null, // Will be set if media is available
+          birthday: null,
+          telegramId: null,
+          phoneNumber: null,
+          linkedin: null,
+          github: null,
+          website: null,
+          twitter: null,
+          instagram: null,
+          facebook: null,
           userRoles: {
             deleteMany: {}, // Clear existing roles
             create: [{ roleId: adminRole.id }]
@@ -53,6 +65,18 @@ export class UserSeeder extends BaseSeeder {
           email: SEED_CONFIG.defaultAdmin.email,
           username: SEED_CONFIG.defaultAdmin.username,
           password: hashedPassword,
+          firstName: null,
+          lastName: null,
+          profilePictureId: null,
+          birthday: null,
+          telegramId: null,
+          phoneNumber: null,
+          linkedin: null,
+          github: null,
+          website: null,
+          twitter: null,
+          instagram: null,
+          facebook: null,
           emailVerified: true,
           verified: true,
           userRoles: {

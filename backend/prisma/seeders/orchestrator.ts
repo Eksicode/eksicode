@@ -14,7 +14,11 @@ import {
   MenuSeeder,
   PageSeeder,
   SourceSeeder,
-  EndpointAccessSeeder
+  EndpointAccessSeeder,
+  MediaSeeder,
+  CommentSeeder,
+  PostLikeSeeder,
+  NotificationSeeder
 } from "./seeders";
 
 /**
@@ -34,6 +38,7 @@ export class SeedOrchestrator {
       new RoleSeeder(prisma, logger),
       new UserSeeder(prisma, logger),
       new CategorySeeder(prisma, logger),
+      new MediaSeeder(prisma, logger),
       new PostSeeder(prisma, logger),
       new CompanySeeder(prisma, logger),
       new JobSeeder(prisma, logger),
@@ -42,6 +47,9 @@ export class SeedOrchestrator {
       new PageSeeder(prisma, logger),
       new SourceSeeder(prisma, logger),
       new EndpointAccessSeeder(prisma, logger),
+      new CommentSeeder(prisma, logger),
+      new PostLikeSeeder(prisma, logger),
+      new NotificationSeeder(prisma, logger),
     ];
   }
 
@@ -158,6 +166,10 @@ export class SeedOrchestrator {
         { table: 'pages', sequence: 'pages_id_seq' },
         { table: 'page_categories', sequence: 'page_categories_id_seq' },
         { table: 'sources', sequence: 'sources_id_seq' },
+        { table: 'media', sequence: 'media_id_seq' },
+        { table: 'comments', sequence: 'comments_id_seq' },
+        { table: 'post_likes', sequence: 'post_likes_id_seq' },
+        { table: 'notifications', sequence: 'notifications_id_seq' },
       ];
 
       for (const { table, sequence } of sequenceUpdates) {

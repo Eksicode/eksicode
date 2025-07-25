@@ -11,6 +11,7 @@ export const jobsData = [
     salary: "$120,000 - $150,000",
     createdAt: "2023-09-15T08:00:00Z",
     updatedAt: "2023-09-15T08:00:00Z",
+    validAt: "2024-12-31T23:59:59Z", // Job valid until end of 2024
     company: 1,
   },
   {
@@ -24,6 +25,7 @@ export const jobsData = [
     salary: "$80,000 - $100,000",
     createdAt: "2023-09-16T09:30:00Z",
     updatedAt: "2023-09-17T10:15:00Z",
+    validAt: "2024-06-30T23:59:59Z", // Job valid until mid 2024
     company: 2,
   },
   {

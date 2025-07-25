@@ -13,14 +13,21 @@ export class CompanySeeder extends BaseSeeder {
     const companies = await this.processBatch(
       companiesData,
       async (company: any, tx) => {
-        const { id, ...companyData } = company;
+        const { id, logo, ...companyData } = company;
+        
+        // Handle logoId - for now set to null, can be updated later when media seeder is available
+        const companyInput = {
+          ...companyData,
+          logoId: null, // Will be set when media seeder is implemented
+        };
+
         return await this.safeUpsert(
           () => tx.company.upsert({
             where: { id: id },
-            update: companyData,
+            update: companyInput,
             create: {
               id,
-              ...companyData,
+              ...companyInput,
             },
           }),
           'company',
