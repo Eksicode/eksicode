@@ -22,6 +22,15 @@ export class PostSeeder extends BaseSeeder {
   async seed(tx: Prisma.TransactionClient): Promise<void> {
     this.logger.info(`Seeding ${posts.length} posts...`);
 
+    // Find the admin user to get the correct authorId
+    const adminUser = await tx.user.findUnique({
+      where: { email: "admin@example.com" }
+    });
+
+    if (!adminUser) {
+      throw new Error("Admin user not found - ensure UserSeeder runs before PostSeeder");
+    }
+
     const createdPosts = await this.processBatch(
       posts as PostData[],
       async (postData: PostData, tx) => {
@@ -29,6 +38,7 @@ export class PostSeeder extends BaseSeeder {
         
         const postInput = {
           ...postInfo,
+          authorId: adminUser.id, // Use the actual admin user ID
           status: status as PostStatus,
           categories: {
             connect: categories.map(id => ({ id }))

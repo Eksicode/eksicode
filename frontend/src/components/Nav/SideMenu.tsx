@@ -1,5 +1,5 @@
-// Remove 'use client' as this will be a server component
-import React from "react";
+'use client';
+import React, { useState, useEffect } from "react";
 import * as md from "react-icons/md";
 import * as Ai from "react-icons/ai";
 import Link from "next/link";
@@ -23,44 +23,65 @@ const getIconComponent = (iconName: string): React.ComponentType | null => {
   return IconComponent || null;
 };
 
-// Mark the component as async to fetch data
-async function SideMenu() {
-  // Add cache configuration to disable caching
-  const fetchMenu = async () => {
-    try {
-      // const fetchedMenu = await getData("menus", true, 0, 0, 0, { cache: "no-cache" });
-      const fetchedMenu = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/menus?summaryOnly=true`
-      )
-        .then((res) => res.json())
-        .catch((error) => {
-          console.error("Error fetching menu:", error);
-          throw new Error("Menu yüklenirken bir hata oluştu");
-        });
+function SideMenu() {
+  const [menu, setMenu] = useState<Menu[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-      return fetchedMenu.data.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        icon: item.icon,
-        link: item.link,
-        subMenu: item.subMenu,
-      }));
-    } catch (error) {
-      console.error("Error fetching menu:", error);
-      throw new Error("Menu yüklenirken bir hata oluştu");
-    }
-  };
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // const fetchedMenu = await getData("menus", true, 0, 0, 0, { cache: "no-cache" });
+        const fetchedMenu = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/menus?summaryOnly=true`
+        )
+          .then((res) => res.json())
+          .catch((error) => {
+            console.error("Error fetching menu:", error);
+            throw new Error("Menu yüklenirken bir hata oluştu");
+          });
 
-  // Error boundaries will handle errors in production
-  let menu: Menu[] = [];
-  try {
-    menu = await fetchMenu();
-  } catch (error) {
+        const menuData = fetchedMenu.data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          icon: item.icon,
+          link: item.link,
+          subMenu: item.subMenu,
+        }));
+        
+        setMenu(menuData);
+      } catch (error) {
+        console.error("Error fetching menu:", error);
+        setError("Menu yüklenirken bir hata oluştu");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMenu();
+  }, []);
+
+  if (loading) {
     return (
       <aside className="w-64 hidden lg:block" aria-label="Sidebar">
         <div className="overflow-y-auto w-64 py-4 px-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
           <span className="text-sm font-semibold text-gray-500">
-            Menu yüklenirken bir hata oluştu
+            Menü yükleniyor...
+          </span>
+        </div>
+      </aside>
+    );
+  }
+
+  if (error) {
+    return (
+      <aside className="w-64 hidden lg:block" aria-label="Sidebar">
+        <div className="overflow-y-auto w-64 py-4 px-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
+          <span className="text-sm font-semibold text-gray-500">
+            {error}
           </span>
         </div>
       </aside>

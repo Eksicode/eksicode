@@ -66,7 +66,6 @@ export const SEED_CONFIG = {
 
   // Default admin user
   defaultAdmin: {
-    id: 1,
     email: "admin@example.com",
     username: "admin",
     role: "superadmin"

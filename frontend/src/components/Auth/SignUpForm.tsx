@@ -87,8 +87,8 @@ const SignUpForm: React.FC = () => {
         reset();
         setModalContent({
           title: "Hesap oluşturuldu!",
-          text: "Hesabınız başarıyla oluşturuldu. Şimdi giriş yapabilirsiniz.",
-          buttonText: "Giriş Yap",
+          text: "Hesabınız başarıyla oluşturuldu. Lütfen e-posta adresinizi kontrol edin ve hesabınızı doğrulayın. E-posta doğrulaması tamamlandıktan sonra giriş yapabilirsiniz.",
+          buttonText: "Tamam",
           url: "/auth/uye-giris",
         });
         setShowModal(true);

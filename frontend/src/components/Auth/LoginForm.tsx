@@ -1,4 +1,5 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -6,7 +7,6 @@ import Button from "@/components/Ui/Button";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 // Zod validation schema
 const loginSchema = z.object({
@@ -20,12 +20,14 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 const LoginForm: React.FC = () => {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [isEmailVerificationError, setIsEmailVerificationError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -34,6 +36,15 @@ const LoginForm: React.FC = () => {
       rememberMe: false,
     },
   });
+
+  // Clear errors when user starts typing
+  const watchedFields = watch();
+  useEffect(() => {
+    if (error && (watchedFields.userInfo || watchedFields.password)) {
+      setError("");
+      setIsEmailVerificationError(false);
+    }
+  }, [watchedFields.userInfo, watchedFields.password, error]);
 
   const onSubmit = async (values: LoginFormValues) => {
     try {
@@ -45,10 +56,21 @@ const LoginForm: React.FC = () => {
       });
 
       if (result?.error) {
-        setError(
-          "Giriş başarısız. Lütfen Bilgileri kontrol ediniz. " + result.error
-        );
+        // Check if it's an email verification error
+        if (result.error.includes("verify your email") || result.error.includes("email verification")) {
+          setError(
+            "E-posta adresiniz henüz doğrulanmamış. Giriş yapabilmek için önce e-posta adresinizi doğrulamanız gerekiyor."
+          );
+          setIsEmailVerificationError(true);
+        } else {
+          setError(
+            "Giriş başarısız. Lütfen bilgilerinizi kontrol ediniz."
+          );
+          setIsEmailVerificationError(false);
+        }
       } else {
+        setError("");
+        setIsEmailVerificationError(false);
         router.push("/");
         router.refresh();
       }
@@ -69,6 +91,16 @@ const LoginForm: React.FC = () => {
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-wrap max-w-96">
             {error}
+            {isEmailVerificationError && (
+              <div className="mt-2">
+                <Link 
+                  href="/auth/resend-verification" 
+                  className="text-blue-600 hover:text-blue-800 underline text-sm"
+                >
+                  Doğrulama e-postası gönder
+                </Link>
+              </div>
+            )}
           </div>
         )}
         <form

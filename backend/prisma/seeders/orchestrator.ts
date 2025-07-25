@@ -80,6 +80,10 @@ export class SeedOrchestrator {
       }
 
       const totalDuration = Date.now() - startTime;
+      
+      // Reset sequences to continue from current max IDs
+      await this.resetSequencesToMaxIds(tx);
+      
       this.logger.success(
         `🎉 All ${completedSeeders} seeders completed successfully in ${totalDuration}ms`
       );
@@ -130,5 +134,48 @@ export class SeedOrchestrator {
    */
   getAvailableSeeders(): string[] {
     return this.seeders.map(seeder => seeder.constructor.name);
+  }
+
+  /**
+   * Reset PostgreSQL sequences to continue from current maximum IDs
+   */
+  private async resetSequencesToMaxIds(tx: Prisma.TransactionClient): Promise<void> {
+    this.logger.info("🔄 Resetting sequences to current max IDs...");
+    
+    try {
+      const sequenceUpdates = [
+        { table: 'users', sequence: 'users_id_seq' },
+        { table: 'roles', sequence: 'roles_id_seq' },
+        { table: 'permissions', sequence: 'permissions_id_seq' },
+        { table: 'posts', sequence: 'posts_id_seq' },
+        { table: 'companies', sequence: 'companies_id_seq' },
+        { table: 'jobs', sequence: 'jobs_id_seq' },
+        { table: 'post_categories', sequence: 'post_categories_id_seq' },
+        { table: 'tags', sequence: 'tags_id_seq' },
+        { table: 'telegram_groups', sequence: 'telegram_groups_id_seq' },
+        { table: 'menus', sequence: 'menus_id_seq' },
+        { table: 'menu_categories', sequence: 'menu_categories_id_seq' },
+        { table: 'pages', sequence: 'pages_id_seq' },
+        { table: 'page_categories', sequence: 'page_categories_id_seq' },
+        { table: 'sources', sequence: 'sources_id_seq' },
+      ];
+
+      for (const { table, sequence } of sequenceUpdates) {
+        try {
+          await tx.$executeRawUnsafe(`
+            SELECT setval('${sequence}', COALESCE((SELECT MAX(id) FROM ${table}), 1), true);
+          `);
+          this.logger.debug(`Reset ${sequence} for table ${table}`);
+        } catch (error) {
+          // Sequence or table might not exist, which is fine
+          this.logger.debug(`Could not reset ${sequence}: ${error}`);
+        }
+      }
+      
+      this.logger.success("✅ Sequences reset to continue from max IDs");
+    } catch (error) {
+      this.logger.error("Failed to reset sequences", error);
+      // Don't throw error as this is not critical for seeding functionality
+    }
   }
 }

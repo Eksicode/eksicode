@@ -50,7 +50,6 @@ export class UserSeeder extends BaseSeeder {
           }
         },
         create: {
-          id: SEED_CONFIG.defaultAdmin.id,
           email: SEED_CONFIG.defaultAdmin.email,
           username: SEED_CONFIG.defaultAdmin.username,
           password: hashedPassword,
