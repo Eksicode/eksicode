@@ -1,10 +1,14 @@
 import { PrismaClient, Page, Prisma } from "@prisma/client";
+import { HttpException } from "../exceptions/HttpException";
+import MediaService, { MediaUpload } from './media.service';
 
 class PageService {
   private prisma: PrismaClient;
+  private mediaService: MediaService;
 
-  constructor() {
-    this.prisma = new PrismaClient();
+  constructor(prisma?: PrismaClient, mediaService?: MediaService) {
+    this.prisma = prisma || new PrismaClient();
+    this.mediaService = mediaService || new MediaService(this.prisma);
   }
 
   /**
@@ -33,7 +37,14 @@ class PageService {
               id: true,
               title: true,
               content: true,
-              headerImg: true,
+              headerImg: {
+                select: {
+                  id: true,
+                  url: true,
+                  altText: true,
+                  type: true,
+                }
+              },
               slug: true,
               categories: true,
               createdAt: true,
@@ -47,34 +58,121 @@ class PageService {
   }
 
   /**
-   * Fetch a specific page by its ID.
-   * @param id - The ID of the page.
-   * @returns The page if found, or null if not.
-   */
-  //   public async getPageById(id: number): Promise<Pages | null> {
-  //     try {
-  //       return await this.prisma.pages.findUnique({
-  //         where: { id },
-  //       });
-  //     } catch (error) {
-  //       console.error(`Error fetching page with ID ${id}:`, error);
-  //       throw new Error("Unable to fetch pages.");
-  //     }
-  //   }
-
-  /**
    * Fetch a specific page by its Slug.
-   * @param id - The Slug of the page.
+   * @param slug - The Slug of the page.
    * @returns The page if found, or null if not.
    */
   public async getPageBySlug(slug: string): Promise<Page | null> {
     try {
       return await this.prisma.page.findUnique({
         where: { slug },
+        include: {
+          headerImg: {
+            select: {
+              id: true,
+              url: true,
+              altText: true,
+              type: true,
+            }
+          },
+          categories: true,
+        },
       });
     } catch (error) {
       console.error(`Error fetching page with slug ${slug}:`, error);
       throw new Error("Unable to fetch pages.");
+    }
+  }
+
+  /**
+   * Update page header image
+   */
+  public async updatePageHeaderImage(pageId: number, file: MediaUpload): Promise<Page> {
+    try {
+      // Verify page exists
+      const page = await this.prisma.page.findUnique({
+        where: { id: pageId },
+        select: { headerImgId: true }
+      });
+
+      if (!page) {
+        throw new HttpException(404, 'Page not found');
+      }
+
+      // Upload new media
+      const media = await this.mediaService.uploadMedia(file);
+
+      // Update page with new header image
+      const updatedPage = await this.prisma.page.update({
+        where: { id: pageId },
+        data: { headerImgId: media.id },
+        include: {
+          headerImg: true,
+          categories: true,
+        }
+      });
+
+      // Clean up old header image if it exists
+      if (page.headerImgId) {
+        try {
+          await this.mediaService.deleteMedia(page.headerImgId);
+        } catch (error) {
+          console.warn(`Failed to delete old header image ${page.headerImgId}:`, error);
+          // Don't throw error as the main operation succeeded
+        }
+      }
+
+      return updatedPage;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Failed to update page header image', { originalError: error });
+    }
+  }
+
+  /**
+   * Remove page header image
+   */
+  public async removePageHeaderImage(pageId: number): Promise<Page> {
+    try {
+      // Verify page exists
+      const page = await this.prisma.page.findUnique({
+        where: { id: pageId },
+        select: { headerImgId: true }
+      });
+
+      if (!page) {
+        throw new HttpException(404, 'Page not found');
+      }
+
+      if (!page.headerImgId) {
+        throw new HttpException(400, 'Page has no header image to remove');
+      }
+
+      // Update page to remove header image
+      const updatedPage = await this.prisma.page.update({
+        where: { id: pageId },
+        data: { headerImgId: null },
+        include: {
+          categories: true,
+        }
+      });
+
+      // Delete the media file
+      try {
+        await this.mediaService.deleteMedia(page.headerImgId);
+      } catch (error) {
+        console.warn(`Failed to delete header image ${page.headerImgId}:`, error);
+        // Don't throw error as the main operation succeeded
+      }
+
+      return updatedPage;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Failed to remove page header image', { originalError: error });
     }
   }
 
@@ -85,7 +183,20 @@ class PageService {
    */
   public async createPage(data: Prisma.PageCreateInput): Promise<Page> {
     try {
-      return await this.prisma.page.create({ data });
+      return await this.prisma.page.create({ 
+        data,
+        include: {
+          headerImg: {
+            select: {
+              id: true,
+              url: true,
+              altText: true,
+              type: true,
+            }
+          },
+          categories: true,
+        }
+      });
     } catch (error) {
       console.error("Error creating page:", error);
       throw new Error("Unable to create page.");
@@ -106,6 +217,17 @@ class PageService {
       return await this.prisma.page.update({
         where: { id },
         data,
+        include: {
+          headerImg: {
+            select: {
+              id: true,
+              url: true,
+              altText: true,
+              type: true,
+            }
+          },
+          categories: true,
+        }
       });
     } catch (error) {
       console.error(`Error updating page with ID ${id}:`, error);
@@ -120,9 +242,28 @@ class PageService {
    */
   public async deletePage(id: number): Promise<Page> {
     try {
-      return await this.prisma.page.delete({
+      // Get page with header image info before deletion
+      const page = await this.prisma.page.findUnique({
+        where: { id },
+        select: { headerImgId: true }
+      });
+
+      // Delete the page
+      const deletedPage = await this.prisma.page.delete({
         where: { id },
       });
+
+      // Clean up header image if it exists
+      if (page?.headerImgId) {
+        try {
+          await this.mediaService.deleteMedia(page.headerImgId);
+        } catch (error) {
+          console.warn(`Failed to delete header image ${page.headerImgId}:`, error);
+          // Don't throw error as the main operation succeeded
+        }
+      }
+
+      return deletedPage;
     } catch (error) {
       console.error(`Error deleting page with ID ${id}:`, error);
       throw new Error("Unable to delete page.");

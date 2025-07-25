@@ -2,6 +2,7 @@ import { Router } from "express";
 import { PostController } from "../controllers/post.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
+import { uploadSingle, handleUploadError } from "../middlewares/upload.middleware";
 
 class PostRoute implements Routes {
   public path = "/posts";
@@ -35,6 +36,21 @@ class PostRoute implements Routes {
       authMiddleware,
       this.postController.deletePost
     ); // DELETE /Posts/:id
+    
+    // Header image upload routes
+    this.router.post(
+      `${this.path}/:id/header-image`,
+      authMiddleware,
+      uploadSingle('headerImage'),
+      handleUploadError,
+      this.postController.uploadPostHeaderImage
+    ); // POST /posts/:id/header-image
+    
+    this.router.delete(
+      `${this.path}/:id/header-image`,
+      authMiddleware,
+      this.postController.removePostHeaderImage
+    ); // DELETE /posts/:id/header-image
   }
 }
 

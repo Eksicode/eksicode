@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import compression from "compression";
+import path from "path";
 import { PrismaClient } from "@prisma/client";
 import { Routes } from "./interfaces/routes.interface";
 import { errorMiddleware } from "./middlewares/error.middleware";
@@ -97,6 +98,9 @@ class App {
     
     // Add CORS pre-flight handling
     this.app.options('*', cors() as any);
+    
+    // Serve static files from uploads directory
+    this.app.use('/uploads', express.static(path.join(process.cwd(), process.env.UPLOAD_DIR || 'uploads')));
     
     // Configure CORS with proper error handling
     this.app.use(

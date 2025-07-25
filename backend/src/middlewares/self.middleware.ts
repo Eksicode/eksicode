@@ -5,7 +5,7 @@ import { HttpException } from '../exceptions/HttpException';
 const selfMiddleware = (req: RequestWithUser, res: Response, next: NextFunction) => {
   try {
     const userId = parseInt(req.params.id);
-    const authenticatedUserId = req.user.id;
+    const authenticatedUserId = req.userId;
 
     if (isNaN(userId) || !authenticatedUserId) {
       throw new HttpException(403, 'Access denied');

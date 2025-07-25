@@ -196,6 +196,50 @@ class AuthController {
       next(error);
     }
   };
+
+  /**
+   * Initiate password reset process
+   */
+  public forgotPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        throw new HttpException(400, 'Email is required');
+      }
+
+      const result = await this.userService.initiatePasswordReset(email);
+
+      res.status(200).json({
+        success: result.success,
+        message: result.message
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Reset password with token
+   */
+  public resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { token, newPassword } = req.body;
+
+      if (!token || !newPassword) {
+        throw new HttpException(400, 'Token and new password are required');
+      }
+
+      const result = await this.userService.resetPassword(token, newPassword);
+
+      res.status(200).json({
+        success: result.success,
+        message: result.message
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default AuthController;

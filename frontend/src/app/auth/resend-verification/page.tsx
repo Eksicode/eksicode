@@ -96,7 +96,7 @@ export default function ResendVerificationPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-5">
+    <div className="flex flex-col items-center justify-center py-5">
       <div className="w-8/12 max-w-md bg-white px-6 py-6 border border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg mb-6">
         <div className="mb-10 text-center">
           <h1 className="mb-2 text-xl">E-posta Doğrulaması</h1>

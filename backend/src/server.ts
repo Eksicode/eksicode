@@ -5,6 +5,7 @@ import os from 'os';
 import { PrismaClient } from '@prisma/client';
 import EmailService from './services/email.service';
 import UserService from './services/user.service';
+import MediaService from './services/media.service';
 
 import IndexRoute from './routes/index.route';
 import UserRoute from './routes/user.route';
@@ -19,6 +20,8 @@ import SourceRoute from './routes/source.route';
 import PermissionRoute from './routes/permission.route';
 import RoleRoute from './routes/role.route';
 import AuthRoute from './routes/auth.route';
+import MediaRoute from './routes/media.route';
+import CompanyRoute from './routes/company.route';
 
 const numCPUs = os.cpus().length;
 
@@ -35,7 +38,9 @@ if (cluster.isPrimary) {
   });
 } else {
     const app = new App((prisma: PrismaClient, emailService: EmailService) => {
-        const userService = new UserService(prisma, emailService);
+        const mediaService = new MediaService(prisma);
+        const userService = new UserService(prisma, emailService, mediaService);
+        
         return [
             new IndexRoute(),
             new UserRoute(userService),
@@ -49,7 +54,9 @@ if (cluster.isPrimary) {
             new SourceRoute(),
             new RoleRoute(),
             new PermissionRoute(),
-            new AuthRoute(userService)
+            new AuthRoute(userService),
+            new MediaRoute(),
+            new CompanyRoute()
         ];
     });
 

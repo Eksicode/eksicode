@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import PostService from "../services/post.service";
 import { HttpException } from "../exceptions/HttpException";
 
+interface MulterRequest extends Request {
+  file?: Express.Multer.File;
+}
+
 export class PostController {
   private postService: PostService;
 
@@ -153,7 +157,20 @@ export class PostController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const post = await this.postService.createPost(req.body);
+      const userId = req.userId;
+      
+      if (!userId) {
+        res.status(401).json({ message: "Authentication required" });
+        return;
+      }
+
+      // Include the author ID in the post data
+      const postData = {
+        ...req.body,
+        authorId: userId,
+      };
+
+      const post = await this.postService.createPost(postData);
       res
         .status(201)
         .json({ data: post, message: "Post created successfully" });
@@ -178,7 +195,7 @@ export class PostController {
   ): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
-      const userId = req.user?.id;
+      const userId = req.userId;
 
       if (!userId) {
         res.status(401).json({ message: "Authentication required" });
@@ -212,7 +229,7 @@ export class PostController {
   ): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
-      const userId = req.user?.id;
+      const userId = req.userId;
 
       if (!userId) {
         res.status(401).json({ message: "Authentication required" });
@@ -235,6 +252,81 @@ export class PostController {
         message: statusCode === 500 ? "Internal server error" : errorMessage,
         error: errorMessage
       });
+      next(error);
+    }
+  };
+
+  public uploadPostHeaderImage = async (req: MulterRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const postId = parseInt(req.params.id, 10);
+      const userId = req.userId;
+      
+      if (!userId) {
+        res.status(401).json({ message: 'Authentication required' });
+        return;
+      }
+
+      if (isNaN(postId)) {
+        res.status(400).json({ message: 'Invalid post ID' });
+        return;
+      }
+
+      if (!req.file) {
+        res.status(400).json({ message: 'No file uploaded' });
+        return;
+      }
+
+      const mediaUpload = {
+        originalName: req.file.originalname,
+        buffer: req.file.buffer,
+        mimeType: req.file.mimetype,
+        size: req.file.size,
+        altText: req.body.altText || `Header image for post ${postId}`
+      };
+
+      const post = await this.postService.updatePostHeaderImage(postId, mediaUpload, userId);
+      
+      res.status(200).json({
+        success: true,
+        data: {
+          id: post.id,
+          title: post.title,
+          headerImage: (post as any).headerImage
+        },
+        message: "Post header image updated successfully"
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public removePostHeaderImage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const postId = parseInt(req.params.id, 10);
+      const userId = req.userId;
+      
+      if (!userId) {
+        res.status(401).json({ message: 'Authentication required' });
+        return;
+      }
+
+      if (isNaN(postId)) {
+        res.status(400).json({ message: 'Invalid post ID' });
+        return;
+      }
+
+      const post = await this.postService.removePostHeaderImage(postId, userId);
+      
+      res.status(200).json({
+        success: true,
+        data: {
+          id: post.id,
+          title: post.title,
+          headerImage: null
+        },
+        message: "Post header image removed successfully"
+      });
+    } catch (error) {
       next(error);
     }
   };

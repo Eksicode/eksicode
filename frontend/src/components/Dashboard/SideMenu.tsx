@@ -33,6 +33,11 @@ const menuItems: MenuItem[] = [
     label: "Posts",
     path: "/dashboard/posts"
   },
+  {
+    icon: AiOutlineUnorderedList,
+    label: "favoriler",
+    path: "/dashboard/favoriler"
+  }
 ];
 
 const adminMenuItems: MenuItem[] = [

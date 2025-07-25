@@ -3,10 +3,13 @@ import bcrypt from 'bcrypt';
 import { HttpException } from '../exceptions/HttpException';
 import crypto from 'crypto';
 import EmailService from './email.service';
+import MediaService, { MediaUpload } from './media.service';
 import config from '../config';
+
 class UserService {
   private prisma: PrismaClient;
   private emailService: EmailService;
+  private mediaService: MediaService;
 
   // Safe user selection - excludes sensitive data like passwords, emails, tokens, etc.
   private readonly safeUserSelect = {
@@ -14,7 +17,14 @@ class UserService {
     firstName: true,
     lastName: true,
     username: true,
-    profilePicture: true,
+    profilePicture: {
+      select: {
+        id: true,
+        url: true,
+        altText: true,
+        type: true,
+      }
+    },
     birthday: true,
     linkedin: true,
     website: true,
@@ -30,9 +40,10 @@ class UserService {
     updatedAt: true,
   };
 
-  constructor(prisma: PrismaClient, emailService: EmailService) {
+  constructor(prisma: PrismaClient, emailService: EmailService, mediaService?: MediaService) {
     this.prisma = prisma;
     this.emailService = emailService;
+    this.mediaService = mediaService || new MediaService(prisma);
   }
 
   /**
@@ -51,7 +62,13 @@ class UserService {
           ? {
               id: true,
               username: true,
-              profilePicture: true,
+              profilePicture: {
+                select: {
+                  id: true,
+                  url: true,
+                  altText: true,
+                }
+              },
               verified: true,
               createdAt: true,
             }
@@ -170,7 +187,14 @@ class UserService {
         username: true,
         firstName: true,
         lastName: true,
-        profilePicture: true,
+        profilePicture: {
+          select: {
+            id: true,
+            url: true,
+            altText: true,
+            type: true,
+          }
+        },
         birthday: true,
         telegramId: true,
         phoneNumber: true,
@@ -538,6 +562,187 @@ class UserService {
       throw new HttpException(500, 'Error resending verification email', { originalError: error });
     }
   }
+
+  /**
+   * Initiate password reset process
+   */
+  public async initiatePasswordReset(email: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email }
+      });
+
+      if (!user) {
+        // Don't reveal if email exists for security reasons
+        return {
+          success: true,
+          message: 'If the email exists, a password reset link has been sent'
+        };
+      }
+
+      // Generate password reset token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const hashedResetToken = await bcrypt.hash(resetToken, 10);
+      const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+
+      // Update user with reset token
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetPasswordToken: hashedResetToken,
+          resetPasswordExpires: resetTokenExpiry
+        }
+      });
+
+      // Send password reset email
+      await this.emailService.sendPasswordResetEmail(email, resetToken);
+
+      return {
+        success: true,
+        message: 'Password reset email sent'
+      };
+    } catch (error) {
+      console.error('Error initiating password reset:', error);
+      throw new HttpException(500, 'Error initiating password reset', { originalError: error });
+    }
+  }
+
+  /**
+   * Reset password with token
+   */
+  public async resetPassword(token: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    try {
+      // Find all users with password reset tokens that haven't expired
+      const users = await this.prisma.user.findMany({
+        where: {
+          resetPasswordToken: { not: null },
+          resetPasswordExpires: { gte: new Date() }
+        }
+      });
+
+      // Check token against all users (since tokens are hashed)
+      for (const user of users) {
+        if (user.resetPasswordToken) {
+          const isTokenValid = await bcrypt.compare(token, user.resetPasswordToken);
+          
+          if (isTokenValid) {
+            // Hash new password
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            // Update user password and clear reset token
+            await this.prisma.user.update({
+              where: { id: user.id },
+              data: {
+                password: hashedPassword,
+                resetPasswordToken: null,
+                resetPasswordExpires: null
+              }
+            });
+
+            return {
+              success: true,
+              message: 'Password reset successfully'
+            };
+          }
+        }
+      }
+
+      throw new HttpException(400, 'Invalid or expired reset token');
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Error resetting password', { originalError: error });
+    }
+  }
+
+  /**
+   * Update user profile picture
+   */
+  public async updateProfilePicture(userId: number, file: MediaUpload): Promise<User> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { profilePictureId: true }
+      });
+
+      if (!user) {
+        throw new HttpException(404, 'User not found');
+      }
+
+      // Upload new media
+      const media = await this.mediaService.uploadMedia(file);
+
+      // Update user with new profile picture
+      const updatedUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: { profilePictureId: media.id },
+        include: {
+          profilePicture: true
+        }
+      });
+
+      // Clean up old profile picture if it exists
+      if (user.profilePictureId) {
+        try {
+          await this.mediaService.deleteMedia(user.profilePictureId);
+        } catch (error) {
+          console.warn(`Failed to delete old profile picture ${user.profilePictureId}:`, error);
+          // Don't throw error as the main operation succeeded
+        }
+      }
+
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Failed to update profile picture', { originalError: error });
+    }
+  }
+
+  /**
+   * Remove user profile picture
+   */
+  public async removeProfilePicture(userId: number): Promise<User> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { profilePictureId: true }
+      });
+
+      if (!user) {
+        throw new HttpException(404, 'User not found');
+      }
+
+      if (!user.profilePictureId) {
+        throw new HttpException(400, 'User has no profile picture to remove');
+      }
+
+      // Update user to remove profile picture
+      const updatedUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: { profilePictureId: null }
+      });
+
+      // Delete the media file
+      try {
+        await this.mediaService.deleteMedia(user.profilePictureId);
+      } catch (error) {
+        console.warn(`Failed to delete profile picture ${user.profilePictureId}:`, error);
+        // Don't throw error as the main operation succeeded
+      }
+
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Failed to remove profile picture', { originalError: error });
+    }
+  }
+
+
 }
 
 export default UserService;

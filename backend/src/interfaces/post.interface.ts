@@ -5,10 +5,24 @@ export enum PostStatusEnum {
   archived = 'ARCHIVED'
 }
 
+// Media interface
+interface Media {
+  id: number;
+  url: string;
+  altText?: string;
+  type: string;
+}
+
 // User interface (referenced by Post)
 interface User {
   id: number;
-  // Add other user fields as needed
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  verified: boolean;
+  profilePicture?: Media;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // PostLike interface
@@ -25,6 +39,7 @@ interface Comment {
   userId: number;
   content: string;
   createdAt: Date;
+  author: User;
 }
 
 // PostCategory interface
@@ -44,7 +59,7 @@ export interface IPost {
   id: number;
   title: string;
   content: string;
-  headerImage?: string;
+  headerImage?: Media;
   authorId: number;
   author: User;
   postLikes: PostLike[];
@@ -62,7 +77,7 @@ export interface IPost {
 interface CreatePostDTO {
   title: string;
   content: string;
-  headerImage?: string;
+  headerImageId?: number;
   authorId: number;
   categories: number[]; // Array of category IDs
   tags: number[]; // Array of tag IDs

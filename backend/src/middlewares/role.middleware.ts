@@ -45,7 +45,7 @@ type EndpointAccessWithRelations = {
 const roleMiddleware = (requiredRoles?: string[]) => {
   return async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const userId = req.user?.id;
+      const userId = req.userId;
 
       if (!userId) {
         throw new HttpException(401, 'User not authenticated');

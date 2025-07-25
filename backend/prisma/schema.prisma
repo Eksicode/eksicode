@@ -14,7 +14,8 @@ model User {
   firstName              String?
   lastName               String?
   username               String         @unique @db.VarChar(50)
-  profilePicture         String?
+  profilePictureId       Int?
+  profilePicture         Media?         @relation("UserProfilePicture", fields: [profilePictureId], references: [id])
   birthday               DateTime?
   telegramId             Int?
   phoneNumber            String?
@@ -94,21 +95,22 @@ model EndpointAccess {
 }
 
 model Post {
-  id          Int            @id @default(autoincrement())
-  title       String         @db.VarChar(255)
-  content     String         @db.Text
-  headerImage String?
-  authorId    Int
-  author      User           @relation(fields: [authorId], references: [id])
-  postLikes   PostLike[]     @relation("PostToPostLikes")
-  comments    Comment[]      @relation("PostToComments")
-  categories  PostCategory[] @relation("PostToCategories")
-  tags        Tag[]          @relation("PostToTags")
-  status      PostStatus     @default(DRAFT)
-  slug        String         @unique
-  approved    Boolean        @default(false)
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id            Int            @id @default(autoincrement())
+  title         String         @db.VarChar(255)
+  content       String         @db.Text
+  headerImageId Int?
+  headerImage   Media?         @relation("PostHeaderImage", fields: [headerImageId], references: [id])
+  authorId      Int
+  author        User           @relation(fields: [authorId], references: [id])
+  postLikes     PostLike[]     @relation("PostToPostLikes")
+  comments      Comment[]      @relation("PostToComments")
+  categories    PostCategory[] @relation("PostToCategories")
+  tags          Tag[]          @relation("PostToTags")
+  status        PostStatus     @default(DRAFT)
+  slug          String         @unique
+  approved      Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@map("posts")
 }
@@ -157,14 +159,15 @@ model PostLike {
 }
 
 model Page {
-  id         Int            @id @default(autoincrement())
-  title      String
-  content    String
-  headerImg  String?
-  slug       String         @unique
-  categories PageCategory[]
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  id           Int            @id @default(autoincrement())
+  title        String
+  content      String
+  headerImgId  Int?
+  headerImg    Media?         @relation("PageHeaderImage", fields: [headerImgId], references: [id])
+  slug         String         @unique
+  categories   PageCategory[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   @@map("pages")
 }
@@ -239,7 +242,8 @@ model Company {
   website     String?
   industry    String?
   location    String?
-  logo        String?
+  logoId      Int?
+  logo        Media?   @relation("CompanyLogo", fields: [logoId], references: [id])
   hrpage      String? // HR/Careers page URL
   hrfields    String[] // Array of HR contact fields
   jobs        Job[]
@@ -282,6 +286,28 @@ model Source {
   @@map("sources")
 }
 
+model Media {
+  id           Int       @id @default(autoincrement())
+  originalName String
+  filename     String    @unique
+  url          String
+  mimeType     String
+  size         Int       // File size in bytes
+  altText      String?   // For accessibility
+  type         MediaType @default(IMAGE)
+  
+  // Relations
+  userProfiles User[]    @relation("UserProfilePicture")
+  postHeaders  Post[]    @relation("PostHeaderImage")
+  pageHeaders  Page[]    @relation("PageHeaderImage")
+  companyLogos Company[] @relation("CompanyLogo")
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("media")
+}
+
 // Enums List
 
 enum NotificationTypeEnum {
@@ -292,11 +318,11 @@ enum NotificationTypeEnum {
   mesaj
 }
 
-enum MediaTypeEnum {
-  image
-  video
-  audio
-  document
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
 }
 
 enum PostStatus {

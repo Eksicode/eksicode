@@ -1,40 +1,12 @@
 {
 	"info": {
-		"_postman_id": "e931265a-0286-410a-8326-9b3b4ce372bd",
+		"_postman_id": "bb16795f-d786-4593-82db-e973647aec5b",
 		"name": "eksicode",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29710060",
-		"_collection_link": "https://warped-astronaut-819432.postman.co/workspace/New-Team-Workspace~ca54bda1-4c20-43dd-b651-1f10756b95cd/collection/29710060-e931265a-0286-410a-8326-9b3b4ce372bd?action=share&source=collection_link&creator=29710060"
+		"_collection_link": "https://warped-astronaut-819432.postman.co/workspace/New-Team-Workspace~ca54bda1-4c20-43dd-b651-1f10756b95cd/collection/29710060-bb16795f-d786-4593-82db-e973647aec5b?action=share&source=collection_link&creator=29710060"
 	},
 	"item": [
-		{
-			"name": "Index",
-			"item": [
-				{
-					"name": "API Health Check",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{API_URL}}/",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								""
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
 		{
 			"name": "Auth",
 			"item": [
@@ -56,7 +28,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"userInfo\": \"user\",\n  \"password\": \"eksicode2025**\"\n}",
+							"raw": "{\n  \"userInfo\": \"newuser@example.com\",\n  \"password\": \"SecurePassword123!\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -73,41 +45,7 @@
 								"login"
 							]
 						},
-						"description": "Login with username/email and password. Note: Users must verify their email address before they can login. If email is not verified, login will be rejected with 401 error."
-					},
-					"response": []
-				},
-				{
-					"name": "Refresh Token",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDgxMDMwODAsImV4cCI6MTcwODEwNjY4MCwibmJmIjoxNzA4MTAzMDgwLCJqdGkiOiJrRkNhbUJ6VmRURHpZNlZYIiwic3ViIjoiMTAiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.h2Flj4_FY6DE5Gq3Un7kD3uqR4JRHcEK6IUaxWhXT-0",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{API_URL}}/auth/refresh",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"auth",
-								"refresh"
-							]
-						}
+						"description": "Login with username or email and password. The userInfo field accepts either email address or username. Note: Users must verify their email address before they can login. If email is not verified, login will be rejected with 401 error."
 					},
 					"response": []
 				},
@@ -129,7 +67,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Eksicode2025**\",\n  \"username\": \"testuser\"\n}",
+							"raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"SecurePassword123!\",\n  \"username\": \"newuser\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -146,12 +84,12 @@
 								"register"
 							]
 						},
-						"description": "Register a new user. After successful registration, an email verification link will be sent to the provided email address. The user must verify their email before they can login."
+						"description": "Register a new user account. After successful registration, an email verification link will be sent to the provided email address. The user must verify their email before they can login. Password must be at least 8 characters, username at least 3 characters."
 					},
 					"response": []
 				},
 				{
-					"name": "Password Reset Link Request",
+					"name": "Forgot Password",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -167,29 +105,30 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "email",
-									"value": "dgkdev06@gmail.com",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
-							"raw": "{{API_URL}}/forgot-password",
+							"raw": "{{API_URL}}/auth/forgot-password",
 							"host": [
 								"{{API_URL}}"
 							],
 							"path": [
+								"auth",
 								"forgot-password"
 							]
-						}
+						},
+						"description": "Request a password reset email. An email will be sent to the provided address with a reset token if the email exists in the system."
 					},
 					"response": []
 				},
 				{
-					"name": "Password Reset Request",
+					"name": "Reset Password",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -205,44 +144,30 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "token",
-									"value": "d574d841a5902092fc1873baddedf78cfa9dd45ea824d5adbcb54a048249a2b7",
-									"type": "text"
-								},
-								{
-									"key": "email",
-									"value": "dgkdev06@gmail.com",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "admin123",
-									"type": "text"
-								},
-								{
-									"key": "password_confirmation",
-									"value": "admin123",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"your-reset-token-here\",\n  \"newPassword\": \"NewSecurePassword123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
-							"raw": "{{API_URL}}/reset-password",
+							"raw": "{{API_URL}}/auth/reset-password",
 							"host": [
 								"{{API_URL}}"
 							],
 							"path": [
+								"auth",
 								"reset-password"
 							]
-						}
+						},
+						"description": "Reset password using the token received via email. The token expires after 1 hour."
 					},
 					"response": []
 				},
 				{
-					"name": "Verify Token",
+					"name": "Get Current User (Me)",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -258,15 +183,76 @@
 							}
 						],
 						"url": {
-							"raw": "{{API_URL}}/auth/verify",
+							"raw": "{{API_URL}}/auth/me",
 							"host": [
 								"{{API_URL}}"
 							],
 							"path": [
 								"auth",
-								"verify"
+								"me"
 							]
-						}
+						},
+						"description": "Get current authenticated user information. Requires valid JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/auth/logout",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logout current user by blacklisting the JWT token. After logout, the token cannot be used for authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blacklist Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/auth/blacklist-stats",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"blacklist-stats"
+							]
+						},
+						"description": "Get token blacklist statistics. Used for monitoring and admin purposes."
 					},
 					"response": []
 				}
@@ -281,7 +267,7 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "Content-Type",
+								"key": "Accept",
 								"value": "application/json",
 								"type": "text"
 							}
@@ -299,12 +285,12 @@
 							"variable": [
 								{
 									"key": "token",
-									"value": "verification-token-here",
-									"description": "Email verification token from email"
+									"value": "your-verification-token-here",
+									"description": "Email verification token received via email"
 								}
 							]
 						},
-						"description": "Verify user email using the token sent to their email address"
+						"description": "Verify user email using the token sent to their email address. This completes the registration process and allows the user to login."
 					},
 					"response": []
 				},
@@ -313,6 +299,11 @@
 					"request": {
 						"method": "POST",
 						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
 							{
 								"key": "Content-Type",
 								"value": "application/json",
@@ -338,7 +329,7 @@
 								"resend-verification"
 							]
 						},
-						"description": "Resend email verification to the specified email address"
+						"description": "Resend email verification to the specified email address. Use this if the user didn't receive the initial verification email."
 					},
 					"response": []
 				},
@@ -1596,6 +1587,99 @@
 								"posts"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Post Header Image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "headerImage",
+									"type": "file",
+									"src": "postman-cloud:///1eed4010-099a-4870-af92-d0124b2d5ea6",
+									"description": "Post header image file"
+								},
+								{
+									"key": "altText",
+									"value": "Header image for this post",
+									"type": "text",
+									"description": "Alt text for accessibility (optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/posts/:id/header-image",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"posts",
+								":id",
+								"header-image"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Post ID"
+								}
+							]
+						},
+						"description": "Upload or update a post's header image. Only the post author can update the header image."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Post Header Image",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/posts/:id/header-image",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"posts",
+								":id",
+								"header-image"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Post ID"
+								}
+							]
+						},
+						"description": "Remove a post's header image. Only the post author can remove the header image."
 					},
 					"response": []
 				}
@@ -3157,7 +3241,10 @@
 					"name": "Get Me",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -3259,6 +3346,706 @@
 							"path": [
 								"users",
 								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Profile Picture",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "postman-cloud:///1eed4010-099a-4870-af92-d0124b2d5ea6",
+									"description": "Profile picture image file"
+								},
+								{
+									"key": "altText",
+									"value": "User's profile picture",
+									"type": "text",
+									"description": "Alt text for accessibility (optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/users/me/profile-picture",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"profile-picture"
+							]
+						},
+						"description": "Upload or update the authenticated user's profile picture. Requires authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Profile Picture",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/users/me/profile-picture",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"profile-picture"
+							]
+						},
+						"description": "Remove the authenticated user's profile picture. Requires authentication."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Media",
+			"item": [
+				{
+					"name": "Get All Media",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/media?skip=0&limit=20&type=IMAGE",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"media"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0",
+									"description": "Number of records to skip for pagination"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of records to fetch"
+								},
+								{
+									"key": "type",
+									"value": "IMAGE",
+									"description": "Filter by media type (IMAGE, VIDEO, AUDIO, DOCUMENT)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Get all media files with pagination. Requires authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Media By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/media/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"media",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Media ID"
+								}
+							]
+						},
+						"description": "Get a specific media file by ID. Public endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Media",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1eed4010-099a-4870-af92-d0124b2d5ea6",
+									"description": "Media file to upload"
+								},
+								{
+									"key": "altText",
+									"value": "Description of the image for accessibility",
+									"type": "text",
+									"description": "Alt text for accessibility (optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/media/upload",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"media",
+								"upload"
+							]
+						},
+						"description": "Upload a media file directly. Supports images, videos, audio, and documents. Requires authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Media Metadata",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"altText\": \"Updated description for accessibility\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/media/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"media",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Media ID"
+								}
+							]
+						},
+						"description": "Update media metadata such as alt text. Requires authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Media",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/media/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"media",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Media ID"
+								}
+							]
+						},
+						"description": "Delete a media file. Will fail if media is currently in use. Requires authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Cleanup Unused Media",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/media/cleanup",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"media",
+								"cleanup"
+							]
+						},
+						"description": "Clean up unused media files from the system. Admin only endpoint."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Companies",
+			"item": [
+				{
+					"name": "Get All Companies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/companies?skip=0&limit=20&summaryOnly=false",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"companies"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0",
+									"description": "Number of records to skip for pagination"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of records to fetch"
+								},
+								{
+									"key": "summaryOnly",
+									"value": "false",
+									"description": "Return summary view or detailed view"
+								}
+							]
+						},
+						"description": "Get all companies with pagination. Public endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Companies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/companies/search?term=tech&skip=0&limit=10",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"companies",
+								"search"
+							],
+							"query": [
+								{
+									"key": "term",
+									"value": "tech",
+									"description": "Search term for company name, industry, or location"
+								},
+								{
+									"key": "skip",
+									"value": "0",
+									"description": "Number of records to skip for pagination"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of records to fetch"
+								}
+							]
+						},
+						"description": "Search companies by name, industry, or location. Public endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/companies/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"companies",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Company ID"
+								}
+							]
+						},
+						"description": "Get a specific company by ID with associated jobs. Public endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Company",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Tech Solutions Inc\",\n  \"description\": \"A leading technology company providing innovative solutions\",\n  \"website\": \"https://techsolutions.com\",\n  \"industry\": \"Technology\",\n  \"location\": \"San Francisco, CA\",\n  \"hrpage\": \"https://techsolutions.com/careers\",\n  \"hrfields\": [\"hr@techsolutions.com\", \"+1-555-0123\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/companies",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"companies"
+							]
+						},
+						"description": "Create a new company. Admin only endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Company",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Tech Solutions Inc\",\n  \"description\": \"An updated leading technology company\",\n  \"website\": \"https://techsolutions.com\",\n  \"industry\": \"Technology & Innovation\",\n  \"location\": \"San Francisco, CA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/companies/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"companies",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Company ID"
+								}
+							]
+						},
+						"description": "Update an existing company. Admin only endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Company",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/companies/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"companies",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Company ID"
+								}
+							]
+						},
+						"description": "Delete a company. Will fail if company has associated jobs. Admin only endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Company Logo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "postman-cloud:///1eed4010-099a-4870-af92-d0124b2d5ea6",
+									"description": "Company logo image file"
+								},
+								{
+									"key": "altText",
+									"value": "Tech Solutions Inc company logo",
+									"type": "text",
+									"description": "Alt text for accessibility (optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/companies/:id/logo",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"companies",
+								":id",
+								"logo"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Company ID"
+								}
+							]
+						},
+						"description": "Upload or update a company logo. Admin only endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Company Logo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/companies/:id/logo",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"companies",
+								":id",
+								"logo"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Company ID"
+								}
+							]
+						},
+						"description": "Remove a company logo. Admin only endpoint."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Index",
+			"item": [
+				{
+					"name": "API Health Check",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								""
 							]
 						}
 					},

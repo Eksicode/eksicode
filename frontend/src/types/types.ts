@@ -1,3 +1,10 @@
+// Post status enum matching backend
+export enum PostStatusEnum {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  ARCHIVED = 'ARCHIVED'
+}
+
 export interface IAuthor {
   id?: string;
   name?: string;
@@ -29,4 +36,7 @@ export interface IPost {
   comments?: IComment[];
   categories?: any[];
   tags: ITag[];
+  status: PostStatusEnum | string; // Can be enum or string from API
+  approved?: boolean;
+  headerImage?: string;
 }

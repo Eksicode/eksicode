@@ -3,8 +3,9 @@ import PageController from "../controllers/page.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
 import roleMiddleware from "../middlewares/role.middleware";
+import { uploadSingle, handleUploadError } from "../middlewares/upload.middleware";
 
-class UserRoute implements Routes {
+class PageRoute implements Routes {
   public path = "/pages";
   public router = Router();
   public pageController = new PageController();
@@ -35,7 +36,24 @@ class UserRoute implements Routes {
       roleMiddleware(['admin', 'superadmin']),
       this.pageController.deletePage
     ); // DELETE /pages/:id
+    
+    // Header image upload routes (admin only)
+    this.router.post(
+      `${this.path}/:id/header-image`,
+      authMiddleware,
+      roleMiddleware(['admin', 'superadmin']),
+      uploadSingle('headerImage'),
+      handleUploadError,
+      this.pageController.uploadPageHeaderImage
+    ); // POST /pages/:id/header-image
+    
+    this.router.delete(
+      `${this.path}/:id/header-image`,
+      authMiddleware,
+      roleMiddleware(['admin', 'superadmin']),
+      this.pageController.removePageHeaderImage
+    ); // DELETE /pages/:id/header-image
   }
 }
 
-export default UserRoute;
+export default PageRoute;

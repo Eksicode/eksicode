@@ -4,7 +4,14 @@ import { Routes } from '../interfaces/routes.interface';
 import authLimiter from '../middlewares/rateLimiter';
 import authMiddleware from '../middlewares/auth.middleware';
 import { validate } from '../middlewares/zod.middleware';
-import { registerSchema, loginSchema, resendVerificationSchema, verifyEmailSchema } from '../types/auth.zod';
+import { 
+  registerSchema, 
+  loginSchema, 
+  resendVerificationSchema, 
+  verifyEmailSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema 
+} from '../types/auth.zod';
 import UserService from '../services/user.service';
 
 class AuthRoute implements Routes {
@@ -45,6 +52,21 @@ class AuthRoute implements Routes {
       authLimiter,
       validate(resendVerificationSchema),
       this.authController.resendEmailVerification
+    );
+
+    // Password reset routes
+    this.router.post(
+      `${this.path}/forgot-password`,
+      authLimiter,
+      validate(forgotPasswordSchema),
+      this.authController.forgotPassword
+    );
+
+    this.router.post(
+      `${this.path}/reset-password`,
+      authLimiter,
+      validate(resetPasswordSchema),
+      this.authController.resetPassword
     );
     
     // Protected routes

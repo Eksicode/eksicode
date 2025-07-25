@@ -57,10 +57,19 @@ const MobileMenu = () => {
   const [nav, setNav] = useState(false);
   const [menu, setMenu] = useState<Menu[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"sayfalar" | "dashboard">(() =>
-    pathname.startsWith("/dashboard") ? "dashboard" : "sayfalar"
-  );
+  
+  // Initialize activeTab based on authentication status and pathname
+  const [activeTab, setActiveTab] = useState<"sayfalar" | "dashboard">(() => {
+    if (!isAuthenticated) return "sayfalar";
+    return pathname.startsWith("/dashboard") ? "dashboard" : "sayfalar";
+  });
 
+  // Update activeTab when authentication state changes
+  useEffect(() => {
+    if (!isAuthenticated && activeTab === "dashboard") {
+      setActiveTab("sayfalar");
+    }
+  }, [isAuthenticated, activeTab]);
 
   const handleNav = () => {
     setNav(!nav);
@@ -94,7 +103,6 @@ const MobileMenu = () => {
     fetchMenu();
   }, []);
 
-
   const currentMenu = activeTab === "sayfalar" ? menu : dashboardMenuItem;
 
   return (
@@ -119,30 +127,36 @@ const MobileMenu = () => {
             </div>
           </div>
 
-          {/* Tab Navigation */}
-          <div className="mx-5 flex justify-center border-b-2 gap-3 pb-1">
-            <button
-              onClick={() => setActiveTab("sayfalar")}
-              className={`px-4 py-2 rounded-md ${activeTab === "sayfalar"
-                ? "bg-eksiCode/60 hover:bg-eksiCode transition duration-300 ease-in-out"
-                : ""
-                }`}
-            >
-              Sayfalar
-            </button>
-
-            <button
-              onClick={() => setActiveTab("dashboard")}
-              className={`px-4 py-2 rounded-md ${activeTab === "dashboard"
-                ? "bg-eksiCode/60 hover:bg-eksiCode transition duration-300 ease-in-out"
-                : ""
-                }`}
-            >
-              Dashboard
-            </button>
+          {/* Tab Navigation - Only show dashboard tab if user is authenticated */}
+          <div className="mx-5 flex justify-center border-b-2 gap-3 pb-1 mt-4">
+            {isAuthenticated ? (
+              <>
+                <button
+                  onClick={() => setActiveTab("sayfalar")}
+                  className={`px-4 py-2 rounded-md ${activeTab === "sayfalar"
+                    ? "bg-eksiCode/60 hover:bg-eksiCode transition duration-300 ease-in-out"
+                    : ""
+                    }`}
+                >
+                  Sayfalar
+                </button>
+                <button
+                  onClick={() => setActiveTab("dashboard")}
+                  className={`px-4 py-2 rounded-md ${activeTab === "dashboard"
+                    ? "bg-eksiCode/60 hover:bg-eksiCode transition duration-300 ease-in-out"
+                    : ""
+                    }`}
+                >
+                  Dashboard
+                </button>
+              </>
+            ) : (
+              ""
+            )}
           </div>
+          
           {/* Menu List */}
-          <div className="flex flex-col mx-5 z-20 h-[350px] overflow-auto text-ellipsis">
+          <div className="flex flex-col mt-2 mx-5 z-20 h-[350px] overflow-auto text-ellipsis">
             <ul className="space-y-1">
               {error && (
                 <span className="text-sm font-semibold text-gray-500">

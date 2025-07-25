@@ -6,6 +6,7 @@ export interface TokenPayload {
 }
 
 export interface RequestWithUser extends Request {
-  user: User;
-  userId: number;
+  user?: User;
+  userId?: number;
+  token?: string;
 } 

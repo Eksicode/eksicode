@@ -2,9 +2,11 @@ import { PrismaClient, Post, Prisma } from "@prisma/client";
 import { isEmpty } from "../utils/util";
 import { HttpException } from "../exceptions/HttpException";
 import { IPost, PostStatusEnum } from "../interfaces/post.interface";
+import MediaService, { MediaUpload } from './media.service';
 
 class PostService {
   private prisma: PrismaClient;
+  private mediaService: MediaService;
 
   // Safe author selection - excludes sensitive data like passwords, emails, tokens, etc.
   // This ensures that no sensitive user information is exposed through post-related endpoints.
@@ -15,14 +17,22 @@ class PostService {
     username: true,
     firstName: true,
     lastName: true,
-    profilePicture: true,
+    profilePicture: {
+      select: {
+        id: true,
+        url: true,
+        altText: true,
+        type: true,
+      }
+    },
     verified: true,
     createdAt: true,
     updatedAt: true,
   };
 
-  constructor() {
-    this.prisma = new PrismaClient();
+  constructor(prisma?: PrismaClient, mediaService?: MediaService) {
+    this.prisma = prisma || new PrismaClient();
+    this.mediaService = mediaService || new MediaService(this.prisma);
   }
 
   /**
@@ -57,7 +67,14 @@ class PostService {
           id: true,
           title: true,
           content: true,
-          headerImage: true,
+          headerImage: {
+            select: {
+              id: true,
+              url: true,
+              altText: true,
+              type: true,
+            }
+          },
           authorId: true,
           author: {
             select: this.safeAuthorSelect,
@@ -219,6 +236,14 @@ public async searchPost(
         skip: Number(skip),
         take: Number(limit),
         include: {
+          headerImage: {
+            select: {
+              id: true,
+              url: true,
+              altText: true,
+              type: true,
+            }
+          },
           author: {
             select: this.safeAuthorSelect,
           },
@@ -267,6 +292,14 @@ public async searchPost(
       return await this.prisma.post.findUnique({
         where: { id },
         include: {
+          headerImage: {
+            select: {
+              id: true,
+              url: true,
+              altText: true,
+              type: true,
+            }
+          },
           author: {
             select: this.safeAuthorSelect,
           },
@@ -298,6 +331,14 @@ public async searchPost(
       return await this.prisma.post.findUnique({
         where: { slug },
         include: {
+          headerImage: {
+            select: {
+              id: true,
+              url: true,
+              altText: true,
+              type: true,
+            }
+          },
           author: {
             select: this.safeAuthorSelect,
           },
@@ -316,6 +357,110 @@ public async searchPost(
     } catch (error) {
       console.error(`Error fetching post with ID ${slug}:`, error);
       throw new Error("Unable to fetch post.");
+    }
+  }
+
+  /**
+   * Update post header image
+   */
+  public async updatePostHeaderImage(postId: number, file: MediaUpload, authorId: number): Promise<Post> {
+    try {
+      // Verify post exists and belongs to the author
+      const post = await this.prisma.post.findUnique({
+        where: { id: postId },
+        select: { authorId: true, headerImageId: true }
+      });
+
+      if (!post) {
+        throw new HttpException(404, 'Post not found');
+      }
+
+      if (post.authorId !== authorId) {
+        throw new HttpException(403, 'You can only update your own post');
+      }
+
+      // Upload new media
+      const media = await this.mediaService.uploadMedia(file);
+
+      // Update post with new header image
+      const updatedPost = await this.prisma.post.update({
+        where: { id: postId },
+        data: { headerImageId: media.id },
+        include: {
+          headerImage: true,
+          author: { select: this.safeAuthorSelect },
+          categories: true,
+          tags: true,
+        }
+      });
+
+      // Clean up old header image if it exists
+      if (post.headerImageId) {
+        try {
+          await this.mediaService.deleteMedia(post.headerImageId);
+        } catch (error) {
+          console.warn(`Failed to delete old header image ${post.headerImageId}:`, error);
+          // Don't throw error as the main operation succeeded
+        }
+      }
+
+      return updatedPost;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Failed to update post header image', { originalError: error });
+    }
+  }
+
+  /**
+   * Remove post header image
+   */
+  public async removePostHeaderImage(postId: number, authorId: number): Promise<Post> {
+    try {
+      // Verify post exists and belongs to the author
+      const post = await this.prisma.post.findUnique({
+        where: { id: postId },
+        select: { authorId: true, headerImageId: true }
+      });
+
+      if (!post) {
+        throw new HttpException(404, 'Post not found');
+      }
+
+      if (post.authorId !== authorId) {
+        throw new HttpException(403, 'You can only update your own post');
+      }
+
+      if (!post.headerImageId) {
+        throw new HttpException(400, 'Post has no header image to remove');
+      }
+
+      // Update post to remove header image
+      const updatedPost = await this.prisma.post.update({
+        where: { id: postId },
+        data: { headerImageId: null },
+        include: {
+          author: { select: this.safeAuthorSelect },
+          categories: true,
+          tags: true,
+        }
+      });
+
+      // Delete the media file
+      try {
+        await this.mediaService.deleteMedia(post.headerImageId);
+      } catch (error) {
+        console.warn(`Failed to delete header image ${post.headerImageId}:`, error);
+        // Don't throw error as the main operation succeeded
+      }
+
+      return updatedPost;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(500, 'Failed to remove post header image', { originalError: error });
     }
   }
 

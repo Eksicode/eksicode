@@ -85,7 +85,7 @@ export default function EmailVerificationPage() {
 
   if (verificationState.loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen py-5">
+      <div className="flex flex-col items-center justify-center py-5">
         <div className="w-8/12 max-w-md bg-white px-6 py-8 border border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg text-center">
           <LoadingAnimation />
           <h1 className="mt-4 text-xl mb-2">E-posta Doğrulanıyor...</h1>

@@ -1,14 +1,12 @@
 import nodemailer from 'nodemailer';
-import fs from 'fs';
-import path from 'path';
 import config from '../config';
+
 class EmailService {
   private transporter: nodemailer.Transporter;
-  private isConfigured: boolean;
 
   constructor() {
-    this.isConfigured = !!(config.email?.user && config.email?.password && config.email?.service);
-    if (this.isConfigured) {
+    // Initialize the transporter if email configuration is available
+    if (config.email?.user && config.email?.password && config.email?.host && config.email?.port) {
       this.transporter = nodemailer.createTransport({
         host: config.email.host,
         port: config.email.port,
@@ -21,35 +19,40 @@ class EmailService {
     }
   }
 
-  private async getTemplate(templateName: string, data: Record<string, string>): Promise<string> {
-    const templatePath = path.join(__dirname, '..', 'templates', `${templateName}.html`);
-    let template = fs.readFileSync(templatePath, 'utf-8');
-    for (const key in data) {
-      template = template.replace(new RegExp(`{{${key}}}`, 'g'), data[key]);
-    }
-    return template;
+  /**
+   * Check if email service is configured
+   */
+  public isConfigured(): boolean {
+    return !!this.transporter;
   }
-  
+
+  /**
+   * Send an email
+   */
   public async sendEmail(
     to: string,
     subject: string,
-    template: string,
-    data: Record<string, string>,
+    text: string,
+    html?: string,
     from: string = config.email?.user
   ): Promise<boolean> {
-    if (!this.isConfigured) {
+    if (!this.isConfigured()) {
       console.warn('Email configuration not found. Skipping email sending.');
       return false;
     }
 
     try {
-      const html = await this.getTemplate(template, data);
-      const mailOptions = {
+      const mailOptions: any = {
         to,
         from,
         subject,
-        html,
+        text,
       };
+
+      // Add HTML if provided
+      if (html) {
+        mailOptions.html = html;
+      }
 
       await this.transporter.sendMail(mailOptions);
       return true;
@@ -59,15 +62,61 @@ class EmailService {
     }
   }
 
+  /**
+   * Send a password reset email
+   */
   public async sendPasswordResetEmail(email: string, token: string): Promise<boolean> {
-    const resetUrl = `http://${config.frontendHost}/reset/${token}`;
-    return this.sendEmail(email, 'Password Reset', 'passwordReset', { resetUrl });
+    const resetUrl = `${config.frontendHost}/reset-password/${token}`;
+    const text = `
+    Bu mesajı alıyorsunuz çünkü siz (veya bir başkası) şifre sıfırlama isteğini gönderdiniz.
+    İşlemi tamamlamak için lütfen aşağıdaki bağlantıya tıklayın veya linki tarayıcınıza yapıştırın:
+
+    ${resetUrl}
+
+    Eğer bunu siz talep etmediyseniz, lütfen bu e-postayı dikkate almayın.
+
+    ------------------------------------------------------------------------------------
+    
+    You are receiving this because you (or someone else) have requested the reset of the password for your account.
+
+    Please click on the following link, or paste this into your browser to complete the process:
+
+    ${resetUrl}
+
+    If you did not request this, please ignore this email and your password will remain unchanged.`;
+
+    return this.sendEmail(email, 'Password Reset', text);
   }
 
-  public async sendVerificationEmail(email: string, token:string): Promise<boolean> {
-    const verificationUrl = `http://${config.frontendHost}/confirm-email/${token}`;
-    return this.sendEmail(email, 'Email Confirmation', 'emailVerification', { verificationUrl });
+  /**
+   * Send an email verification email
+   */
+  public async sendVerificationEmail(email: string, token: string): Promise<boolean> {
+    const verificationUrl = `${config.frontendHost}/confirm-email/${token}`;
+
+    const text = `
+    Bu mesajı alıyorsunuz çünkü siz (veya bir başkası) bir hesap oluşturdunuz.
+    İşlemi tamamlamak için lütfen aşağıdaki bağlantıya tıklayın veya bunu tarayıcınıza yapıştırın:
+
+    ${verificationUrl}
+
+    Eğer bunu siz talep etmediyseniz, lütfen bu e-postayı dikkate almayın.
+
+    ------------------------------------------------------------------------------------
+    
+    You are receiving this because you (or someone else) have created an account.
+    Please click on the following link, or paste this into your browser to complete the process:
+    
+    ${verificationUrl}
+
+    If you did not request this, please ignore this email.`;
+
+    return this.sendEmail(email, 'Email Confirmation', text);
   }
+
+
+
+
 }
 
 export default EmailService;
