@@ -3,50 +3,92 @@ import { BaseSeeder } from "./base-seeder";
 import { SEED_CONFIG, SeedValidator } from "../config/seed-config";
 import bcrypt from 'bcrypt';
 
+interface AdminUserData {
+  email: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  role: string;
+  verified: boolean;
+  emailVerified: boolean;
+}
+
 /**
  * Seeder for users
  */
 export class UserSeeder extends BaseSeeder {
   async seed(tx: Prisma.TransactionClient): Promise<void> {
-    this.logger.info("Seeding users...");
+    this.logger.info("Seeding admin users...");
 
-    // Get the admin role
-    const adminRole = await tx.role.findUnique({
-      where: { name: SEED_CONFIG.defaultAdmin.role }
+    // Get all roles for mapping
+    const roles = await tx.role.findMany({
+      select: { id: true, name: true }
     });
+    
+    const roleMap = new Map(roles.map(r => [r.name, r.id]));
 
-    if (!adminRole) {
-      throw new Error(`Admin role "${SEED_CONFIG.defaultAdmin.role}" not found`);
-    }
-
-    // Hash the admin password
+    // Hash the admin password once
     const hashedPassword = await bcrypt.hash(
       SEED_CONFIG.defaultAdminPassword, 
       SEED_CONFIG.bcryptRounds
     );
 
-    // Validate admin data
-    SeedValidator.validateRequired(SEED_CONFIG.defaultAdmin.email, 'Admin email');
-    SeedValidator.validateRequired(SEED_CONFIG.defaultAdmin.username, 'Admin username');
+    // Process each admin user
+    const createdUsers = await this.processBatch(
+      [...SEED_CONFIG.defaultUsers] as AdminUserData[],
+      async (userData: AdminUserData, tx) => {
+        return await this.createAdminUser(tx, userData, hashedPassword, roleMap);
+      },
+      3, // Small batch size for admin users
+      tx
+    );
+
+    this.logger.success(`Created/updated ${createdUsers.length} admin users`);
+
+    // Log created users for verification
+    for (const user of createdUsers) {
+      if (user && typeof user === 'object' && 'email' in user && 'username' in user) {
+        this.logger.info(`  - ${user.email} (${user.username}) with assigned role`);
+      }
+    }
+  }
+
+  private async createAdminUser(
+    tx: Prisma.TransactionClient,
+    userData: AdminUserData,
+    hashedPassword: string,
+    roleMap: Map<string, number>
+  ) {
+    // Validate user data
+    SeedValidator.validateRequired(userData.email, 'User email');
+    SeedValidator.validateRequired(userData.username, 'Username');
     
-    if (!SeedValidator.validateEmail(SEED_CONFIG.defaultAdmin.email)) {
-      throw new Error(`Invalid admin email: ${SEED_CONFIG.defaultAdmin.email}`);
+    if (!SeedValidator.validateEmail(userData.email)) {
+      throw new Error(`Invalid email: ${userData.email}`);
     }
     
-    if (!SeedValidator.validateUsername(SEED_CONFIG.defaultAdmin.username)) {
-      throw new Error(`Invalid admin username: ${SEED_CONFIG.defaultAdmin.username}`);
+    if (!SeedValidator.validateUsername(userData.username)) {
+      throw new Error(`Invalid username: ${userData.username}`);
     }
 
-    // Create admin user with new fields
-    const adminUser = await this.safeUpsert(
+    // Get role ID
+    const roleId = roleMap.get(userData.role);
+    if (!roleId) {
+      throw new Error(`Role "${userData.role}" not found`);
+    }
+
+    // Create/update user
+    const user = await this.safeUpsert(
       () => tx.user.upsert({
-        where: { email: SEED_CONFIG.defaultAdmin.email },
+        where: { email: userData.email },
         update: {
-          username: SEED_CONFIG.defaultAdmin.username,
+          username: userData.username,
           password: hashedPassword,
-          firstName: null,
-          lastName: null,
-          profilePictureId: null, // Will be set if media is available
+          firstName: userData.firstName || null,
+          lastName: userData.lastName || null,
+          verified: userData.verified,
+          emailVerified: userData.emailVerified,
+          profilePictureId: null,
           birthday: null,
           telegramId: null,
           phoneNumber: null,
@@ -58,15 +100,17 @@ export class UserSeeder extends BaseSeeder {
           facebook: null,
           userRoles: {
             deleteMany: {}, // Clear existing roles
-            create: [{ roleId: adminRole.id }]
+            create: [{ roleId }]
           }
         },
         create: {
-          email: SEED_CONFIG.defaultAdmin.email,
-          username: SEED_CONFIG.defaultAdmin.username,
+          email: userData.email,
+          username: userData.username,
           password: hashedPassword,
-          firstName: null,
-          lastName: null,
+          firstName: userData.firstName || null,
+          lastName: userData.lastName || null,
+          verified: userData.verified,
+          emailVerified: userData.emailVerified,
           profilePictureId: null,
           birthday: null,
           telegramId: null,
@@ -77,17 +121,22 @@ export class UserSeeder extends BaseSeeder {
           twitter: null,
           instagram: null,
           facebook: null,
-          emailVerified: true,
-          verified: true,
           userRoles: {
-            create: [{ roleId: adminRole.id }]
+            create: [{ roleId }]
+          }
+        },
+        include: {
+          userRoles: {
+            include: {
+              role: true
+            }
           }
         }
       }),
       'admin user',
-      SEED_CONFIG.defaultAdmin.email
+      userData.email
     );
 
-    this.logger.success(`Created/updated admin user: ${adminUser.email}`);
+    return user;
   }
 }

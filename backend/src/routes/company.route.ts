@@ -3,7 +3,7 @@ import CompanyController from "../controllers/company.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
 import { uploadSingle, handleUploadError } from "../middlewares/upload.middleware";
-import roleMiddleware from "../middlewares/role.middleware";
+import { roleMiddleware } from "../middlewares/role.middleware";
 
 class CompanyRoute implements Routes {
   public path = "/companies";

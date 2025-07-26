@@ -21,6 +21,8 @@ interface Menu {
   link: string;
   subMenu: number;
   icon: string;
+  adminLink?: string;
+  adminOnly?: boolean;
 }
 
 const IconMap = {
@@ -34,16 +36,16 @@ const IconMap = {
 };
 
 const dashboardMenuItem = [
-  { name: "Dashboard", icon: "MdDashboard", link: "/dashboard" },
-  { name: "Sayfalar", icon: "RiPagesLine", link: "/dashboard/sayfalar" },
-  { name: "Kullanıcılar", icon: "FaUsers", link: "/dashboard/kullanicilar" },
-  { name: "Posts", icon: "AiOutlineUnorderedList", link: "/dashboard/posts" },
-  { name: "Roller", icon: "FaShareNodes", link: "/dashboard/roller" },
-  { name: "Menüler", icon: "BsMenuButtonWideFill", link: "/dashboard/menuler" },
-  { name: "Etiketler", icon: "AiOutlineTag", link: "/dashboard/etiketler" },
-  { name: "Kaynaklar", icon: "GrResources", link: "/dashboard/kaynaklar" },
-  { name: "Kariyer", icon: "MdOutlineWorkOutline", link: "/dashboard/kariyer" },
-  { name: "Ayarlar", icon: "AiFillSetting", link: "/dashboard/ayarlar" },
+  { name: "Dashboard", icon: "MdDashboard", link: "/profile", adminLink: "/admin" },
+  { name: "Sayfalar", icon: "RiPagesLine", link: "/profile/sayfalar", adminLink: "/admin/sayfalar" },
+  { name: "Kullanıcılar", icon: "FaUsers", link: "/profile/kullanicilar", adminLink: "/admin/kullanicilar", adminOnly: true },
+  { name: "Posts", icon: "AiOutlineUnorderedList", link: "/profile/posts", adminLink: "/admin/posts" },
+  { name: "Roller", icon: "FaShareNodes", link: "/profile/roller", adminLink: "/admin/roller", adminOnly: true },
+  { name: "Menüler", icon: "BsMenuButtonWideFill", link: "/profile/menuler", adminLink: "/admin/menuler", adminOnly: true },
+  { name: "Etiketler", icon: "AiOutlineTag", link: "/profile/etiketler", adminLink: "/admin/etiketler" },
+  { name: "Kaynaklar", icon: "GrResources", link: "/profile/kaynaklar", adminLink: "/admin/kaynaklar" },
+  { name: "Kariyer", icon: "MdOutlineWorkOutline", link: "/profile/kariyer", adminLink: "/admin/kariyer" },
+  { name: "Ayarlar", icon: "AiFillSetting", link: "/profile/ayarlar", adminLink: "/admin/ayarlar" },
 ];
 
 const getIconComponent = (iconName: string): React.ComponentType | null => {
@@ -51,7 +53,7 @@ const getIconComponent = (iconName: string): React.ComponentType | null => {
 };
 
 const MobileMenu = () => {
-  const { user: authUser, isAuthenticated } = useAuth();
+  const { user: authUser, isAuthenticated, isAdmin } = useAuth();
   const pathname = usePathname();
   const [roleId, setRoleId] = useState<number | null>(null);
   const [nav, setNav] = useState(false);
@@ -61,7 +63,7 @@ const MobileMenu = () => {
   // Initialize activeTab based on authentication status and pathname
   const [activeTab, setActiveTab] = useState<"sayfalar" | "dashboard">(() => {
     if (!isAuthenticated) return "sayfalar";
-    return pathname.startsWith("/dashboard") ? "dashboard" : "sayfalar";
+    return pathname.startsWith("/admin") || pathname.startsWith("/profile") ? "dashboard" : "sayfalar";
   });
 
   // Update activeTab when authentication state changes
@@ -103,7 +105,9 @@ const MobileMenu = () => {
     fetchMenu();
   }, []);
 
-  const currentMenu = activeTab === "sayfalar" ? menu : dashboardMenuItem;
+  const currentMenu = activeTab === "sayfalar" ? menu : dashboardMenuItem.filter(item => 
+    !item.adminOnly || isAdmin
+  );
 
   return (
     <>
@@ -147,7 +151,7 @@ const MobileMenu = () => {
                     : ""
                     }`}
                 >
-                  Dashboard
+                  {isAdmin ? 'Admin' : 'Profil'}
                 </button>
               </>
             ) : (
@@ -173,13 +177,19 @@ const MobileMenu = () => {
                   const IconComponent = getIconComponent(
                     activeTab === "sayfalar" ? item.icon : (item as any).icon
                   );
-                  const isActive = pathname === item.link;
+                  
+                  // Determine the correct link based on user role for dashboard items
+                  const itemLink = activeTab === "dashboard" && (item as any).adminLink && isAdmin 
+                    ? (item as any).adminLink 
+                    : item.link;
+                  
+                  const isActive = pathname === itemLink;
 
                   return (
                     <li key={index}>
                       <Link
                         onClick={handleNav}
-                        href={item.link}
+                        href={itemLink}
                         className={`${isActive ? " text-eksiCode" : ""
                           } flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey`}
                       >

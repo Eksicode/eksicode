@@ -1,4 +1,4 @@
-import NewRole from "@/components/Dashboard/NewRole";
+import NewRole from "@/components/Admin/NewRole";
 
 
 const NewRoleForm = () => {

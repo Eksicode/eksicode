@@ -1,11 +1,13 @@
 import { PrismaClient, Role, Permission, Prisma } from '@prisma/client';
+import { isEmpty } from "../utils/util";
 import { HttpException } from '../exceptions/HttpException';
+import { prisma } from "../config/database";
 
 class RoleService {
   private prisma: PrismaClient;
 
-  constructor() {
-    this.prisma = new PrismaClient();
+  constructor(prismaInstance?: PrismaClient) {
+    this.prisma = prismaInstance || prisma;
   }
 
   public async createRole(name: string, description: string, permissionIds?: number[]): Promise<Role> {

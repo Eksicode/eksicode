@@ -40,11 +40,11 @@ export class CommentSeeder extends BaseSeeder {
 
     // Get the admin user to use as author
     const adminUser = await tx.user.findUnique({
-      where: { email: "admin@example.com" }
+      where: { email: SEED_CONFIG.defaultAdmin.email }
     });
 
     if (!adminUser) {
-      throw new Error("Admin user not found - ensure UserSeeder runs before CommentSeeder");
+      throw new Error(`Admin user not found (${SEED_CONFIG.defaultAdmin.email}) - ensure UserSeeder runs before CommentSeeder`);
     }
 
     // Get existing posts to use for comments

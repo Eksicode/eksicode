@@ -15,7 +15,7 @@ async function Menus() {
   return (
     <>
       <h1 className="mt-2">Menüler</h1>
-      <Navlink href="/dashboard/menuler/yeni" variant="primary">
+      <Navlink href="/admin/menuler/yeni" variant="primary">
         + Yeni Menü
       </Navlink>
 

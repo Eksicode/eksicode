@@ -11,7 +11,7 @@ export class PostLikeSeeder extends BaseSeeder {
 
     // Get the admin user to use for likes
     const adminUser = await tx.user.findUnique({
-      where: { email: "admin@example.com" }
+      where: { email: SEED_CONFIG.defaultAdmin.email }
     });
 
     if (!adminUser) {

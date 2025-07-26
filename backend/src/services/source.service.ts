@@ -1,8 +1,9 @@
-import { Prisma, PrismaClient, Source } from "@prisma/client";
+import { PrismaClient, Source } from "@prisma/client";
+import { prisma } from "../config/database";
 import { HttpException } from "../exceptions/HttpException";
 
 class SourceService {
-    private prisma = new PrismaClient();
+    private prisma = prisma;
 
     public async getAllSources(skip?: number, limit?: number) {
         try {

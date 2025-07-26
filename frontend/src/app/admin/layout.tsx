@@ -1,19 +1,20 @@
+import { AdminGuard } from "@/components/Guards/RoleGuard";
 import SideMenu from "@/components/Admin/SideMenu";
 import NextBreadcrumb from "@/components/NextBreadcrumb";
 
-export default function RootLayout({
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <AdminGuard>
       <div className="flex basis-3/4 py-5">
         <SideMenu />
 
         <div className="grid gap-4 content-start flex-wrap basis-full items-baseline">
           <NextBreadcrumb
-            homeElement={"Anasayfa"}
+            homeElement={"Admin Panel"}
             separator={<span> / </span>}
             activeClasses="text-slate-700 dark:text-eksiCode"
             containerClasses="flex"
@@ -28,6 +29,6 @@ export default function RootLayout({
           </div>
         </div>
       </div>
-    </>
+    </AdminGuard>
   );
 }

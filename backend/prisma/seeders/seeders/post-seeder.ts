@@ -24,11 +24,11 @@ export class PostSeeder extends BaseSeeder {
 
     // Find the admin user to get the correct authorId
     const adminUser = await tx.user.findUnique({
-      where: { email: "admin@example.com" }
+      where: { email: SEED_CONFIG.defaultAdmin.email }
     });
 
     if (!adminUser) {
-      throw new Error("Admin user not found - ensure UserSeeder runs before PostSeeder");
+      throw new Error(`Admin user not found (${SEED_CONFIG.defaultAdmin.email}) - ensure UserSeeder runs before PostSeeder`);
     }
 
     const createdPosts = await this.processBatch(

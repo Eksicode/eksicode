@@ -96,7 +96,7 @@ const SideMenu = () => {
           const userInfo = await authService.getCurrentUser(token);
           if (userInfo) {
             setUserDetails(userInfo);
-            setIsAdmin(userInfo.roles?.includes("admin") || userInfo.roles?.includes("superadmin") || false);
+            setIsAdmin(userInfo.data?.roles?.includes("admin") || userInfo.data?.roles?.includes("superadmin") || false);
           }
         } catch (error) {
           console.error("Error fetching user details:", error);

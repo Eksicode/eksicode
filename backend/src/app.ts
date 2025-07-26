@@ -10,6 +10,7 @@ import { Routes } from "./interfaces/routes.interface";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import EmailService from "./services/email.service";
 import config from "./config";
+import { prisma } from "./config/database";
 
 class App {
   public app: express.Application;
@@ -23,7 +24,9 @@ class App {
     this.env = config.nodeEnv || "development";
     this.port = config.port || 9000;
 
-    this.prisma = new PrismaClient();
+    // Use the singleton Prisma client to prevent multiple connections
+    this.prisma = prisma;
+    
     this.emailService = new EmailService();
     this.connectToDatabase();
     this.initializeMiddlewares();

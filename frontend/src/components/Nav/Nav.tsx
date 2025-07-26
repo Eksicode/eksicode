@@ -13,10 +13,11 @@ import Navlink from "@/components/Ui/NavLink";
 import MobileMenu from "@/components/Nav/MobileMenu";
 import ThemeSwitch from "@/components/Nav/ThemeSwitch";
 import Notifications from "@/components/Nav/Notifications";
+import { RoleBasedLink } from "@/components/Auth/RoleBasedComponents";
 import { useAuth } from "@/hooks/useAuth";
 
 const Nav = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
   return (
     <nav className="flex flex-wrap w-full justify-center z-50 sticky top-0 nav-sahdow bg-white dark:bg-DarkerGrey">
       {/* Menu */}
@@ -75,7 +76,7 @@ const Nav = () => {
               <>
                 <Navlink
                   variant="secondary"
-                  href="/dashboard/posts/yeni"
+                  href={isAdmin ? "/admin/posts/yeni" : "/profile/posts/yeni"}
                   style="hidden lg:flex"
                 >
                   <div className="flex items-center">

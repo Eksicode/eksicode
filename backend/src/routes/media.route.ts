@@ -1,9 +1,9 @@
 import { Router } from "express";
-import MediaController from "../controllers/media.controller";
+import { MediaController } from "../controllers/media.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
 import { uploadSingle, handleUploadError } from "../middlewares/upload.middleware";
-import roleMiddleware from "../middlewares/role.middleware";
+import { roleMiddleware } from "../middlewares/role.middleware";
 
 class MediaRoute implements Routes {
   public path = "/media";

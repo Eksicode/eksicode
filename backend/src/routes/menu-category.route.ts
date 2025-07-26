@@ -2,7 +2,7 @@ import { Router } from "express";
 import MenuCategoryController from "../controllers/menu-category.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
-import roleMiddleware from "../middlewares/role.middleware";
+import { roleMiddleware } from "../middlewares/role.middleware";
 
 class MenuCategoryRoute implements Routes {
   public path = "/menu-categories";

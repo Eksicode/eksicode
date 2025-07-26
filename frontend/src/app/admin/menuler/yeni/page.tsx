@@ -1,5 +1,5 @@
 import React from 'react';
-import NewMenu from '@/components/Dashboard/NewMenu';
+import NewMenu from '@/components/Admin/NewMenu';
 
 const NewMenuForm = () => {
     return (

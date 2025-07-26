@@ -5,11 +5,24 @@ export enum PostStatusEnum {
   ARCHIVED = 'ARCHIVED'
 }
 
+// Media interface to match backend
+export interface IMedia {
+  id: number;
+  url: string;
+  altText?: string;
+  type: string;
+}
+
 export interface IAuthor {
   id?: string;
   name?: string;
   username: string;
-  profilePicture: string | null;
+  profilePicture?: IMedia | null;
+  firstName?: string;
+  lastName?: string;
+  verified?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ITag {
@@ -38,5 +51,5 @@ export interface IPost {
   tags: ITag[];
   status: PostStatusEnum | string; // Can be enum or string from API
   approved?: boolean;
-  headerImage?: string;
+  headerImage?: IMedia | string;
 }

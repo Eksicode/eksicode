@@ -7,31 +7,31 @@ const notificationData = [
   {
     title: "Hoş geldiniz!",
     content: "Eksicode platformuna hoş geldiniz. İlk gönderinizi oluşturmaya başlayabilirsiniz.",
-    type: NotificationTypeEnum.yönetim,
+    type: NotificationTypeEnum.ADMIN,
     read: false
   },
   {
     title: "Yeni gönderi onaylandı",
     content: "Gönderiniz başarıyla onaylandı ve yayınlandı.",
-    type: NotificationTypeEnum.gönderi,
+    type: NotificationTypeEnum.POST,
     read: false
   },
   {
     title: "Yeni yorum",
     content: "Gönderinize yeni bir yorum yapıldı.",
-    type: NotificationTypeEnum.yorum,
+    type: NotificationTypeEnum.COMMENT,
     read: true
   },
   {
     title: "Sistem güncellemesi",
     content: "Platform güncellemeleri tamamlandı. Yeni özellikleri keşfedin.",
-    type: NotificationTypeEnum.yönetim,
+    type: NotificationTypeEnum.SYSTEM,
     read: false
   },
   {
     title: "Mesajınız var",
     content: "Size yeni bir mesaj gönderildi.",
-    type: NotificationTypeEnum.mesaj,
+    type: NotificationTypeEnum.MESSAGE,
     read: false
   }
 ];
@@ -45,7 +45,7 @@ export class NotificationSeeder extends BaseSeeder {
 
     // Get the admin user to use as both user and sender
     const adminUser = await tx.user.findUnique({
-      where: { email: "admin@example.com" }
+      where: { email: SEED_CONFIG.defaultAdmin.email }
     });
 
     if (!adminUser) {

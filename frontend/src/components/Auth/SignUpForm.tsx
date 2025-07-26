@@ -3,34 +3,13 @@ import React, { useState } from "react";
 import Button from "@/components/Ui/Button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Modal from "@/components/Ui/Modal";
-
-// Zod validation schema
-const signUpSchema = z.object({
-  username: z.string()
-    .regex(/^\S*$/, "Kullanıcı adında boşluk olmamalıdır")
-    .regex(/^\w*$/, "Kullanıcı adında özel karakter olmamalıdır")
-    .min(1, "Kullanıcı adı gereklidir"),
-  email: z.string()
-    .email("Geçerli bir e-posta adresi girin")
-    .min(1, "E-posta adresi gereklidir"),
-  password: z.string()
-    .regex(
-      /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      "Şifreniz: En az 8 Karakter, Bir Buyük Harf, Bir Kuçük Harf, Bir Sayı ve Bir Özel Karakter içermelidir"
-    )
-    .min(1, "Şifre gereklidir"),
-  passwordConfirmation: z.string().min(1, "Şifre tekrarı gereklidir"),
-  userAgreement: z.boolean().refine(val => val === true, "Kullanıcı sözleşmesi gereklidir"),
-}).refine((data) => data.password === data.passwordConfirmation, {
-  message: "Şifreler uyuşmuyor",
-  path: ["passwordConfirmation"],
-});
-
-type SignUpValues = z.infer<typeof signUpSchema>;
+import { registerSchema, RegisterFormData } from "@/types/auth.zod";
+import { useAuthError } from "@/hooks/useAuthError";
+import AuthErrorDisplay from "./AuthErrorDisplay";
+import authService from "@/services/authService";
 
 const SignUpForm: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -41,16 +20,15 @@ const SignUpForm: React.FC = () => {
     url: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-
-  const [isFormValid, setIsFormValid] = useState(false);
+  const { error, handleApiError, clearError } = useAuthError();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     reset,
-  } = useForm<SignUpValues>({
-    resolver: zodResolver(signUpSchema),
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
     mode: "onChange",
     defaultValues: {
       username: "",
@@ -63,27 +41,11 @@ const SignUpForm: React.FC = () => {
 
   const router = useRouter();
 
-  const onSubmit = async (values: SignUpValues) => {
+  const onSubmit = async (values: RegisterFormData) => {
     try {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            username: values.username,
-            email: values.email,
-            password: values.password,
-          }),
-        }
-      );
+      const result = await authService.register(values);
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (result.success) {
         reset();
         setModalContent({
           title: "Hesap oluşturuldu!",
@@ -92,21 +54,20 @@ const SignUpForm: React.FC = () => {
           url: "/auth/uye-giris",
         });
         setShowModal(true);
-        setIsFormValid(false);
+        clearError();
       } else {
-        let errorMessage = data.message || "Sunucu Hatası";
-        setIsFormValid(false);
+        handleApiError(result);
         setModalContent({
           title: "Hata!",
-          text: errorMessage,
+          text: result.message || "Sunucu Hatası",
           buttonText: "Tekrar Dene",
           url: "/auth/uye-ol",
         });
         setShowModal(true);
-        console.error(errorMessage);
       }
     } catch (error) {
       console.error("Form submission error:", error);
+      handleApiError({ message: "Beklenmeyen bir hata oluştu" });
     }
   };
 
@@ -118,6 +79,11 @@ const SignUpForm: React.FC = () => {
           EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.
         </span>
       </div>
+      
+      {/* Error Display */}
+      {error && (
+        <AuthErrorDisplay error={error} onClose={clearError} />
+      )}
       <form onSubmit={handleSubmit(onSubmit)} className="mb-2 text-sm font-normal text-gray-700 dark:text-white w-full">
         <div className="mb-6">
           <label htmlFor="username">Kullanıcı Adınız*</label>

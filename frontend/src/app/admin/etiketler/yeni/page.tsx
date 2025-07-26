@@ -1,4 +1,4 @@
-import NewTag from "@/components/Dashboard/NewTag";
+import NewTag from "@/components/Admin/NewTag";
 
 function NewTagForm() {
     return (

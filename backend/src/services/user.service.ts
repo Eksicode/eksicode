@@ -1,10 +1,56 @@
-import { PrismaClient, User, Role } from '@prisma/client';
+import { PrismaClient, User, Role, Permission, UserRole, UserPermission } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { HttpException } from '../exceptions/HttpException';
 import crypto from 'crypto';
 import EmailService from './email.service';
 import MediaService, { MediaUpload } from './media.service';
 import config from '../config';
+
+// Extended types for user with relations
+export interface UserWithRoles extends User {
+  userRoles: (UserRole & {
+    role: Role & {
+      permissions: Permission[];
+    };
+  })[];
+  userPermissions: (UserPermission & {
+    permission: Permission;
+  })[];
+  profilePicture?: {
+    id: number;
+    url: string;
+    altText: string | null;
+    type: string;
+  } | null;
+}
+
+export interface SafeUser {
+  id: number;
+  firstName: string | null;
+  lastName: string | null;
+  username: string;
+  profilePicture?: {
+    id: number;
+    url: string;
+    altText: string | null;
+    type: string;
+  } | null;
+  birthday: Date | null;
+  linkedin: string | null;
+  website: string | null;
+  github: string | null;
+  twitter: string | null;
+  instagram: string | null;
+  facebook: string | null;
+  verified: boolean;
+  emailVerified: boolean;
+  active: boolean;
+  lastLoginAt: Date | null;
+  roles: string[];
+  permissions: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 class UserService {
   private prisma: PrismaClient;
@@ -34,8 +80,24 @@ class UserService {
     facebook: true,
     verified: true,
     emailVerified: true,
-    roles: true,
-    permissions: true,
+    active: true,
+    lastLoginAt: true,
+    userRoles: {
+      where: { active: true },
+      include: {
+        role: {
+          include: {
+            permissions: true,
+          },
+        },
+      },
+    },
+    userPermissions: {
+      where: { active: true },
+      include: {
+        permission: true,
+      },
+    },
     createdAt: true,
     updatedAt: true,
   };
@@ -47,17 +109,55 @@ class UserService {
   }
 
   /**
+   * Transform user data to safe format with roles and permissions as string arrays
+   */
+  private transformUserToSafe(user: any): SafeUser {
+    const roles = user.userRoles?.map((ur: any) => ur.role.name) || [];
+    const permissions = [
+      ...(user.userRoles?.flatMap((ur: any) => ur.role.permissions.map((p: any) => p.name)) || []),
+      ...(user.userPermissions?.map((up: any) => up.permission.name) || [])
+    ];
+
+    // Remove duplicates from permissions
+    const uniquePermissions = [...new Set(permissions)];
+
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      profilePicture: user.profilePicture,
+      birthday: user.birthday,
+      linkedin: user.linkedin,
+      website: user.website,
+      github: user.github,
+      twitter: user.twitter,
+      instagram: user.instagram,
+      facebook: user.facebook,
+      verified: user.verified,
+      emailVerified: user.emailVerified,
+      active: user.active,
+      lastLoginAt: user.lastLoginAt,
+      roles: roles,
+      permissions: uniquePermissions,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
+
+  /**
    * Get all users
    */
   public async getAllUsers(
     skip: number,
     limit: number,
     summaryOnly: boolean
-  ): Promise<{ users: Partial<User>[]; count: number }> {
+  ): Promise<{ users: SafeUser[]; count: number }> {
     const [users, count] = await Promise.all([
       this.prisma.user.findMany({
         skip,
         take: limit,
+        where: { active: true }, // Only return active users
         select: summaryOnly
           ? {
               id: true,
@@ -70,19 +170,24 @@ class UserService {
                 }
               },
               verified: true,
+              active: true,
               createdAt: true,
             }
           : this.safeUserSelect,
       }),
-      this.prisma.user.count(),
+      this.prisma.user.count({ where: { active: true } }),
     ]);
-    return { users, count };
+
+    // Transform users to include roles and permissions as string arrays
+    const transformedUsers = users.map(user => this.transformUserToSafe(user as any));
+    
+    return { users: transformedUsers, count };
   }
 
   /**
    * Get user by ID
    */
-  async findUserById(id: number | string, requestingUserId?: number) {
+  async findUserById(id: number | string, requestingUserId?: number): Promise<SafeUser> {
     try {
       const userId = this.validateUserId(id);
       console.log(`Finding user by ID: ${userId}`);
@@ -107,7 +212,7 @@ class UserService {
         throw new HttpException(404, `User not found with ID: ${userId}`);
       }
   
-      return user;
+      return this.transformUserToSafe(user);
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -147,22 +252,43 @@ class UserService {
   private async isUserAdmin(userId: number): Promise<boolean> {
     try {
       const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-          roles: true,
-          permissions: true
-        }
+        where: { id: userId, active: true },
+        include: {
+          userRoles: {
+            where: { active: true },
+            include: {
+              role: {
+                include: {
+                  permissions: true,
+                },
+              },
+            },
+          },
+          userPermissions: {
+            where: { active: true },
+            include: {
+              permission: true,
+            },
+          },
+        },
       });
       
       if (!user) return false;
       
       // Check if user has admin or superadmin role
-      const hasAdminRole = user.roles?.some(role => ['admin', 'superadmin'].includes(role));
+      const hasAdminRole = user.userRoles?.some(userRole => 
+        ['admin', 'superadmin'].includes(userRole.role.name)
+      );
       if (hasAdminRole) return true;
       
       // Check if user has admin permissions
       const adminPermissions = ['admin.access', 'admin.manage'];
-      const hasAdminPermission = user.permissions?.some(permission => 
+      const allPermissions = [
+        ...(user.userRoles?.flatMap(ur => ur.role.permissions.map(p => p.name)) || []),
+        ...(user.userPermissions?.map(up => up.permission.name) || [])
+      ];
+      
+      const hasAdminPermission = allPermissions.some(permission => 
         adminPermissions.includes(permission)
       );
       
@@ -179,7 +305,8 @@ class UserService {
   private async fetchUserWithDetails(userId: number) {
     return this.prisma.user.findUnique({
       where: {
-        id: userId
+        id: userId,
+        active: true,
       },
       select: {
         id: true,
@@ -206,7 +333,24 @@ class UserService {
         facebook: true,
         verified: true,
         emailVerified: true,
-        roles: true,  // This will return string[] based on your schema
+        active: true,
+        lastLoginAt: true,
+        userRoles: {
+          where: { active: true },
+          include: {
+            role: {
+              include: {
+                permissions: true,
+              },
+            },
+          },
+        },
+        userPermissions: {
+          where: { active: true },
+          include: {
+            permission: true,
+          },
+        },
         createdAt: true,
         updatedAt: true
       }
@@ -220,38 +364,77 @@ class UserService {
     const existingUser = await this.prisma.user.findFirst({
       where: {
         OR: [
-          { email: email },
-          { username: username },
+          { email: email.toLowerCase() },
+          { username: username.toLowerCase() },
         ],
       },
     });
 
-    if (existingUser?.email === email) {
+    if (existingUser?.email === email.toLowerCase()) {
       throw new HttpException(400, 'Email already in use');
     }
-    if (existingUser?.username === username) {
+    if (existingUser?.username === username.toLowerCase()) {
       throw new HttpException(400, 'Username already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
     const emailToken = crypto.randomBytes(32).toString('hex');
     const hashedEmailToken = await bcrypt.hash(emailToken, 10);
 
-    // Create user with default role
+    // Create user
     const user = await this.prisma.user.create({
       data: {
-        email,
+        email: email.toLowerCase(),
         password: hashedPassword,
-        username: String(username),
+        username: username.toLowerCase(),
         emailVerificationToken: hashedEmailToken,
         emailVerified: false,
-        roles: ['user'], // Default role is already set in the schema
+        active: true,
       },
     });
+
+    // Assign default user role
+    await this.assignDefaultRole(user.id);
     
     await this.emailService.sendVerificationEmail(email, emailToken);
 
     return user;
+  }
+
+  /**
+   * Assign default role to new user
+   */
+  private async assignDefaultRole(userId: number): Promise<void> {
+    try {
+      // Find or create default user role
+      let userRole = await this.prisma.role.findUnique({
+        where: { name: 'user' },
+      });
+
+      if (!userRole) {
+        userRole = await this.prisma.role.create({
+          data: {
+            name: 'user',
+            description: 'Default user role',
+            level: 100, // Lowest level
+            active: true,
+          },
+        });
+      }
+
+      // Assign role to user
+      await this.prisma.userRole.create({
+        data: {
+          userId,
+          roleId: userRole.id,
+          assignedAt: new Date(),
+          active: true,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to assign default role:', error);
+      // Don't throw error as it's not critical for user creation
+    }
   }
 
   /**
@@ -281,9 +464,10 @@ class UserService {
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [
-          { email: userInfo },
-          { username: userInfo },
-        ]
+          { email: userInfo.toLowerCase() },
+          { username: userInfo.toLowerCase() },
+        ],
+        active: true, // Only find active users
       },
     });
 
@@ -299,59 +483,81 @@ class UserService {
     if (!email) {
       throw new HttpException(400, 'Email must be provided');
     }
-    console.log(`Finding user by email: ${email}`); // Add logging
+    console.log(`Finding user by email: ${email}`);
     const user = await this.prisma.user.findUnique({
       where: {
-        email: email,
+        email: email.toLowerCase(),
+        active: true, // Only find active users
       },
     });
-    console.log(`User found: ${user ? 'Yes' : 'No'}`); // Add logging
+    console.log(`User found: ${user ? 'Yes' : 'No'}`);
     return user;
   }
 
 
-  public async assignRoleToUser(userId: number, roleName: string): Promise<void> {
-    // Validate role name
-    if (!['user', 'admin', 'superadmin', 'moderator'].includes(roleName)) {
-      throw new HttpException(400, 'Invalid role name');
+  /**
+   * Assign a role to a user
+   */
+  public async assignRoleToUser(userId: number, roleName: string, assignedById?: number): Promise<void> {
+    // Find the role
+    const role = await this.prisma.role.findUnique({
+      where: { name: roleName, active: true },
+    });
+
+    if (!role) {
+      throw new HttpException(400, `Role '${roleName}' not found`);
     }
 
+    // Check if user exists
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { roles: true }
+      where: { id: userId, active: true },
     });
-    
+
     if (!user) {
       throw new HttpException(404, 'User not found');
     }
-    
+
     // Check if user already has this role
-    if (user.roles.includes(roleName)) {
+    const existingUserRole = await this.prisma.userRole.findFirst({
+      where: {
+        userId,
+        roleId: role.id,
+        active: true,
+      },
+    });
+
+    if (existingUserRole) {
       return; // Role already assigned
     }
-    
-    // Add the new role to the array
-    await this.prisma.user.update({
-      where: { id: userId },
+
+    // Assign the role
+    await this.prisma.userRole.create({
       data: {
-        roles: {
-          push: roleName
-        }
-      }
+        userId,
+        roleId: role.id,
+        assignedById,
+        assignedAt: new Date(),
+        active: true,
+      },
     });
   }
 
+  /**
+   * Get user roles
+   */
   public async getUserRoles(userId: number): Promise<string[]> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { roles: true }
+    const userRoles = await this.prisma.userRole.findMany({
+      where: { 
+        userId, 
+        active: true,
+        role: { active: true }
+      },
+      include: {
+        role: true,
+      },
     });
-    
-    if (!user) {
-      throw new HttpException(404, 'User not found');
-    }
-    
-    return user.roles;
+
+    return userRoles.map(ur => ur.role.name);
   }
 
   /**
@@ -359,25 +565,37 @@ class UserService {
    */
   public async removeRoleFromUser(userId: number, roleName: string): Promise<void> {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-        select: { roles: true }
+      // Find the role
+      const role = await this.prisma.role.findUnique({
+        where: { name: roleName },
       });
-      
-      if (!user) {
-        throw new HttpException(404, 'User not found');
+
+      if (!role) {
+        throw new HttpException(400, `Role '${roleName}' not found`);
       }
-      
-      // Filter out the role to remove
-      const updatedRoles = user.roles.filter(role => role !== roleName);
-      
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          roles: updatedRoles
-        }
+
+      // Find and deactivate the user role
+      const userRole = await this.prisma.userRole.findFirst({
+        where: {
+          userId,
+          roleId: role.id,
+          active: true,
+        },
+      });
+
+      if (!userRole) {
+        return; // Role not assigned to user
+      }
+
+      // Deactivate instead of deleting for audit trail
+      await this.prisma.userRole.update({
+        where: { id: userRole.id },
+        data: { active: false },
       });
     } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new HttpException(500, 'Failed to remove role from user', { originalError: error });
     }
   }
@@ -387,89 +605,175 @@ class UserService {
    */
   public async hasPermission(userId: number, permissionName: string): Promise<boolean> {
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { permissions: true, roles: true }
+      where: { id: userId, active: true },
+      include: {
+        userRoles: {
+          where: { active: true },
+          include: {
+            role: {
+              include: {
+                permissions: true,
+              },
+            },
+          },
+        },
+        userPermissions: {
+          where: { active: true },
+          include: {
+            permission: true,
+          },
+        },
+      },
     });
-    
+
     if (!user) return false;
 
     // Check direct permissions
-    if (user.permissions.includes(permissionName)) return true;
+    const hasDirectPermission = user.userPermissions.some(up => 
+      up.permission.name === permissionName
+    );
+    if (hasDirectPermission) return true;
+
+    // Check role-based permissions
+    const hasRolePermission = user.userRoles.some(ur =>
+      ur.role.permissions.some(p => p.name === permissionName)
+    );
+    if (hasRolePermission) return true;
 
     // Superadmin has all permissions
-    if (user.roles.includes('superadmin')) return true;
+    const isSuperAdmin = user.userRoles.some(ur => ur.role.name === 'superadmin');
+    if (isSuperAdmin) return true;
 
     // Admin has most permissions except superadmin-specific ones
-    if (user.roles.includes('admin') && !permissionName.startsWith('superadmin.')) return true;
+    const isAdmin = user.userRoles.some(ur => ur.role.name === 'admin');
+    if (isAdmin && !permissionName.startsWith('superadmin.')) return true;
 
     return false;
   }
 
   /**
-   * Get all permissions for a user
+   * Get all permissions for a user (both direct and role-based)
    */
   public async getUserPermissions(userId: number): Promise<string[]> {
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { permissions: true }
+      where: { id: userId, active: true },
+      include: {
+        userRoles: {
+          where: { active: true },
+          include: {
+            role: {
+              include: {
+                permissions: true,
+              },
+            },
+          },
+        },
+        userPermissions: {
+          where: { active: true },
+          include: {
+            permission: true,
+          },
+        },
+      },
     });
-    
-    return user?.permissions || [];
+
+    if (!user) return [];
+
+    // Collect permissions from roles
+    const rolePermissions = user.userRoles.flatMap(ur =>
+      ur.role.permissions.map(p => p.name)
+    );
+
+    // Collect direct permissions
+    const directPermissions = user.userPermissions.map(up => up.permission.name);
+
+    // Combine and remove duplicates
+    return [...new Set([...rolePermissions, ...directPermissions])];
   }
-  
+
   /**
-   * Assign a permission to a user
+   * Assign a permission directly to a user
    */
-  public async assignPermissionToUser(userId: number, permissionName: string): Promise<void> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { permissions: true }
+  public async assignPermissionToUser(userId: number, permissionName: string, assignedById?: number): Promise<void> {
+    // Find the permission
+    const permission = await this.prisma.permission.findUnique({
+      where: { name: permissionName, active: true },
     });
-    
+
+    if (!permission) {
+      throw new HttpException(400, `Permission '${permissionName}' not found`);
+    }
+
+    // Check if user exists
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId, active: true },
+    });
+
     if (!user) {
       throw new HttpException(404, 'User not found');
     }
-    
+
     // Check if user already has this permission
-    if (user.permissions.includes(permissionName)) {
+    const existingUserPermission = await this.prisma.userPermission.findFirst({
+      where: {
+        userId,
+        permissionId: permission.id,
+        active: true,
+      },
+    });
+
+    if (existingUserPermission) {
       return; // Permission already assigned
     }
-    
-    // Add the new permission to the array
-    await this.prisma.user.update({
-      where: { id: userId },
+
+    // Assign the permission
+    await this.prisma.userPermission.create({
       data: {
-        permissions: {
-          push: permissionName
-        }
-      }
+        userId,
+        permissionId: permission.id,
+        assignedById,
+        assignedAt: new Date(),
+        active: true,
+      },
     });
   }
-  
+
   /**
    * Remove a permission from a user
    */
   public async removePermissionFromUser(userId: number, permissionName: string): Promise<void> {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-        select: { permissions: true }
+      // Find the permission
+      const permission = await this.prisma.permission.findUnique({
+        where: { name: permissionName },
       });
-      
-      if (!user) {
-        throw new HttpException(404, 'User not found');
+
+      if (!permission) {
+        throw new HttpException(400, `Permission '${permissionName}' not found`);
       }
-      
-      // Filter out the permission to remove
-      const updatedPermissions = user.permissions.filter(permission => permission !== permissionName);
-      
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          permissions: updatedPermissions
-        }
+
+      // Find and deactivate the user permission
+      const userPermission = await this.prisma.userPermission.findFirst({
+        where: {
+          userId,
+          permissionId: permission.id,
+          active: true,
+        },
+      });
+
+      if (!userPermission) {
+        return; // Permission not assigned to user
+      }
+
+      // Deactivate instead of deleting for audit trail
+      await this.prisma.userPermission.update({
+        where: { id: userPermission.id },
+        data: { active: false },
       });
     } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new HttpException(500, 'Failed to remove permission from user', { originalError: error });
     }
   }
@@ -483,7 +787,8 @@ class UserService {
       const users = await this.prisma.user.findMany({
         where: {
           emailVerificationToken: { not: null },
-          emailVerified: false
+          emailVerified: false,
+          active: true,
         }
       });
 
@@ -525,11 +830,15 @@ class UserService {
   public async resendEmailVerification(email: string): Promise<{ success: boolean; message: string }> {
     try {
       const user = await this.prisma.user.findUnique({
-        where: { email }
+        where: { email: email.toLowerCase() }
       });
 
       if (!user) {
         throw new HttpException(404, 'User not found');
+      }
+
+      if (!user.active) {
+        throw new HttpException(400, 'User account is inactive');
       }
 
       if (user.emailVerified) {
@@ -569,11 +878,18 @@ class UserService {
   public async initiatePasswordReset(email: string): Promise<{ success: boolean; message: string }> {
     try {
       const user = await this.prisma.user.findUnique({
-        where: { email }
+        where: { email: email.toLowerCase() }
       });
 
       if (!user) {
         // Don't reveal if email exists for security reasons
+        return {
+          success: true,
+          message: 'If the email exists, a password reset link has been sent'
+        };
+      }
+
+      if (!user.active) {
         return {
           success: true,
           message: 'If the email exists, a password reset link has been sent'
@@ -616,7 +932,8 @@ class UserService {
       const users = await this.prisma.user.findMany({
         where: {
           resetPasswordToken: { not: null },
-          resetPasswordExpires: { gte: new Date() }
+          resetPasswordExpires: { gte: new Date() },
+          active: true,
         }
       });
 
@@ -627,7 +944,7 @@ class UserService {
           
           if (isTokenValid) {
             // Hash new password
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            const hashedPassword = await bcrypt.hash(newPassword, 12);
 
             // Update user password and clear reset token
             await this.prisma.user.update({

@@ -2,7 +2,7 @@ import { Router } from "express";
 import PageController from "../controllers/page.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
-import roleMiddleware from "../middlewares/role.middleware";
+import { roleMiddleware } from "../middlewares/role.middleware";
 import { uploadSingle, handleUploadError } from "../middlewares/upload.middleware";
 
 class PageRoute implements Routes {

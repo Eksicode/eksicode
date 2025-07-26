@@ -31,13 +31,28 @@ export const PostCard: React.FC<PostCardProps> = ({
     createdAt
   } = post;
 
+  // Handle profile picture - can be Media object or string
+  const getProfilePictureUrl = () => {
+    if (author.profilePicture) {
+      // If it's a Media object, use the url property
+      if (typeof author.profilePicture === 'object' && author.profilePicture.url) {
+        return author.profilePicture.url;
+      }
+      // If it's a string, use it directly
+      if (typeof author.profilePicture === 'string') {
+        return author.profilePicture;
+      }
+    }
+    return ppImage;
+  };
+
   return (
     <div className="py-4 w-full px-1 mb-3 bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey rounded-lg border">
       <div className="flex flex-wrap basis-full lg:basis-3/4 md:mx-3 mx-2 justify-between">
         {/* Author Info */}
         <div className="flex items-center space-x-4 content-start">
           <Image
-            src={author.profilePicture || ppImage}
+            src={getProfilePictureUrl()}
             alt={`${author.username}'s avatar`}
             className="rounded-full border-2"
             width={40}

@@ -7,7 +7,7 @@ function Notifications() {
     <>
       <Link
         className="inline-block relative mx-1"
-        href="/dashboard/bildirimler"
+        href="/profile/bildirimler"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

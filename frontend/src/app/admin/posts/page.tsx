@@ -21,7 +21,7 @@ async function DashboardPosts() {
           <h1 className="mt-2 w-full">Posts</h1>
         </div>
         <div>
-          <Navlink href="/dashboard/sayfalar/yeni" variant="primary">
+          <Navlink href="/admin/posts/yeni" variant="primary">
             + Yeni Post
           </Navlink>
         </div>

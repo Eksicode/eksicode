@@ -6,6 +6,8 @@ import { PrismaClient } from '@prisma/client';
 import EmailService from './services/email.service';
 import UserService from './services/user.service';
 import MediaService from './services/media.service';
+import AuthService from './services/auth.service';
+import RolePermissionService from './services/rolePermission.service';
 
 import IndexRoute from './routes/index.route';
 import UserRoute from './routes/user.route';
@@ -38,8 +40,11 @@ if (cluster.isPrimary) {
   });
 } else {
     const app = new App((prisma: PrismaClient, emailService: EmailService) => {
+        // Initialize services with dependencies
         const mediaService = new MediaService(prisma);
         const userService = new UserService(prisma, emailService, mediaService);
+        const authService = new AuthService(prisma, emailService);
+        const rolePermissionService = new RolePermissionService(prisma);
         
         return [
             new IndexRoute(),
@@ -52,9 +57,9 @@ if (cluster.isPrimary) {
             new PostRoute(),
             new JobRoute(),
             new SourceRoute(),
-            new RoleRoute(),
-            new PermissionRoute(),
-            new AuthRoute(userService),
+            new RoleRoute(rolePermissionService, userService),
+            new PermissionRoute(rolePermissionService, userService),
+            new AuthRoute(authService, userService),
             new MediaRoute(),
             new CompanyRoute()
         ];

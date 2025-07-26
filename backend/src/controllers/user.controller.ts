@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import UserService from "../services/user.service";
 import MediaService from "../services/media.service";
 import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
-import jwt from 'jsonwebtoken';
-import config from '../config';
 import { HttpException } from '../exceptions/HttpException';
 
 interface MulterRequest extends Request {
@@ -70,6 +68,17 @@ class UserController {
 
   public createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      // Check if requesting user has admin privileges
+      const requestingUserId = req.userId;
+      if (!requestingUserId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.users.create');
+      if (!hasAdminPermission) {
+        throw new HttpException(403, 'Admin access required to create users');
+      }
+
       const { email, password, username } = req.body;
       const user = await this.userService.createUser(email, password, username);
       
@@ -79,7 +88,8 @@ class UserController {
           id: user.id,
           email: user.email,
           username: user.username,
-          emailVerified: user.emailVerified
+          emailVerified: user.emailVerified,
+          active: user.active
         },
         message: "User created successfully"
       });
@@ -91,17 +101,28 @@ class UserController {
   public updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
-      const userId = req.userId;
+      const requestingUserId = req.userId;
 
       if (isNaN(id)) {
         throw new HttpException(400, 'Invalid user ID');
       }
 
-      if (id !== userId) {
-        throw new HttpException(403, "You can only update your own profile");
+      if (!requestingUserId) {
+        throw new HttpException(401, 'Authentication required');
       }
 
-      const user = await this.userService.updateUser(id, req.body);
+      // Check if user can update this profile
+      if (id !== requestingUserId) {
+        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.users.update');
+        if (!hasAdminPermission) {
+          throw new HttpException(403, "You can only update your own profile");
+        }
+      }
+
+      // Filter out sensitive fields that shouldn't be updated directly
+      const { password, email, emailVerified, emailVerificationToken, resetPasswordToken, resetPasswordExpires, ...updateData } = req.body;
+
+      const user = await this.userService.updateUser(id, updateData);
       
       res.status(200).json({
         success: true,
@@ -116,22 +137,31 @@ class UserController {
   public deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const id = parseInt(req.params.id, 10);
-      const userId = req.userId;
+      const requestingUserId = req.userId;
 
       if (isNaN(id)) {
         throw new HttpException(400, 'Invalid user ID');
       }
 
-      if (id !== userId) {
-        throw new HttpException(403, "You can only delete your own profile");
+      if (!requestingUserId) {
+        throw new HttpException(401, 'Authentication required');
       }
 
-      const user = await this.userService.deleteUser(id);
+      // Check if user can delete this profile
+      if (id !== requestingUserId) {
+        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.users.delete');
+        if (!hasAdminPermission) {
+          throw new HttpException(403, "You can only delete your own profile");
+        }
+      }
+
+      // Instead of deleting, we'll deactivate the user
+      const user = await this.userService.updateUser(id, { active: false });
       
       res.status(200).json({
         success: true,
         data: user,
-        message: "User deleted successfully"
+        message: "User deactivated successfully"
       });
     } catch (error) {
       next(error);
@@ -192,6 +222,135 @@ class UserController {
           profilePicture: null
         },
         message: "Profile picture removed successfully"
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  // Role management endpoints
+  public assignRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = parseInt(req.params.userId, 10);
+      const { roleName } = req.body;
+      const requestingUserId = req.userId;
+
+      if (!requestingUserId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      if (isNaN(userId)) {
+        throw new HttpException(400, 'Invalid user ID');
+      }
+
+      // Check admin permission
+      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.roles.assign');
+      if (!hasAdminPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      await this.userService.assignRoleToUser(userId, roleName, requestingUserId);
+
+      res.status(200).json({
+        success: true,
+        message: `Role '${roleName}' assigned successfully`
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public removeRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = parseInt(req.params.userId, 10);
+      const { roleName } = req.body;
+      const requestingUserId = req.userId;
+
+      if (!requestingUserId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      if (isNaN(userId)) {
+        throw new HttpException(400, 'Invalid user ID');
+      }
+
+      // Check admin permission
+      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.roles.remove');
+      if (!hasAdminPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      await this.userService.removeRoleFromUser(userId, roleName);
+
+      res.status(200).json({
+        success: true,
+        message: `Role '${roleName}' removed successfully`
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getUserRoles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = parseInt(req.params.userId, 10);
+      const requestingUserId = req.userId;
+
+      if (!requestingUserId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      if (isNaN(userId)) {
+        throw new HttpException(400, 'Invalid user ID');
+      }
+
+      // Check if user can view roles (own profile or admin)
+      if (userId !== requestingUserId) {
+        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.roles.view');
+        if (!hasAdminPermission) {
+          throw new HttpException(403, 'Access denied');
+        }
+      }
+
+      const roles = await this.userService.getUserRoles(userId);
+
+      res.status(200).json({
+        success: true,
+        data: roles,
+        message: 'User roles retrieved successfully'
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getUserPermissions = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = parseInt(req.params.userId, 10);
+      const requestingUserId = req.userId;
+
+      if (!requestingUserId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      if (isNaN(userId)) {
+        throw new HttpException(400, 'Invalid user ID');
+      }
+
+      // Check if user can view permissions (own profile or admin)
+      if (userId !== requestingUserId) {
+        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.permissions.view');
+        if (!hasAdminPermission) {
+          throw new HttpException(403, 'Access denied');
+        }
+      }
+
+      const permissions = await this.userService.getUserPermissions(userId);
+
+      res.status(200).json({
+        success: true,
+        data: permissions,
+        message: 'User permissions retrieved successfully'
       });
     } catch (error) {
       next(error);

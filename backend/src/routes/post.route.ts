@@ -14,30 +14,18 @@ class PostRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.postController.getAllPosts); // GET /Posts
-    // this.router.get(`${this.path}/:id`, this.pageController.getPageById); // GET /Posts/:id
-    this.router.get(
-      `${this.path}/search`,
-      this.postController.getPostsBySearch
-    ); // GET /Posts/search
-    this.router.get(`${this.path}/:slug`, this.postController.getPostBySlug); // GET /Posts/:slug
-    this.router.post(
-      `${this.path}`,
-      authMiddleware,
-      this.postController.createPost
-    ); // POST /Posts
-    this.router.put(
-      `${this.path}/:id`,
-      authMiddleware,
-      this.postController.updatePost
-    ); // PUT /Posts/:id
-    this.router.delete(
-      `${this.path}/:id`,
-      authMiddleware,
-      this.postController.deletePost
-    ); // DELETE /Posts/:id
+    // Public routes
+    this.router.get(`${this.path}`, this.postController.getAllPosts); // GET /posts
+    this.router.get(`${this.path}/search`, this.postController.getPostsBySearch); // GET /posts/search
+    this.router.get(`${this.path}/:slug`, this.postController.getPostBySlug); // GET /posts/:slug
+    this.router.get(`${this.path}/stats/overview`, this.postController.getPostStats); // GET /posts/stats/overview
     
-    // Header image upload routes
+    // Protected routes (require authentication)
+    this.router.post(`${this.path}`, authMiddleware, this.postController.createPost); // POST /posts
+    this.router.put(`${this.path}/:id`, authMiddleware, this.postController.updatePost); // PUT /posts/:id
+    this.router.delete(`${this.path}/:id`, authMiddleware, this.postController.deletePost); // DELETE /posts/:id
+    
+    // Header image upload routes (require authentication)
     this.router.post(
       `${this.path}/:id/header-image`,
       authMiddleware,

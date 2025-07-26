@@ -12,6 +12,7 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema 
 } from '../types/auth.zod';
+import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
 
 class AuthRoute implements Routes {
@@ -19,8 +20,8 @@ class AuthRoute implements Routes {
   public router = Router();
   public authController: AuthController;
 
-  constructor(userService: UserService) {
-    this.authController = new AuthController(userService);
+  constructor(authService: AuthService, userService: UserService) {
+    this.authController = new AuthController(authService, userService);
     this.initializeRoutes();
   }
 

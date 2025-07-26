@@ -20,7 +20,7 @@ async function Pages() {
           <h1 className="mt-2">Sayfalar</h1>
         </div>
         <div>
-          <Navlink href="/dashboard/sayfalar/yeni" variant="primary">
+          <Navlink href="/admin/sayfalar/yeni" variant="primary">
             + Yeni Sayfa
           </Navlink>
         </div>

@@ -4,17 +4,11 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/Ui/Button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Modal from "@/components/Ui/Modal";
-
-// Zod validation schema
-const resendSchema = z.object({
-  email: z.string()
-    .email("Geçerli bir e-posta adresi girin")
-    .min(1, "E-posta adresi gereklidir"),
-});
-
-type ResendValues = z.infer<typeof resendSchema>;
+import { resendVerificationSchema, ResendVerificationFormData } from "@/types/auth.zod";
+import { useAuthError } from "@/hooks/useAuthError";
+import AuthErrorDisplay from "@/components/Auth/AuthErrorDisplay";
+import authService from "@/services/authService";
 
 export default function ResendVerificationPage() {
   const [showModal, setShowModal] = useState(false);
@@ -25,14 +19,15 @@ export default function ResendVerificationPage() {
     url: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const { error, handleApiError, clearError } = useAuthError();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     reset,
-  } = useForm<ResendValues>({
-    resolver: zodResolver(resendSchema),
+  } = useForm<ResendVerificationFormData>({
+    resolver: zodResolver(resendVerificationSchema),
     mode: "onChange",
     defaultValues: {
       email: "",
@@ -41,27 +36,13 @@ export default function ResendVerificationPage() {
 
   const router = useRouter();
 
-  const onSubmit = async (values: ResendValues) => {
+  const onSubmit = async (values: ResendVerificationFormData) => {
     setIsLoading(true);
     
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/resend-verification`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            email: values.email,
-          }),
-        }
-      );
+      const result = await authService.resendVerification(values);
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (result.success) {
         reset();
         setModalContent({
           title: "E-posta Gönderildi!",
@@ -70,19 +51,20 @@ export default function ResendVerificationPage() {
           url: "/auth/uye-giris",
         });
         setShowModal(true);
+        clearError();
       } else {
-        let errorMessage = data.message || "Sunucu Hatası";
+        handleApiError(result);
         setModalContent({
           title: "Hata!",
-          text: errorMessage,
+          text: result.message || "Sunucu Hatası",
           buttonText: "Tekrar Dene",
           url: "",
         });
         setShowModal(true);
-        console.error(errorMessage);
       }
     } catch (error) {
       console.error("Resend verification error:", error);
+      handleApiError({ message: "Beklenmeyen bir hata oluştu" });
       setModalContent({
         title: "Hata!",
         text: "Bir hata oluştu. Lütfen tekrar deneyin.",
@@ -104,6 +86,11 @@ export default function ResendVerificationPage() {
             Doğrulama e-postası almadıysanız, e-posta adresinizi girerek tekrar gönderebilirsiniz.
           </span>
         </div>
+        
+        {/* Error Display */}
+        {error && (
+          <AuthErrorDisplay error={error} onClose={clearError} />
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="mb-2 text-sm font-normal text-gray-700 dark:text-white w-full">
           <div className="mb-6">

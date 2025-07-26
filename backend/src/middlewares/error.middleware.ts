@@ -7,6 +7,11 @@ export const errorMiddleware = (error: HttpException, req: Request, res: Respons
   const message = error.message || 'Something went wrong';
   const details = error.details || null;
 
+  // Check if headers have already been sent to prevent "Cannot set headers after they are sent" error
+  if (res.headersSent) {
+    return next(error);
+  }
+
   // Ensure CORS headers are set on error responses
   const whitelist = config.allowedOrigins || [
     "http://localhost:3000",

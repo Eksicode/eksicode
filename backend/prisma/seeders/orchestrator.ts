@@ -155,6 +155,7 @@ export class SeedOrchestrator {
         { table: 'users', sequence: 'users_id_seq' },
         { table: 'roles', sequence: 'roles_id_seq' },
         { table: 'permissions', sequence: 'permissions_id_seq' },
+        { table: 'user_roles', sequence: 'user_roles_id_seq' },
         { table: 'posts', sequence: 'posts_id_seq' },
         { table: 'companies', sequence: 'companies_id_seq' },
         { table: 'jobs', sequence: 'jobs_id_seq' },

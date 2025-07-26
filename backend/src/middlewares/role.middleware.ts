@@ -1,19 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
-import { HttpException } from '../exceptions/HttpException';
-import { RequestWithUser } from '../interfaces/auth.interface';
+import { Request, Response, NextFunction } from "express";
+import { PrismaClient } from "@prisma/client";
+import { HttpException } from "../exceptions/HttpException";
+import { prisma } from "../config/database";
 
-// Use a singleton pattern for PrismaClient to avoid multiple instances
-let prismaInstance: PrismaClient | undefined;
-
-function getPrisma(): PrismaClient {
-  if (!prismaInstance) {
-    prismaInstance = new PrismaClient();
-  }
-  return prismaInstance;
-}
-
-// Improved type declarations for better type safety
+// Type definitions for better type safety
 type RoleWithPermissions = {
   id: number;
   name: string;
@@ -33,29 +23,26 @@ type EndpointAccessWithRelations = {
   id: number;
   path: string;
   method: string;
-  roles?: { id: number; name: string }[];  // Changed from requiredRoles
-  permissions?: { id: number; name: string }[]; // Changed from requiredPermissions
+  roles?: { id: number; name: string }[];
+  permissions?: { id: number; name: string }[];
 };
 
-/**
- * Role middleware for handling authorization based on roles and permissions
- * @param requiredRoles Optional array of role names required for access
- * @returns Express middleware function
- */
-const roleMiddleware = (requiredRoles?: string[]) => {
-  return async (req: RequestWithUser, res: Response, next: NextFunction) => {
+export const roleMiddleware = (requiredRoles?: string[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      let prismaInstance = req.app.locals.prisma;
+      if (!prismaInstance) {
+        prismaInstance = prisma;
+      }
+
       const userId = req.userId;
 
       if (!userId) {
         throw new HttpException(401, 'User not authenticated');
       }
 
-      // Get the prisma instance
-      const prisma = getPrisma();
-      
       // Fetch user's roles and their associated permissions (only once)
-      const userRoles = await prisma.userRole.findMany({
+      const userRoles = await prismaInstance.userRole.findMany({
         where: { userId },
         include: {
           role: {
@@ -80,7 +67,7 @@ const roleMiddleware = (requiredRoles?: string[]) => {
         const path = req.baseUrl + req.path;
         const method = req.method.toLowerCase();
 
-        const endpointAccess = await prisma.endpointAccess.findFirst({
+        const endpointAccess = await prismaInstance.endpointAccess.findFirst({
           where: { path, method },
           include: {
             roles: true,         // Changed from requiredRoles
@@ -171,5 +158,3 @@ function hasAnyRole(userRoleNames: string[], endpointRoleNames: string[]): boole
 function hasAllPermissions(userPermissions: Set<string>, requiredPermissionNames: string[]): boolean {
   return requiredPermissionNames.every(permission => userPermissions.has(permission));
 }
-
-export default roleMiddleware;

@@ -1,8 +1,9 @@
 import { PrismaClient, Menu } from "@prisma/client";
+import { prisma } from "../config/database";
 import { HttpException } from "../exceptions/HttpException";
 
 class MenuService {
-  private prisma = new PrismaClient();
+  private prisma = prisma;
 
   public async getAllMenus(skip?: number, limit?: number, summaryOnly: boolean = false) {
     try {

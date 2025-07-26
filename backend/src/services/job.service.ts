@@ -1,12 +1,13 @@
 import { PrismaClient, Job, Prisma } from "@prisma/client";
 import { isEmpty } from "../utils/util";
 import { HttpException } from "../exceptions/HttpException";
+import { prisma } from "../config/database";
 
 class JobService {
   private prisma: PrismaClient;
 
-  constructor() {
-    this.prisma = new PrismaClient();
+  constructor(prismaInstance?: PrismaClient) {
+    this.prisma = prismaInstance || prisma;
   }
 
   /**

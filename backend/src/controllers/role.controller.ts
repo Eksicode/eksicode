@@ -1,118 +1,254 @@
 import { Request, Response, NextFunction } from 'express';
-import RoleService from '../services/role.service';
-import PermissionService from '../services/permission.service';
+import RolePermissionService from '../services/rolePermission.service';
+import UserService from '../services/user.service';
 import { HttpException } from '../exceptions/HttpException';
 
 class RoleController {
-  private roleService: RoleService;
-  private permissionService: PermissionService;
+  private rolePermissionService: RolePermissionService;
+  private userService: UserService;
 
-  constructor() {
-    this.roleService = new RoleService();
-    this.permissionService = new PermissionService();
+  constructor(rolePermissionService: RolePermissionService, userService: UserService) {
+    this.rolePermissionService = rolePermissionService;
+    this.userService = userService;
   }
 
-  public createRole = async (req: Request, res: Response, next: NextFunction) => {
+  public getAllRoles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { name, description, permissionIds } = req.body;
-      const role = await this.roleService.createRole(name, description, permissionIds);
-      res.status(201).json({ role });
-    } catch (error) {
-      if (error instanceof HttpException) {
-        next(error);
-      } else {
-        next(new HttpException(400, error.message));
+      // Check admin permission
+      const userId = req.userId;
+      if (!userId) {
+        throw new HttpException(401, 'Authentication required');
       }
+
+      const hasPermission = await this.userService.hasPermission(userId, 'admin.roles.view');
+      if (!hasPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      const roles = await this.rolePermissionService.getAllRoles();
+
+      res.status(200).json({
+        success: true,
+        data: roles,
+        message: 'Roles retrieved successfully',
+      });
+    } catch (error) {
+      next(error);
     }
   };
 
-  public getAllRoles = async (req: Request, res: Response, next: NextFunction) => {
+  public getRoleById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const includePermissions = req.query.includePermissions === 'true';
-      const roles = await this.roleService.getAllRoles(includePermissions);
-      res.status(200).json({ roles });
-    } catch (error) {
-      next(new HttpException(400, error.message));
-    }
-  };
-  
-  public getRoleById = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const id = parseInt(req.params.id, 10);
-      const includePermissions = req.query.includePermissions === 'true';
-      const role = await this.roleService.getRoleById(id, includePermissions);
-      
+      const roleId = parseInt(req.params.id, 10);
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      if (isNaN(roleId)) {
+        throw new HttpException(400, 'Invalid role ID');
+      }
+
+      const hasPermission = await this.userService.hasPermission(userId, 'admin.roles.view');
+      if (!hasPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      const role = await this.rolePermissionService.getRoleById(roleId);
+
       if (!role) {
-        return next(new HttpException(404, `Role with ID ${id} not found`));
+        throw new HttpException(404, 'Role not found');
       }
-      
-      res.status(200).json({ role });
+
+      res.status(200).json({
+        success: true,
+        data: role,
+        message: 'Role retrieved successfully',
+      });
     } catch (error) {
-      next(new HttpException(400, error.message));
+      next(error);
     }
   };
-  
-  public updateRole = async (req: Request, res: Response, next: NextFunction) => {
+
+  public createRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const id = parseInt(req.params.id, 10);
-      const { name, description, permissionIds } = req.body;
-      
-      const role = await this.roleService.updateRole(id, { name, description, permissionIds });
-      res.status(200).json({ role });
-    } catch (error) {
-      if (error instanceof HttpException) {
-        next(error);
-      } else {
-        next(new HttpException(400, error.message));
+      const userId = req.userId;
+      if (!userId) {
+        throw new HttpException(401, 'Authentication required');
       }
+
+      const hasPermission = await this.userService.hasPermission(userId, 'admin.roles.create');
+      if (!hasPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      const { name, description, parentId, level } = req.body;
+
+      const role = await this.rolePermissionService.createRole({
+        name,
+        description,
+        parentId,
+        level,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: role,
+        message: 'Role created successfully',
+      });
+    } catch (error) {
+      next(error);
     }
   };
-  
-  public deleteRole = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const id = parseInt(req.params.id, 10);
-      await this.roleService.deleteRole(id);
-      res.status(200).json({ message: `Role with ID ${id} deleted successfully` });
-    } catch (error) {
-      if (error instanceof HttpException) {
-        next(error);
-      } else {
-        next(new HttpException(400, error.message));
-      }
-    }
-  };
-  
-  public getRolePermissions = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const roleId = parseInt(req.params.id, 10);
-      const permissions = await this.roleService.getRolePermissions(roleId);
-      res.status(200).json({ permissions });
-    } catch (error) {
-      if (error instanceof HttpException) {
-        next(error);
-      } else {
-        next(new HttpException(400, error.message));
-      }
-    }
-  };
-  
-  public assignPermissionsToRole = async (req: Request, res: Response, next: NextFunction) => {
+
+  public updateRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const roleId = parseInt(req.params.id, 10);
-      const { permissionIds } = req.body;
-      
-      if (!Array.isArray(permissionIds)) {
-        return next(new HttpException(400, 'permissionIds must be an array'));
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new HttpException(401, 'Authentication required');
       }
-      
-      await this.roleService.assignPermissionsToRole(roleId, permissionIds);
-      res.status(200).json({ message: 'Permissions assigned successfully' });
+
+      if (isNaN(roleId)) {
+        throw new HttpException(400, 'Invalid role ID');
+      }
+
+      const hasPermission = await this.userService.hasPermission(userId, 'admin.roles.update');
+      if (!hasPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      const { name, description, parentId, level } = req.body;
+
+      const role = await this.rolePermissionService.updateRole(roleId, {
+        name,
+        description,
+        parentId,
+        level,
+      });
+
+      res.status(200).json({
+        success: true,
+        data: role,
+        message: 'Role updated successfully',
+      });
     } catch (error) {
-      if (error instanceof HttpException) {
-        next(error);
-      } else {
-        next(new HttpException(400, error.message));
+      next(error);
+    }
+  };
+
+  public deleteRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const roleId = parseInt(req.params.id, 10);
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new HttpException(401, 'Authentication required');
       }
+
+      if (isNaN(roleId)) {
+        throw new HttpException(400, 'Invalid role ID');
+      }
+
+      const hasPermission = await this.userService.hasPermission(userId, 'admin.roles.delete');
+      if (!hasPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      await this.rolePermissionService.deleteRole(roleId);
+
+      res.status(200).json({
+        success: true,
+        message: 'Role deleted successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public assignPermissionToRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const roleId = parseInt(req.params.roleId, 10);
+      const { permissionId } = req.body;
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      if (isNaN(roleId) || !permissionId) {
+        throw new HttpException(400, 'Invalid role ID or permission ID');
+      }
+
+      const hasPermission = await this.userService.hasPermission(userId, 'admin.roles.permissions');
+      if (!hasPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      await this.rolePermissionService.assignPermissionToRole(roleId, permissionId);
+
+      res.status(200).json({
+        success: true,
+        message: 'Permission assigned to role successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public removePermissionFromRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const roleId = parseInt(req.params.roleId, 10);
+      const { permissionId } = req.body;
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      if (isNaN(roleId) || !permissionId) {
+        throw new HttpException(400, 'Invalid role ID or permission ID');
+      }
+
+      const hasPermission = await this.userService.hasPermission(userId, 'admin.roles.permissions');
+      if (!hasPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      await this.rolePermissionService.removePermissionFromRole(roleId, permissionId);
+
+      res.status(200).json({
+        success: true,
+        message: 'Permission removed from role successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getRoleHierarchy = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.userId;
+      if (!userId) {
+        throw new HttpException(401, 'Authentication required');
+      }
+
+      const hasPermission = await this.userService.hasPermission(userId, 'admin.roles.view');
+      if (!hasPermission) {
+        throw new HttpException(403, 'Admin access required');
+      }
+
+      const hierarchy = await this.rolePermissionService.getRoleHierarchy();
+
+      res.status(200).json({
+        success: true,
+        data: hierarchy,
+        message: 'Role hierarchy retrieved successfully',
+      });
+    } catch (error) {
+      next(error);
     }
   };
 }

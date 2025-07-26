@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useAuth } from "@/hooks/useAuth";
+import { RoleBasedLink, AdminOnly } from "@/components/Auth/RoleBasedComponents";
 import authService from "@/services/authService";
 
 const classNames = (...classes: string[]) => {
@@ -13,7 +14,7 @@ const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [userData, setUserData] = useState<{ username?: string; profilePicture?: string }>({});
   const menuRef = useRef<HTMLDivElement>(null);
-  const { user, token } = useAuth();
+  const { user, token, isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -23,8 +24,8 @@ const UserMenu = () => {
         const userInfo = await authService.getCurrentUser(token);
         if (userInfo) {
           setUserData({
-            username: userInfo.username || user.username,
-            profilePicture: userInfo.profilePicture
+            username: userInfo.data?.username || user.username,
+            profilePicture: userInfo.data?.profilePicture
           });
         }
       } catch (error) {
@@ -106,24 +107,37 @@ const UserMenu = () => {
               @ {userData.username || user?.username}
             </span>
             <hr className="border-t border-gray-300 hover:bg-gray-100" />
+            
             <Link
               onClick={handleLinkClick}
               className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-              href="/dashboard"
+              href={isAdmin ? "/admin" : "/profile"}
             >
-              Dashboard
+              {isAdmin ? 'Admin Panel' : 'Profilim'}
             </Link>
+
+            <AdminOnly>
+              <Link
+                onClick={handleLinkClick}
+                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
+                href="/admin/kullanicilar"
+              >
+                Kullanıcı Yönetimi
+              </Link>
+            </AdminOnly>
+
             <Link
               onClick={handleLinkClick}
               className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-              href="/dashboard/favoriler"
+              href={isAdmin ? "/admin/favoriler" : "/profile/favoriler"}
             >
               Favoriler
             </Link>
+
             <Link
               onClick={handleLinkClick}
               className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey "
-              href="/dashboard/ayarlar"
+              href={isAdmin ? "/admin/ayarlar" : "/profile/ayarlar"}
             >
               Ayarlar
             </Link>

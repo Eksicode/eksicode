@@ -1,36 +1,27 @@
-import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
-import { HttpException } from '../exceptions/HttpException';
+import { Request, Response, NextFunction } from "express";
+import { PrismaClient } from "@prisma/client";
+import { HttpException } from "../exceptions/HttpException";
+import { prisma } from "../config/database";
 
-// Use a singleton pattern for PrismaClient to avoid multiple instances
-let prismaInstance: PrismaClient | undefined;
+export const userMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let prismaInstance = req.app.locals.prisma;
+    if (!prismaInstance) {
+      prismaInstance = prisma;
+    }
 
-function getPrisma(): PrismaClient {
-  if (!prismaInstance) {
-    prismaInstance = new PrismaClient();
-  }
-  return prismaInstance;
-}
-
-/**
- * User middleware for populating the req.user object
- * This middleware should be used after authMiddleware to populate the full user object
- * @returns Express middleware function
- */
-const userMiddleware = () => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
       const userId = req.userId;
 
       if (!userId) {
         throw new HttpException(401, 'User not authenticated');
       }
 
-      // Get the prisma instance
-      const prisma = getPrisma();
-      
       // Fetch user data
-      const user = await prisma.user.findUnique({
+      const user = await prismaInstance.user.findUnique({
         where: { id: userId },
         select: {
           id: true,
@@ -65,7 +56,4 @@ const userMiddleware = () => {
     } catch (error) {
       next(error);
     }
-  };
-};
-
-export default userMiddleware; 
+  }; 

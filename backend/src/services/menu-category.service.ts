@@ -1,8 +1,9 @@
 import { PrismaClient, MenuCategory } from "@prisma/client";
+import { prisma } from "../config/database";
 import { HttpException } from "../exceptions/HttpException";
 
 class MenuCategoryService {
-  private prisma = new PrismaClient();
+  private prisma = prisma;
 
   public async getAllMenuCategories(skip?: number, limit?: number) {
     try {

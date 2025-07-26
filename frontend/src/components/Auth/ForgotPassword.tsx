@@ -2,17 +2,13 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Button from "@/components/Ui/Button";
 import Link from "next/link";
 import Modal from "@/components/Ui/Modal";
-
-// Zod validation schema
-const forgotPasswordSchema = z.object({
-  email: z.string().email("Geçerli bir e-posta adresi girin").min(1, "E-posta adresi gereklidir"),
-});
-
-type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
+import { forgotPasswordSchema, ForgotPasswordFormData } from "@/types/auth.zod";
+import { useAuthError } from "@/hooks/useAuthError";
+import AuthErrorDisplay from "./AuthErrorDisplay";
+import authService from "@/services/authService";
 
 const ForgotPassword: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -21,34 +17,25 @@ const ForgotPassword: React.FC = () => {
     text: "",
     buttonText: "",
   });
+  const { error, handleApiError, clearError } = useAuthError();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ForgotPasswordValues>({
+  } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
 
-  const onSubmit = async (values: ForgotPasswordValues) => {
+  const onSubmit = async (values: ForgotPasswordFormData) => {
     try {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/forgot-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(values),
-        }
-      );
+      const result = await authService.forgotPassword(values);
 
-      if (response.ok) {
+      if (result.success) {
         reset();
         setModalContent({
           title: "Şifre Hatırlatma!",
@@ -56,21 +43,15 @@ const ForgotPassword: React.FC = () => {
           buttonText: "Tamam",
         });
         setShowModal(true);
+        clearError();
       } else {
-        let errorMessage = "Sunucu Hatası";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch (error) {
-          console.error("Error parsing JSON response", error);
-        }
+        handleApiError(result);
         setModalContent({
           title: "Hata!",
-          text: errorMessage,
+          text: result.message || "Sunucu Hatası",
           buttonText: "Tekrar Dene",
         });
         setShowModal(true);
-        console.error(errorMessage);
       }
     } catch (error) {
       console.error("Form submission error:", error);
@@ -83,6 +64,11 @@ const ForgotPassword: React.FC = () => {
         <h1 className="mb-2 text-xl">Şifre Hatırlatma</h1>
         <span className="text-sm">EkşiCode Yazılımcı Geliştirme Grupları'na hoşgeldiniz.</span>
       </div>
+      
+      {/* Error Display */}
+      {error && (
+        <AuthErrorDisplay error={error} onClose={clearError} />
+      )}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex flex-col space-y-1">
           <input

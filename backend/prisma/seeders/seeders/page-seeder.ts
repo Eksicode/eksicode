@@ -6,6 +6,16 @@ import { pageCategories, pages } from "../datas/pagesData";
  * Seeder for page categories and pages
  */
 export class PageSeeder extends BaseSeeder {
+  /**
+   * Generate a URL-friendly slug from a name
+   */
+  private generateSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
   async seed(tx: Prisma.TransactionClient): Promise<void> {
     this.logger.info("Seeding page categories and pages...");
     
@@ -22,11 +32,16 @@ export class PageSeeder extends BaseSeeder {
     const categories = await this.processBatch(
       pageCategories,
       async (category: any, tx) => {
+        const categoryData = {
+          ...category,
+          slug: category.slug || this.generateSlug(category.name)
+        };
+        
         return await this.safeUpsert(
           () => tx.pageCategory.upsert({
             where: { name: category.name },
-            update: category,
-            create: category,
+            update: categoryData,
+            create: categoryData,
           }),
           'page category',
           category.name

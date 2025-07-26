@@ -1,10 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import SideMenu from "@/components/Dashboard/SideMenu";
-import NextBreadcrumb from "@/components/NextBreadcrumb";
-import PagePost from "@/components/Dashboard/PagePost";
+import PagePost from "@/components/Admin/PagePost";
 
-function DashboardPages() {
+function AdminNewPage() {
   return (
     <>
       <div className="flex flex-wrap basis-full">
@@ -18,4 +16,4 @@ function DashboardPages() {
   );
 }
 
-export default DashboardPages;
+export default AdminNewPage;

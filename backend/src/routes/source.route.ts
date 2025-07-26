@@ -2,7 +2,7 @@ import { Router } from "express";
 import SourceController from "../controllers/source.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
-import roleMiddleware from "../middlewares/role.middleware";
+import { roleMiddleware } from "../middlewares/role.middleware";
 class SourceRoute implements Routes {
   public path = "/sources";
   public router = Router();

@@ -53,7 +53,7 @@ return (
   <>
     <div className="flex justify-between w-full">
       <h1 className="mt-2">Etiketler</h1>
-      <Navlink href="/dashboard/etiketler/yeni" variant="primary">
+      <Navlink href="/admin/etiketler/yeni" variant="primary">
         + Yeni Etiket
       </Navlink>
     </div>

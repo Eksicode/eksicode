@@ -5,11 +5,13 @@ import { SEED_CONFIG } from "../config/seed-config";
 type CategoryData = {
   id: number;
   name: string;
+  slug?: string;
 };
 
 type TagData = {
   id: number;
   name: string;
+  slug?: string;
 };
 
 /**
@@ -26,17 +28,35 @@ export class CategorySeeder extends BaseSeeder {
     await this.seedTags(tx);
   }
 
+  /**
+   * Generate a URL-friendly slug from a name
+   */
+  private generateSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
   private async seedCategories(tx: Prisma.TransactionClient): Promise<void> {
     this.logger.info(`Seeding ${SEED_CONFIG.defaultCategories.length} post categories...`);
 
     const categories = await this.processBatch(
       [...SEED_CONFIG.defaultCategories] as CategoryData[],
       async (category: CategoryData, tx) => {
+        const categoryData = {
+          ...category,
+          slug: category.slug || this.generateSlug(category.name)
+        };
+        
         return await this.safeUpsert(
           () => tx.postCategory.upsert({
-            where: { id: category.id },
-            update: { name: category.name },
-            create: category
+            where: { name: category.name },
+            update: { 
+              name: category.name,
+              slug: categoryData.slug
+            },
+            create: categoryData
           }),
           'post category',
           category.name
@@ -55,11 +75,19 @@ export class CategorySeeder extends BaseSeeder {
     const tags = await this.processBatch(
       [...SEED_CONFIG.defaultTags] as TagData[],
       async (tag: TagData, tx) => {
+        const tagData = {
+          ...tag,
+          slug: tag.slug || this.generateSlug(tag.name)
+        };
+        
         return await this.safeUpsert(
           () => tx.tag.upsert({
-            where: { id: tag.id },
-            update: { name: tag.name },
-            create: tag
+            where: { name: tag.name },
+            update: { 
+              name: tag.name,
+              slug: tagData.slug
+            },
+            create: tagData
           }),
           'tag',
           tag.name

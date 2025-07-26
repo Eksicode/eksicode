@@ -1,19 +1,20 @@
 import { Request, Response, NextFunction } from "express";
+import { PrismaClient } from "@prisma/client";
 import MediaService from "../services/media.service";
 import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
 import { HttpException } from "../exceptions/HttpException";
 import { MediaType } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../config/database";
 
 interface MulterRequest extends Request {
   file?: Express.Multer.File;
 }
 
-class MediaController {
+export class MediaController {
   private mediaService: MediaService;
 
-  constructor(prisma?: PrismaClient) {
-    this.mediaService = new MediaService(prisma || new PrismaClient());
+  constructor(prismaInstance?: PrismaClient) {
+    this.mediaService = new MediaService(prismaInstance || prisma);
   }
 
   public getAllMedia = async (
@@ -147,6 +148,4 @@ class MediaController {
       next(error);
     }
   };
-}
-
-export default MediaController; 
+} 

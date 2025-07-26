@@ -20,7 +20,7 @@ async function Users() {
           <h1 className="mt-2 w-full">Kullanıcılar</h1>
         </div>
         <div>
-          <Navlink href="/dashboard/kullanicilar/yeni" variant="primary">
+          <Navlink href="/admin/kullanicilar/yeni" variant="primary">
             + Yeni Kullanıcı
           </Navlink>
         </div>
