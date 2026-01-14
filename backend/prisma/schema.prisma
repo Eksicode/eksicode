@@ -493,6 +493,23 @@ model Media {
   @@map("media")
 }
 
+model TelegramVerification {
+  id        Int      @id @default(autoincrement())
+  userId    BigInt   @unique
+  chatId    BigInt
+  messageId Int
+  firstName String?  @db.VarChar(255)
+  lastName  String?  @db.VarChar(255)
+  username  String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([userId])
+  @@index([chatId])
+  @@index([expiresAt])
+  @@map("telegram_verifications")
+}
+
 // Enums List
 
 enum NotificationTypeEnum {

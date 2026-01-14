@@ -1,0 +1,16 @@
+[LEFT MEMBER] 00:27:56 UTC - Eksicode-test (-1003576000133): Muharrem (1122821516)
+[NEW MEMBER] 00:28:01 UTC - Eksicode-test (-1003576000133): Muharrem (1122821516)
+[LEFT MEMBER] 00:31:08 UTC - Eksicode-test (-1003576000133): Muharrem (1122821516)
+[NEW MEMBER] 00:31:11 UTC - Eksicode-test (-1003576000133): Muharrem (1122821516)
+[NEW MEMBER] 00:33:28 UTC - Eksicode-test (-1003576000133): Denisovan (2061465532)
+[LEFT MEMBER] 00:34:23 UTC - Eksicode-test (-1003576000133): Denisovan (2061465532)
+[MESSAGE] 22:42:12 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): /help
+[MESSAGE] 22:42:12 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): ?help
+[MESSAGE] 22:42:12 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): !help
+[MESSAGE] 22:42:12 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): /help
+[MESSAGE] 22:42:12 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): !help
+[MESSAGE] 22:43:04 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): !help
+[MESSAGE] 22:43:17 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): !twitter
+[MESSAGE] 22:43:27 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): !report
+[MESSAGE] 22:43:47 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): !grup *
+[NEW MEMBER] 22:44:34 UTC - Eksicode-test (-1003576000133): Denisovan (2061465532)
