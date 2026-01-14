@@ -11,14 +11,28 @@ services:
       - "9000:9000"
     env_file:
       - ./backend/.env
+    environment:
+      - NODE_ENV=production
+      - ENABLE_CLUSTERING=true
+      - MAX_WORKERS=4
+      - NODE_OPTIONS=--max-old-space-size=2048
     volumes:
       - ./backend:/app
       - /app/node_modules
       - /app/dist
     networks:
       - eksicode_nw
+    # Resource limits for production clustering
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '2.0'
+          memory: 4G
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9000/ || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
       interval: 30s
       timeout: 10s
       start_period: 40s

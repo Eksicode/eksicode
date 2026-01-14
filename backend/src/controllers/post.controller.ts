@@ -114,7 +114,7 @@ export class PostController {
   private validateUpdatePostData(data: any): Partial<UpdatePostDTO> {
     const { title, content, headerImageId, categories, tags, status, slug, approved, publishedAt } = data;
 
-    const validatedData: UpdatePostDTO = {};
+    const validatedData: Partial<UpdatePostDTO> = {};
 
     // Optional fields
     if (title !== undefined) {

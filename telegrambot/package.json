@@ -1,0 +1,44 @@
+{
+    "name": "eksicodebot",
+    "version": "2.0.0",
+    "description": "eksicode.org telegram bot",
+    "main": "dist/telegram_func.js",
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/telegram_func.js",
+        "dev": "ts-node telegram_func.ts",
+        "watch": "tsc --watch"
+    },
+    "keywords": [
+        "eksicode",
+        "eksi",
+        "telegram",
+        "bot"
+    ],
+    "author": "Davut KARA & Mkltkn & Atakan Ermiş",
+    "license": "MIT",
+    "dependencies": {
+        "@prisma/client": "^6.1.0",
+        "axios": "^1.12.2",
+        "dotenv": "^17.2.3",
+        "http": "0.0.1-security",
+        "node-cron": "^4.2.1",
+        "node-html-parser": "^7.0.1",
+        "path": "^0.12.7",
+        "request": "^2.88.2",
+        "telegraf": "^4.16.3"
+    },
+    "devDependencies": {
+        "@types/axios": "^0.14.4",
+        "@types/node": "^22.10.5",
+        "@types/node-cron": "^3.0.11",
+        "eslint": "^8.57.0",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^6.6.0",
+        "eslint-plugin-standard": "^5.0.0",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.2"
+    }
+}

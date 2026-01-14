@@ -4,10 +4,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/server.js",
+    "start:prod": "NODE_ENV=production ENABLE_CLUSTERING=true node ./dist/server.js",
+    "start:dev": "NODE_ENV=development ENABLE_CLUSTERING=false node ./dist/server.js",
     "build": "rm -rf dist && tsc -p tsconfig.json",
-    "watch": "nodemon --exec \"npm run build && npm run start\" --watch src --ext ts",
+    "watch": "nodemon --exec \"npm run build && npm run start:dev\" --watch src --ext ts",
     "build-win": "del dist /F /Q && tsc -p tsconfig.json",
-    "watch-win": "nodemon --exec \"npm run build-win && npm run start\" --watch src --ext ts",
+    "watch-win": "nodemon --exec \"npm run build-win && npm run start:dev\" --watch src --ext ts",
     "seed": "npx tsx prisma/seeders/index.ts",
     "seed:dev": "NODE_ENV=development npx tsx prisma/seeders/index.ts",
     "seed:test": "npx tsx prisma/test-seeding-system.ts"

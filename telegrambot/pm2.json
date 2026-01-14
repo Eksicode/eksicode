@@ -1,0 +1,32 @@
+{
+  "apps": [
+    {
+      "name": "eksicodeBot-user",
+      "script": "dist/telegram.js",
+      "listen_timeout": 5000,
+      "watch": false,
+      "instances": 1,
+      "wait_ready": true,
+      "restart_delay": 5000
+    },
+    {
+      "name": "eksicodeBot-func",
+      "script": "dist/telegram_func.js",
+      "ignore_watch": [
+        "logs",
+        "node_modules"
+      ],
+      "watch": true,
+      "instances": 1
+    },
+    {
+      "name": "sourcess_controller",
+      "script": "dist/sourcess_controller.js",
+      "listen_timeout": 5000,
+      "watch": false,
+      "instances": 1,
+      "wait_ready": true,
+      "restart_delay": 5000
+    }
+  ]
+}
