@@ -10,15 +10,16 @@ export const metadata = {
 };
 
 interface SearchPageProps {
-  searchParams: { 
+  searchParams: Promise<{ 
     q?: string;
     page?: string;
-  };
+  }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const searchTerm = searchParams.q || '';
-  const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+  const resolvedSearchParams = await searchParams;
+  const searchTerm = resolvedSearchParams.q || '';
+  const page = resolvedSearchParams.page ? parseInt(resolvedSearchParams.page, 10) : 1;
   
   // If no search term, show search interface
   if (!searchTerm.trim()) {

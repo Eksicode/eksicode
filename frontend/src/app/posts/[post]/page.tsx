@@ -6,11 +6,12 @@ import { IPost } from "@/types/types";
 import { notFound } from "next/navigation";
 import DOMPurify from "isomorphic-dompurify";
 
-export default async function Post({ params }: { params: { post: string } }) {
-  console.log("params:", params.post);
+export default async function Post({ params }: { params: Promise<{ post: string }> }) {
+  const { post } = await params;
+  console.log("params:", post);
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/posts/${params.post}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/posts/${post}`,
       {
         cache: "force-cache",
       }

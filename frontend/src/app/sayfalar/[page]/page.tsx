@@ -14,17 +14,19 @@ interface PageData {
 export async function generateMetadata({
   params,
 }: {
-  params: { page: string };
+  params: Promise<{ page: string }>;
 }): Promise<Metadata> {
+  const { page } = await params;
   return {
-    title: `${params.page} - EksiCode`,
+    title: `${page} - EksiCode`,
   };
 }
 
-export default async function Page({ params }: { params: { page: string } }) {
+export default async function Page({ params }: { params: Promise<{ page: string }> }) {
+  const { page } = await params;
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/pages/${params.page}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/pages/${page}`,
       { cache: "force-cache" }
     );
 

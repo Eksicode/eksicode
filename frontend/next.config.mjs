@@ -5,7 +5,12 @@ const nextConfig = {
   // Image optimization
   images: {
     unoptimized: true,
-    domains: ["eksicode-images.s3.eu-central-1.amazonaws.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'eksicode-images.s3.eu-central-1.amazonaws.com',
+      },
+    ],
     formats: ['image/webp', 'image/avif'],
   },
   
@@ -17,7 +22,6 @@ const nextConfig = {
   
   // Performance optimizations
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['react-icons'],
   },
   
@@ -82,7 +86,8 @@ const nextConfig = {
     ];
   },
   
-  // Webpack optimizations
+  // Use webpack instead of Turbopack for compatibility with Tailwind v3
+  // Turbopack is the default in Next.js 16, but we keep webpack for stability
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle size
     if (!dev && !isServer) {

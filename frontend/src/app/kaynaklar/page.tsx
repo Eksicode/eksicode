@@ -13,14 +13,15 @@ interface SearchParams {
 }
 
 interface SourcesPageProps {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }
 
 export default async function Sources({ searchParams }: SourcesPageProps) {
   // Extract pagination parameters from search params
-  const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
-  const limit = searchParams.limit ? parseInt(searchParams.limit, 10) : 10;
-  const searchQuery = searchParams.search || "";
+  const resolvedSearchParams = await searchParams;
+  const page = resolvedSearchParams.page ? parseInt(resolvedSearchParams.page, 10) : 1;
+  const limit = resolvedSearchParams.limit ? parseInt(resolvedSearchParams.limit, 10) : 10;
+  const searchQuery = resolvedSearchParams.search || "";
 
   // Fetch sources using the service
   const sourcesData = searchQuery

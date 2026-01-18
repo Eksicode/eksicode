@@ -16,14 +16,15 @@ interface SearchParams {
 }
 
 interface TagsPageProps {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }
 
 export default async function Tags({ searchParams }: TagsPageProps) {
   // Extract pagination parameters from search params
-  const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
-  const limit = searchParams.limit ? parseInt(searchParams.limit, 10) : 50;
-  const searchQuery = searchParams.search || "";
+  const resolvedSearchParams = await searchParams;
+  const page = resolvedSearchParams.page ? parseInt(resolvedSearchParams.page, 10) : 1;
+  const limit = resolvedSearchParams.limit ? parseInt(resolvedSearchParams.limit, 10) : 50;
+  const searchQuery = resolvedSearchParams.search || "";
 
   // Fetch hashtags using the service
   const hashtagsResponse = searchQuery
