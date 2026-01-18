@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import * as md from "react-icons/md";
 import * as Ai from "react-icons/ai";
 import Link from "next/link";
@@ -41,6 +41,8 @@ function SideMenu() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Check if cache is valid
   const isCacheValid = useMemo(() => {
@@ -56,25 +58,41 @@ function SideMenu() {
       if (isCacheValid && menuCache) {
         setMenu(menuCache.data);
         setRetryCount(0);
+        setLoading(false);
         return;
       }
+
+      // Create new abort controller for this request
+      abortControllerRef.current = new AbortController();
 
       const fetchedMenu = await getData<Menu>("menus", true, 0, 0, 0, { 
         cache: "no-cache" 
       });
 
-      // Validate response structure
-      if (!fetchedMenu || !Array.isArray(fetchedMenu.data)) {
-        throw new Error("Invalid response structure");
+      // Check if request was aborted
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
       }
 
-      const menuData = fetchedMenu.data.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        icon: item.icon || "MdMenu", // Fallback icon
-        link: item.link,
-        subMenu: item.subMenu || 0,
-      }));
+      // Validate response structure
+      if (!fetchedMenu || !Array.isArray(fetchedMenu.data)) {
+        throw new Error("Geçersiz yanıt yapısı");
+      }
+
+      const menuData = fetchedMenu.data.map((item: any) => {
+        // Validate each menu item
+        if (!item || typeof item !== 'object') {
+          console.warn('Invalid menu item:', item);
+          return null;
+        }
+        return {
+          id: item.id || 0,
+          name: item.name || "İsimsiz Menü",
+          icon: item.icon || "MdMenu", // Fallback icon
+          link: item.link || "#",
+          subMenu: item.subMenu || 0,
+        };
+      }).filter((item): item is Menu => item !== null);
       
       // Update cache
       menuCache = {
@@ -85,17 +103,25 @@ function SideMenu() {
       setMenu(menuData);
       setRetryCount(0); // Reset retry count on success
     } catch (error) {
+      // Don't set error if request was aborted
+      if (error instanceof Error && error.name === 'AbortError') {
+        return;
+      }
+
       console.error(`Error fetching menu (attempt ${attempt}):`, error);
       
       if (attempt < RETRY_ATTEMPTS) {
         setRetryCount(attempt);
         // Exponential backoff
         const delay = RETRY_DELAY * Math.pow(2, attempt - 1);
-        setTimeout(() => {
+        timeoutRef.current = setTimeout(() => {
           fetchMenuWithRetry(attempt + 1);
         }, delay);
       } else {
-        setError("Menü yüklenirken bir hata oluştu. Sayfayı yenilemeyi deneyin.");
+        const errorMessage = error instanceof Error 
+          ? error.message 
+          : "Bilinmeyen bir hata oluştu";
+        setError(`Menü yüklenirken bir hata oluştu: ${errorMessage}. Sayfayı yenilemeyi deneyin.`);
         setRetryCount(0);
       }
     }
@@ -112,11 +138,32 @@ function SideMenu() {
 
   useEffect(() => {
     fetchMenu();
+
+    // Cleanup function
+    return () => {
+      // Clear timeout if component unmounts
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      // Abort ongoing request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [fetchMenu]);
 
   const handleRetry = useCallback(() => {
     // Clear cache on manual retry
     menuCache = null;
+    // Clear any pending timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    // Abort any ongoing request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    setRetryCount(0);
     fetchMenu();
   }, [fetchMenu]);
 

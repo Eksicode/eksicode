@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa";
 import * as md from "react-icons/md";
@@ -9,19 +9,35 @@ import * as Fa from "react-icons/fa";
 import * as Fa6 from "react-icons/fa6";
 import * as Bs from "react-icons/bs";
 import * as Gr from "react-icons/gr";
+import React from "react";
 import Link from "next/link";
 import getData from "@/utils/getData";
 import { usePathname } from "next/navigation";
 import ThemeSwitch from "./ThemeSwitch";
 import { useAuth } from "@/hooks/useAuth";
 
+const RETRY_ATTEMPTS = 3;
+const RETRY_DELAY = 1000; // 1 second
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+// Cache for menu data
+let menuCache: { data: Menu[]; timestamp: number } | null = null;
+
 interface Menu {
-  id: number;
+  id?: number;
   name: string;
   link: string;
-  subMenu: number;
+  subMenu?: number;
   icon: string;
   adminLink?: string;
+  adminOnly?: boolean;
+}
+
+interface DashboardMenuItem {
+  name: string;
+  icon: string;
+  link: string;
+  adminLink: string;
   adminOnly?: boolean;
 }
 
@@ -35,7 +51,7 @@ const IconMap = {
   ...Fa6,
 };
 
-const dashboardMenuItem = [
+const dashboardMenuItem: DashboardMenuItem[] = [
   { name: "Dashboard", icon: "MdDashboard", link: "/profile", adminLink: "/admin" },
   { name: "Sayfalar", icon: "RiPagesLine", link: "/profile/sayfalar", adminLink: "/admin/sayfalar" },
   { name: "Kullanıcılar", icon: "FaUsers", link: "/profile/kullanicilar", adminLink: "/admin/kullanicilar", adminOnly: true },
@@ -48,17 +64,20 @@ const dashboardMenuItem = [
   { name: "Ayarlar", icon: "AiFillSetting", link: "/profile/ayarlar", adminLink: "/admin/ayarlar" },
 ];
 
-const getIconComponent = (iconName: string): React.ComponentType | null => {
-  return IconMap[iconName as keyof typeof IconMap] || null;
+const getIconComponent = (iconName: string): React.ComponentType<{ className?: string }> | null => {
+  const IconComponent = IconMap[iconName as keyof typeof IconMap];
+  return IconComponent || null;
 };
 
 const MobileMenu = () => {
-  const { user: authUser, isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
   const pathname = usePathname();
-  const [roleId, setRoleId] = useState<number | null>(null);
   const [nav, setNav] = useState(false);
   const [menu, setMenu] = useState<Menu[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // Initialize activeTab based on authentication status and pathname
   const [activeTab, setActiveTab] = useState<"sayfalar" | "dashboard">(() => {
@@ -73,41 +92,112 @@ const MobileMenu = () => {
     }
   }, [isAuthenticated, activeTab]);
 
-  const handleNav = () => {
-    setNav(!nav);
-    if (!nav) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  };
-
-  useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        const fetchedMenu = await getData("menus", true, 0, 0, 0, {
-          cache: "no-cache",
-        });
-        const menuData = fetchedMenu.data.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          icon: item.icon,
-          link: item.link,
-          subMenu: item.subMenu,
-        }));
-        setMenu(menuData);
-      } catch (error) {
-        console.error("Error fetching menu:", error);
-        setError("Menü yüklenirken bir hata oluştu");
-      }
-    };
-
-    fetchMenu();
+  // Check if cache is valid
+  const isCacheValid = useCallback(() => {
+    if (!menuCache) return false;
+    return Date.now() - menuCache.timestamp < CACHE_DURATION;
   }, []);
 
-  const currentMenu = activeTab === "sayfalar" ? menu : dashboardMenuItem.filter(item => 
-    !item.adminOnly || isAdmin
-  );
+  const fetchMenuWithRetry = useCallback(async (attempt = 1): Promise<void> => {
+    try {
+      setError(null);
+      
+      // Use cached data if available and valid
+      if (isCacheValid() && menuCache) {
+        setMenu(menuCache.data);
+        setRetryCount(0);
+        setLoading(false);
+        return;
+      }
+
+      const fetchedMenu = await getData<Menu>("menus", true, 0, 0, 0, {
+        cache: "no-cache",
+      });
+
+      // Validate response structure
+      if (!fetchedMenu || !Array.isArray(fetchedMenu.data)) {
+        throw new Error("Invalid response structure");
+      }
+
+      const menuData = fetchedMenu.data.map((item: Partial<Menu> & { id?: number; name?: string; link?: string; icon?: string; subMenu?: number }) => ({
+        id: item.id,
+        name: item.name || "İsimsiz Menü",
+        icon: item.icon || "MdMenu", // Fallback icon
+        link: item.link || "#",
+        subMenu: item.subMenu || 0,
+      }));
+      
+      // Update cache
+      menuCache = {
+        data: menuData,
+        timestamp: Date.now()
+      };
+      
+      setMenu(menuData);
+      setRetryCount(0);
+    } catch (error) {
+      console.error(`Error fetching menu (attempt ${attempt}):`, error);
+      
+      if (attempt < RETRY_ATTEMPTS) {
+        setRetryCount(attempt);
+        // Exponential backoff
+        const delay = RETRY_DELAY * Math.pow(2, attempt - 1);
+        timeoutRef.current = setTimeout(() => {
+          fetchMenuWithRetry(attempt + 1);
+        }, delay);
+      } else {
+        setError("Menü yüklenirken bir hata oluştu. Sayfayı yenilemeyi deneyin.");
+        setRetryCount(0);
+      }
+    }
+  }, [isCacheValid]);
+
+  const fetchMenu = useCallback(async () => {
+    try {
+      setLoading(true);
+      await fetchMenuWithRetry();
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchMenuWithRetry]);
+
+  useEffect(() => {
+    fetchMenu();
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [fetchMenu]);
+
+  const handleRetry = useCallback(() => {
+    // Clear cache on manual retry
+    menuCache = null;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    fetchMenu();
+  }, [fetchMenu]);
+
+  const handleNav = useCallback(() => {
+    try {
+      setNav((prev) => {
+        const newNav = !prev;
+        if (typeof document !== "undefined") {
+          document.body.style.overflow = newNav ? "hidden" : "auto";
+        }
+        return newNav;
+      });
+    } catch (error) {
+      console.error("Error toggling navigation:", error);
+    }
+  }, []);
+
+  const currentMenu: (Menu | DashboardMenuItem)[] = activeTab === "sayfalar" 
+    ? menu 
+    : dashboardMenuItem.filter(item => !item.adminOnly || isAdmin);
 
   return (
     <>
@@ -161,50 +251,80 @@ const MobileMenu = () => {
           
           {/* Menu List */}
           <div className="flex flex-col mt-2 mx-5 z-20 h-[350px] overflow-auto text-ellipsis">
-            <ul className="space-y-1">
-              {error && (
-                <span className="text-sm font-semibold text-gray-500">
+            {loading && (
+              <div className="animate-pulse space-y-3">
+                <div className="h-4 bg-gray-200 rounded dark:bg-gray-700 w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded dark:bg-gray-700 w-1/2"></div>
+                <div className="h-4 bg-gray-200 rounded dark:bg-gray-700 w-2/3"></div>
+                {retryCount > 0 && (
+                  <div className="text-xs text-gray-500 mt-2">
+                    Yeniden deneniyor... ({retryCount}/{RETRY_ATTEMPTS})
+                  </div>
+                )}
+              </div>
+            )}
+            {!loading && error && (
+              <div className="text-center py-4">
+                <div className="text-red-500 mb-2">
+                  <md.MdError className="text-2xl mx-auto" />
+                </div>
+                <span className="text-sm font-semibold text-gray-500 block mb-3">
                   {error}
                 </span>
-              )}
-              {!error && currentMenu.length === 0 && (
-                <span className="text-sm font-semibold text-gray-500">
-                  Menü bulunamadı
-                </span>
-              )}
-              {!error &&
-                currentMenu.map((item, index) => {
-                  const IconComponent = getIconComponent(
-                    activeTab === "sayfalar" ? item.icon : (item as any).icon
-                  );
-                  
-                  // Determine the correct link based on user role for dashboard items
-                  const itemLink = activeTab === "dashboard" && (item as any).adminLink && isAdmin 
-                    ? (item as any).adminLink 
-                    : item.link;
-                  
-                  const isActive = pathname === itemLink;
+                <button
+                  onClick={handleRetry}
+                  className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  disabled={loading}
+                >
+                  Tekrar Dene
+                </button>
+              </div>
+            )}
+            {!loading && !error && (
+              <ul className="space-y-1">
+                {currentMenu.length === 0 ? (
+                  <li className="text-center py-4">
+                    <span className="text-sm font-semibold text-gray-500">
+                      Menü bulunamadı
+                    </span>
+                  </li>
+                ) : (
+                  currentMenu.map((item, index) => {
+                    const isDashboardItem = activeTab === "dashboard" && "adminLink" in item;
+                    const iconName = item.icon;
+                    const IconComponent = getIconComponent(iconName);
+                    
+                    // Determine the correct link based on user role for dashboard items
+                    const itemLink = isDashboardItem && item.adminLink && isAdmin 
+                      ? item.adminLink 
+                      : item.link;
+                    
+                    const isActive = pathname === itemLink;
+                    const itemKey = "id" in item && item.id ? item.id : index;
 
-                  return (
-                    <li key={index}>
-                      <Link
-                        onClick={handleNav}
-                        href={itemLink}
-                        className={`${isActive ? " text-eksiCode" : ""
-                          } flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey`}
-                      >
-                        {IconComponent && (
-                          <IconComponent
-                            className="text-lg"
-                            {...(IconComponent as any)}
-                          />
-                        )}
-                        <span className="ml-3">{item.name}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-            </ul>
+                    return (
+                      <li key={itemKey}>
+                        <Link
+                          onClick={handleNav}
+                          href={itemLink}
+                          className={`${isActive ? "text-eksiCode" : ""
+                            } flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-100 dark:hover:bg-DarkLightGrey transition-colors`}
+                        >
+                          {IconComponent ? (
+                            React.createElement(IconComponent, {
+                              className: "text-lg flex-shrink-0"
+                            })
+                          ) : (
+                            <md.MdMenu className="text-lg flex-shrink-0" />
+                          )}
+                          <span className="ml-3 truncate">{item.name}</span>
+                        </Link>
+                      </li>
+                    );
+                  })
+                )}
+              </ul>
+            )}
           </div>
           <div className="flex justify-center mt-2">
             <ThemeSwitch />
