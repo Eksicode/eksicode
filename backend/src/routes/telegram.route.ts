@@ -3,7 +3,7 @@ import TelegramGroupsController from "../controllers/telegram.controller";
 import { Routes } from "../interfaces/routes.interface";
 import authMiddleware from "../middlewares/auth.middleware";
 
-class UserRoute implements Routes {
+class TelegramRoute implements Routes {
   public path = "/telegrams";
   public router = Router();
   public telegramGroupsController = new TelegramGroupsController();
@@ -43,4 +43,4 @@ class UserRoute implements Routes {
   }
 }
 
-export default UserRoute;
+export default TelegramRoute;

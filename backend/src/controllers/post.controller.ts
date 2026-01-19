@@ -199,8 +199,12 @@ export class PostController {
         skip,
         limit,
         summaryOnly: req.query.summaryOnly === "true",
-        status: req.query.status as PostStatusEnum || PostStatusEnum.PUBLISHED,
-        approved: req.query.approved !== "false", // Default to true
+        // Only set status if explicitly provided, otherwise don't filter by status
+        status: req.query.status ? (req.query.status as PostStatusEnum) : undefined,
+        // Only set approved if explicitly provided, otherwise don't filter by approval
+        approved: req.query.approved !== undefined 
+          ? req.query.approved === "true" 
+          : undefined,
         authorId: req.query.authorId ? Number(req.query.authorId) : undefined,
         categoryId: req.query.categoryId ? Number(req.query.categoryId) : undefined,
         tagId: req.query.tagId ? Number(req.query.tagId) : undefined,

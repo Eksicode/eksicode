@@ -44,7 +44,17 @@ const handler = NextAuth({
             }
           );
 
-          const data = await res.json();
+          // Check if response is JSON before parsing
+          const contentType = res.headers.get("content-type");
+          let data;
+          
+          if (contentType && contentType.includes("application/json")) {
+            data = await res.json();
+          } else {
+            // Handle non-JSON responses (e.g., rate limit plain text)
+            const text = await res.text();
+            throw new Error(text || "Authentication failed");
+          }
 
           if (!data.success || !res.ok) {
             const errorMessage = data.message || "Authentication failed";

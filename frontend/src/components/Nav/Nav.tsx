@@ -17,14 +17,13 @@ import Notifications from "@/components/Nav/Notifications";
 import { useAuth } from "@/hooks/useAuth";
 
 const Nav = () => {
-  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   
   // Memoize auth state to prevent unnecessary re-renders
   const authState = useMemo(() => ({
     isAuthenticated,
-    isAdmin,
     isLoading
-  }), [isAuthenticated, isAdmin, isLoading]);
+  }), [isAuthenticated, isLoading]);
 
   // Handle potential errors gracefully
   try {
@@ -90,7 +89,7 @@ const Nav = () => {
                 <>
                   <Navlink
                     variant="secondary"
-                    href={authState.isAdmin ? "/admin/posts/yeni" : "/profile/posts/yeni"}
+                    href="/profile/posts/yeni"
                     style="hidden lg:flex"
                   >
                     <div className="flex items-center">

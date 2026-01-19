@@ -5,6 +5,9 @@ import crypto from 'crypto';
 import EmailService from './email.service';
 import MediaService, { MediaUpload } from './media.service';
 import config from '../config';
+import { RoleGuard } from '../utils/roleGuard';
+import { PERMISSIONS } from '../constants/permissions';
+import { ROLE_NAMES } from '../constants/roles';
 
 // Extended types for user with relations
 export interface UserWithRoles extends User {
@@ -56,6 +59,7 @@ class UserService {
   private prisma: PrismaClient;
   private emailService: EmailService;
   private mediaService: MediaService;
+  private roleGuard: RoleGuard;
 
   // Safe user selection - excludes sensitive data like passwords, emails, tokens, etc.
   private readonly safeUserSelect = {
@@ -106,6 +110,7 @@ class UserService {
     this.prisma = prisma;
     this.emailService = emailService;
     this.mediaService = mediaService || new MediaService(prisma);
+    this.roleGuard = new RoleGuard(prisma);
   }
 
   /**
@@ -251,48 +256,9 @@ class UserService {
    */
   private async isUserAdmin(userId: number): Promise<boolean> {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId, active: true },
-        include: {
-          userRoles: {
-            where: { active: true },
-            include: {
-              role: {
-                include: {
-                  permissions: true,
-                },
-              },
-            },
-          },
-          userPermissions: {
-            where: { active: true },
-            include: {
-              permission: true,
-            },
-          },
-        },
-      });
-      
+      const user = await this.roleGuard.loadUserWithPermissions(userId);
       if (!user) return false;
-      
-      // Check if user has admin or superadmin role
-      const hasAdminRole = user.userRoles?.some(userRole => 
-        ['admin', 'superadmin'].includes(userRole.role.name)
-      );
-      if (hasAdminRole) return true;
-      
-      // Check if user has admin permissions
-      const adminPermissions = ['admin.access', 'admin.manage'];
-      const allPermissions = [
-        ...(user.userRoles?.flatMap(ur => ur.role.permissions.map(p => p.name)) || []),
-        ...(user.userPermissions?.map(up => up.permission.name) || [])
-      ];
-      
-      const hasAdminPermission = allPermissions.some(permission => 
-        adminPermissions.includes(permission)
-      );
-      
-      return hasAdminPermission || false;
+      return this.roleGuard.isAdmin(user);
     } catch (error) {
       console.error('Error checking admin status:', error);
       return false;
@@ -408,13 +374,13 @@ class UserService {
     try {
       // Find or create default user role
       let userRole = await this.prisma.role.findUnique({
-        where: { name: 'user' },
+        where: { name: ROLE_NAMES.USER },
       });
 
       if (!userRole) {
         userRole = await this.prisma.role.create({
           data: {
-            name: 'user',
+            name: ROLE_NAMES.USER,
             description: 'Default user role',
             level: 100, // Lowest level
             active: true,
@@ -604,91 +570,30 @@ class UserService {
    * Check if a user has a specific permission
    */
   public async hasPermission(userId: number, permissionName: string): Promise<boolean> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId, active: true },
-      include: {
-        userRoles: {
-          where: { active: true },
-          include: {
-            role: {
-              include: {
-                permissions: true,
-              },
-            },
-          },
-        },
-        userPermissions: {
-          where: { active: true },
-          include: {
-            permission: true,
-          },
-        },
-      },
-    });
-
-    if (!user) return false;
-
-    // Check direct permissions
-    const hasDirectPermission = user.userPermissions.some(up => 
-      up.permission.name === permissionName
-    );
-    if (hasDirectPermission) return true;
-
-    // Check role-based permissions
-    const hasRolePermission = user.userRoles.some(ur =>
-      ur.role.permissions.some(p => p.name === permissionName)
-    );
-    if (hasRolePermission) return true;
-
-    // Superadmin has all permissions
-    const isSuperAdmin = user.userRoles.some(ur => ur.role.name === 'superadmin');
-    if (isSuperAdmin) return true;
-
-    // Admin has most permissions except superadmin-specific ones
-    const isAdmin = user.userRoles.some(ur => ur.role.name === 'admin');
-    if (isAdmin && !permissionName.startsWith('superadmin.')) return true;
-
-    return false;
+    try {
+      const user = await this.roleGuard.loadUserWithPermissions(userId);
+      if (!user) return false;
+      return this.roleGuard.hasPermission(user, permissionName);
+    } catch (error) {
+      console.error('Error checking permission:', error);
+      return false;
+    }
   }
 
   /**
    * Get all permissions for a user (both direct and role-based)
    */
   public async getUserPermissions(userId: number): Promise<string[]> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId, active: true },
-      include: {
-        userRoles: {
-          where: { active: true },
-          include: {
-            role: {
-              include: {
-                permissions: true,
-              },
-            },
-          },
-        },
-        userPermissions: {
-          where: { active: true },
-          include: {
-            permission: true,
-          },
-        },
-      },
-    });
-
-    if (!user) return [];
-
-    // Collect permissions from roles
-    const rolePermissions = user.userRoles.flatMap(ur =>
-      ur.role.permissions.map(p => p.name)
-    );
-
-    // Collect direct permissions
-    const directPermissions = user.userPermissions.map(up => up.permission.name);
-
-    // Combine and remove duplicates
-    return [...new Set([...rolePermissions, ...directPermissions])];
+    try {
+      const user = await this.roleGuard.loadUserWithPermissions(userId);
+      if (!user) return [];
+      
+      const permissions = this.roleGuard.getUserPermissions(user);
+      return Array.from(permissions);
+    } catch (error) {
+      console.error('Error getting user permissions:', error);
+      return [];
+    }
   }
 
   /**

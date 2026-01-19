@@ -31,10 +31,14 @@ export interface ITag {
 }
 
 export interface IComment {
-  id: string;
+  id: string | number;
   content: string;
-  userId: string;
+  userId?: string;
+  authorId?: number;
+  postId?: number;
   author: IAuthor;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IPost {
@@ -44,12 +48,21 @@ export interface IPost {
   content?: string; // Optional for summary response
   author: IAuthor;
   createdAt: string;
+  updatedAt?: string;
+  publishedAt?: string;
   postLikes?: any[];
-  image?: string;
+  image?: string; // Legacy field
   comments?: IComment[];
-  categories?: any[];
+  categories?: IPostCategory[];
   tags: ITag[];
   status: PostStatusEnum | string; // Can be enum or string from API
   approved?: boolean;
-  headerImage?: IMedia | string;
+  headerImage?: IMedia | string | null;
+  viewCount?: number;
+}
+
+export interface IPostCategory {
+  id: number;
+  name: string;
+  slug?: string;
 }

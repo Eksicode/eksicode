@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import RolePermissionService from '../services/rolePermission.service';
 import UserService from '../services/user.service';
 import { HttpException } from '../exceptions/HttpException';
+import { PERMISSIONS } from '../constants/permissions';
 
 class PermissionController {
   private rolePermissionService: RolePermissionService;
@@ -20,7 +21,7 @@ class PermissionController {
         throw new HttpException(401, 'Authentication required');
       }
 
-      const hasPermission = await this.userService.hasPermission(userId, 'admin.permissions.view');
+      const hasPermission = await this.userService.hasPermission(userId, PERMISSIONS.VIEW_ADMIN_PANEL);
       if (!hasPermission) {
         throw new HttpException(403, 'Admin access required');
       }
@@ -50,7 +51,7 @@ class PermissionController {
         throw new HttpException(400, 'Invalid permission ID');
       }
 
-      const hasPermission = await this.userService.hasPermission(userId, 'admin.permissions.view');
+      const hasPermission = await this.userService.hasPermission(userId, PERMISSIONS.VIEW_ADMIN_PANEL);
       if (!hasPermission) {
         throw new HttpException(403, 'Admin access required');
       }
@@ -78,7 +79,7 @@ class PermissionController {
         throw new HttpException(401, 'Authentication required');
       }
 
-      const hasPermission = await this.userService.hasPermission(userId, 'admin.permissions.create');
+      const hasPermission = await this.userService.hasPermission(userId, PERMISSIONS.MANAGE_PERMISSIONS);
       if (!hasPermission) {
         throw new HttpException(403, 'Admin access required');
       }
@@ -116,7 +117,7 @@ class PermissionController {
         throw new HttpException(400, 'Invalid permission ID');
       }
 
-      const hasPermission = await this.userService.hasPermission(userId, 'admin.permissions.update');
+      const hasPermission = await this.userService.hasPermission(userId, PERMISSIONS.MANAGE_PERMISSIONS);
       if (!hasPermission) {
         throw new HttpException(403, 'Admin access required');
       }
@@ -154,7 +155,7 @@ class PermissionController {
         throw new HttpException(400, 'Invalid permission ID');
       }
 
-      const hasPermission = await this.userService.hasPermission(userId, 'admin.permissions.delete');
+      const hasPermission = await this.userService.hasPermission(userId, PERMISSIONS.MANAGE_PERMISSIONS);
       if (!hasPermission) {
         throw new HttpException(403, 'Admin access required');
       }
@@ -177,7 +178,7 @@ class PermissionController {
         throw new HttpException(401, 'Authentication required');
       }
 
-      const hasPermission = await this.userService.hasPermission(userId, 'admin.permissions.view');
+      const hasPermission = await this.userService.hasPermission(userId, PERMISSIONS.VIEW_ADMIN_PANEL);
       if (!hasPermission) {
         throw new HttpException(403, 'Admin access required');
       }

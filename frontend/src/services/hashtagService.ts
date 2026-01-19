@@ -36,12 +36,15 @@ export const getAllHashtags = async (
   options: CacheOptions = { next: { revalidate: 43200 } } // 12 hours cache by default
 ): Promise<HashtagServiceResponse> => {
   try {
+    // Calculate skip from page number (backend expects skip, not page)
+    const skip = (page - 1) * limit;
+    
     const response = await getData<HashtagApiResponse, PaginationMeta>(
       'hashtags',
       false, // summaryOnly
       limit,
       page,
-      undefined, // skip (calculated in backend)
+      skip,
       options
     );
 

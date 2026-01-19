@@ -113,18 +113,25 @@ class PostService {
       skip = 0,
       limit = 10,
       summaryOnly = false,
-      status = PostStatusEnum.PUBLISHED,
-      approved = true,
+      status,
+      approved,
       authorId,
       categoryId,
       tagId
     } = params;
 
-    // Build where clause
-    const whereClause: Prisma.PostWhereInput = {
-      approved,
-      status: status as PostStatus,
-    };
+    // Build where clause - only add filters if explicitly provided
+    const whereClause: Prisma.PostWhereInput = {};
+
+    // Only filter by approved status if explicitly provided
+    if (approved !== undefined) {
+      whereClause.approved = approved;
+    }
+
+    // Only filter by status if explicitly provided
+    if (status !== undefined) {
+      whereClause.status = status as PostStatus;
+    }
 
     if (authorId) {
       whereClause.authorId = authorId;

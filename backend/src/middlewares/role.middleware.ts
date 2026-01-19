@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import { HttpException } from "../exceptions/HttpException";
 import { prisma } from "../config/database";
+import { RoleGuard } from "../utils/roleGuard";
+import { ROLE_NAMES } from "../constants/roles";
 
 // Type definitions for better type safety
 type RoleWithPermissions = {
@@ -27,7 +29,10 @@ type EndpointAccessWithRelations = {
   permissions?: { id: number; name: string }[];
 };
 
-export const roleMiddleware = (requiredRoles?: string[]) => {
+export const roleMiddleware = (requiredRoles?: string[], options?: {
+  requireAll?: boolean; // If true, user must have ALL roles. If false, user must have ANY role (default)
+  checkHierarchy?: boolean; // If true, check role hierarchy levels (default: false)
+}) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       let prismaInstance = req.app.locals.prisma;
@@ -41,26 +46,30 @@ export const roleMiddleware = (requiredRoles?: string[]) => {
         throw new HttpException(401, 'User not authenticated');
       }
 
-      // Fetch user's roles and their associated permissions (only once)
-      const userRoles = await prismaInstance.userRole.findMany({
-        where: { userId },
-        include: {
-          role: {
-            include: {
-              permissions: true
-            }
-          }
-        }
-      }) as unknown as UserRoleWithRelations[];
-
-      // Extract user role names and permissions once (for reuse)
-      const userRoleNames = getUserRoleNames(userRoles);
-      const userPermissions = getUserPermissions(userRoles);
+      // Initialize role guard
+      const roleGuard = new RoleGuard(prismaInstance);
+      
+      // Load user with roles and permissions
+      const user = await roleGuard.loadUserWithPermissions(userId);
+      
+      if (!user) {
+        throw new HttpException(404, 'User not found');
+      }
 
       // If specific roles are required via parameter
       if (requiredRoles && requiredRoles.length > 0) {
-        if (!hasRequiredRole(userRoleNames, requiredRoles)) {
-          throw new HttpException(403, 'Access denied: Required role not found');
+        const requireAll = options?.requireAll ?? false;
+        
+        if (requireAll) {
+          // User must have ALL specified roles
+          if (!roleGuard.hasAllRoles(user, requiredRoles)) {
+            throw new HttpException(403, `Access denied: All of these roles required: ${requiredRoles.join(', ')}`);
+          }
+        } else {
+          // User must have ANY of the specified roles
+          if (!roleGuard.hasAnyRole(user, requiredRoles)) {
+            throw new HttpException(403, `Access denied: One of these roles required: ${requiredRoles.join(', ')}`);
+          }
         }
       } else {
         // Check endpoint-specific access requirements from database
@@ -70,16 +79,16 @@ export const roleMiddleware = (requiredRoles?: string[]) => {
         const endpointAccess = await prismaInstance.endpointAccess.findFirst({
           where: { path, method },
           include: {
-            roles: true,         // Changed from requiredRoles
-            permissions: true    // Changed from requiredPermissions
+            roles: true,
+            permissions: true
           }
         }) as unknown as EndpointAccessWithRelations | null;
 
         if (endpointAccess) {
           // Check role-based access
           if (endpointAccess.roles && endpointAccess.roles.length > 0) {
-            const endpointRoleNames = endpointAccess.roles.map(role => role.name.toLowerCase());
-            if (!hasAnyRole(userRoleNames, endpointRoleNames)) {
+            const endpointRoleNames = endpointAccess.roles.map(role => role.name);
+            if (!roleGuard.hasAnyRole(user, endpointRoleNames)) {
               throw new HttpException(403, 'Access denied: Required role not found');
             }
           }
@@ -87,10 +96,10 @@ export const roleMiddleware = (requiredRoles?: string[]) => {
           // Check permission-based access
           if (endpointAccess.permissions && endpointAccess.permissions.length > 0) {
             const requiredPermissionNames = endpointAccess.permissions.map(
-              permission => permission.name.toLowerCase()
+              permission => permission.name
             );
             
-            if (!hasAllPermissions(userPermissions, requiredPermissionNames)) {
+            if (!roleGuard.hasAllPermissions(user, requiredPermissionNames)) {
               throw new HttpException(403, 'Access denied: Required permissions not found');
             }
           }
@@ -106,55 +115,114 @@ export const roleMiddleware = (requiredRoles?: string[]) => {
 };
 
 /**
- * Extract user role names from user roles
- * @param userRoles Array of user roles with relations
- * @returns Array of lowercase role names
+ * Helper middleware to check for specific permissions
  */
-function getUserRoleNames(userRoles: UserRoleWithRelations[]): string[] {
-  return userRoles.map(ur => ur.role.name.toLowerCase());
-}
+export const permissionMiddleware = (requiredPermissions: string[], options?: {
+  requireAll?: boolean; // If true, user must have ALL permissions. If false, user must have ANY permission (default)
+}) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let prismaInstance = req.app.locals.prisma;
+      if (!prismaInstance) {
+        prismaInstance = prisma;
+      }
+
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new HttpException(401, 'User not authenticated');
+      }
+
+      const roleGuard = new RoleGuard(prismaInstance);
+      const user = await roleGuard.loadUserWithPermissions(userId);
+      
+      if (!user) {
+        throw new HttpException(404, 'User not found');
+      }
+
+      const requireAll = options?.requireAll ?? true; // Default to requiring all permissions
+      
+      if (requireAll) {
+        // User must have ALL specified permissions
+        if (!roleGuard.hasAllPermissions(user, requiredPermissions)) {
+          throw new HttpException(403, `Access denied: All of these permissions required: ${requiredPermissions.join(', ')}`);
+        }
+      } else {
+        // User must have ANY of the specified permissions
+        if (!roleGuard.hasAnyPermission(user, requiredPermissions)) {
+          throw new HttpException(403, `Access denied: At least one of these permissions required: ${requiredPermissions.join(', ')}`);
+        }
+      }
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+};
 
 /**
- * Extract user permissions from user roles
- * @param userRoles Array of user roles with relations
- * @returns Set of lowercase permission names
+ * Helper middleware to check if user is admin (superadmin or admin)
  */
-function getUserPermissions(userRoles: UserRoleWithRelations[]): Set<string> {
-  return new Set(
-    userRoles.flatMap(ur =>
-      ur.role.permissions.map(permission =>
-        permission.name.toLowerCase()
-      )
-    )
-  );
-}
+export const adminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    let prismaInstance = req.app.locals.prisma;
+    if (!prismaInstance) {
+      prismaInstance = prisma;
+    }
+
+    const userId = req.userId;
+
+    if (!userId) {
+      throw new HttpException(401, 'User not authenticated');
+    }
+
+    const roleGuard = new RoleGuard(prismaInstance);
+    const user = await roleGuard.loadUserWithPermissions(userId);
+    
+    if (!user) {
+      throw new HttpException(404, 'User not found');
+    }
+
+    if (!roleGuard.isAdmin(user)) {
+      throw new HttpException(403, 'Access denied: Administrator access required');
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
 /**
- * Check if user has any of the required roles
- * @param userRoleNames Array of user role names
- * @param requiredRoles Array of required role names
- * @returns Boolean indicating if user has any required role
+ * Helper middleware to check if user is superadmin
  */
-function hasRequiredRole(userRoleNames: string[], requiredRoles: string[]): boolean {
-  return requiredRoles.some(role => userRoleNames.includes(role.toLowerCase()));
-}
+export const superAdminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    let prismaInstance = req.app.locals.prisma;
+    if (!prismaInstance) {
+      prismaInstance = prisma;
+    }
 
-/**
- * Check if user has any of the endpoint roles
- * @param userRoleNames Array of user role names
- * @param endpointRoleNames Array of endpoint role names
- * @returns Boolean indicating if user has any endpoint role
- */
-function hasAnyRole(userRoleNames: string[], endpointRoleNames: string[]): boolean {
-  return endpointRoleNames.some(role => userRoleNames.includes(role));
-}
+    const userId = req.userId;
 
-/**
- * Check if user has all required permissions
- * @param userPermissions Set of user permission names
- * @param requiredPermissionNames Array of required permission names
- * @returns Boolean indicating if user has all required permissions
- */
-function hasAllPermissions(userPermissions: Set<string>, requiredPermissionNames: string[]): boolean {
-  return requiredPermissionNames.every(permission => userPermissions.has(permission));
-}
+    if (!userId) {
+      throw new HttpException(401, 'User not authenticated');
+    }
+
+    const roleGuard = new RoleGuard(prismaInstance);
+    const user = await roleGuard.loadUserWithPermissions(userId);
+    
+    if (!user) {
+      throw new HttpException(404, 'User not found');
+    }
+
+    if (!roleGuard.isSuperAdmin(user)) {
+      throw new HttpException(403, 'Access denied: Super administrator access required');
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

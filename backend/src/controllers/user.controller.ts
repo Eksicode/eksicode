@@ -3,6 +3,7 @@ import UserService from "../services/user.service";
 import MediaService from "../services/media.service";
 import { getPaginationParams, getPaginationMeta } from "../utils/pagination";
 import { HttpException } from '../exceptions/HttpException';
+import { PERMISSIONS } from '../constants/permissions';
 
 interface MulterRequest extends Request {
   file?: Express.Multer.File;
@@ -74,7 +75,7 @@ class UserController {
         throw new HttpException(401, 'Authentication required');
       }
 
-      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.users.create');
+      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, PERMISSIONS.CREATE_USER);
       if (!hasAdminPermission) {
         throw new HttpException(403, 'Admin access required to create users');
       }
@@ -113,7 +114,7 @@ class UserController {
 
       // Check if user can update this profile
       if (id !== requestingUserId) {
-        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.users.update');
+        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, PERMISSIONS.UPDATE_USER);
         if (!hasAdminPermission) {
           throw new HttpException(403, "You can only update your own profile");
         }
@@ -149,7 +150,7 @@ class UserController {
 
       // Check if user can delete this profile
       if (id !== requestingUserId) {
-        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.users.delete');
+        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, PERMISSIONS.DELETE_USER);
         if (!hasAdminPermission) {
           throw new HttpException(403, "You can only delete your own profile");
         }
@@ -244,7 +245,7 @@ class UserController {
       }
 
       // Check admin permission
-      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.roles.assign');
+      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, PERMISSIONS.MANAGE_USER_ROLES);
       if (!hasAdminPermission) {
         throw new HttpException(403, 'Admin access required');
       }
@@ -275,7 +276,7 @@ class UserController {
       }
 
       // Check admin permission
-      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.roles.remove');
+      const hasAdminPermission = await this.userService.hasPermission(requestingUserId, PERMISSIONS.MANAGE_USER_ROLES);
       if (!hasAdminPermission) {
         throw new HttpException(403, 'Admin access required');
       }
@@ -306,7 +307,7 @@ class UserController {
 
       // Check if user can view roles (own profile or admin)
       if (userId !== requestingUserId) {
-        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.roles.view');
+        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, PERMISSIONS.VIEW_USER);
         if (!hasAdminPermission) {
           throw new HttpException(403, 'Access denied');
         }
@@ -339,7 +340,7 @@ class UserController {
 
       // Check if user can view permissions (own profile or admin)
       if (userId !== requestingUserId) {
-        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, 'admin.permissions.view');
+        const hasAdminPermission = await this.userService.hasPermission(requestingUserId, PERMISSIONS.VIEW_USER);
         if (!hasAdminPermission) {
           throw new HttpException(403, 'Access denied');
         }

@@ -37,49 +37,50 @@ export const SEED_CONFIG = {
   // Default permissions
   permissions: [
     // Post permissions
-    { name: "CREATE_POST", description: "Can create posts" },
-    { name: "UPDATE_POST", description: "Can update posts" },
-    { name: "DELETE_POST", description: "Can delete posts" },
-    { name: "APPROVE_POST", description: "Can approve posts" },
-    { name: "VIEW_ALL_POSTS", description: "Can view all posts including drafts" },
+    { name: "CREATE_POST", description: "Can create posts", category: "content", resource: "post", action: "create" },
+    { name: "UPDATE_POST", description: "Can update posts", category: "content", resource: "post", action: "update" },
+    { name: "DELETE_POST", description: "Can delete posts", category: "content", resource: "post", action: "delete" },
+    { name: "APPROVE_POST", description: "Can approve posts", category: "content", resource: "post", action: "approve" },
+    { name: "VIEW_ALL_POSTS", description: "Can view all posts including drafts", category: "content", resource: "post", action: "view_all" },
     
     // User permissions
-    { name: "VIEW_USERS", description: "Can view all users" },
-    { name: "VIEW_USER", description: "Can view user details" },
-    { name: "CREATE_USER", description: "Can create users" },
-    { name: "UPDATE_USER", description: "Can update users" },
-    { name: "DELETE_USER", description: "Can delete users" },
-    { name: "MANAGE_USER_ROLES", description: "Can assign/remove user roles" },
+    { name: "VIEW_USERS", description: "Can view all users", category: "user_management", resource: "user", action: "view_all" },
+    { name: "VIEW_USER", description: "Can view user details", category: "user_management", resource: "user", action: "view" },
+    { name: "CREATE_USER", description: "Can create users", category: "user_management", resource: "user", action: "create" },
+    { name: "UPDATE_USER", description: "Can update users", category: "user_management", resource: "user", action: "update" },
+    { name: "DELETE_USER", description: "Can delete users", category: "user_management", resource: "user", action: "delete" },
+    { name: "MANAGE_USER_ROLES", description: "Can assign/remove user roles", category: "user_management", resource: "user_role", action: "manage" },
     
     // Comment permissions
-    { name: "DELETE_COMMENT", description: "Can delete comments" },
-    { name: "MODERATE_COMMENTS", description: "Can moderate comments" },
+    { name: "DELETE_COMMENT", description: "Can delete comments", category: "content", resource: "comment", action: "delete" },
+    { name: "MODERATE_COMMENTS", description: "Can moderate comments", category: "content", resource: "comment", action: "moderate" },
     
     // System permissions
-    { name: "MANAGE_SYSTEM", description: "Can manage system settings" },
-    { name: "VIEW_ADMIN_PANEL", description: "Can access admin panel" },
-    { name: "MANAGE_PERMISSIONS", description: "Can manage permissions and roles" },
+    { name: "MANAGE_SYSTEM", description: "Can manage system settings", category: "system", resource: "system", action: "manage" },
+    { name: "VIEW_ADMIN_PANEL", description: "Can access admin panel", category: "system", resource: "admin_panel", action: "view" },
+    { name: "MANAGE_PERMISSIONS", description: "Can manage permissions and roles", category: "system", resource: "permission", action: "manage" },
     
     // Content permissions
-    { name: "MANAGE_CATEGORIES", description: "Can manage categories" },
-    { name: "MANAGE_TAGS", description: "Can manage tags" },
-    { name: "MANAGE_PAGES", description: "Can manage static pages" },
-    { name: "MANAGE_MENUS", description: "Can manage menu items" },
+    { name: "MANAGE_CATEGORIES", description: "Can manage categories", category: "content", resource: "category", action: "manage" },
+    { name: "MANAGE_TAGS", description: "Can manage tags", category: "content", resource: "tag", action: "manage" },
+    { name: "MANAGE_PAGES", description: "Can manage static pages", category: "content", resource: "page", action: "manage" },
+    { name: "MANAGE_MENUS", description: "Can manage menu items", category: "content", resource: "menu", action: "manage" },
     
     // Job/Company permissions
-    { name: "MANAGE_COMPANIES", description: "Can manage companies" },
-    { name: "MANAGE_JOBS", description: "Can manage job postings" },
+    { name: "MANAGE_COMPANIES", description: "Can manage companies", category: "business", resource: "company", action: "manage" },
+    { name: "MANAGE_JOBS", description: "Can manage job postings", category: "business", resource: "job", action: "manage" },
     
     // Media permissions
-    { name: "MANAGE_MEDIA", description: "Can manage media files" },
-    { name: "DELETE_MEDIA", description: "Can delete media files" },
+    { name: "MANAGE_MEDIA", description: "Can manage media files", category: "media", resource: "media", action: "manage" },
+    { name: "DELETE_MEDIA", description: "Can delete media files", category: "media", resource: "media", action: "delete" },
   ],
 
-  // Default roles
+  // Default roles with hierarchy levels
   roles: [
     {
       name: "superadmin",
       description: "Super Administrator with complete system access",
+      level: 0, // Highest authority
       permissions: [
         "CREATE_POST", "UPDATE_POST", "DELETE_POST", "APPROVE_POST", "VIEW_ALL_POSTS",
         "VIEW_USERS", "VIEW_USER", "CREATE_USER", "UPDATE_USER", "DELETE_USER", "MANAGE_USER_ROLES",
@@ -93,6 +94,7 @@ export const SEED_CONFIG = {
     {
       name: "admin",
       description: "Administrator with content and user management access",
+      level: 10, // High authority, but below superadmin
       permissions: [
         "CREATE_POST", "UPDATE_POST", "DELETE_POST", "APPROVE_POST", "VIEW_ALL_POSTS",
         "VIEW_USERS", "VIEW_USER", "CREATE_USER", "UPDATE_USER",
@@ -106,6 +108,7 @@ export const SEED_CONFIG = {
     {
       name: "moderator",
       description: "Content moderator with limited management access",
+      level: 20, // Medium authority
       permissions: [
         "CREATE_POST", "UPDATE_POST", "APPROVE_POST", "VIEW_ALL_POSTS",
         "VIEW_USER",
@@ -117,6 +120,7 @@ export const SEED_CONFIG = {
     {
       name: "user",
       description: "Regular user with basic access",
+      level: 100, // Lowest authority
       permissions: ["CREATE_POST", "VIEW_USER"]
     }
   ],

@@ -6,7 +6,6 @@ import { ReactNode } from 'react';
 
 interface RoleBasedLinkProps {
   href?: string;
-  adminHref?: string;
   userHref?: string;
   children: ReactNode;
   className?: string;
@@ -14,23 +13,17 @@ interface RoleBasedLinkProps {
 }
 
 /**
- * Link component that shows different URLs based on user role
+ * Link component for user profile routes
  */
 export function RoleBasedLink({ 
   href, 
-  adminHref, 
   userHref, 
   children, 
   className,
   onClick 
 }: RoleBasedLinkProps) {
-  const { isAdmin } = useAuth();
-
-  // Determine the URL based on role
-  let targetHref = href;
-  if (!targetHref) {
-    targetHref = isAdmin ? (adminHref || '/admin') : (userHref || '/profile');
-  }
+  // Use provided href, fallback to userHref, or default to /profile
+  const targetHref = href || userHref || '/profile';
 
   return (
     <Link href={targetHref} className={className} onClick={onClick}>
@@ -60,18 +53,10 @@ export function ConditionalRender({ children, roles, fallback }: ConditionalRend
   return <>{children}</>;
 }
 
-// Specific role-based components
-export function AdminOnly({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+// User-specific component
+export function UserOnly({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
   return (
-    <ConditionalRender roles={['admin', 'superadmin']} fallback={fallback}>
-      {children}
-    </ConditionalRender>
-  );
-}
-
-export function SuperAdminOnly({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
-  return (
-    <ConditionalRender roles={['superadmin']} fallback={fallback}>
+    <ConditionalRender roles={['user']} fallback={fallback}>
       {children}
     </ConditionalRender>
   );

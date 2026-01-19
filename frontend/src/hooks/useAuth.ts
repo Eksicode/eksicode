@@ -32,9 +32,6 @@ export function useAuth(): AuthContextType {
       return user?.permissions?.includes(permission) || false;
     };
 
-    const isAdmin = hasRole('admin') || hasRole('superadmin');
-    const isSuperAdmin = hasRole('superadmin');
-
     return {
       isLoading,
       isAuthenticated,
@@ -42,8 +39,6 @@ export function useAuth(): AuthContextType {
       token,
       hasRole,
       hasPermission,
-      isAdmin,
-      isSuperAdmin,
     };
   }, [session, status]);
 

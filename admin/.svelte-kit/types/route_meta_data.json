@@ -1,0 +1,42 @@
+{
+	"/": [
+		"src/routes/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/hashtags": [
+		"src/routes/+layout.server.ts"
+	],
+	"/jobs": [
+		"src/routes/+layout.server.ts"
+	],
+	"/login": [
+		"src/routes/+layout.server.ts"
+	],
+	"/menus": [
+		"src/routes/+layout.server.ts"
+	],
+	"/pages": [
+		"src/routes/+layout.server.ts"
+	],
+	"/posts": [
+		"src/routes/+layout.server.ts"
+	],
+	"/profile": [
+		"src/routes/+layout.server.ts"
+	],
+	"/roles": [
+		"src/routes/+layout.server.ts"
+	],
+	"/settings": [
+		"src/routes/+layout.server.ts"
+	],
+	"/sources": [
+		"src/routes/+layout.server.ts"
+	],
+	"/telegram-groups": [
+		"src/routes/+layout.server.ts"
+	],
+	"/users": [
+		"src/routes/+layout.server.ts"
+	]
+}

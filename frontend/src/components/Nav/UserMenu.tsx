@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useAuth } from "@/hooks/useAuth";
-import { RoleBasedLink, AdminOnly } from "@/components/Auth/RoleBasedComponents";
 import authService from "@/services/authService";
 
 const UserMenu = () => {
@@ -14,7 +13,7 @@ const UserMenu = () => {
   const [error, setError] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { user, token, isAdmin } = useAuth();
+  const { user, token } = useAuth();
 
   const fetchUserData = useCallback(async () => {
     try {
@@ -181,25 +180,15 @@ const UserMenu = () => {
             <Link
               onClick={handleLinkClick}
               className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey transition-colors"
-              href={isAdmin ? "/admin" : "/profile"}
+              href="/profile"
             >
-              {isAdmin ? 'Admin Panel' : 'Profilim'}
+              Profilim
             </Link>
-
-            <AdminOnly>
-              <Link
-                onClick={handleLinkClick}
-                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey transition-colors"
-                href="/admin/kullanicilar"
-              >
-                Kullanıcı Yönetimi
-              </Link>
-            </AdminOnly>
 
             <Link
               onClick={handleLinkClick}
               className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey transition-colors"
-              href={isAdmin ? "/admin/favoriler" : "/profile/favoriler"}
+              href="/profile/favoriler"
             >
               Favoriler
             </Link>
@@ -207,7 +196,7 @@ const UserMenu = () => {
             <Link
               onClick={handleLinkClick}
               className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-DarkLightGrey transition-colors"
-              href={isAdmin ? "/admin/ayarlar" : "/profile/ayarlar"}
+              href="/profile/ayarlar"
             >
               Ayarlar
             </Link>

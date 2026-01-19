@@ -42,6 +42,7 @@ class TelegramService {
               channelId: true,
               listOrder: true,
               description: true,
+              active: true,
               createdAt: true,
               updatedAt: true,
             },

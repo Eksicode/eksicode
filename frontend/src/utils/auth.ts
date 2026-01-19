@@ -1,23 +1,10 @@
 import { UserRole } from '@/types/auth';
 
 /**
- * Get the appropriate dashboard redirect URL based on user role
+ * Get the appropriate dashboard redirect URL for users
  */
 export function getDashboardRedirect(userRole: string | string[]): string {
-  const roles = Array.isArray(userRole) ? userRole : [userRole];
-  
-  if (roles.includes('superadmin') || roles.includes('admin')) {
-    return '/admin';
-  }
-  
   return '/profile';
-}
-
-/**
- * Check if user has admin privileges
- */
-export function isAdminUser(roles: string[]): boolean {
-  return roles.includes('admin') || roles.includes('superadmin');
 }
 
 /**
@@ -35,10 +22,8 @@ export function hasAnyRole(userRoles: string[], requiredRoles: UserRole[]): bool
 }
 
 /**
- * Get user's highest privilege role
+ * Get user's role
  */
 export function getHighestRole(roles: string[]): UserRole {
-  if (roles.includes('superadmin')) return 'superadmin';
-  if (roles.includes('admin')) return 'admin';
   return 'user';
 }

@@ -17,16 +17,12 @@ export interface AuthContextType {
   token: string | null;
   hasRole: (role: string) => boolean;
   hasPermission: (permission: string) => boolean;
-  isAdmin: boolean;
-  isSuperAdmin: boolean;
 }
 
-export type UserRole = 'user' | 'admin' | 'superadmin';
+export type UserRole = 'user';
 
 export const ROLES = {
-  USER: 'user',
-  ADMIN: 'admin', 
-  SUPERADMIN: 'superadmin'
+  USER: 'user'
 } as const;
 
 export const PERMISSIONS = {

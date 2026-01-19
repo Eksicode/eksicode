@@ -58,25 +58,9 @@ export function RoleGuard({
 }
 
 // Specific guard components
-export function AdminGuard({ children }: { children: React.ReactNode }) {
-  return (
-    <RoleGuard allowedRoles={['admin', 'superadmin']} fallbackRoute="/profile">
-      {children}
-    </RoleGuard>
-  );
-}
-
-export function SuperAdminGuard({ children }: { children: React.ReactNode }) {
-  return (
-    <RoleGuard allowedRoles={['superadmin']} fallbackRoute="/admin">
-      {children}
-    </RoleGuard>
-  );
-}
-
 export function UserGuard({ children }: { children: React.ReactNode }) {
   return (
-    <RoleGuard allowedRoles={['user', 'admin', 'superadmin']}>
+    <RoleGuard allowedRoles={['user']}>
       {children}
     </RoleGuard>
   );

@@ -92,6 +92,7 @@ class App {
     const whitelist = config.allowedOrigins || [
       "http://localhost:3000",
       "https://eksicode.org",
+      "http://localhost:5194",
       "https://www.eksicode.org",
       "https://demo.eksicode.org",
       "https://api.eksicode.org",

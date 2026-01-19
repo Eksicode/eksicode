@@ -5,6 +5,7 @@ import { SEED_CONFIG } from "../config/seed-config";
 type RoleData = {
   name: string;
   description: string;
+  level: number;
   permissions: readonly string[];
 };
 
@@ -28,10 +29,11 @@ export class RoleSeeder extends BaseSeeder {
       SEED_CONFIG.roles.map(role => ({
         name: role.name,
         description: role.description,
+        level: role.level,
         permissions: [...role.permissions]
       })),
       async (roleData: RoleData, tx) => {
-        const { permissions: permissionNames, ...roleInfo } = roleData;
+        const { permissions: permissionNames, level, ...roleInfo } = roleData;
         
         // Find permission IDs
         const permissionIds = permissionNames
@@ -48,6 +50,7 @@ export class RoleSeeder extends BaseSeeder {
             where: { name: roleData.name },
             update: {
               description: roleInfo.description,
+              level: level,
               permissions: {
                 set: [], // Clear existing permissions
                 connect: permissionIds.map(id => ({ id }))
@@ -55,6 +58,7 @@ export class RoleSeeder extends BaseSeeder {
             },
             create: {
               ...roleInfo,
+              level: level,
               permissions: {
                 connect: permissionIds.map(id => ({ id }))
               }

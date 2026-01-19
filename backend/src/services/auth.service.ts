@@ -25,6 +25,8 @@ export interface LoginResponse {
     verified: boolean;
     emailVerified: boolean;
     lastLoginAt: Date | null;
+    roles: string[];
+    permissions: string[];
   };
 }
 
@@ -177,6 +179,14 @@ class AuthService {
         { expiresIn: '7d' }
       );
 
+      // Extract roles and permissions
+      const roles = user.userRoles?.map(ur => ur.role.name) || [];
+      const rolePermissions = user.userRoles?.flatMap(ur => 
+        ur.role.permissions.map(p => p.name)
+      ) || [];
+      const directPermissions = user.userPermissions?.map(up => up.permission.name) || [];
+      const permissions = [...new Set([...rolePermissions, ...directPermissions])];
+
       return {
         success: true,
         message: 'Login successful',
@@ -190,6 +200,8 @@ class AuthService {
           verified: user.verified,
           emailVerified: user.emailVerified,
           lastLoginAt: user.lastLoginAt,
+          roles,
+          permissions,
         },
       };
     } catch (error) {

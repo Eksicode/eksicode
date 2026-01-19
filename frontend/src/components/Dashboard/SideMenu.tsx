@@ -1,16 +1,12 @@
 "use client";
 import {
   AiOutlineUnorderedList,
-  AiOutlineVideoCamera,
   AiOutlineTag,
   AiFillSetting,
 } from "react-icons/ai";
 import { MdOutlineWorkOutline, MdDashboard } from "react-icons/md";
 import { GrResources } from "react-icons/gr";
-import { BsMenuButtonWideFill } from "react-icons/bs";
-import { FaUsers } from "react-icons/fa";
 import { RiPagesLine } from "react-icons/ri";
-import { FaShareNodes } from "react-icons/fa6";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -37,24 +33,11 @@ const menuItems: MenuItem[] = [
     icon: AiOutlineUnorderedList,
     label: "favoriler",
     path: "/dashboard/favoriler"
-  }
-];
-
-const adminMenuItems: MenuItem[] = [
-  {
-    icon: FaUsers,
-    label: "Kullanicilar",
-    path: "/dashboard/kullanicilar"
   },
   {
     icon: RiPagesLine,
     label: "Sayfalar",
     path: "/dashboard/sayfalar"
-  },
-  {
-    icon: FaShareNodes,
-    label: "Roller",
-    path: "/dashboard/roller"
   },
   {
     icon: AiOutlineTag,
@@ -72,22 +55,15 @@ const adminMenuItems: MenuItem[] = [
     path: "/dashboard/kariyer"
   },
   {
-    icon: BsMenuButtonWideFill,
-    label: "Menu",
-    path: "/dashboard/menuler"
-  },
+    icon: AiFillSetting,
+    label: "Ayarlar",
+    path: "/dashboard/ayarlar"
+  }
 ];
-
-const settingsMenuItem: MenuItem = {
-  icon: AiFillSetting,
-  label: "Ayarlar",
-  path: "/dashboard/ayarlar"
-};
 
 const SideMenu = () => {
   const { user, token, isLoading } = useAuth();
   const [userDetails, setUserDetails] = useState<any>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -96,7 +72,6 @@ const SideMenu = () => {
           const userInfo = await authService.getCurrentUser(token);
           if (userInfo) {
             setUserDetails(userInfo);
-            setIsAdmin(userInfo.data?.roles?.includes("admin") || userInfo.data?.roles?.includes("superadmin") || false);
           }
         } catch (error) {
           console.error("Error fetching user details:", error);
@@ -126,12 +101,6 @@ const SideMenu = () => {
     );
   }
 
-  const menuList = [...menuItems];
-  if (isAdmin) {
-    menuList.push(...adminMenuItems);
-  }
-  menuList.push(settingsMenuItem);
-
   const renderMenuItem = ({ icon: Icon, label, path }: MenuItem) => (
     <li key={path}>
       <Link
@@ -148,7 +117,7 @@ const SideMenu = () => {
     <aside className="w-64 hidden lg:block" aria-label="Sidebar">
       <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg border-gray-300 border text-gray-900 dark:text-white dark:bg-DarkerGrey dark:border-DarkLightGrey">
         <ul className="space-y-2">
-          {menuList.map(renderMenuItem)}
+          {menuItems.map(renderMenuItem)}
         </ul>
       </div>
     </aside>

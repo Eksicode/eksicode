@@ -33,6 +33,8 @@ class AuthController {
     try {
       const { userInfo, password } = req.body;
 
+      // Validation is already handled by Zod middleware, but keep this as a safety check
+      // for cases where validation middleware might not be applied
       if (!userInfo || !password) {
         throw new HttpException(400, 'Email/username and password are required');
       }
@@ -64,7 +66,8 @@ class AuthController {
 
       res.status(200).json({
         success: true,
-        user
+        data: user,
+        message: 'User retrieved successfully'
       });
     } catch (error) {
       next(error);

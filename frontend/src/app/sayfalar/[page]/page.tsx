@@ -24,43 +24,56 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<{ page: string }> }) {
   const { page } = await params;
+  
+  let response: Response;
   try {
-    const response = await fetch(
+    response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/pages/${page}`,
       { cache: "force-cache" }
     );
+  } catch (error) {
+    console.error("Error fetching page:", error);
+    notFound();
+  }
 
-    if (response.status === 404) {
-      notFound();
-    }
+  if (response.status === 404) {
+    notFound();
+  }
 
-    const pageData: PageData = await response.json();
-    const sanitizedContent = DOMPurify.sanitize(pageData.content);
-    return (
-      <div className="flex py-5 basis-3/4">
-        <div className="flex">
-          <SideMenu />
-        </div>
-        <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
-          <div className="flex flex-wrap justify-center w-full mx-2 p-4 rounded-lg border bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey">
-            <h1 className="w-full text-3xl text-bold mb-4 text-center">
-              {pageData.title}
-            </h1>
-            {pageData.image && (
-              <Image
-                src={pageData.image}
-                alt={pageData.title}
-                width={1920}
-                height={1080}
-              />
-            )}
-            <div dangerouslySetInnerHTML={{ __html: sanitizedContent }}></div>
-          </div>
+  if (!response.ok) {
+    throw new Error(`Failed to fetch page: ${response.status} ${response.statusText}`);
+  }
+
+  let pageData: PageData;
+  try {
+    pageData = await response.json();
+  } catch (error) {
+    console.error("Error parsing page data:", error);
+    notFound();
+  }
+
+  const sanitizedContent = DOMPurify.sanitize(pageData.content);
+  return (
+    <div className="flex py-5 basis-3/4">
+      <div className="flex">
+        <SideMenu />
+      </div>
+      <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center text-center">
+        <div className="flex flex-wrap justify-center w-full mx-2 p-4 rounded-lg border bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey">
+          <h1 className="w-full text-3xl text-bold mb-4 text-center">
+            {pageData.title}
+          </h1>
+          {pageData.image && (
+            <Image
+              src={pageData.image}
+              alt={pageData.title}
+              width={1920}
+              height={1080}
+            />
+          )}
+          <div dangerouslySetInnerHTML={{ __html: sanitizedContent }}></div>
         </div>
       </div>
-    );
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+    </div>
+  );
 }
