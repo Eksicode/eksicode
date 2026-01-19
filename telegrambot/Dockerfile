@@ -20,6 +20,9 @@ WORKDIR /build
 COPY package*.json ./
 COPY tsconfig.json ./
 
+# Copy prisma schema before npm ci (needed for postinstall script)
+COPY prisma ./prisma
+
 # Install all dependencies (including dev dependencies for build)
 RUN npm ci --prefer-offline --no-audit
 
