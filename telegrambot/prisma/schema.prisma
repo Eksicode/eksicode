@@ -1,0 +1,545 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     Int              @id @default(autoincrement())
+  email                  String           @unique @db.VarChar(255)
+  password               String           @db.VarChar(255)
+  firstName              String?          @db.VarChar(100)
+  lastName               String?          @db.VarChar(100)
+  username               String           @unique @db.VarChar(50)
+  profilePictureId       Int?
+  profilePicture         Media?           @relation("UserProfilePicture", fields: [profilePictureId], references: [id], onDelete: SetNull)
+  birthday               DateTime?
+  telegramId             BigInt?          @unique
+  phoneNumber            String?          @db.VarChar(20)
+  linkedin               String?          @db.VarChar(255)
+  github                 String?          @db.VarChar(255)
+  website                String?          @db.VarChar(255)
+  twitter                String?          @db.VarChar(255)
+  instagram              String?          @db.VarChar(255)
+  facebook               String?          @db.VarChar(255)
+  verified               Boolean          @default(false)
+  emailVerificationToken String?          @unique @db.VarChar(255)
+  emailVerified          Boolean          @default(false)
+  resetPasswordToken     String?          @unique @db.VarChar(255)
+  resetPasswordExpires   DateTime?
+  active                 Boolean          @default(true) // Add user active status
+  lastLoginAt            DateTime? // Track last login
+  // Role-based relations
+  userRoles              UserRole[]
+  // Direct permissions (in addition to role-based permissions)
+  userPermissions        UserPermission[]
+  // Other relations
+  posts                  Post[]
+  comments               Comment[]
+  postLikes              PostLike[]
+  notifications          Notification[]   @relation("NotificationRecipient")
+  sentNotifications      Notification[]   @relation("NotificationSender")
+  // Audit fields for role assignments
+  assignedRoles          UserRole[]       @relation("RoleAssignedBy")
+  assignedPermissions    UserPermission[] @relation("PermissionAssignedBy")
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+
+  // Add indexes for performance
+  @@index([email])
+  @@index([username])
+  @@index([telegramId])
+  @@index([emailVerified])
+  @@index([active])
+  @@index([lastLoginAt])
+  @@map("users")
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique @db.VarChar(100)
+  description String?          @db.VarChar(500)
+  // Role hierarchy support
+  parentId    Int?
+  parent      Role?            @relation("RoleHierarchy", fields: [parentId], references: [id])
+  children    Role[]           @relation("RoleHierarchy")
+  // Role level for hierarchy ordering (0 = highest level)
+  level       Int              @default(0)
+  active      Boolean          @default(true)
+  // Relations
+  permissions Permission[]
+  users       UserRole[]
+  endpoints   EndpointAccess[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Add indexes for performance
+  @@index([name])
+  @@index([parentId])
+  @@index([level])
+  @@index([active])
+  @@map("roles")
+}
+
+model Permission {
+  id              Int              @id @default(autoincrement())
+  name            String           @unique @db.VarChar(100)
+  description     String?          @db.VarChar(500)
+  category        String           @default("general") @db.VarChar(100) // Add permission categorization with default
+  resource        String?          @db.VarChar(100) // What resource this permission applies to
+  action          String           @default("read") @db.VarChar(50) // What action (read, write, delete, etc.) with default
+  active          Boolean          @default(true)
+  // Relations
+  roles           Role[]
+  endpoints       EndpointAccess[]
+  userPermissions UserPermission[] // Direct user permissions
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // Add indexes for performance
+  @@index([name])
+  @@index([category])
+  @@index([resource])
+  @@index([action])
+  @@index([active])
+  @@map("permissions")
+}
+
+model UserRole {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  roleId       Int
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role         Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  // Enhanced metadata
+  assignedById Int? // Who assigned this role
+  assignedBy   User?     @relation("RoleAssignedBy", fields: [assignedById], references: [id])
+  assignedAt   DateTime  @default(now()) // When was it assigned
+  expiresAt    DateTime? // Role expiration (optional)
+  active       Boolean   @default(true) // Can temporarily disable without removing
+  reason       String?   @db.VarChar(500) // Why was this role assigned
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Ensure unique user-role combinations
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+  @@index([assignedById])
+  @@index([expiresAt])
+  @@index([active])
+  @@map("user_roles")
+}
+
+// New model for direct user permissions
+model UserPermission {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  permissionId Int
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  // Enhanced metadata
+  assignedById Int? // Who assigned this permission
+  assignedBy   User?      @relation("PermissionAssignedBy", fields: [assignedById], references: [id])
+  assignedAt   DateTime   @default(now()) // When was it assigned
+  expiresAt    DateTime? // Permission expiration (optional)
+  active       Boolean    @default(true) // Can temporarily disable without removing
+  reason       String?    @db.VarChar(500) // Why was this permission assigned
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Ensure unique user-permission combinations
+  @@unique([userId, permissionId])
+  @@index([userId])
+  @@index([permissionId])
+  @@index([assignedById])
+  @@index([expiresAt])
+  @@index([active])
+  @@map("user_permissions")
+}
+
+model EndpointAccess {
+  id          Int          @id @default(autoincrement())
+  path        String       @db.VarChar(255)
+  method      String       @db.VarChar(10)
+  name        String?      @db.VarChar(100) // Friendly name for the endpoint
+  description String?      @db.VarChar(500) // Description of what this endpoint does
+  category    String?      @db.VarChar(100) // Category grouping (admin, user, public, etc.)
+  active      Boolean      @default(true) // Can disable endpoints
+  // Relations
+  roles       Role[]
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Ensure unique path-method combinations
+  @@unique([path, method])
+  @@index([path])
+  @@index([method])
+  @@index([category])
+  @@index([active])
+  @@map("endpoint_access")
+}
+
+model Post {
+  id            Int            @id @default(autoincrement())
+  title         String         @db.VarChar(255)
+  content       String         @db.Text
+  headerImageId Int?
+  headerImage   Media?         @relation("PostHeaderImage", fields: [headerImageId], references: [id], onDelete: SetNull)
+  authorId      Int
+  author        User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postLikes     PostLike[]     @relation("PostToPostLikes")
+  comments      Comment[]      @relation("PostToComments")
+  categories    PostCategory[] @relation("PostToCategories")
+  tags          Tag[]          @relation("PostToTags")
+  status        PostStatus     @default(DRAFT)
+  slug          String         @unique @db.VarChar(255)
+  approved      Boolean        @default(false)
+  publishedAt   DateTime? // When the post was published
+  viewCount     Int            @default(0) // Track post views
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // Add indexes for performance
+  @@index([authorId])
+  @@index([status])
+  @@index([approved])
+  @@index([publishedAt])
+  @@index([slug])
+  @@index([createdAt])
+  @@map("posts")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.Text
+  authorId  Int
+  postId    Int
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post      Post     @relation("PostToComments", fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Add indexes for performance
+  @@index([authorId])
+  @@index([postId])
+  @@index([createdAt])
+  @@map("comments")
+}
+
+model PostCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique @default("") @db.VarChar(100) // Add slug for SEO-friendly URLs with default
+  posts     Post[]   @relation("PostToCategories")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Add indexes for performance
+  @@index([name])
+  @@index([slug])
+  @@map("post_categories")
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique @default("") @db.VarChar(100) // Add slug for SEO-friendly URLs with default
+  posts     Post[]   @relation("PostToTags")
+  sources   Source[] @relation("SourceTags")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // Add indexes for performance
+  @@index([name])
+  @@index([slug])
+  @@map("tags")
+}
+
+model PostLike {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation("PostToPostLikes", fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  // Ensure unique user-post like combinations
+  @@unique([userId, postId])
+  @@index([userId])
+  @@index([postId])
+  @@map("post_likes")
+}
+
+model Page {
+  id          Int            @id @default(autoincrement())
+  title       String         @db.VarChar(255)
+  content     String         @db.Text
+  headerImgId Int?
+  headerImg   Media?         @relation("PageHeaderImage", fields: [headerImgId], references: [id], onDelete: SetNull)
+  slug        String         @unique @db.VarChar(255)
+  categories  PageCategory[]
+  published   Boolean        @default(false) // Add published status
+  viewCount   Int            @default(0) // Track page views
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Add indexes for performance
+  @@index([slug])
+  @@index([published])
+  @@index([createdAt])
+  @@map("pages")
+}
+
+model PageCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique @default("") @db.VarChar(100) // Add slug for SEO-friendly URLs with default
+  pages     Page[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Add indexes for performance
+  @@index([name])
+  @@index([slug])
+  @@map("page_categories")
+}
+
+model TelegramGroup {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  icon        String?  @db.VarChar(255)
+  members     Int      @default(0)
+  link        String   @db.VarChar(500)
+  channelId   String?  @unique @db.VarChar(100) // Make channelId unique
+  listOrder   Int?
+  description String?  @db.Text
+  active      Boolean  @default(true) // Add active status
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Add indexes for performance
+  @@index([name])
+  @@index([channelId])
+  @@index([listOrder])
+  @@index([active])
+  @@map("telegram_groups")
+}
+
+model Menu {
+  id         Int            @id @default(autoincrement())
+  name       String         @db.VarChar(255)
+  link       String         @db.VarChar(500)
+  subMenu    Int            @default(0)
+  icon       String?        @db.VarChar(255)
+  categories MenuCategory[]
+  active     Boolean        @default(true) // Add active status
+  order      Int            @default(0) // Add ordering
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  // Add indexes for performance
+  @@index([name])
+  @@index([active])
+  @@index([order])
+  @@map("menus")
+}
+
+model MenuCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  menus     Menu[]
+
+  // Add indexes for performance
+  @@index([name])
+  @@map("menu_categories")
+}
+
+model Notification {
+  id        Int                  @id @default(autoincrement())
+  title     String               @db.VarChar(255)
+  content   String               @db.Text
+  type      NotificationTypeEnum
+  userId    Int
+  user      User                 @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  senderId  Int
+  sender    User                 @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  read      Boolean              @default(false)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  // Add indexes for performance
+  @@index([userId])
+  @@index([senderId])
+  @@index([read])
+  @@index([type])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model Company {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  slug        String   @unique @default("") @db.VarChar(255) // Add slug for SEO-friendly URLs with default
+  description String?  @db.Text
+  website     String?  @db.VarChar(500)
+  industry    String?  @db.VarChar(255)
+  location    String?  @db.VarChar(255)
+  logoId      Int?
+  logo        Media?   @relation("CompanyLogo", fields: [logoId], references: [id], onDelete: SetNull)
+  hrpage      String?  @db.VarChar(500) // HR/Careers page URL
+  hrfields    String[] // Array of HR contact fields
+  active      Boolean  @default(true) // Add active status
+  jobs        Job[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Add indexes for performance
+  @@index([name])
+  @@index([slug])
+  @@index([industry])
+  @@index([location])
+  @@index([active])
+  @@map("companies")
+}
+
+model Job {
+  id             Int       @id @default(autoincrement())
+  title          String    @db.VarChar(255)
+  slug           String    @unique @db.VarChar(255)
+  description    String?   @db.Text
+  location       String?   @db.VarChar(255)
+  employmentType JobType   @default(FULLTIME)
+  department     String?   @db.VarChar(255)
+  salary         String?   @db.VarChar(255)
+  remote         Boolean   @default(false) // Add remote work option
+  active         Boolean   @default(true) // Add active status
+  featured       Boolean   @default(false) // Add featured status
+  validAt        DateTime?
+  expiresAt      DateTime? // Add expiration date
+  companyId      Int
+  company        Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Add indexes for performance
+  @@index([companyId])
+  @@index([slug])
+  @@index([employmentType])
+  @@index([location])
+  @@index([remote])
+  @@index([active])
+  @@index([featured])
+  @@index([validAt])
+  @@index([expiresAt])
+  @@index([createdAt])
+  @@map("jobs")
+}
+
+model Source {
+  id          Int      @id @default(autoincrement())
+  title       String   @unique @db.VarChar(255)
+  description String?  @db.Text
+  url         String   @db.VarChar(500)
+  tgChannel   String?  @db.VarChar(255)
+  tgUser      String?  @db.VarChar(255)
+  approved    Boolean  @default(false)
+  active      Boolean  @default(true) // Add active status
+  tags        Tag[]    @relation("SourceTags")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Add indexes for performance
+  @@index([title])
+  @@index([approved])
+  @@index([active])
+  @@index([tgChannel])
+  @@index([createdAt])
+  @@map("sources")
+}
+
+model Media {
+  id           Int       @id @default(autoincrement())
+  originalName String    @db.VarChar(255)
+  filename     String    @unique @db.VarChar(255)
+  url          String    @db.VarChar(500)
+  mimeType     String    @db.VarChar(100)
+  size         Int // File size in bytes
+  altText      String?   @db.VarChar(500) // For accessibility
+  type         MediaType @default(IMAGE)
+  folder       String?   @db.VarChar(255) // Add folder organization
+
+  // Relations
+  userProfiles User[]    @relation("UserProfilePicture")
+  postHeaders  Post[]    @relation("PostHeaderImage")
+  pageHeaders  Page[]    @relation("PageHeaderImage")
+  companyLogos Company[] @relation("CompanyLogo")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Add indexes for performance
+  @@index([filename])
+  @@index([type])
+  @@index([mimeType])
+  @@index([folder])
+  @@index([createdAt])
+  @@map("media")
+}
+
+model TelegramVerification {
+  id        Int      @id @default(autoincrement())
+  userId    BigInt   @unique
+  chatId    BigInt
+  messageId Int
+  firstName String?  @db.VarChar(255)
+  lastName  String?  @db.VarChar(255)
+  username  String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([userId])
+  @@index([chatId])
+  @@index([expiresAt])
+  @@map("telegram_verifications")
+}
+
+// Enums List
+
+enum NotificationTypeEnum {
+  COMMENT // yorum
+  POST // gönderi
+  ERROR // hata
+  ADMIN // yönetim
+  MESSAGE // mesaj
+  SYSTEM // sistem
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  ARCHIVE
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  SCHEDULED
+}
+
+enum JobType {
+  FULLTIME
+  PARTTIME
+  CONTRACT
+  INTERNSHIP
+  FREELANCE
+}

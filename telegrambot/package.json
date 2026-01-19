@@ -7,7 +7,8 @@
         "build": "tsc",
         "start": "node dist/telegram_func.js",
         "dev": "ts-node telegram_func.ts",
-        "watch": "tsc --watch"
+        "watch": "tsc --watch",
+        "postinstall": "prisma generate"
     },
     "keywords": [
         "eksicode",
@@ -46,6 +47,7 @@
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-promise": "^6.6.0",
         "eslint-plugin-standard": "^5.0.0",
+        "prisma": "^6.1.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.7.2"
     }
