@@ -10,12 +10,7 @@ ANALYSIS.md
 IMPLEMENTATION_SUMMARY.md
 MULTITHREADING_PLAN.md
 
-# Source files (not needed in production, only dist is needed)
-src/
-*.ts
-!tsconfig.json
-
-# Build outputs (will be generated in container)
+# Build outputs (will be generated in container, no need to copy existing)
 dist/
 
 # Dependencies
