@@ -23,12 +23,12 @@ services:
     environment:
       - TZ=Europe/Istanbul
       - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG || exit 1"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 10s
+    # healthcheck:
+    #   test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG || exit 1"]
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 5
+    #   start_period: 10s
     deploy:
       resources:
         limits:
@@ -60,9 +60,9 @@ services:
       - /app/dist
     networks:
       - eksicode_nw
-    depends_on:
-      redis:
-        condition: service_healthy
+    # depends_on:
+    #   redis:
+    #     condition: service_healthy
     # Resource limits for production clustering
     deploy:
       resources:
@@ -72,12 +72,12 @@ services:
         reservations:
           cpus: '0.5'
           memory: 4G
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      start_period: 40s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   start_period: 40s
+    #   retries: 3
 
   frontend:
     container_name: eksicodeFrontend
@@ -108,8 +108,8 @@ services:
     restart: on-failure
     networks:
       - eksicode_nw
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
 
   admin:
     container_name: eksicodeAdmin
@@ -133,9 +133,9 @@ services:
       - /app/build
     networks:
       - eksicode_nw
-    depends_on:
-      backend:
-        condition: service_healthy
+    # depends_on:
+    #   backend:
+    #     condition: service_healthy
     deploy:
       resources:
         limits:
@@ -144,12 +144,12 @@ services:
         reservations:
           cpus: '0.1'
           memory: 256M
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3001/ || exit 1"]
-      interval: 30s
-      timeout: 10s
-      start_period: 40s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3001/ || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   start_period: 40s
+    #   retries: 3
 
   telegrambot:
     container_name: eksicodeTelegramBot
@@ -201,11 +201,11 @@ services:
       - telegrambot_logs:/var/bot/logs
     networks:
       - eksicode_nw
-    depends_on:
-      redis:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
+    # depends_on:
+    #   redis:
+    #     condition: service_healthy
+    #   backend:
+    #     condition: service_healthy
     deploy:
       resources:
         limits:
@@ -219,12 +219,12 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-    healthcheck:
-      test: ["CMD-SHELL", "pm2 ping || exit 1"]
-      interval: 30s
-      timeout: 10s
-      start_period: 60s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pm2 ping || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   start_period: 60s
+    #   retries: 3
     logging:
       driver: "json-file"
       options:
@@ -252,16 +252,16 @@ services:
       - "443:443"
     networks:
       - eksicode_nw
-    depends_on:
-      backend:
-        condition: service_healthy
-        restart: true
-      frontend:
-        condition: service_healthy
-        restart: true
-      admin:
-        condition: service_healthy
-        restart: true
+    # depends_on:
+    #   backend:
+    #     condition: service_healthy
+    #     restart: true
+    #   frontend:
+    #     condition: service_healthy
+    #     restart: true
+    #   admin:
+    #     condition: service_healthy
+    #     restart: true
 
 volumes:
   backend:
