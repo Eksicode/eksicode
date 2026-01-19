@@ -1,62 +1,83 @@
-# Multi-stage build for telegrambot
+# ============================================================================
+# Multi-stage build for Telegram Bot - Production Optimized
+# ============================================================================
+
+# ============================================================================
+# Stage 1: Builder - Compile TypeScript
+# ============================================================================
 FROM node:20-alpine AS builder
 
-# Install build dependencies
-RUN apk add --no-cache python3 make g++
+# Install build dependencies for native modules
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    curl
 
-WORKDIR /app
+WORKDIR /build
 
 # Copy package files for better layer caching
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies (including dev dependencies for build)
-RUN npm ci
+# Install all dependencies (including dev dependencies for build)
+RUN npm ci --prefer-offline --no-audit
 
 # Copy source code
 COPY . .
 
-# Build TypeScript
-RUN npm run build
+# Build TypeScript to JavaScript
+RUN npm run build && \
+    # Verify build output
+    ls -la dist/
 
-# Production stage
+# ============================================================================
+# Stage 2: Production Runtime
+# ============================================================================
 FROM node:20-alpine AS production
 
-# Install pm2 globally (required for pm2-runtime)
-RUN npm install -g pm2@latest
+# Install runtime dependencies
+RUN apk add --no-cache \
+    curl \
+    tini \
+    tzdata && \
+    # Install PM2 globally for process management
+    npm install -g pm2@latest
 
-# Create non-root user
+# Set timezone
+ENV TZ=Europe/Istanbul
+
+# Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+    adduser -S nodejs -u 1001 -G nodejs
 
-WORKDIR /app
+# Use working directory that matches docker-compose.yml
+WORKDIR /var/bot
 
 # Copy package files
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --only=production && \
+RUN npm ci --only=production --prefer-offline --no-audit && \
     npm cache clean --force
 
-# Copy built files from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/pm2.json ./pm2.json
+# Copy built files and configuration from builder
+COPY --from=builder --chown=nodejs:nodejs /build/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /build/pm2.json ./pm2.json
 
-# Copy necessary files (logs directory will be created at runtime)
-RUN mkdir -p logs
-
-# Change ownership to non-root user
-RUN chown -R nodejs:nodejs /app
+# Create logs directory with proper permissions
+RUN mkdir -p logs && \
+    chown -R nodejs:nodejs /var/bot
 
 # Switch to non-root user
 USER nodejs
 
-# Expose port if needed (telegram bot doesn't typically need ports)
-# EXPOSE 3000
+# Health check using PM2 ping
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD pm2 ping || exit 1
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD node -e "require('fs').existsSync('/app/logs') && process.exit(0) || process.exit(1)"
+# Use tini as init system for proper signal handling
+ENTRYPOINT ["/sbin/tini", "--"]
 
-# Use pm2-runtime for process management
-CMD ["pm2-runtime", "start", "pm2.json"]
+# Start with PM2 runtime in cluster mode
+CMD ["pm2-runtime", "start", "pm2.json", "--env", "production"]

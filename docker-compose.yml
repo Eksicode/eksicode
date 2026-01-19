@@ -111,26 +111,89 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
 
+  admin:
+    container_name: eksicodeAdmin
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    working_dir: /app
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./admin/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - HOSTNAME=0.0.0.0
+      - BACKEND_URL=http://backend:9000
+    volumes:
+      - ./admin:/app
+      - /app/node_modules
+      - /app/build
+    networks:
+      - eksicode_nw
+    depends_on:
+      backend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3001/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+
   telegrambot:
     container_name: eksicodeTelegramBot
     build:
       context: ./telegrambot
       dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
     working_dir: /var/bot
     restart: unless-stopped
     env_file:
       - ./telegrambot/.env
     environment:
+      # Node environment
       - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=1536
+      
+      # Redis configuration
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
       - REDIS_DB=0
+      
+      # Queue configuration
       - ENABLE_QUEUE=true
       - QUEUE_CONCURRENCY=10
       - MAX_QUEUE_SIZE=1000
+      - QUEUE_RETRY_ATTEMPTS=3
+      - QUEUE_RETRY_DELAY=5000
+      
+      # Worker configuration
       - WORKER_THREADS=4
+      - PM2_INSTANCES=1
+      
+      # Timezone
       - TZ=Europe/Istanbul
+      
+      # Backend API
+      - BACKEND_URL=http://backend:9000
+      - API_TIMEOUT=30000
+      
+      # Logging
+      - LOG_LEVEL=info
+      - LOG_MAX_FILES=7
     volumes:
       - ./telegrambot:/var/bot
       - /var/bot/node_modules
@@ -151,12 +214,23 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     healthcheck:
       test: ["CMD-SHELL", "pm2 ping || exit 1"]
       interval: 30s
       timeout: 10s
       start_period: 60s
       retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=telegrambot"
 
   nginx:
     container_name: eksicodeNginx
@@ -185,10 +259,14 @@ services:
       frontend:
         condition: service_healthy
         restart: true
+      admin:
+        condition: service_healthy
+        restart: true
 
 volumes:
   backend:
   frontend:
+  admin:
   nginx:
   redis_data:
     driver: local

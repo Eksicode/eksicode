@@ -3,30 +3,68 @@
     {
       "name": "eksicodeBot-user",
       "script": "dist/telegram.js",
-      "listen_timeout": 5000,
-      "watch": false,
       "instances": 1,
+      "exec_mode": "fork",
+      "watch": false,
       "wait_ready": true,
-      "restart_delay": 5000
+      "listen_timeout": 5000,
+      "restart_delay": 5000,
+      "max_restarts": 10,
+      "min_uptime": "10s",
+      "max_memory_restart": "500M",
+      "error_file": "logs/user-error.log",
+      "out_file": "logs/user-out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
+      "merge_logs": true,
+      "autorestart": true,
+      "kill_timeout": 5000,
+      "env": {
+        "NODE_ENV": "production"
+      }
     },
     {
       "name": "eksicodeBot-func",
       "script": "dist/telegram_func.js",
-      "ignore_watch": [
-        "logs",
-        "node_modules"
-      ],
-      "watch": true,
-      "instances": 1
+      "instances": 1,
+      "exec_mode": "fork",
+      "watch": false,
+      "wait_ready": false,
+      "restart_delay": 3000,
+      "max_restarts": 10,
+      "min_uptime": "10s",
+      "max_memory_restart": "800M",
+      "error_file": "logs/func-error.log",
+      "out_file": "logs/func-out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
+      "merge_logs": true,
+      "autorestart": true,
+      "kill_timeout": 5000,
+      "env": {
+        "NODE_ENV": "production"
+      }
     },
     {
       "name": "sourcess_controller",
       "script": "dist/sourcess_controller.js",
-      "listen_timeout": 5000,
-      "watch": false,
       "instances": 1,
+      "exec_mode": "fork",
+      "watch": false,
       "wait_ready": true,
-      "restart_delay": 5000
+      "listen_timeout": 5000,
+      "restart_delay": 5000,
+      "max_restarts": 10,
+      "min_uptime": "10s",
+      "max_memory_restart": "400M",
+      "error_file": "logs/controller-error.log",
+      "out_file": "logs/controller-out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
+      "merge_logs": true,
+      "autorestart": true,
+      "kill_timeout": 5000,
+      "cron_restart": "0 3 * * *",
+      "env": {
+        "NODE_ENV": "production"
+      }
     }
   ]
 }
