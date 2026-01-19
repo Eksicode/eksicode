@@ -171,7 +171,7 @@ export default async function PostDetailPage({ params }: PostPageParams) {
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400 text-right">
                 <div>{formatDate(postData.createdAt)}</div>
-                {postData.viewCount > 0 && (
+                {postData.viewCount && postData.viewCount > 0 && (
                   <div className="flex items-center justify-end gap-1 mt-1">
                     <BsEye className="text-base" />
                     <span>{postData.viewCount} görüntülenme</span>
