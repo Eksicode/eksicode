@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs/
+ANALYSIS.md
+IMPLEMENTATION_SUMMARY.md
+MULTITHREADING_PLAN.md
+
+# Source files (not needed in production, only dist is needed)
+src/
+*.ts
+!tsconfig.json
+
+# Build outputs (will be generated in container)
+dist/
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+sample.env
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# Other
+.eslintrc*
+.pinignore
+hataMesaji.txt
+help*.md

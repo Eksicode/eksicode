@@ -1,4 +1,42 @@
 services:
+  # Redis service for queue management and caching
+  redis:
+    container_name: eksicodeRedis
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: >
+      sh -c "redis-server
+      --requirepass $${REDIS_PASSWORD:-changeme}
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - eksicode_nw
+    environment:
+      - TZ=Europe/Istanbul
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   backend:
     container_name: eksicodeBackend
@@ -22,6 +60,9 @@ services:
       - /app/dist
     networks:
       - eksicode_nw
+    depends_on:
+      redis:
+        condition: service_healthy
     # Resource limits for production clustering
     deploy:
       resources:
@@ -70,6 +111,53 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
 
+  telegrambot:
+    container_name: eksicodeTelegramBot
+    build:
+      context: ./telegrambot
+      dockerfile: Dockerfile
+    working_dir: /var/bot
+    restart: unless-stopped
+    env_file:
+      - ./telegrambot/.env
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
+      - REDIS_DB=0
+      - ENABLE_QUEUE=true
+      - QUEUE_CONCURRENCY=10
+      - MAX_QUEUE_SIZE=1000
+      - WORKER_THREADS=4
+      - TZ=Europe/Istanbul
+    volumes:
+      - ./telegrambot:/var/bot
+      - /var/bot/node_modules
+      - /var/bot/dist
+      - telegrambot_logs:/var/bot/logs
+    networks:
+      - eksicode_nw
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pm2 ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
   nginx:
     container_name: eksicodeNginx
     image: nginx
@@ -102,7 +190,12 @@ volumes:
   backend:
   frontend:
   nginx:
+  redis_data:
+    driver: local
+  telegrambot_logs:
+    driver: local
 
 networks:
   eksicode_nw:
+    driver: bridge
   

@@ -1,11 +1,17 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Resolve path from project root
-// __dirname will be dist/src/utils/, so we need to go up 3 levels
-const projectRoot = path.join(__dirname, '../../..');
+// Resolve path to telegrambot directory
+// When running with ts-node: __dirname = telegrambot/src/utils
+// When compiled: __dirname = telegrambot/dist/src/utils
+// We need to go up to telegrambot directory
+const telegrambotDir = __dirname.includes('dist') 
+  ? path.join(__dirname, '../../..')  // dist/src/utils -> telegrambot
+  : path.join(__dirname, '../..');    // src/utils -> telegrambot
+
+const hataMesajiPath = path.join(telegrambotDir, 'hataMesaji.txt');
 const hataMesaji = fs
-  .readFileSync(path.join(projectRoot, 'hataMesaji.txt'))
+  .readFileSync(hataMesajiPath)
   .toString()
   .split('\r\n');
 

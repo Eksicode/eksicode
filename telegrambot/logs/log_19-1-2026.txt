@@ -1,0 +1,2 @@
+[MESSAGE] 01:00:36 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): !grup *
+[MESSAGE] 01:00:53 UTC - Eksicode-test (-1003576000133) - Mkltkn (457779893): !help

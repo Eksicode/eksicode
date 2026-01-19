@@ -7,6 +7,7 @@ import CommandValidator from './commandValidator';
 import rateLimiter from './rateLimiter';
 import commandLogger from './commandLogger';
 import { verificationManager } from './verificationManager';
+import { getRedisClient, closeRedisClient, getRedisConnection } from './redisClient';
 
 export { 
   apiAuth, 
@@ -17,5 +18,8 @@ export {
   CommandValidator,
   rateLimiter,
   commandLogger,
-  verificationManager
+  verificationManager,
+  getRedisClient,
+  closeRedisClient,
+  getRedisConnection
 };
