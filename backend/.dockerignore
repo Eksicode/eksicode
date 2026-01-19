@@ -7,11 +7,6 @@
 *.md
 docs/
 
-# Source files (not needed in production, only dist is needed)
-src/
-*.ts
-!tsconfig.json
-
 # Build outputs (will be generated in container)
 dist/
 
