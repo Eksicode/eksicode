@@ -1,4 +1,4 @@
-import { prisma } from '../utils/prisma-client';
+import { queryMany } from '../utils/db-client';
 import errorMessage from '../utils/errorMessage';
 import commandLogger from '../utils/commandLogger';
 
@@ -26,25 +26,17 @@ interface TelegramGroup {
  */
 async function fetchGroups(query: string): Promise<TelegramGroup[]> {
   try {
-    const groups = await prisma.telegramGroup.findMany({
-      where: {
-        active: true,
-        ...(query && {
-          name: {
-            contains: query,
-            mode: 'insensitive'
-          }
-        })
-      },
-      select: {
-        id: true,
-        name: true,
-        link: true
-      },
-      orderBy: {
-        name: 'asc'
-      }
-    });
+    let sql = `SELECT id, name, link FROM telegram_groups WHERE active = true`;
+    const params: any[] = [];
+    
+    if (query) {
+      sql += ` AND LOWER(name) LIKE LOWER($1)`;
+      params.push(`%${query}%`);
+    }
+    
+    sql += ` ORDER BY name ASC`;
+    
+    const groups = await queryMany<{ id: number; name: string; link: string }>(sql, params);
     return groups;
   } catch (error) {
     console.error('Error fetching groups:', error);

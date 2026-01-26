@@ -1,4 +1,4 @@
-import { prisma } from '../utils/prisma-client';
+import { queryMany } from '../utils/db-client';
 import { log } from '../utils';
 import commandLogger from '../utils/commandLogger';
 
@@ -48,18 +48,12 @@ function generateBanMessage(ctx: Context, args: string): string {
  */
 async function fetchActiveGroups(): Promise<Array<{ channelId: string }>> {
   try {
-    const groups = await prisma.telegramGroup.findMany({
-      where: {
-        active: true,
-        channelId: {
-          not: null
-        }
-      },
-      select: {
-        channelId: true
-      }
-    });
-    return groups.filter((g: { channelId: string | null }) => g.channelId !== null) as Array<{ channelId: string }>;
+    const groups = await queryMany<{ channel_id: string | null }>(
+      `SELECT channel_id FROM telegram_groups WHERE active = true AND channel_id IS NOT NULL`
+    );
+    return groups
+      .filter((g) => g.channel_id !== null)
+      .map((g) => ({ channelId: g.channel_id! }));
   } catch (error) {
     console.error('Error fetching active groups:', error);
     throw error;

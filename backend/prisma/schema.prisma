@@ -309,6 +309,7 @@ model PageCategory {
   @@map("page_categories")
 }
 
+// Used by telegrambot for group management (ban, unban, pin, group commands)
 model TelegramGroup {
   id          Int      @id @default(autoincrement())
   name        String   @unique @db.VarChar(255)
@@ -442,6 +443,7 @@ model Job {
   @@map("jobs")
 }
 
+// Used by telegrambot for source management (kaynak, kontrol commands)
 model Source {
   id          Int      @id @default(autoincrement())
   title       String   @unique @db.VarChar(255)
@@ -493,6 +495,7 @@ model Media {
   @@map("media")
 }
 
+// Used by telegrambot for user verification system (verificationManager)
 model TelegramVerification {
   id        Int      @id @default(autoincrement())
   userId    BigInt   @unique

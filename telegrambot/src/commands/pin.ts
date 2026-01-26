@@ -1,4 +1,4 @@
-import { prisma } from '../utils/prisma-client';
+import { queryMany } from '../utils/db-client';
 import * as fs from 'fs';
 import commandLogger from '../utils/commandLogger';
 
@@ -35,19 +35,12 @@ function readPinIgnore(): string[] {
  */
 async function fetchActiveGroups(): Promise<Array<{ channelId: string; name: string }>> {
   try {
-    const groups = await prisma.telegramGroup.findMany({
-      where: {
-        active: true,
-        channelId: {
-          not: null
-        }
-      },
-      select: {
-        channelId: true,
-        name: true
-      }
-    });
-    return groups.filter((g: { channelId: string | null; name: string }) => g.channelId !== null) as Array<{ channelId: string; name: string }>;
+    const groups = await queryMany<{ channel_id: string | null; name: string }>(
+      `SELECT channel_id, name FROM telegram_groups WHERE active = true AND channel_id IS NOT NULL`
+    );
+    return groups
+      .filter((g) => g.channel_id !== null)
+      .map((g) => ({ channelId: g.channel_id!, name: g.name }));
   } catch (error) {
     console.error('Error fetching active groups:', error);
     throw error;

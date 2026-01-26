@@ -1,4 +1,4 @@
-import { prisma } from '../utils/prisma-client';
+import { query } from '../utils/db-client';
 import axios from 'axios';
 import { parse } from 'node-html-parser';
 import errorMessage from '../utils/errorMessage';
@@ -98,16 +98,18 @@ async function extractTitle(url: string, headers: any): Promise<string> {
 async function saveSourcesToDatabase(sources: SourceData[]): Promise<void> {
   try {
     await Promise.all(sources.map(async source => {
-      await prisma.source.create({
-        data: {
-          title: source.title || source.url,
-          url: source.url,
-          tgChannel: source.tgChannel.toString(),
-          tgUser: source.tgUser.toString(),
-          approved: false,
-          active: true
-        }
-      });
+      await query(
+        `INSERT INTO sources (title, url, tg_channel, tg_user, approved, active)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          source.title || source.url,
+          source.url,
+          source.tgChannel.toString(),
+          source.tgUser.toString(),
+          false,
+          true
+        ]
+      );
     }));
   } catch (error) {
     console.error('Error saving sources to database:', error);

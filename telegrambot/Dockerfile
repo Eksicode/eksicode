@@ -20,17 +20,11 @@ WORKDIR /build
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Copy prisma schema before npm ci (needed for postinstall script)
-COPY prisma ./prisma
-
 # Install all dependencies (including dev dependencies for build)
 RUN npm ci --prefer-offline --no-audit
 
 # Copy source code
 COPY . .
-
-# Generate Prisma Client
-RUN npx prisma generate
 
 # Build TypeScript to JavaScript
 RUN npm run build && \
@@ -63,9 +57,6 @@ WORKDIR /var/bot
 # Copy package files
 COPY package*.json ./
 
-# Copy prisma schema
-COPY --from=builder /build/prisma ./prisma
-
 # Install only production dependencies
 RUN npm ci --only=production --prefer-offline --no-audit && \
     npm cache clean --force
@@ -73,9 +64,6 @@ RUN npm ci --only=production --prefer-offline --no-audit && \
 # Copy built files and configuration from builder
 COPY --from=builder --chown=nodejs:nodejs /build/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /build/pm2.json ./pm2.json
-# Copy generated Prisma client
-COPY --from=builder --chown=nodejs:nodejs /build/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=nodejs:nodejs /build/node_modules/@prisma/client ./node_modules/@prisma/client
 
 # Create logs directory with proper permissions
 RUN mkdir -p logs && \

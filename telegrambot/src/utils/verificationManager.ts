@@ -3,7 +3,7 @@
  */
 
 import { Telegram } from 'telegraf';
-import { prisma } from './prisma-client';
+import { query, queryOne, queryMany } from './db-client';
 import errorMessage from './errorMessage';
 import commandLogger from './commandLogger';
 
@@ -50,40 +50,49 @@ class VerificationManager {
       const now = new Date();
       
       // Get all non-expired verifications from database
-      const verifications = await prisma.telegramVerification.findMany({
-        where: {
-          expiresAt: {
-            gt: now
-          }
-        }
-      });
+      const verifications = await queryMany<{
+        id: number;
+        user_id: string;
+        chat_id: string;
+        message_id: number;
+        first_name: string | null;
+        last_name: string | null;
+        username: string | null;
+        created_at: Date;
+        expires_at: Date;
+      }>(
+        `SELECT id, user_id, chat_id, message_id, first_name, last_name, username, created_at, expires_at 
+         FROM telegram_verifications 
+         WHERE expires_at > $1`,
+        [now]
+      );
 
       console.log(`Restoring ${verifications.length} pending verifications from database...`);
 
       for (const verification of verifications) {
-        const timeLeft = verification.expiresAt.getTime() - now.getTime();
+        const timeLeft = verification.expires_at.getTime() - now.getTime();
         
         if (timeLeft > 0) {
           // Restore to memory
-          this.pendingVerifications.set(Number(verification.userId), {
-            chatId: Number(verification.chatId),
-            messageId: verification.messageId,
-            timestamp: verification.createdAt.getTime(),
+          this.pendingVerifications.set(Number(verification.user_id), {
+            chatId: Number(verification.chat_id),
+            messageId: verification.message_id,
+            timestamp: verification.created_at.getTime(),
             user: {
-              id: Number(verification.userId),
-              first_name: verification.firstName || undefined,
-              last_name: verification.lastName || undefined,
+              id: Number(verification.user_id),
+              first_name: verification.first_name || undefined,
+              last_name: verification.last_name || undefined,
               username: verification.username || undefined
             }
           });
 
           // Set timeout for auto-removal
           setTimeout(() => {
-            this.handleVerificationTimeout(Number(verification.userId));
+            this.handleVerificationTimeout(Number(verification.user_id));
           }, timeLeft);
         } else {
           // Already expired, clean up
-          await this.handleVerificationTimeout(Number(verification.userId));
+          await this.handleVerificationTimeout(Number(verification.user_id));
         }
       }
 
@@ -149,17 +158,19 @@ class VerificationManager {
       const expiresAt = new Date(Date.now() + this.verificationTimeout);
 
       // Store in database
-      await prisma.telegramVerification.create({
-        data: {
-          userId: BigInt(userId),
-          chatId: BigInt(chatId),
-          messageId: verificationMessage.message_id,
-          firstName: user.first_name || null,
-          lastName: user.last_name || null,
-          username: user.username || null,
+      await query(
+        `INSERT INTO telegram_verifications (user_id, chat_id, message_id, first_name, last_name, username, expires_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          userId.toString(),
+          chatId.toString(),
+          verificationMessage.message_id,
+          user.first_name || null,
+          user.last_name || null,
+          user.username || null,
           expiresAt
-        }
-      });
+        ]
+      );
 
       // Store verification data in memory
       this.pendingVerifications.set(userId, {
@@ -230,11 +241,10 @@ class VerificationManager {
       );
 
       // Remove from database
-      await prisma.telegramVerification.delete({
-        where: {
-          userId: BigInt(userIdNum)
-        }
-      }).catch(() => {}); // Ignore if already deleted
+      await query(
+        `DELETE FROM telegram_verifications WHERE user_id = $1`,
+        [userIdNum.toString()]
+      ).catch(() => {}); // Ignore if already deleted
 
       // Remove from pending
       this.pendingVerifications.delete(userIdNum);
@@ -257,14 +267,18 @@ class VerificationManager {
       
       if (!verificationData && this.telegram) {
         // Try to get from database if not in memory
-        const dbVerification = await prisma.telegramVerification.findUnique({
-          where: { userId: BigInt(userId) }
-        });
+        const dbVerification = await queryOne<{
+          chat_id: string;
+          message_id: number;
+        }>(
+          `SELECT chat_id, message_id FROM telegram_verifications WHERE user_id = $1`,
+          [userId.toString()]
+        );
 
         if (dbVerification) {
           // Reconstruct verification data from database
-          const chatId = Number(dbVerification.chatId);
-          const messageId = dbVerification.messageId;
+          const chatId = Number(dbVerification.chat_id);
+          const messageId = dbVerification.message_id;
 
           // Try to kick user
           try {
@@ -293,9 +307,10 @@ class VerificationManager {
           }
 
           // Remove from database
-          await prisma.telegramVerification.delete({
-            where: { userId: BigInt(userId) }
-          }).catch(() => {});
+          await query(
+            `DELETE FROM telegram_verifications WHERE user_id = $1`,
+            [userId.toString()]
+          ).catch(() => {});
         }
       } else if (verificationData && this.telegram) {
         // Try to kick user
@@ -325,9 +340,10 @@ class VerificationManager {
         }
 
         // Remove from database
-        await prisma.telegramVerification.delete({
-          where: { userId: BigInt(userId) }
-        }).catch(() => {});
+        await query(
+          `DELETE FROM telegram_verifications WHERE user_id = $1`,
+          [userId.toString()]
+        ).catch(() => {});
 
         // Remove from pending
         this.pendingVerifications.delete(userId);
@@ -382,13 +398,10 @@ class VerificationManager {
 
       // Clean up database
       try {
-        await prisma.telegramVerification.deleteMany({
-          where: {
-            expiresAt: {
-              lt: new Date()
-            }
-          }
-        });
+        await query(
+          `DELETE FROM telegram_verifications WHERE expires_at < $1`,
+          [new Date()]
+        );
       } catch (error) {
         console.error('Error cleaning up expired verifications:', error);
       }
@@ -416,9 +429,10 @@ class VerificationManager {
       });
 
       // Remove from database
-      await prisma.telegramVerification.delete({
-        where: { userId: BigInt(userIdNum) }
-      }).catch(() => {});
+      await query(
+        `DELETE FROM telegram_verifications WHERE user_id = $1`,
+        [userIdNum.toString()]
+      ).catch(() => {});
 
       // Remove from pending
       this.pendingVerifications.delete(userIdNum);

@@ -1,4 +1,4 @@
-import { prisma } from '../utils/prisma-client';
+import { query, queryMany } from '../utils/db-client';
 import errorMessage from '../utils/errorMessage';
 import commandLogger from '../utils/commandLogger';
 
@@ -28,21 +28,17 @@ interface Source {
  */
 async function fetchUnapprovedSources(): Promise<Source[]> {
   try {
-    const sources = await prisma.source.findMany({
-      where: {
-        approved: false,
-        active: true
-      },
-      select: {
-        id: true,
-        title: true,
-        url: true,
-        approved: true
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
+    const sources = await queryMany<{
+      id: number;
+      title: string;
+      url: string;
+      approved: boolean;
+    }>(
+      `SELECT id, title, url, approved 
+       FROM sources 
+       WHERE approved = false AND active = true 
+       ORDER BY created_at DESC`
+    );
     return sources;
   } catch (error) {
     console.error('Error fetching unapproved sources:', error);
@@ -88,21 +84,16 @@ async function processResources(ids: string[]): Promise<void> {
     // Execute operations in parallel
     await Promise.all([
       // Approve sources
-      toApprove.length > 0 ? prisma.source.updateMany({
-        where: {
-          id: { in: toApprove }
-        },
-        data: {
-          approved: true
-        }
-      }) : Promise.resolve(),
+      toApprove.length > 0 ? query(
+        `UPDATE sources SET approved = true WHERE id = ANY($1::int[])`,
+        [toApprove]
+      ) : Promise.resolve(),
       
       // Delete sources
-      toDelete.length > 0 ? prisma.source.deleteMany({
-        where: {
-          id: { in: toDelete }
-        }
-      }) : Promise.resolve()
+      toDelete.length > 0 ? query(
+        `DELETE FROM sources WHERE id = ANY($1::int[])`,
+        [toDelete]
+      ) : Promise.resolve()
     ]);
 
     console.log(`Approved ${toApprove.length} sources, deleted ${toDelete.length} sources`);
