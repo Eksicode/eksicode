@@ -52,47 +52,47 @@ class VerificationManager {
       // Get all non-expired verifications from database
       const verifications = await queryMany<{
         id: number;
-        user_id: string;
-        chat_id: string;
-        message_id: number;
-        first_name: string | null;
-        last_name: string | null;
+        userId: string;
+        chatId: string;
+        messageId: number;
+        firstName: string | null;
+        lastName: string | null;
         username: string | null;
-        created_at: Date;
-        expires_at: Date;
+        createdAt: Date;
+        expiresAt: Date;
       }>(
-        `SELECT id, user_id, chat_id, message_id, first_name, last_name, username, created_at, expires_at 
+        `SELECT id, "userId", "chatId", "messageId", "firstName", "lastName", username, "createdAt", "expiresAt" 
          FROM telegram_verifications 
-         WHERE expires_at > $1`,
+         WHERE "expiresAt" > $1`,
         [now]
       );
 
       console.log(`Restoring ${verifications.length} pending verifications from database...`);
 
       for (const verification of verifications) {
-        const timeLeft = verification.expires_at.getTime() - now.getTime();
+        const timeLeft = verification.expiresAt.getTime() - now.getTime();
         
         if (timeLeft > 0) {
           // Restore to memory
-          this.pendingVerifications.set(Number(verification.user_id), {
-            chatId: Number(verification.chat_id),
-            messageId: verification.message_id,
-            timestamp: verification.created_at.getTime(),
+          this.pendingVerifications.set(Number(verification.userId), {
+            chatId: Number(verification.chatId),
+            messageId: verification.messageId,
+            timestamp: verification.createdAt.getTime(),
             user: {
-              id: Number(verification.user_id),
-              first_name: verification.first_name || undefined,
-              last_name: verification.last_name || undefined,
+              id: Number(verification.userId),
+              first_name: verification.firstName || undefined,
+              last_name: verification.lastName || undefined,
               username: verification.username || undefined
             }
           });
 
           // Set timeout for auto-removal
           setTimeout(() => {
-            this.handleVerificationTimeout(Number(verification.user_id));
+            this.handleVerificationTimeout(Number(verification.userId));
           }, timeLeft);
         } else {
           // Already expired, clean up
-          await this.handleVerificationTimeout(Number(verification.user_id));
+          await this.handleVerificationTimeout(Number(verification.userId));
         }
       }
 
@@ -159,7 +159,7 @@ class VerificationManager {
 
       // Store in database
       await query(
-        `INSERT INTO telegram_verifications (user_id, chat_id, message_id, first_name, last_name, username, expires_at)
+        `INSERT INTO telegram_verifications ("userId", "chatId", "messageId", "firstName", "lastName", username, "expiresAt")
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           userId.toString(),
@@ -242,7 +242,7 @@ class VerificationManager {
 
       // Remove from database
       await query(
-        `DELETE FROM telegram_verifications WHERE user_id = $1`,
+        `DELETE FROM telegram_verifications WHERE "userId" = $1`,
         [userIdNum.toString()]
       ).catch(() => {}); // Ignore if already deleted
 
@@ -268,17 +268,17 @@ class VerificationManager {
       if (!verificationData && this.telegram) {
         // Try to get from database if not in memory
         const dbVerification = await queryOne<{
-          chat_id: string;
-          message_id: number;
+          chatId: string;
+          messageId: number;
         }>(
-          `SELECT chat_id, message_id FROM telegram_verifications WHERE user_id = $1`,
+          `SELECT "chatId", "messageId" FROM telegram_verifications WHERE "userId" = $1`,
           [userId.toString()]
         );
 
         if (dbVerification) {
           // Reconstruct verification data from database
-          const chatId = Number(dbVerification.chat_id);
-          const messageId = dbVerification.message_id;
+          const chatId = Number(dbVerification.chatId);
+          const messageId = dbVerification.messageId;
 
           // Try to kick user
           try {
@@ -308,7 +308,7 @@ class VerificationManager {
 
           // Remove from database
           await query(
-            `DELETE FROM telegram_verifications WHERE user_id = $1`,
+            `DELETE FROM telegram_verifications WHERE "userId" = $1`,
             [userId.toString()]
           ).catch(() => {});
         }
@@ -341,7 +341,7 @@ class VerificationManager {
 
         // Remove from database
         await query(
-          `DELETE FROM telegram_verifications WHERE user_id = $1`,
+          `DELETE FROM telegram_verifications WHERE "userId" = $1`,
           [userId.toString()]
         ).catch(() => {});
 
@@ -399,7 +399,7 @@ class VerificationManager {
       // Clean up database
       try {
         await query(
-          `DELETE FROM telegram_verifications WHERE expires_at < $1`,
+          `DELETE FROM telegram_verifications WHERE "expiresAt" < $1`,
           [new Date()]
         );
       } catch (error) {
@@ -430,7 +430,7 @@ class VerificationManager {
 
       // Remove from database
       await query(
-        `DELETE FROM telegram_verifications WHERE user_id = $1`,
+        `DELETE FROM telegram_verifications WHERE "userId" = $1`,
         [userIdNum.toString()]
       ).catch(() => {});
 
