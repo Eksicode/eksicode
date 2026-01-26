@@ -8,7 +8,8 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Install all dependencies (including dev dependencies for build)
-RUN npm ci
+# Using npm install instead of npm ci to handle lock file sync issues
+RUN npm install
 
 # Copy configuration files
 COPY svelte.config.js ./
@@ -44,7 +45,8 @@ ENV NODE_ENV=production
 COPY package*.json ./
 
 # Install only production dependencies and @sveltejs/adapter-node
-RUN npm ci --only=production && \
+# Using npm install instead of npm ci to handle lock file sync issues
+RUN npm install --only=production && \
     npm install @sveltejs/adapter-node && \
     npm cache clean --force
 
