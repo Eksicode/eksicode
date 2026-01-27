@@ -16,16 +16,24 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
 
 	// Verify token and check roles
 	try {
-		// In server-side code, we can use import.meta.env or process.env
-		// For SvelteKit, we'll use import.meta.env which works in both server and client
 		const apiUrl = import.meta.env.PUBLIC_API_URL;
+
+		if (!apiUrl) {
+			console.error('[Auth] PUBLIC_API_URL is not configured');
+			throw redirect(302, '/login?error=config');
+		}
+
 		const response = await fetch(`${apiUrl}/auth/me`, {
 			headers: {
-				Authorization: `Bearer ${token}`
+				Authorization: `Bearer ${token}`,
+				'Content-Type': 'application/json'
 			}
 		});
 
 		if (!response.ok) {
+			console.error(`[Auth] Token validation failed: ${response.status}`);
+			// Clear invalid token
+			cookies.delete('auth_token', { path: '/' });
 			throw redirect(302, '/login');
 		}
 
@@ -38,6 +46,8 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
 		const hasAccess = roles.some((role: string) => allowedRoles.includes(role.toLowerCase()));
 
 		if (!hasAccess) {
+			console.error(`[Auth] User lacks required role. Has: ${roles.join(', ')}`);
+			cookies.delete('auth_token', { path: '/' });
 			throw redirect(302, '/login?error=unauthorized');
 		}
 
@@ -45,13 +55,14 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
 			user,
 			token
 		};
-	} catch (error) {
-		if (error instanceof Response && error.status === 302) {
+	} catch (error: unknown) {
+		// Re-throw redirect errors
+		if (error && typeof error === 'object' && 'status' in error) {
 			throw error;
 		}
-		if (error && typeof error === 'object' && 'status' in error && error.status === 302) {
-			throw error;
-		}
+
+		console.error('[Auth] Unexpected error:', error);
+		cookies.delete('auth_token', { path: '/' });
 		throw redirect(302, '/login');
 	}
 };

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { authStore } from '$lib/auth/store';
 	import { apiClient } from '$lib/api/client';
@@ -10,6 +10,7 @@
 	let email = '';
 	let password = '';
 	let error = '';
+	let success = '';
 	let loading = false;
 	let emailError = '';
 	let passwordError = '';
@@ -56,6 +57,7 @@
 
 	async function handleLogin() {
 		error = '';
+		success = '';
 		emailError = '';
 		passwordError = '';
 
@@ -91,11 +93,17 @@
 					if (!hasAccess) {
 						error = 'Bu sayfaya erişim yetkiniz yok. Sadece admin, superadmin veya moderator rolleri erişebilir.';
 						authStore.logout();
+						loading = false;
 						return;
 					}
 
-					// Redirect to dashboard
-					goto('/');
+					// Show success message and redirect
+					success = 'Giriş başarılı, yönlendiriliyorsunuz...';
+
+					// Invalidate all load functions and redirect
+					await invalidateAll();
+					await goto('/', { replaceState: true });
+					return;
 				} else {
 					error = response.message || 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.';
 				}
@@ -145,6 +153,15 @@
 			</div>
 
 			<form class="space-y-6" on:submit|preventDefault={handleLogin}>
+				{#if success}
+					<div
+						class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-md text-sm"
+						role="status"
+					>
+						{success}
+					</div>
+				{/if}
+
 				{#if error}
 					<div
 						class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-md text-sm"

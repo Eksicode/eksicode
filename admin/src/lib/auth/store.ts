@@ -22,7 +22,16 @@ const createAuthStore = () => {
 		subscribe,
 		setToken: (token: string) => {
 			if (browser) {
-				document.cookie = `auth_token=${token}; path=/; max-age=86400; SameSite=Lax`;
+				// Use Secure flag in production (HTTPS)
+				const isSecure = window.location.protocol === 'https:';
+				const cookieOptions = [
+					`auth_token=${token}`,
+					'path=/',
+					'max-age=86400',
+					'SameSite=Lax',
+					isSecure ? 'Secure' : ''
+				].filter(Boolean).join('; ');
+				document.cookie = cookieOptions;
 			}
 			update((state) => ({
 				...state,
@@ -53,9 +62,10 @@ const createAuthStore = () => {
 					return false;
 				}
 
-				const response = await apiClient.get('/auth/me', token);
+				const response = await apiClient.get<any>('/auth/me', token);
 				if (response.success && response.data) {
-					const user = response.data.data || response.data;
+					const responseData = response.data as any;
+					const user = responseData.data || responseData;
 					const roles = user.roles || [];
 					const allowedRoles = ['admin', 'superadmin', 'moderator'];
 					const hasAccess = roles.some((role: string) =>
