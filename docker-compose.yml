@@ -121,6 +121,8 @@ services:
     build:
       context: ./admin
       dockerfile: Dockerfile
+      args:
+        - PUBLIC_API_URL=https://api-demo.eksicode.org
     working_dir: /app
     restart: unless-stopped
     ports:

@@ -3,6 +3,10 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Build argument for API URL (must be set at build time for Vite)
+ARG PUBLIC_API_URL=https://api-demo.eksicode.org
+ENV PUBLIC_API_URL=${PUBLIC_API_URL}
+
 # Copy package files for better layer caching
 COPY package*.json ./
 COPY tsconfig.json ./
@@ -23,7 +27,7 @@ COPY src ./src
 # Create static directory (SvelteKit optional, but needed for build)
 RUN mkdir -p ./static
 
-# Build SvelteKit application
+# Build SvelteKit application with the API URL baked in
 RUN npm run build
 
 # Production stage
