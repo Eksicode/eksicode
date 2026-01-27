@@ -20,7 +20,8 @@ ENV NODE_ENV=production
 COPY package.json package-lock.json ./
 
 # Install dependencies (with legacy-peer-deps due to next-auth not officially supporting Next.js 16 yet)
-RUN npm ci --legacy-peer-deps
+# RUN npm ci --legacy-peer-deps
+RUN npm install
 
 # Copy source code
 COPY . .
