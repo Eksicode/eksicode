@@ -1,7 +1,7 @@
 // Use import.meta.env for client-side, will be replaced at build time
 // Backend works directly on root path, no /api prefix
 const API_URL =
-	import.meta.env.PUBLIC_API_URL || 'http://localhost:9000';
+	import.meta.env.PUBLIC_API_URL;
 
 export interface ApiResponse<T = any> {
 	success: boolean;
@@ -50,7 +50,7 @@ class ApiClient {
 			if (!response.ok) {
 				let errorData: any = {};
 				const contentType = response.headers.get('content-type');
-				
+
 				if (contentType && contentType.includes('application/json')) {
 					try {
 						errorData = await response.json();
@@ -59,8 +59,8 @@ class ApiClient {
 					}
 				}
 
-				const errorMessage = errorData.message || 
-					errorData.error || 
+				const errorMessage = errorData.message ||
+					errorData.error ||
 					`HTTP error! status: ${response.status}`;
 
 				return {

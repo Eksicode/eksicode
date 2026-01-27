@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ cookies, url }) => {
 	const token = cookies.get('auth_token');
-	
+
 	// Allow access to login page without auth
 	if (url.pathname === '/login') {
 		return {};
@@ -18,7 +18,7 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
 	try {
 		// In server-side code, we can use import.meta.env or process.env
 		// For SvelteKit, we'll use import.meta.env which works in both server and client
-		const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:9000';
+		const apiUrl = import.meta.env.PUBLIC_API_URL;
 		const response = await fetch(`${apiUrl}/auth/me`, {
 			headers: {
 				Authorization: `Bearer ${token}`
