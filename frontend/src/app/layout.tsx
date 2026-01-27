@@ -54,12 +54,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body 
-        className={`${
-          process.env.NODE_ENV === "development"
+      <body
+        suppressHydrationWarning={true}
+        className={`${process.env.NODE_ENV === "development"
             ? roboto.className + " debug-screens"
             : roboto.className
-        } antialiased`}
+          } antialiased`}
       >
         <Providers>
           <div className="bg-gray-100 text-black dark:text-white dark:bg-DarkGrey min-h-screen flex flex-col">

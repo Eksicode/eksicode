@@ -14,9 +14,9 @@ interface Group {
 
 const TelegramGroupCard = (group: Group) => {
   return (
-    <div className="relative grid content-between justify-items-center w-full h-60 lg:w-52 flex-col bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey border shadow-md rounded-lg p-4 m-2">
+    <div className="relative grid content-between justify-items-center w-full h-60 flex-col bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey border shadow-md rounded-lg p-4">
       <Image
-        src={mediaURL+group.icon}
+        src={mediaURL + group.icon}
         alt="eksi-code-logo"
         className="h-16 w-16 rounded-full"
         width="80"
@@ -34,7 +34,7 @@ const TelegramGroupCard = (group: Group) => {
         variant="tertiary"
         href={group.link}
         target="_blank"
-        style="w-[150px]"
+        style="w-full block text-center"
       >
         Katıl
       </Navlink>

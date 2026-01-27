@@ -79,7 +79,7 @@ async function Groups() {
           </div>
         </div>
 
-        <div className="flex flex-wrap w-full justify-between mx-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full gap-4 px-2">
           {groups.data.map((group: Group) => (
             <TelegramGroupCard
               key={group.id}
