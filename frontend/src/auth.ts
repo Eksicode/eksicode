@@ -119,8 +119,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   events: {
-    async signOut({ token }) {
+    async signOut(message) {
       // Call backend logout to blacklist token
+      // Handle both session and token strategies (NextAuth v5 union type)
+      const token = "token" in message ? message.token : null;
       if (token?.accessToken) {
         try {
           await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {

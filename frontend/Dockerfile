@@ -14,12 +14,13 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
 ENV NEXT_PUBLIC_MEDIA_URL=${NEXT_PUBLIC_MEDIA_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
+# Note: NODE_ENV is NOT set to production here to ensure devDependencies
+# (including TypeScript) are installed for the build step
 
 # Copy package files for better layer caching
 COPY package.json package-lock.json ./
 
-# Install dependencies
+# Install all dependencies (including devDependencies needed for build)
 RUN npm install --legacy-peer-deps
 
 # Copy source code
