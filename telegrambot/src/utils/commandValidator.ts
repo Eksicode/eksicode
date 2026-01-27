@@ -74,3 +74,7 @@ class CommandValidator {
 
 export default CommandValidator;
 export { CommandValidator };
+
+// CommonJS compatibility for direct requires from JS files
+module.exports = CommandValidator;
+module.exports.CommandValidator = CommandValidator;

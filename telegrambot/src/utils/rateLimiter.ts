@@ -75,5 +75,13 @@ class RateLimiter {
   }
 }
 
-export default new RateLimiter();
+const rateLimiterInstance = new RateLimiter();
+
+export default rateLimiterInstance;
 export { RateLimiter };
+export { rateLimiterInstance as rateLimiter };
+
+// CommonJS compatibility for direct requires from JS files
+module.exports = rateLimiterInstance;
+module.exports.RateLimiter = RateLimiter;
+module.exports.rateLimiter = rateLimiterInstance;

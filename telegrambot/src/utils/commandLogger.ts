@@ -131,6 +131,13 @@ class CommandLogger {
   }
 }
 
-export default new CommandLogger();
+const commandLoggerInstance = new CommandLogger();
+
+export default commandLoggerInstance;
 export { CommandLogger };
-export const commandLogger = new CommandLogger();
+export const commandLogger = commandLoggerInstance;
+
+// CommonJS compatibility for direct requires from JS files
+module.exports = commandLoggerInstance;
+module.exports.CommandLogger = CommandLogger;
+module.exports.commandLogger = commandLoggerInstance;

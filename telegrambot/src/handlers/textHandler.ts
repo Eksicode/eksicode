@@ -90,4 +90,4 @@ async function textHandler(ctx: any): Promise<void> {
   }
 }
 
-export default textHandler;
+module.exports = textHandler;
