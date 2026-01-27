@@ -179,10 +179,11 @@
 							<div class="grid grid-cols-1 gap-6">
 								<Input label="Site Adı" bind:value={settings.siteName} placeholder="EksiCode" />
 								<div>
-									<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+									<label for="site-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 										Site Açıklaması
 									</label>
 									<textarea
+										id="site-description"
 										bind:value={settings.siteDescription}
 										rows="3"
 										class="w-full px-3 py-2 border border-gray-300 dark:border-DarkLightGrey rounded-md shadow-sm focus:outline-none focus:ring-eksiCode focus:border-eksiCode bg-white dark:bg-DarkLightGrey text-gray-900 dark:text-white"
@@ -205,26 +206,26 @@
 								
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="allow-guest-comments" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Misafir Yorumlarına İzin Ver
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Kayıtsız kullanıcılar yorum yapabilir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={settings.allowGuestComments} class="sr-only peer" />
+										<input id="allow-guest-comments" type="checkbox" bind:checked={settings.allowGuestComments} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="moderation-required" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Moderasyon Gerekli
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Gönderiler yayınlanmadan önce onay gerektir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={settings.moderationRequired} class="sr-only peer" />
+										<input id="moderation-required" type="checkbox" bind:checked={settings.moderationRequired} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
@@ -239,13 +240,13 @@
 							<div class="grid grid-cols-1 gap-6">
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="require-email-verification" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											E-posta Doğrulama Zorunlu
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Kullanıcılar e-posta adreslerini doğrulamalı</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={settings.requireEmailVerification} class="sr-only peer" />
+										<input id="require-email-verification" type="checkbox" bind:checked={settings.requireEmailVerification} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
@@ -255,13 +256,13 @@
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="two-factor-enabled" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											İki Faktörlü Kimlik Doğrulama
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Ekstra güvenlik katmanı ekle</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={settings.twoFactorEnabled} class="sr-only peer" />
+										<input id="two-factor-enabled" type="checkbox" bind:checked={settings.twoFactorEnabled} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
@@ -281,13 +282,13 @@
 								
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="email-secure" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											SSL/TLS Kullan
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Güvenli bağlantı kullan</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={settings.emailSecure} class="sr-only peer" />
+										<input id="email-secure" type="checkbox" bind:checked={settings.emailSecure} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
@@ -305,13 +306,13 @@
 								
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="enable-api-docs" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											API Dokümantasyonu
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Swagger/OpenAPI dokümantasyonunu etkinleştir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={settings.enableApiDocs} class="sr-only peer" />
+										<input id="enable-api-docs" type="checkbox" bind:checked={settings.enableApiDocs} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
@@ -326,35 +327,36 @@
 							<div class="grid grid-cols-1 gap-6">
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="email-notifications" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											E-posta Bildirimleri
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Önemli olaylar için e-posta gönder</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={settings.emailNotifications} class="sr-only peer" />
+										<input id="email-notifications" type="checkbox" bind:checked={settings.emailNotifications} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="browser-notifications" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Tarayıcı Bildirimleri
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Push bildirimleri etkinleştir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={settings.browserNotifications} class="sr-only peer" />
+										<input id="browser-notifications" type="checkbox" bind:checked={settings.browserNotifications} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div>
-									<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+									<label for="digest-frequency" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 										Özet E-posta Sıklığı
 									</label>
 									<select
+										id="digest-frequency"
 										bind:value={settings.digestFrequency}
 										class="w-full px-3 py-2 border border-gray-300 dark:border-DarkLightGrey rounded-md shadow-sm focus:outline-none focus:ring-eksiCode focus:border-eksiCode bg-white dark:bg-DarkLightGrey text-gray-900 dark:text-white"
 									>

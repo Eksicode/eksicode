@@ -4,9 +4,6 @@
 	import { page } from '$app/stores';
 	import { authStore } from '$lib/auth/store';
 	import { apiClient } from '$lib/api/client';
-	import type { PageProps } from './$types';
-
-	export let params: PageProps['params'] = {};
 
 	const pageTitle = 'Admin Girişi | eksiCode';
 

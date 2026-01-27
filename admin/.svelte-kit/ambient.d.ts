@@ -26,22 +26,19 @@
  * ```
  */
 declare module '$env/static/private' {
-	export const NVM_INC: string;
 	export const TERM_PROGRAM: string;
 	export const NODE: string;
 	export const INIT_CWD: string;
-	export const ANDROID_HOME: string;
-	export const NVM_CD_FLAGS: string;
 	export const WARP_HONOR_PS1: string;
 	export const TERM: string;
 	export const SHELL: string;
+	export const HOMEBREW_REPOSITORY: string;
 	export const TMPDIR: string;
 	export const npm_config_global_prefix: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const COLOR: string;
 	export const npm_config_noproxy: string;
 	export const npm_config_local_prefix: string;
-	export const NVM_DIR: string;
 	export const USER: string;
 	export const COMMAND_MODE: string;
 	export const npm_config_globalconfig: string;
@@ -58,7 +55,6 @@ declare module '$env/static/private' {
 	export const __CFBundleIdentifier: string;
 	export const npm_command: string;
 	export const PWD: string;
-	export const JAVA_HOME: string;
 	export const npm_lifecycle_event: string;
 	export const EDITOR: string;
 	export const npm_package_name: string;
@@ -70,13 +66,16 @@ declare module '$env/static/private' {
 	export const XPC_SERVICE_NAME: string;
 	export const SHLVL: string;
 	export const HOME: string;
+	export const HOMEBREW_PREFIX: string;
 	export const npm_config_cache: string;
 	export const LOGNAME: string;
 	export const npm_lifecycle_script: string;
 	export const LC_CTYPE: string;
 	export const SSH_SOCKET_DIR: string;
-	export const NVM_BIN: string;
+	export const GOPATH: string;
 	export const npm_config_user_agent: string;
+	export const INFOPATH: string;
+	export const HOMEBREW_CELLAR: string;
 	export const OSLogRateLimit: string;
 	export const CONDA_CHANGEPS1: string;
 	export const npm_node_execpath: string;
@@ -112,22 +111,19 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
-		NVM_INC: string;
 		TERM_PROGRAM: string;
 		NODE: string;
 		INIT_CWD: string;
-		ANDROID_HOME: string;
-		NVM_CD_FLAGS: string;
 		WARP_HONOR_PS1: string;
 		TERM: string;
 		SHELL: string;
+		HOMEBREW_REPOSITORY: string;
 		TMPDIR: string;
 		npm_config_global_prefix: string;
 		TERM_PROGRAM_VERSION: string;
 		COLOR: string;
 		npm_config_noproxy: string;
 		npm_config_local_prefix: string;
-		NVM_DIR: string;
 		USER: string;
 		COMMAND_MODE: string;
 		npm_config_globalconfig: string;
@@ -144,7 +140,6 @@ declare module '$env/dynamic/private' {
 		__CFBundleIdentifier: string;
 		npm_command: string;
 		PWD: string;
-		JAVA_HOME: string;
 		npm_lifecycle_event: string;
 		EDITOR: string;
 		npm_package_name: string;
@@ -156,13 +151,16 @@ declare module '$env/dynamic/private' {
 		XPC_SERVICE_NAME: string;
 		SHLVL: string;
 		HOME: string;
+		HOMEBREW_PREFIX: string;
 		npm_config_cache: string;
 		LOGNAME: string;
 		npm_lifecycle_script: string;
 		LC_CTYPE: string;
 		SSH_SOCKET_DIR: string;
-		NVM_BIN: string;
+		GOPATH: string;
 		npm_config_user_agent: string;
+		INFOPATH: string;
+		HOMEBREW_CELLAR: string;
 		OSLogRateLimit: string;
 		CONDA_CHANGEPS1: string;
 		npm_node_execpath: string;

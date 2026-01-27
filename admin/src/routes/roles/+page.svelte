@@ -641,13 +641,13 @@
 				<!-- Basic Info -->
 				<div class="space-y-3">
 					<div>
-						<label class="text-sm font-medium text-gray-500 dark:text-gray-400">Rol Adı</label>
+						<div class="text-sm font-medium text-gray-500 dark:text-gray-400">Rol Adı</div>
 						<p class="mt-1 text-base text-gray-900 dark:text-white">{viewingRole.name}</p>
 					</div>
 
 					{#if viewingRole.description}
 						<div>
-							<label class="text-sm font-medium text-gray-500 dark:text-gray-400">Açıklama</label>
+							<div class="text-sm font-medium text-gray-500 dark:text-gray-400">Açıklama</div>
 							<p class="mt-1 text-base text-gray-900 dark:text-white">
 								{viewingRole.description}
 							</p>
@@ -656,15 +656,15 @@
 
 					<div class="grid grid-cols-2 gap-4">
 						<div>
-							<label class="text-sm font-medium text-gray-500 dark:text-gray-400">
+							<div class="text-sm font-medium text-gray-500 dark:text-gray-400">
 								Kullanıcı Sayısı
-							</label>
+							</div>
 							<p class="mt-1 text-base text-gray-900 dark:text-white">
 								{viewingRole.userCount || 0}
 							</p>
 						</div>
 						<div>
-							<label class="text-sm font-medium text-gray-500 dark:text-gray-400">Rol Tipi</label>
+							<div class="text-sm font-medium text-gray-500 dark:text-gray-400">Rol Tipi</div>
 							<p class="mt-1 text-base text-gray-900 dark:text-white">
 								{viewingRole.isSystemRole ? 'Sistem Rolü' : 'Özel Rol'}
 							</p>
@@ -728,7 +728,7 @@
 				<!-- Metadata -->
 				<div class="grid grid-cols-2 gap-4 text-sm">
 					<div>
-						<label class="text-gray-500 dark:text-gray-400">Oluşturulma Tarihi</label>
+						<div class="text-gray-500 dark:text-gray-400">Oluşturulma Tarihi</div>
 						<p class="text-gray-900 dark:text-white">
 							{new Date(viewingRole.createdAt).toLocaleDateString('tr-TR', {
 								year: 'numeric',
@@ -738,7 +738,7 @@
 						</p>
 					</div>
 					<div>
-						<label class="text-gray-500 dark:text-gray-400">Son Güncelleme</label>
+						<div class="text-gray-500 dark:text-gray-400">Son Güncelleme</div>
 						<p class="text-gray-900 dark:text-white">
 							{new Date(viewingRole.updatedAt).toLocaleDateString('tr-TR', {
 								year: 'numeric',

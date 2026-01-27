@@ -404,17 +404,18 @@
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+							<label for="profile-website" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 								Web Sitesi
 							</label>
-							<Input bind:value={profile.website} type="url" placeholder="https://example.com" />
+							<Input id="profile-website" bind:value={profile.website} type="url" placeholder="https://example.com" />
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+							<label for="profile-bio" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 								Biyografi
 							</label>
 							<textarea
+								id="profile-bio"
 								bind:value={profile.bio}
 								rows="4"
 								class="w-full px-3 py-2 border border-gray-300 dark:border-DarkLightGrey rounded-md shadow-sm focus:outline-none focus:ring-eksiCode focus:border-eksiCode bg-white dark:bg-DarkLightGrey text-gray-900 dark:text-white"
@@ -489,10 +490,11 @@
 							<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Görünüm ve Dil</h3>
 							<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div>
-									<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+									<label for="preferences-language" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 										Dil
 									</label>
 									<select
+										id="preferences-language"
 										bind:value={preferences.language}
 										class="w-full px-3 py-2 border border-gray-300 dark:border-DarkLightGrey rounded-md shadow-sm focus:outline-none focus:ring-eksiCode focus:border-eksiCode bg-white dark:bg-DarkLightGrey text-gray-900 dark:text-white"
 									>
@@ -502,10 +504,11 @@
 								</div>
 
 								<div>
-									<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+									<label for="preferences-theme" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 										Tema
 									</label>
 									<select
+										id="preferences-theme"
 										bind:value={preferences.theme}
 										class="w-full px-3 py-2 border border-gray-300 dark:border-DarkLightGrey rounded-md shadow-sm focus:outline-none focus:ring-eksiCode focus:border-eksiCode bg-white dark:bg-DarkLightGrey text-gray-900 dark:text-white"
 									>
@@ -516,10 +519,11 @@
 								</div>
 
 								<div>
-									<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+									<label for="preferences-timezone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 										Saat Dilimi
 									</label>
 									<select
+										id="preferences-timezone"
 										bind:value={preferences.timezone}
 										class="w-full px-3 py-2 border border-gray-300 dark:border-DarkLightGrey rounded-md shadow-sm focus:outline-none focus:ring-eksiCode focus:border-eksiCode bg-white dark:bg-DarkLightGrey text-gray-900 dark:text-white"
 									>
@@ -530,10 +534,11 @@
 								</div>
 
 								<div>
-									<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+									<label for="preferences-date-format" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 										Tarih Formatı
 									</label>
 									<select
+										id="preferences-date-format"
 										bind:value={preferences.dateFormat}
 										class="w-full px-3 py-2 border border-gray-300 dark:border-DarkLightGrey rounded-md shadow-sm focus:outline-none focus:ring-eksiCode focus:border-eksiCode bg-white dark:bg-DarkLightGrey text-gray-900 dark:text-white"
 									>
@@ -550,52 +555,52 @@
 							<div class="space-y-4">
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="email-on-comment" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Yorumlar
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Gönderilerime yorum yapıldığında bildir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={preferences.emailOnComment} class="sr-only peer" />
+										<input id="email-on-comment" type="checkbox" bind:checked={preferences.emailOnComment} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="email-on-reply" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Yanıtlar
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Yorumuma yanıt verildiğinde bildir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={preferences.emailOnReply} class="sr-only peer" />
+										<input id="email-on-reply" type="checkbox" bind:checked={preferences.emailOnReply} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="email-on-mention" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Bahsetmeler
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Benden bahsedildiğinde bildir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={preferences.emailOnMention} class="sr-only peer" />
+										<input id="email-on-mention" type="checkbox" bind:checked={preferences.emailOnMention} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="email-newsletter" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Bülten
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Haftalık bülten e-postası al</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={preferences.emailNewsletter} class="sr-only peer" />
+										<input id="email-newsletter" type="checkbox" bind:checked={preferences.emailNewsletter} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
@@ -616,65 +621,65 @@
 							<div class="space-y-4">
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="profile-visible" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Profili Herkese Aç
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Profilim herkes tarafından görülebilir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={privacy.profileVisible} class="sr-only peer" />
+										<input id="profile-visible" type="checkbox" bind:checked={privacy.profileVisible} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="show-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											E-posta Adresini Göster
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">E-posta adresim profilimde görünsün</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={privacy.showEmail} class="sr-only peer" />
+										<input id="show-email" type="checkbox" bind:checked={privacy.showEmail} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="show-location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Konumu Göster
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Konumum profilimde görünsün</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={privacy.showLocation} class="sr-only peer" />
+										<input id="show-location" type="checkbox" bind:checked={privacy.showLocation} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="allow-messages" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Mesaj Almaya İzin Ver
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Diğer kullanıcılar bana mesaj gönderebilir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={privacy.allowMessages} class="sr-only peer" />
+										<input id="allow-messages" type="checkbox" bind:checked={privacy.allowMessages} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
 
 								<div class="flex items-center justify-between">
 									<div>
-										<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										<label for="activity-visible" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 											Aktivite Geçmişini Göster
 										</label>
 										<p class="text-sm text-gray-500 dark:text-gray-400">Gönderilerim ve yorumlarım görünebilir</p>
 									</div>
 									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" bind:checked={privacy.activityVisible} class="sr-only peer" />
+										<input id="activity-visible" type="checkbox" bind:checked={privacy.activityVisible} class="sr-only peer" />
 										<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-eksiCode/20 dark:peer-focus:ring-eksiCode/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-eksiCode"></div>
 									</label>
 								</div>
