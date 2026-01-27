@@ -19,8 +19,7 @@ ENV NODE_ENV=production
 # Copy package files for better layer caching
 COPY package.json package-lock.json ./
 
-# Install dependencies (with legacy-peer-deps due to next-auth not officially supporting Next.js 16 yet)
-# RUN npm ci --legacy-peer-deps
+# Install dependencies
 RUN npm install
 
 # Copy source code
@@ -51,8 +50,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install only production dependencies (with legacy-peer-deps due to next-auth not officially supporting Next.js 16 yet)
-RUN npm ci --omit=dev --legacy-peer-deps && \
+# Install only production dependencies
+RUN npm ci --omit=dev && \
     npm cache clean --force
 
 # Copy built application from base stage
