@@ -549,12 +549,12 @@
 					{#each PERMISSION_CATEGORIES as category}
 						<div class="border-b border-gray-200 dark:border-DarkLightGrey last:border-b-0">
 							<!-- Category Header -->
-							<button
-								type="button"
-								on:click={() => toggleCategory(category.name)}
-								class="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-DarkLightGrey transition-colors"
-							>
-								<div class="flex items-center space-x-3">
+							<div class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-DarkLightGrey transition-colors">
+								<button
+									type="button"
+									on:click={() => toggleCategory(category.name)}
+									class="flex items-center space-x-3 flex-1 text-left"
+								>
 									<svg
 										class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform {expandedCategories.has(
 											category.name
@@ -576,10 +576,10 @@
 									<span class="text-sm text-gray-500 dark:text-gray-400">
 										({getCategoryProgress(category)})
 									</span>
-								</div>
+								</button>
 								<button
 									type="button"
-									on:click|stopPropagation={() => selectAllInCategory(category)}
+									on:click={() => selectAllInCategory(category)}
 									class="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-DarkLightGrey hover:bg-gray-100 dark:hover:bg-DarkerGrey transition-colors {isCategoryFullySelected(
 										category
 									)
@@ -588,7 +588,7 @@
 								>
 									{isCategoryFullySelected(category) ? 'Tümünü Kaldır' : 'Tümünü Seç'}
 								</button>
-							</button>
+							</div>
 
 							<!-- Category Permissions -->
 							{#if expandedCategories.has(category.name)}
