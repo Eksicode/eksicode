@@ -3,6 +3,19 @@ FROM node:20-alpine AS base
 
 WORKDIR /app
 
+# Build arguments for Next.js public environment variables
+# These must be set at build time to be embedded in the client bundle
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_URL
+ARG NEXT_PUBLIC_MEDIA_URL
+
+# Set as environment variables for the build process
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
+ENV NEXT_PUBLIC_MEDIA_URL=${NEXT_PUBLIC_MEDIA_URL}
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
 # Copy package files for better layer caching
 COPY package.json package-lock.json ./
 
