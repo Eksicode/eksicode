@@ -1,7 +1,7 @@
-// Use import.meta.env for client-side, will be replaced at build time
+import { PUBLIC_API_URL } from '$env/static/public';
+
 // Backend works directly on root path, no /api prefix
-const API_URL =
-	import.meta.env.PUBLIC_API_URL;
+const API_URL = PUBLIC_API_URL;
 
 export interface ApiResponse<T = any> {
 	success: boolean;

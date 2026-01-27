@@ -1,4 +1,5 @@
 import { redirect } from '@sveltejs/kit';
+import { PUBLIC_API_URL } from '$env/static/public';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ cookies, url }) => {
@@ -16,7 +17,7 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
 
 	// Verify token and check roles
 	try {
-		const apiUrl = import.meta.env.PUBLIC_API_URL;
+		const apiUrl = PUBLIC_API_URL;
 
 		if (!apiUrl) {
 			console.error('[Auth] PUBLIC_API_URL is not configured');
