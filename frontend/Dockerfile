@@ -25,6 +25,9 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
+# Debug: List components directory to verify files are copied
+RUN ls -la src/components/ && ls -la src/components/Providers/ && ls -la src/components/Ui/ && ls -la src/components/Nav/
+
 # Build Next.js application
 RUN npm run build
 
