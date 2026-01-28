@@ -1,4 +1,3 @@
-import apiAuth from './apiAuth';
 import errorMessage from './errorMessage';
 import forAdmins from './forAdmins';
 import log from './log';
@@ -9,11 +8,10 @@ import commandLogger from './commandLogger';
 import { verificationManager } from './verificationManager';
 import { getRedisClient, closeRedisClient, getRedisConnection } from './redisClient';
 
-export { 
-  apiAuth, 
-  errorMessage, 
-  forAdmins, 
-  log, 
+export {
+  errorMessage,
+  forAdmins,
+  log,
   hastebinize,
   CommandValidator,
   rateLimiter,

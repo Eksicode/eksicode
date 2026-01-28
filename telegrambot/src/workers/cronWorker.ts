@@ -6,10 +6,90 @@ import { Worker, Job } from 'bullmq';
 import { getRedisConnection } from '../utils/redisClient';
 import { CronJobData, JobResult } from '../queues/types';
 import { Telegraf } from 'telegraf';
-import axios from 'axios';
-import { apiAuth } from '../utils';
+import { query, queryMany } from '../utils/db-client';
 
 const redisConnection = getRedisConnection();
+
+interface TelegramGroup {
+  id: number;
+  name: string;
+  channel_id: string | null;
+  members: number;
+}
+
+interface Source {
+  id: number;
+  url: string;
+  approved: boolean;
+}
+
+/**
+ * Update group member count in database
+ */
+async function updateMembers(id: number, members: number): Promise<void> {
+  try {
+    await query(
+      `UPDATE telegram_groups SET members = $1, "updatedAt" = NOW() WHERE id = $2`,
+      [members, id]
+    );
+  } catch (err) {
+    console.error(`Error updating members for group ${id}:`, err);
+  }
+}
+
+/**
+ * Update source approval status in database
+ */
+async function updateApprovalStatus(id: number, approved: boolean): Promise<void> {
+  try {
+    await query(
+      `UPDATE sources SET approved = $1, "updatedAt" = NOW() WHERE id = $2`,
+      [approved, id]
+    );
+  } catch (err) {
+    console.error(`Error updating approval status for source ${id}:`, err);
+  }
+}
+
+/**
+ * Check if a URL is accessible
+ */
+async function checkUrlStatus(url: string): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'
+      }
+    });
+
+    clearTimeout(timeoutId);
+    return response.ok;
+  } catch {
+    // If HEAD fails, try GET
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'
+        }
+      });
+
+      clearTimeout(timeoutId);
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+}
 
 /**
  * Process member count update job
@@ -19,45 +99,32 @@ async function processMemberCountJob(job: Job<CronJobData>): Promise<JobResult> 
     console.log('Eksicode User Counts Checking Started');
     console.log('-----------------------------------------');
 
-    const jwt = await apiAuth();
     const bot = job.data.data.bot as Telegraf;
 
-    const updateMembers = async (id: number, members: number): Promise<void> => {
-      try {
-        const requestData = { members };
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + jwt
-          }
-        };
-        await axios.put(`${process.env.API_URL}/telegrams/${id}`, requestData, config);
-      } catch (err) {
-        console.error('Error updating members:', err);
-      }
-    };
-
-    // Get group list from API
-    const response = await axios.get(`${process.env.API_URL}/telegrams?_sort=ListOrder:ASC`);
-    const allGroups = response.data;
+    // Get all active groups from database
+    const allGroups = await queryMany<TelegramGroup>(
+      `SELECT id, name, channel_id, members
+       FROM telegram_groups
+       WHERE active = true AND channel_id IS NOT NULL
+       ORDER BY "listOrder" ASC`
+    );
 
     console.log('total groups: ' + allGroups.length);
 
     // Process groups sequentially with delay
-    for (let i = 0; i < allGroups.length; i++) {
+    for (const group of allGroups) {
       try {
-        const memberCount = await bot.telegram.getChatMembersCount(allGroups[i].channelID);
-        allGroups[i].members = memberCount;
-        
-        console.log(allGroups[i].name, memberCount + ' user');
-        await updateMembers(allGroups[i].id, memberCount);
-        console.log(allGroups[i].name + ' Updated...');
+        const memberCount = await bot.telegram.getChatMembersCount(group.channel_id!);
+
+        console.log(group.name, memberCount + ' user');
+        await updateMembers(group.id, memberCount);
+        console.log(group.name + ' Updated...');
         console.log('-------------------------');
-        
+
         // Rate limiting: 2 second delay between groups
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (err: any) {
-        console.log(`${allGroups[i].name} wasn't respond any date.`);
+        console.log(`${group.name} wasn't respond any data.`);
         console.error(err);
       }
     }
@@ -81,43 +148,17 @@ async function processMemberCountJob(job: Job<CronJobData>): Promise<JobResult> 
 /**
  * Process source validation job
  */
-async function processSourceValidationJob(job: Job<CronJobData>): Promise<JobResult> {
+async function processSourceValidationJob(): Promise<JobResult> {
   try {
     console.log('Eksicode Source Checking Process Started');
     console.log('-----------------------------------------');
 
-    const jwt = await apiAuth();
-
-    const changeApprove = async (id: number, status: string): Promise<void> => {
-      try {
-        const requestData = { approved: status };
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + jwt
-          }
-        };
-        await axios.put(`${process.env.API_URL}/kaynaklars/${id}`, requestData, config);
-      } catch (err) {
-        console.error('Error updating approval status:', err);
-      }
-    };
-
-    // Get all sources
-    const response = await axios.get(`${process.env.API_URL}/kaynaklars?_limit=10000000&_sort=id:ASC`);
-    const allSources = response.data;
+    // Get all sources from database
+    const allSources = await queryMany<Source>(
+      `SELECT id, url, approved FROM sources WHERE active = true ORDER BY id ASC`
+    );
 
     console.log('total links: ' + allSources.length);
-
-    const getConfig = {
-      timeout: 60000,
-      maxContentLength: 500 * 1000 * 1000,
-      headers: {
-        'Content-Type': 'text/html; charset=UTF-8',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9',
-        Authorization: 'Bearer ' + jwt
-      }
-    };
 
     let processed = 0;
 
@@ -125,27 +166,27 @@ async function processSourceValidationJob(job: Job<CronJobData>): Promise<JobRes
     const batchSize = 10;
     for (let i = 0; i < allSources.length; i += batchSize) {
       const batch = allSources.slice(i, i + batchSize);
-      
+
       await Promise.allSettled(
-        batch.map(async (source: any) => {
+        batch.map(async (source) => {
           try {
-            const response = await axios.get(source.doc_link, getConfig);
-            
-            if (!response.status || response.status >= 399) {
-              await changeApprove(source.id, 'false');
+            const isUp = await checkUrlStatus(source.url);
+
+            if (!isUp && source.approved) {
+              await updateApprovalStatus(source.id, false);
               processed++;
-              console.log(`${processed}/${allSources.length} - ${source.doc_link} is down`);
-            } else if (response.status < 399 && source.status === 'false') {
-              await changeApprove(source.id, 'true');
+              console.log(`${processed}/${allSources.length} - ${source.url} is down`);
+            } else if (isUp && !source.approved) {
+              await updateApprovalStatus(source.id, true);
               processed++;
-              console.log(`${processed}/${allSources.length} - ${source.doc_link} is now up`);
+              console.log(`${processed}/${allSources.length} - ${source.url} is now up`);
             } else {
               processed++;
-              console.log(`${processed}/${allSources.length} - ${response.status} ${source.doc_link} is up`);
+              console.log(`${processed}/${allSources.length} - ${source.url} is ${isUp ? 'up' : 'down'}`);
             }
           } catch (error: any) {
             processed++;
-            console.error(`Error checking ${source.doc_link}:`, error.message);
+            console.error(`Error checking ${source.url}:`, error.message);
           }
         })
       );
@@ -177,7 +218,7 @@ async function processCronJob(job: Job<CronJobData>): Promise<JobResult> {
     case 'member_count':
       return processMemberCountJob(job);
     case 'source_validation':
-      return processSourceValidationJob(job);
+      return processSourceValidationJob();
     case 'cleanup':
       // Cleanup job - implement as needed
       return {
@@ -210,15 +251,15 @@ export function createCronWorker(): Worker<CronJobData, JobResult> {
   );
 
   worker.on('completed', (job: any) => {
-    console.log(`✅ Cron job ${job.id} (${job.data.type}) completed`);
+    console.log(`Cron job ${job.id} (${job.data.type}) completed`);
   });
 
   worker.on('failed', (job: any, error: Error) => {
-    console.error(`❌ Cron job ${job?.id} (${job?.data.type}) failed:`, error.message);
+    console.error(`Cron job ${job?.id} (${job?.data.type}) failed:`, error.message);
   });
 
   worker.on('error', (error: Error) => {
-    console.error('❌ Cron worker error:', error);
+    console.error('Cron worker error:', error);
   });
 
   return worker;

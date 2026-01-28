@@ -1,5 +1,4 @@
 import { query } from '../utils/db-client';
-import axios from 'axios';
 import { parse } from 'node-html-parser';
 import errorMessage from '../utils/errorMessage';
 import commandLogger from '../utils/commandLogger';
@@ -26,7 +25,7 @@ interface Context {
 interface SourceData {
   url: string;
   title?: string;
-  headers?: any;
+  headers?: Headers | null;
   tgChannel: number;
   tgUser: number;
 }
@@ -36,14 +35,14 @@ interface SourceData {
  */
 function extractUrlsFromMessage(text: string, entities?: Array<{ type: string; offset: number; length: number }>): string[] {
   const urls: string[] = [];
-  
+
   if (!entities) return urls;
 
   entities.forEach(entity => {
     if (entity.type === 'url') {
       const link = text.slice(entity.offset, entity.offset + entity.length);
-      const linkWithHttp = link.startsWith('http://') || link.startsWith('https://') 
-        ? link 
+      const linkWithHttp = link.startsWith('http://') || link.startsWith('https://')
+        ? link
         : 'http://' + link;
       urls.push(linkWithHttp);
     }
@@ -53,12 +52,20 @@ function extractUrlsFromMessage(text: string, entities?: Array<{ type: string; o
 }
 
 /**
- * Fetch headers for a URL
+ * Fetch headers for a URL using native fetch
  */
-async function fetchUrlHeaders(url: string): Promise<any> {
+async function fetchUrlHeaders(url: string): Promise<Headers | null> {
   try {
-    const headRequest = await axios.head(url, { timeout: 5000 });
-    return headRequest.headers;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    return response.headers;
   } catch (error) {
     console.error(`Error fetching headers for ${url}:`, error);
     return null;
@@ -68,16 +75,26 @@ async function fetchUrlHeaders(url: string): Promise<any> {
 /**
  * Extract title from URL
  */
-async function extractTitle(url: string, headers: any): Promise<string> {
+async function extractTitle(url: string, headers: Headers | null): Promise<string> {
   try {
-    if (headers?.['content-type']?.includes('text/html')) {
-      const getRequest = await axios.get(url, { timeout: 10000 });
-      const html = getRequest.data;
+    const contentType = headers?.get('content-type');
+
+    if (contentType?.includes('text/html')) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      const html = await response.text();
       const titleElement = parse(html).querySelector('title');
       return titleElement?.text || url;
     } else {
       // Try to extract filename from content-disposition header
-      const contentDisposition = headers?.['content-disposition'];
+      const contentDisposition = headers?.get('content-disposition');
       if (contentDisposition) {
         const match = contentDisposition.match(/filename="?([^"]+)"?/);
         if (match && match[1]) {
@@ -122,7 +139,7 @@ async function saveSourcesToDatabase(sources: SourceData[]): Promise<void> {
  */
 async function kaynakCommand(ctx: Context): Promise<void> {
   let message: any;
-  
+
   try {
     // Extract URLs from message
     const urls = extractUrlsFromMessage(ctx.message.text, ctx.message.entities);
@@ -133,17 +150,17 @@ async function kaynakCommand(ctx: Context): Promise<void> {
     }
 
     // Send processing message
-    message = await ctx.reply('Kaynak ekleniyor...', { 
-      reply_to_message_id: ctx.message.message_id 
+    message = await ctx.reply('Kaynak ekleniyor...', {
+      reply_to_message_id: ctx.message.message_id
     });
 
     // Process each URL
     const sources: SourceData[] = [];
-    
+
     for (const url of urls) {
       const headers = await fetchUrlHeaders(url);
       const title = headers ? await extractTitle(url, headers) : url;
-      
+
       sources.push({
         url,
         title,
@@ -168,7 +185,7 @@ async function kaynakCommand(ctx: Context): Promise<void> {
   } catch (err) {
     console.error('Kaynak command error:', err);
     commandLogger.logError(ctx as any, 'kaynak', err as Error);
-    
+
     if (message) {
       await ctx.telegram.editMessageText(
         message.chat.id,

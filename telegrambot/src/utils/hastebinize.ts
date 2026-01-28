@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 /**
  * Uploads text to Hastebin and returns the URL
  * @param text - The text to upload
@@ -15,18 +13,31 @@ async function hastebinize(text: string): Promise<string> {
       throw new Error('Text too long for Hastebin (max 1MB)');
     }
 
-    const response = await axios.post('https://hastebin.com/documents', text, {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    const response = await fetch('https://hastebin.com/documents', {
+      method: 'POST',
+      body: text,
       headers: {
         'Content-Type': 'text/plain'
       },
-      timeout: 10000 // 10 second timeout
+      signal: controller.signal
     });
 
-    if (!response.data || !response.data.key) {
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`Hastebin returned status ${response.status}`);
+    }
+
+    const data = await response.json() as { key?: string };
+
+    if (!data || !data.key) {
       throw new Error('Invalid response from Hastebin');
     }
 
-    return `https://hastebin.com/${response.data.key}`;
+    return `https://hastebin.com/${data.key}`;
   } catch (error: any) {
     console.error('Hastebin error:', error.message);
     throw new Error(`Hastebin upload failed: ${error.message}`);

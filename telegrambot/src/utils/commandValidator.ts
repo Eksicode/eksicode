@@ -2,8 +2,6 @@
  * Command validation utilities
  */
 
-import errorMessage from './errorMessage';
-
 interface Context {
   chat: { type: string };
 }
@@ -15,14 +13,12 @@ class CommandValidator {
   static validateEnvironment(): void {
     const requiredEnvVars = [
       'BOT_TOKEN',
-      'API_URL',
-      'API_USER',
-      'API_PASS',
+      'DATABASE_URL',
       'ADMIN_CH_ID'
     ];
 
     const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-    
+
     if (missingVars.length > 0) {
       throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
     }
@@ -74,7 +70,3 @@ class CommandValidator {
 
 export default CommandValidator;
 export { CommandValidator };
-
-// CommonJS compatibility for direct requires from JS files
-module.exports = CommandValidator;
-module.exports.CommandValidator = CommandValidator;

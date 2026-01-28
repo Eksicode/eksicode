@@ -5,85 +5,121 @@ dotenv.config({
   path: path.join(__dirname, '.env')
 });
 
-import axios from 'axios';
-import { apiAuth } from './src/utils';
 import * as cron from 'node-cron';
+import { query, queryMany } from './src/utils/db-client';
+
+interface Source {
+  id: number;
+  url: string;
+  approved: boolean;
+}
+
+/**
+ * Update source approval status in database
+ */
+async function updateApprovalStatus(id: number, approved: boolean): Promise<void> {
+  try {
+    await query(
+      `UPDATE sources SET approved = $1, "updatedAt" = NOW() WHERE id = $2`,
+      [approved, id]
+    );
+  } catch (err) {
+    console.error(`Error updating approval status for source ${id}:`, err);
+  }
+}
+
+/**
+ * Check if a URL is accessible
+ */
+async function checkUrlStatus(url: string): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'
+      }
+    });
+
+    clearTimeout(timeoutId);
+    return response.ok;
+  } catch (error) {
+    // If HEAD fails, try GET
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'
+        }
+      });
+
+      clearTimeout(timeoutId);
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+}
 
 /**
  * Cron Job
  *
- * Run cron job everyday
- *
- * @param '00 01 * * *' Everyday will backup at 01
+ * Run cron job everyday at 01:00
  */
-
 cron.schedule('00 01 * * *', async () => {
   console.log('Eksicode Source Checking Process Started');
   console.log('-----------------------------------------');
 
-  let allSources: any[];
-  const jwt = await apiAuth();
+  try {
+    // Get all sources from database
+    const allSources = await queryMany<Source>(
+      `SELECT id, url, approved FROM sources WHERE active = true ORDER BY id ASC`
+    );
 
-  const changeApprove = async (id: number, status: string): Promise<void> => {
-    try {
-      const requestData = {
-        approved: status
-      };
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + jwt
-        }
-      };
-      axios.put(`${process.env.API_URL}/kaynaklars/` + id, requestData, config);
-    } catch (err) {
-      console.error(err);
+    console.log('total links: ' + allSources.length);
+
+    let processed = 0;
+
+    // Process sources in batches to avoid overwhelming the system
+    const batchSize = 10;
+    for (let i = 0; i < allSources.length; i += batchSize) {
+      const batch = allSources.slice(i, i + batchSize);
+
+      await Promise.allSettled(
+        batch.map(async (source) => {
+          try {
+            const isUp = await checkUrlStatus(source.url);
+
+            if (!isUp && source.approved) {
+              await updateApprovalStatus(source.id, false);
+              processed++;
+              console.log(`${processed}/${allSources.length} - ${source.url} is down`);
+            } else if (isUp && !source.approved) {
+              await updateApprovalStatus(source.id, true);
+              processed++;
+              console.log(`${processed}/${allSources.length} - ${source.url} is now up`);
+            } else {
+              processed++;
+              console.log(`${processed}/${allSources.length} - ${source.url} is ${isUp ? 'up' : 'down'}`);
+            }
+          } catch (error: any) {
+            processed++;
+            console.error(`Error checking ${source.url}:`, error.message);
+          }
+        })
+      );
     }
-  };
 
-  axios.get(`${process.env.API_URL}/kaynaklars?_limit=10000000&_sort=id:ASC`)
-    .then(async (response) => {
-      allSources = response.data;
-    })
-    .then(() => {
-      const getConfig = {
-        timeout: 60000,
-        maxContentLength: 500 * 1000 * 1000,
-        headers: {
-          'Content-Type': 'text/html; charset=UTF-8',
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9',
-          Authorization: 'Bearer ' + jwt
-        }
-      };
-      console.log('total links: ' + allSources.length);
-      let number = 0;
-      allSources.forEach(
-        async (source: any) => {
-          axios.get(source.doc_link, getConfig)
-            .then(async (response) => {
-              if (!response.status || response.status >= 399) {
-                await changeApprove(source.id, 'false');
-                number++;
-                throw new Error(number + ' ' + source.doc_link + ' is down' + ' - ');
-              } else if (response.status <= 399 && source.status === 'false') {
-                await changeApprove(source.id, 'true');
-                number++;
-              } else {
-                console.log(number + '/' + allSources.length + ' - ' + response.status + ' ' + source.doc_link + ' is up');
-                number++;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        });
-
-      if (allSources.length === number) {
-        console.log('Eksicode Source Checking Process finished');
-        console.log('-----------------------------------------');
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    console.log('Eksicode Source Checking Process finished');
+    console.log('-----------------------------------------');
+  } catch (err) {
+    console.error('Error in source checking cron job:', err);
+  }
 });
