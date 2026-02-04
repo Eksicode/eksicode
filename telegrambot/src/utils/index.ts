@@ -6,7 +6,7 @@ import CommandValidator from './commandValidator';
 import rateLimiter from './rateLimiter';
 import commandLogger from './commandLogger';
 import { verificationManager } from './verificationManager';
-import { getRedisClient, closeRedisClient, getRedisConnection } from './redisClient';
+import { getRedisClient, closeRedisClient, getRedisConnection, setRedisShuttingDown } from './redisClient';
 
 export {
   errorMessage,
@@ -20,5 +20,6 @@ export {
   verificationManager,
   getRedisClient,
   closeRedisClient,
-  getRedisConnection
+  getRedisConnection,
+  setRedisShuttingDown
 };

@@ -10,7 +10,7 @@ import { Telegraf } from 'telegraf';
 import { verificationManager } from './src/utils';
 import { addCommandJob } from './src/queues';
 import { createCommandWorker, createCronWorker } from './src/workers';
-import { getRedisClient, closeRedisClient } from './src/utils/redisClient';
+import { getRedisClient, closeRedisClient, setRedisShuttingDown } from './src/utils/redisClient';
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 const enableQueue = process.env.ENABLE_QUEUE === 'true';
@@ -122,7 +122,8 @@ console.log('🤖 EksiCode Bot started successfully!');
 // Enable graceful stop
 async function gracefulShutdown(signal: string) {
   console.log(`\n${signal} received, shutting down gracefully...`);
-  
+  setRedisShuttingDown();
+
   // Stop bot
   await bot.stop(signal);
   

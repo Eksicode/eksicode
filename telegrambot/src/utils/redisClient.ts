@@ -11,6 +11,15 @@ dotenv.config({
 });
 
 let redisClient: Redis | null = null;
+let isShuttingDown = false;
+
+/**
+ * Mark that the process is shutting down (stops reconnects and noisy logs).
+ * Call this before closeRedisClient() during graceful shutdown.
+ */
+export function setRedisShuttingDown(): void {
+  isShuttingDown = true;
+}
 
 /**
  * Get or create Redis client instance
@@ -25,6 +34,7 @@ export function getRedisClient(): Redis {
     port: parseInt(process.env.REDIS_PORT || '6379'),
     db: parseInt(process.env.REDIS_DB || '0'),
     retryStrategy: (times: number) => {
+      if (isShuttingDown) return null; // stop reconnecting
       const delay = Math.min(times * 50, 2000);
       return delay;
     },
@@ -40,23 +50,23 @@ export function getRedisClient(): Redis {
   redisClient = new Redis(config);
 
   redisClient.on('error', (error: Error) => {
-    console.error('❌ Redis connection error:', error);
+    if (!isShuttingDown) console.error('❌ Redis connection error:', error);
   });
 
   redisClient.on('connect', () => {
-    console.log('✅ Redis connected successfully');
+    if (!isShuttingDown) console.log('✅ Redis connected successfully');
   });
 
   redisClient.on('ready', () => {
-    console.log('✅ Redis ready to accept commands');
+    if (!isShuttingDown) console.log('✅ Redis ready to accept commands');
   });
 
   redisClient.on('close', () => {
-    console.log('⚠️ Redis connection closed');
+    if (!isShuttingDown) console.log('⚠️ Redis connection closed');
   });
 
   redisClient.on('reconnecting', () => {
-    console.log('🔄 Redis reconnecting...');
+    if (!isShuttingDown) console.log('🔄 Redis reconnecting...');
   });
 
   return redisClient;
@@ -78,6 +88,7 @@ export function getRedisConnection(): { host: string; port: number; password?: s
  * Close Redis connection
  */
 export async function closeRedisClient(): Promise<void> {
+  isShuttingDown = true;
   if (redisClient) {
     await redisClient.quit();
     redisClient = null;

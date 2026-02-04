@@ -168,6 +168,8 @@ services:
         - NODE_ENV=production
     working_dir: /var/bot
     restart: unless-stopped
+    depends_on:
+      - redis
     env_file:
       - ./telegrambot/.env
     environment:
