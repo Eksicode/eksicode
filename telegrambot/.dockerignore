@@ -50,3 +50,8 @@ docker-compose*.yml
 .pinignore
 hataMesaji.txt
 help*.md
+
+# Required at runtime for /help command (override exclusions above)
+!help.md
+!docs/
+!docs/helpAdmin.md
