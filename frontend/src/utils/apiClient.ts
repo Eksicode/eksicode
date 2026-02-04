@@ -69,7 +69,9 @@ class ApiClient {
         const bodyMessage =
           typeof errorData?.message === "string"
             ? errorData.message
-            : Array.isArray(errorData?.errors)?.[0]?.message;
+            : Array.isArray(errorData?.errors)
+              ? errorData.errors[0]?.message
+              : undefined;
         const appError = getErrorFromStatus(response.status, bodyMessage);
         throw new ApiRequestError(appError);
       }
