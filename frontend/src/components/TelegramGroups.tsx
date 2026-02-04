@@ -55,7 +55,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
           <LoadingAnimation style="" />
         </div>
       ) : (
-        <div className="flex w-full justify-center items-center gap-2 overflow-x-auto no-scrollbar py-2">
+        <div className="flex w-full justify-start md:justify-center items-center gap-2 overflow-x-auto no-scrollbar py-2">
           <span className="text-eksiCodeMedium dark:text-eksiCodeLight whitespace-nowrap mr-2 hidden md:block">
             Telegram Grupları
           </span>
