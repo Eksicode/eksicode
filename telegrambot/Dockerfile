@@ -63,6 +63,8 @@ RUN npm ci --only=production --prefer-offline --no-audit && \
 
 # Copy built files and configuration from builder
 COPY --from=builder --chown=nodejs:nodejs /build/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /build/help.md ./dist/help.md
+COPY --from=builder --chown=nodejs:nodejs /build/docs/helpAdmin.md ./dist/docs/helpAdmin.md
 COPY --from=builder --chown=nodejs:nodejs /build/pm2.json ./pm2.json
 
 # Create logs directory with proper permissions
