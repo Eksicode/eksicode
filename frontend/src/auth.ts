@@ -35,13 +35,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // Check if response is JSON before parsing
           const contentType = res.headers.get("content-type");
-          let data;
+          let data: { success?: boolean; message?: string; user?: unknown };
           
           if (contentType && contentType.includes("application/json")) {
             data = await res.json();
           } else {
-            // Handle non-JSON responses (e.g., rate limit plain text)
+            // Handle non-JSON responses (e.g. 401 from gateway, rate limit plain text)
             const text = await res.text();
+            if (res.status === 401) {
+              throw new Error("INVALID_CREDENTIALS");
+            }
             throw new Error(text || "Authentication failed");
           }
 
