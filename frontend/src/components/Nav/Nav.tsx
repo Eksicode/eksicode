@@ -6,6 +6,7 @@ import {
   AiOutlineEdit,
   AiOutlineLogin,
   AiOutlineUserAdd,
+  AiOutlineSearch,
 } from "react-icons/ai";
 import UserMenu from "@/components/Nav/UserMenu";
 import TelegramGroups from "@/components/TelegramGroups";
@@ -46,8 +47,13 @@ const Nav = () => {
           </Link>
         </div>
 
-        <div className="flex justify-center lg:w-1/4 w-1/2">
+        <div className="hidden md:flex justify-center lg:w-1/4 w-1/2">
           <Search />
+        </div>
+        <div className="flex md:hidden items-center mr-2">
+          <Link href="/arama" aria-label="Arama">
+            <AiOutlineSearch className="h-6 w-6" />
+          </Link>
         </div>
 
         <div className="flex items-center justify-end">

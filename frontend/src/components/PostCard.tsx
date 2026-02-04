@@ -113,7 +113,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                 className="flex items-center flex-nowrap p-1 border border-eksiContent hover:border-eksiCode dark:hover:text-eksiCode rounded-lg hover:text-eksiCode dark:text-white text-dark"
               >
                 <Icon className="text-lg" />
-                <p>
+                <p className="hidden md:block ml-1">
                   {text}
                 </p>
               </button>
