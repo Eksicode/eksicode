@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { IPost } from "@/types/types";
 import { PostCard } from "./PostCard";
 import LoadMore from "@/components/LoadMore";
+import { getUserFacingMessage, getErrorFromStatus } from "@/utils/errors";
 
 interface PostsProps {
   initialPosts?: IPost[];
@@ -55,9 +56,12 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
+        const bodyMessage = errorData?.message ?? errorData?.errors?.[0]?.message;
+        const appError = getErrorFromStatus(response.status, bodyMessage);
+        setError(appError.userMessage);
+        setRetryCount((prev) => prev + 1);
+        setLoading(false);
+        return;
       }
 
       const { data: newPosts, meta }: FetchPostsResponse = await response.json();
@@ -75,12 +79,11 @@ const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
       setRetryCount(0); // Reset retry count on success
 
     } catch (error) {
-      console.error("Error fetching posts:", error);
-      const errorMessage = error instanceof Error ? error.message : "Gönderiler yüklenirken hata oluştu";
-      setError(errorMessage);
-      
-      // Increment retry count for retry functionality
-      setRetryCount(prev => prev + 1);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching posts:", error);
+      }
+      setError(getUserFacingMessage(error));
+      setRetryCount((prev) => prev + 1);
     } finally {
       setLoading(false);
     }

@@ -4,6 +4,7 @@ import * as md from "react-icons/md";
 import * as Ai from "react-icons/ai";
 import Link from "next/link";
 import getData from "@/utils/getData";
+import { getUserFacingMessage } from "@/utils/errors";
 
 interface Menu {
   id: number;
@@ -65,13 +66,18 @@ function SideMenu() {
       // Create new abort controller for this request
       abortControllerRef.current = new AbortController();
 
-      const fetchedMenu = await getData<Menu>("menus", true, 0, 0, 0, { 
-        cache: "no-cache" 
+      const fetchedMenu = await getData<Menu>("menus", true, 0, 0, 0, {
+        cache: "no-cache",
       });
 
       // Check if request was aborted
       if (abortControllerRef.current?.signal.aborted) {
         return;
+      }
+
+      // API returned an error (e.g. 4xx/5xx or network)
+      if (fetchedMenu.error && fetchedMenu.userMessage) {
+        throw new Error(fetchedMenu.userMessage);
       }
 
       // Validate response structure
@@ -118,10 +124,7 @@ function SideMenu() {
           fetchMenuWithRetry(attempt + 1);
         }, delay);
       } else {
-        const errorMessage = error instanceof Error 
-          ? error.message 
-          : "Bilinmeyen bir hata oluştu";
-        setError(`Menü yüklenirken bir hata oluştu: ${errorMessage}. Sayfayı yenilemeyi deneyin.`);
+        setError(getUserFacingMessage(error) + " Sayfayı yenilemeyi deneyin.");
         setRetryCount(0);
       }
     }

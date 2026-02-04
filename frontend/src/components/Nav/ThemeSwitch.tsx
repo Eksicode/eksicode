@@ -16,8 +16,10 @@ function ThemeSwitch() {
         return localStorage.getItem("theme");
       }
     } catch (error) {
-      console.warn("Failed to read theme from localStorage:", error);
-      setError("Tema tercihi okunamadı");
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Failed to read theme from localStorage:", error);
+      }
+      setError("Tema tercihi okunamadı. Varsayılan tema kullanılıyor.");
     }
     return null;
   }, []);

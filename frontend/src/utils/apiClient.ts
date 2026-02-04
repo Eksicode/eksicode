@@ -1,7 +1,29 @@
+import { getErrorFromStatus, normalizeError, type AppError } from "./errors";
+
 interface ApiConfig {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
+}
+
+/** Thrown by apiClient on non-ok responses. Has userMessage for display. */
+export class ApiRequestError extends Error {
+  readonly appError: AppError;
+
+  constructor(appError: AppError) {
+    super(appError.message);
+    this.name = "ApiRequestError";
+    this.appError = appError;
+    Object.setPrototypeOf(this, ApiRequestError.prototype);
+  }
+
+  get userMessage(): string {
+    return this.appError.userMessage;
+  }
+
+  get status(): number | undefined {
+    return this.appError.status;
+  }
 }
 
 class ApiClient {
@@ -14,6 +36,11 @@ class ApiClient {
   async request<T>(endpoint: string, config: ApiConfig = {}, token?: string): Promise<T> {
     const { method = "GET", headers = {}, body } = config;
 
+    if (!this.baseUrl) {
+      const err = normalizeError(new Error("API URL is not defined in the environment variables."));
+      throw new ApiRequestError(err);
+    }
+
     const requestConfig: RequestInit = {
       method,
       headers: {
@@ -25,7 +52,6 @@ class ApiClient {
 
     if (body && method !== "GET") {
       if (body instanceof FormData) {
-        // Remove Content-Type for FormData to let browser set it with boundary
         const newHeaders = { ...headers };
         if (token) newHeaders.Authorization = `Bearer ${token}`;
         requestConfig.headers = newHeaders;
@@ -35,26 +61,36 @@ class ApiClient {
       }
     }
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, requestConfig);
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, requestConfig);
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const bodyMessage =
+          typeof errorData?.message === "string"
+            ? errorData.message
+            : Array.isArray(errorData?.errors)?.[0]?.message;
+        const appError = getErrorFromStatus(response.status, bodyMessage);
+        throw new ApiRequestError(appError);
+      }
+
+      return response.json();
+    } catch (err) {
+      if (err instanceof ApiRequestError) throw err;
+      const appError = normalizeError(err);
+      throw new ApiRequestError(appError);
     }
-
-    return response.json();
   }
 
-  // Convenience methods
   async get<T>(endpoint: string, token?: string): Promise<T> {
     return this.request<T>(endpoint, { method: "GET" }, token);
   }
 
-  async post<T>(endpoint: string, data: any, token?: string): Promise<T> {
+  async post<T>(endpoint: string, data: unknown, token?: string): Promise<T> {
     return this.request<T>(endpoint, { method: "POST", body: data }, token);
   }
 
-  async put<T>(endpoint: string, data: any, token?: string): Promise<T> {
+  async put<T>(endpoint: string, data: unknown, token?: string): Promise<T> {
     return this.request<T>(endpoint, { method: "PUT", body: data }, token);
   }
 

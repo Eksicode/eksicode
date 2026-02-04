@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/hooks/useAuth';
+import Link from 'next/link';
 
 export default function ProfileSettings() {
   const { user } = useAuth();
@@ -85,9 +86,12 @@ export default function ProfileSettings() {
               <input type="checkbox" className="rounded" defaultChecked />
             </div>
             <hr className="border-gray-200 dark:border-DarkLightGrey" />
-            <button className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            <Link
+              href="/profile/ayarlar/sifre-degistir"
+              className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
               Şifremi Değiştir
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,9 +1,37 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import postService from '@/services/postService';
 
 export default function ProfileDashboard() {
   const { user } = useAuth();
+  const [stats, setStats] = useState({
+    totalPosts: 0,
+    totalLikes: 0, // Not available yet
+    totalComments: 0 // Not available yet
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!user?.id) return;
+
+      try {
+        // Fetch posts with limit 1 just to get the total count from meta
+        const response = await postService.getUserPosts(Number(user.id), 1, 1);
+        if (response.success && response.meta) {
+          setStats(prev => ({
+            ...prev,
+            totalPosts: response.meta.total
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, [user?.id]);
 
   return (
     <div className="space-y-6">
@@ -60,14 +88,16 @@ export default function ProfileDashboard() {
           </h3>
           <div className="space-y-2">
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              <span className="font-medium">Toplam Gönderi:</span> 0
+              <span className="font-medium">Toplam Gönderi:</span> {stats.totalPosts}
+            </p>
+            {/* 
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              <span className="font-medium">Toplam Beğeni:</span> {stats.totalLikes}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              <span className="font-medium">Toplam Beğeni:</span> 0
+              <span className="font-medium">Toplam Yorum:</span> {stats.totalComments}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              <span className="font-medium">Toplam Yorum:</span> 0
-            </p>
+            */}
           </div>
         </div>
       </div>

@@ -22,17 +22,29 @@ export class PostController {
 
   private validatePaginationParams(
     skip: unknown,
-    limit: unknown
+    limit: unknown,
+    page?: unknown
   ): { skip: number; limit: number } {
-    const parsedSkip = Number(skip);
-    const parsedLimit = Number(limit);
-
-    if (isNaN(parsedSkip) || parsedSkip < 0) {
-      throw new HttpException(400, "Invalid skip parameter");
+    const parsedLimit =
+      limit !== undefined && limit !== "" && !Number.isNaN(Number(limit))
+        ? Number(limit)
+        : 10;
+    if (parsedLimit <= 0 || parsedLimit > 100) {
+      throw new HttpException(400, "Invalid limit parameter (1-100)");
     }
 
-    if (isNaN(parsedLimit) || parsedLimit <= 0 || parsedLimit > 100) {
-      throw new HttpException(400, "Invalid limit parameter (1-100)");
+    let parsedSkip: number;
+    if (skip !== undefined && skip !== "" && !Number.isNaN(Number(skip))) {
+      parsedSkip = Number(skip);
+    } else if (page !== undefined && page !== "" && !Number.isNaN(Number(page))) {
+      const p = Number(page);
+      if (p < 1) throw new HttpException(400, "Invalid page parameter");
+      parsedSkip = (p - 1) * parsedLimit;
+    } else {
+      parsedSkip = 0;
+    }
+    if (parsedSkip < 0) {
+      throw new HttpException(400, "Invalid skip parameter");
     }
 
     return {
@@ -192,7 +204,8 @@ export class PostController {
     try {
       const { skip, limit } = this.validatePaginationParams(
         req.query.skip,
-        req.query.limit
+        req.query.limit,
+        req.query.page
       );
 
       const params: PostListParams = {
@@ -285,7 +298,7 @@ export class PostController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const { skip, limit } = this.validatePaginationParams(req.query.skip, req.query.limit);
+      const { skip, limit } = this.validatePaginationParams(req.query.skip, req.query.limit, req.query.page);
 
       const params: PostSearchParams = {
         term: req.query.term as string,

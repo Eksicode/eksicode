@@ -12,6 +12,7 @@ import * as Gr from "react-icons/gr";
 import React from "react";
 import Link from "next/link";
 import getData from "@/utils/getData";
+import { getUserFacingMessage } from "@/utils/errors";
 import { usePathname } from "next/navigation";
 import ThemeSwitch from "./ThemeSwitch";
 import { useAuth } from "@/hooks/useAuth";
@@ -107,9 +108,11 @@ const MobileMenu = () => {
         cache: "no-cache",
       });
 
-      // Validate response structure
+      if (fetchedMenu.error && fetchedMenu.userMessage) {
+        throw new Error(fetchedMenu.userMessage);
+      }
       if (!fetchedMenu || !Array.isArray(fetchedMenu.data)) {
-        throw new Error("Invalid response structure");
+        throw new Error("Geçersiz yanıt yapısı");
       }
 
       const menuData = fetchedMenu.data.map((item: Partial<Menu> & { id?: number; name?: string; link?: string; icon?: string; subMenu?: number }) => ({
@@ -139,7 +142,7 @@ const MobileMenu = () => {
           fetchMenuWithRetry(attempt + 1);
         }, delay);
       } else {
-        setError("Menü yüklenirken bir hata oluştu. Sayfayı yenilemeyi deneyin.");
+        setError(getUserFacingMessage(error) + " Sayfayı yenilemeyi deneyin.");
         setRetryCount(0);
       }
     }

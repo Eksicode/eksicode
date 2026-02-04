@@ -4,7 +4,7 @@ import {
   AiOutlineTag,
   AiFillSetting,
 } from "react-icons/ai";
-import { MdOutlineWorkOutline, MdDashboard } from "react-icons/md";
+import { MdOutlineWorkOutline, MdDashboard, MdNotifications } from "react-icons/md";
 import { GrResources } from "react-icons/gr";
 import { RiPagesLine } from "react-icons/ri";
 import Link from "next/link";
@@ -25,6 +25,11 @@ const menuItems: MenuItem[] = [
     path: "/profile"
   },
   {
+    icon: MdNotifications,
+    label: "Bildirimler",
+    path: "/profile/bildirimler"
+  },
+  {
     icon: AiOutlineUnorderedList,
     label: "Posts",
     path: "/profile/posts"
@@ -33,11 +38,6 @@ const menuItems: MenuItem[] = [
     icon: AiOutlineUnorderedList,
     label: "favoriler",
     path: "/profile/favoriler"
-  },
-  {
-    icon: RiPagesLine,
-    label: "Sayfalar",
-    path: "/profile/sayfalar"
   },
   {
     icon: AiOutlineTag,

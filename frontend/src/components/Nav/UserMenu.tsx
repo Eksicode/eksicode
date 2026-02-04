@@ -5,6 +5,7 @@ import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useAuth } from "@/hooks/useAuth";
 import authService from "@/services/authService";
+import { getUserFacingMessage } from "@/utils/errors";
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,8 +51,10 @@ const UserMenu = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching user data:', error);
-      setError("Kullanıcı bilgileri yüklenirken bir hata oluştu");
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching user data:", error);
+      }
+      setError(getUserFacingMessage(error));
       
       // Fallback to user data from useAuth
       if (user?.username) {
@@ -102,8 +105,10 @@ const UserMenu = () => {
         redirect: true 
       });
     } catch (error) {
-      console.error('Error during logout:', error);
-      setError("Çıkış yapılırken bir hata oluştu");
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error during logout:", error);
+      }
+      setError(getUserFacingMessage(error));
       // Still try to sign out even if there's an error
       await signOut({ 
         callbackUrl: "/",

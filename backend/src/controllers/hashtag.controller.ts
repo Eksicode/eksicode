@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import HashtagService from "../services/hashtag.service";
 import { HttpException } from "../exceptions/HttpException";
+import { getPaginationParams } from "../utils/pagination";
 import { 
   HashtagListParams, 
   HashtagSearchParams, 
@@ -81,14 +82,11 @@ class HashtagController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const { skip, limit } = this.validatePaginationParams(
-        req.query.skip,
-        req.query.limit
-      );
+      const { skip, limit } = getPaginationParams(req.query);
 
       const params: HashtagListParams = {
         skip,
-        limit,
+        limit: limit ?? 50,
         orderBy: req.query.orderBy as any || 'name',
         orderDirection: req.query.orderDirection as any || 'asc',
         includePostCount: req.query.includePostCount !== "false", // Default to true

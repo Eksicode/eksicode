@@ -58,13 +58,19 @@ const NewTag: React.FC<{ initialData?: Tag }> = ({ initialData }) => {
       const response = await addData("hashtags", newTag);
 
       if (response.success) {
-        setToast({ message: "Başarıyla eklendi!", type: "success" });
+        setToast({ message: response.message ?? "Başarıyla eklendi!", type: "success" });
         reset();
       } else {
-        setToast({ message: response.message || "Bir hata oluştu.", type: "error" });
+        setToast({
+          message: response.userMessage ?? response.message ?? "Etiket eklenirken bir hata oluştu.",
+          type: "error",
+        });
       }
     } catch (error) {
-      setToast({ message: "Bir hata oluştu!", type: "error" });
+      setToast({
+        message: "Etiket eklenirken beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.",
+        type: "error",
+      });
     }
   };
 

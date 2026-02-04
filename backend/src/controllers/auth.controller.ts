@@ -58,7 +58,7 @@ class AuthController {
         throw new HttpException(401, 'Authentication required');
       }
 
-      const user = await this.userService.findUserById(userId);
+      const user = await this.userService.findUserById(userId, userId);
 
       if (!user) {
         throw new HttpException(404, 'User not found');

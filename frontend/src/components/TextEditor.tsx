@@ -47,14 +47,18 @@ const TextEditor = ({
             theme: "snow",
           });
 
-          // Set initial content
-          // quillRef.current.root.innerHTML = value;
+          // Set initial content if provided and editor is empty
+          if (value && quillRef.current.getText().trim().length === 0) {
+            // quillRef.current.root.innerHTML = value; // innerHTML might be dangerous if not sanitized, but value should be safe or we trust it for now. 
+            // Better to use clipboard or dangerouslyPasteHTML
+            quillRef.current.clipboard.dangerouslyPasteHTML(value);
+          }
 
           // Handle content changes
-          // quillRef.current.on('text-change', () => {
-          //   const content = quillRef.current.root.innerHTML;
-          //   onChange(content);
-          // });
+          quillRef.current.on('text-change', () => {
+            const content = quillRef.current.root.innerHTML;
+            onChange(content);
+          });
         }
       };
 
