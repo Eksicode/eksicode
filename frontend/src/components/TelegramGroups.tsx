@@ -35,7 +35,7 @@ const TelegramGroups: React.FC<TelegramGroupsProps> = ({ groups }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const fetchedPosts = await getData("telegrams", true, logoCount);
+        const fetchedPosts = await getData<Group>("telegrams", true, logoCount);
         const groups = fetchedPosts.data.map((item) => ({
           id: item.id,
           name: item.name,
