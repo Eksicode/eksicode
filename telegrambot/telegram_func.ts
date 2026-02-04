@@ -1,8 +1,9 @@
 import * as path from 'path';
 import * as dotenv from 'dotenv';
 
+// Load telegrambot .env first so DB/Redis/API vars are available before any imports
 dotenv.config({
-  path: path.join(__dirname, '../.env')
+  path: path.join(__dirname, '.env')
 });
 
 import { Telegraf } from 'telegraf';

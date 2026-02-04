@@ -1,4 +1,4 @@
-import { errorMessage } from '../utils';
+import { errorMessage, CONFIG_ERROR_PREFIX } from '../utils';
 import CommandValidator from '../utils/commandValidator';
 import rateLimiter from '../utils/rateLimiter';
 import commandLogger from '../utils/commandLogger';
@@ -21,7 +21,7 @@ async function announcementCommand(ctx: Context): Promise<void> {
     // Validate environment
     if (!process.env.ANNOUNCEMENT_CHANNEL_URL) {
       commandLogger.logError(ctx as any, 'announcement', new Error('ANNOUNCEMENT_CHANNEL_URL not configured'));
-      await ctx.reply(`${errorMessage()} Duyuru kanalı yapılandırılmamış.`);
+      await ctx.reply(`${CONFIG_ERROR_PREFIX}Duyuru kanalı yapılandırılmamış.`);
       return;
     }
 
@@ -30,7 +30,7 @@ async function announcementCommand(ctx: Context): Promise<void> {
       CommandValidator.validateUrl(process.env.ANNOUNCEMENT_CHANNEL_URL);
     } catch (error) {
       commandLogger.logError(ctx as any, 'announcement', error as Error);
-      await ctx.reply(`${errorMessage()} Geçersiz duyuru kanalı URL'si.`);
+      await ctx.reply(`${CONFIG_ERROR_PREFIX}Geçersiz duyuru kanalı URL'si.`);
       return;
     }
 

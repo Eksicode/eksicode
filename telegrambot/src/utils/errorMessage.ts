@@ -15,5 +15,10 @@ const hataMesaji = fs
   .toString()
   .split('\r\n');
 
+/** Random dramatic phrase (for generic/unexpected errors). */
 export default (): string => hataMesaji[Math.floor(Math.random() * hataMesaji.length)];
+
+/** Short, clear prefix for configuration/validation errors (no random text). */
+export const CONFIG_ERROR_PREFIX = '⚠️ ';
+
 export { hataMesaji as errorMessages };

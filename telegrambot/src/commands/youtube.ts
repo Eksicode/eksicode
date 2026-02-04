@@ -1,4 +1,4 @@
-import errorMessage from '../utils/errorMessage';
+import errorMessage, { CONFIG_ERROR_PREFIX } from '../utils/errorMessage';
 import CommandValidator from '../utils/commandValidator';
 import rateLimiter from '../utils/rateLimiter';
 import commandLogger from '../utils/commandLogger';
@@ -20,7 +20,7 @@ async function youtubeCommand(ctx: Context): Promise<void> {
     // Validate environment
     if (!process.env.YOUTUBE_URL) {
       commandLogger.logError(ctx as any, 'youtube', new Error('YOUTUBE_URL not configured'));
-      return ctx.reply(`${errorMessage()} YouTube bağlantısı yapılandırılmamış.`);
+      return ctx.reply(`${CONFIG_ERROR_PREFIX}YouTube bağlantısı yapılandırılmamış.`);
     }
 
     // Validate URL
@@ -28,7 +28,7 @@ async function youtubeCommand(ctx: Context): Promise<void> {
       CommandValidator.validateUrl(process.env.YOUTUBE_URL);
     } catch (error) {
       commandLogger.logError(ctx as any, 'youtube', error as Error);
-      return ctx.reply(`${errorMessage()} Geçersiz YouTube URL'si.`);
+      return ctx.reply(`${CONFIG_ERROR_PREFIX}Geçersiz YouTube URL'si.`);
     }
 
     await ctx.reply('📺 YouTube Kanalımıza Abone Olun!', {

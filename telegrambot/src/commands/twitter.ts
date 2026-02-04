@@ -1,4 +1,4 @@
-import errorMessage from '../utils/errorMessage';
+import errorMessage, { CONFIG_ERROR_PREFIX } from '../utils/errorMessage';
 import CommandValidator from '../utils/commandValidator';
 import rateLimiter from '../utils/rateLimiter';
 import commandLogger from '../utils/commandLogger';
@@ -20,7 +20,7 @@ async function twitterCommand(ctx: Context): Promise<void> {
     // Validate environment
     if (!process.env.TWITTER_URL) {
       commandLogger.logError(ctx as any, 'twitter', new Error('TWITTER_URL not configured'));
-      return ctx.reply(`${errorMessage()} Twitter bağlantısı yapılandırılmamış.`);
+      return ctx.reply(`${CONFIG_ERROR_PREFIX}Twitter bağlantısı yapılandırılmamış.`);
     }
 
     // Validate URL
@@ -28,7 +28,7 @@ async function twitterCommand(ctx: Context): Promise<void> {
       CommandValidator.validateUrl(process.env.TWITTER_URL);
     } catch (error) {
       commandLogger.logError(ctx as any, 'twitter', error as Error);
-      return ctx.reply(`${errorMessage()} Geçersiz Twitter URL'si.`);
+      return ctx.reply(`${CONFIG_ERROR_PREFIX}Geçersiz Twitter URL'si.`);
     }
 
     await ctx.reply('🐦 Twitter Hesabımızı Takip Edin!', {

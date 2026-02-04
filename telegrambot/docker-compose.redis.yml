@@ -1,0 +1,28 @@
+# Redis for telegrambot – local production
+# Run: docker compose -f docker-compose.redis.yml up -d
+# Stop: docker compose -f docker-compose.redis.yml down
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: eksicodeTelegramBotRedis
+    restart: unless-stopped
+    command: >
+      sh -c "redis-server
+      --requirepass $${REDIS_PASSWORD:-changeme}
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy noeviction
+      --save 900 1
+      --save 300 10
+      --save 60 10000"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_telegrambot_data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
+
+volumes:
+  redis_telegrambot_data:

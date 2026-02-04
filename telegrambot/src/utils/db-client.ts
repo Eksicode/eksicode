@@ -3,8 +3,16 @@ import { Pool, QueryResult, QueryResultRow } from 'pg';
 // Create a singleton database connection pool
 const globalForDb = global as unknown as { dbPool: Pool };
 
+// Ensure password is always a string (pg requires it for SCRAM auth)
+const dbPassword = process.env.DB_PASSWORD;
+const password = typeof dbPassword === 'string' ? dbPassword : '';
+
 export const dbPool = globalForDb.dbPool || new Pool({
-  connectionString: process.env.DATABASE_URL,
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432'),
+  database: process.env.DB_NAME || 'eksicode',
+  user: process.env.DB_USER || 'postgres',
+  password,
   max: 20, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,

@@ -1,4 +1,4 @@
-import errorMessage from './errorMessage';
+import errorMessage, { CONFIG_ERROR_PREFIX } from './errorMessage';
 import forAdmins from './forAdmins';
 import log from './log';
 import hastebinize from './hastebinize';
@@ -10,6 +10,7 @@ import { getRedisClient, closeRedisClient, getRedisConnection } from './redisCli
 
 export {
   errorMessage,
+  CONFIG_ERROR_PREFIX,
   forAdmins,
   log,
   hastebinize,

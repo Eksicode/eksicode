@@ -1,4 +1,4 @@
-import { errorMessage } from '../utils';
+import { errorMessage, CONFIG_ERROR_PREFIX } from '../utils';
 import CommandValidator from '../utils/commandValidator';
 import rateLimiter from '../utils/rateLimiter';
 import commandLogger from '../utils/commandLogger';
@@ -21,7 +21,7 @@ async function discordCommand(ctx: Context): Promise<void> {
     // Validate environment
     if (!process.env.DISCORD_URL) {
       commandLogger.logError(ctx as any, 'discord', new Error('DISCORD_URL not configured'));
-      await ctx.reply(`${errorMessage()} Discord bağlantısı yapılandırılmamış.`);
+      await ctx.reply(`${CONFIG_ERROR_PREFIX}Discord bağlantısı yapılandırılmamış.`);
       return;
     }
 
@@ -30,7 +30,7 @@ async function discordCommand(ctx: Context): Promise<void> {
       CommandValidator.validateUrl(process.env.DISCORD_URL);
     } catch (error) {
       commandLogger.logError(ctx as any, 'discord', error as Error);
-      await ctx.reply(`${errorMessage()} Geçersiz Discord URL'si.`);
+      await ctx.reply(`${CONFIG_ERROR_PREFIX}Geçersiz Discord URL'si.`);
       return;
     }
 
