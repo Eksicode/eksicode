@@ -1,6 +1,25 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
+interface LoginApiUser {
+  id: number | string;
+  username: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  roles?: string[];
+  permissions?: string[];
+  profilePicture?: string | null;
+  verified?: boolean;
+}
+
+interface LoginApiResponse {
+  success?: boolean;
+  message?: string;
+  user?: LoginApiUser;
+  token?: string;
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   trustHost: true,
@@ -35,10 +54,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // Check if response is JSON before parsing
           const contentType = res.headers.get("content-type");
-          let data: { success?: boolean; message?: string; user?: unknown };
-          
+          let data: LoginApiResponse;
+
           if (contentType && contentType.includes("application/json")) {
-            data = await res.json();
+            data = (await res.json()) as LoginApiResponse;
           } else {
             // Handle non-JSON responses (e.g. 401 from gateway, rate limit plain text)
             const text = await res.text();
@@ -50,31 +69,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (!data.success || !res.ok) {
             const errorMessage = data.message || "Authentication failed";
-            
-            if (errorMessage.toLowerCase().includes("verify") || 
+
+            if (errorMessage.toLowerCase().includes("verify") ||
                 errorMessage.toLowerCase().includes("verification") ||
                 errorMessage.toLowerCase().includes("email")) {
               throw new Error("EMAIL_VERIFICATION_REQUIRED");
             }
-            
+
             if (errorMessage.toLowerCase().includes("invalid credentials") ||
                 errorMessage.toLowerCase().includes("user not found")) {
               throw new Error("INVALID_CREDENTIALS");
             }
-            
+
             throw new Error(errorMessage);
           }
 
+          const user = data.user;
+          if (!user) {
+            throw new Error("Authentication failed: no user data");
+          }
+          if (!data.token) {
+            throw new Error("Authentication failed: no token");
+          }
+
           return {
-            id: data.user.id.toString(),
-            username: data.user.username,
-            email: data.user.email,
-            firstName: data.user.firstName,
-            lastName: data.user.lastName,
-            roles: data.user.roles || ["user"],
-            permissions: data.user.permissions || [],
-            profilePicture: data.user.profilePicture,
-            verified: data.user.verified || false,
+            id: user.id.toString(),
+            username: user.username,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            roles: user.roles ?? ["user"],
+            permissions: user.permissions ?? [],
+            profilePicture: user.profilePicture ?? undefined,
+            verified: user.verified ?? false,
             token: data.token,
           };
         } catch (error) {
