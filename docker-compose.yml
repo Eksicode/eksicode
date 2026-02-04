@@ -85,8 +85,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=https://api-demo.eksicode.org
-        - NEXT_PUBLIC_URL=https://demo.eksicode.org
+        - NEXT_PUBLIC_API_URL=https://api.eksicode.org
+        - NEXT_PUBLIC_URL=https://eksicode.org
         - NEXT_PUBLIC_MEDIA_URL=https://eksicode-media.s3.eu-central-1.amazonaws.com/
     depends_on:
       backend:
@@ -97,11 +97,11 @@ services:
     env_file:
       - ./frontend/.env.production
     environment:
-      - NEXT_PUBLIC_BACKEND_URL=https://api-demo.eksicode.org
+      - NEXT_PUBLIC_BACKEND_URL=https://api.eksicode.org
       - NEXT_STATIC_PAGE_GENERATION_TIMEOUT=180
       - NODE_OPTIONS="--max-old-space-size=4096"
-      - NEXT_PUBLIC_API_URL=https://api-demo.eksicode.org
-      - NEXT_PUBLIC_URL=https://demo.eksicode.org
+      - NEXT_PUBLIC_API_URL=https://api.eksicode.org
+      - NEXT_PUBLIC_URL=https://eksicode.org
       - HOSTNAME=0.0.0.0
       - PORT=3000
       - NEXT_TELEMETRY_DISABLED=1
@@ -122,7 +122,7 @@ services:
       context: ./admin
       dockerfile: Dockerfile
       args:
-        - PUBLIC_API_URL=https://api-demo.eksicode.org
+        - PUBLIC_API_URL=https://api.eksicode.org
     working_dir: /app
     restart: unless-stopped
     ports:
@@ -134,7 +134,7 @@ services:
       - PORT=3001
       - HOSTNAME=0.0.0.0
       - BACKEND_URL=http://backend:9000
-      - PUBLIC_API_URL=https://api-demo.eksicode.org
+      - PUBLIC_API_URL=https://api.eksicode.org
     volumes:
       - ./admin:/app
       - /app/node_modules

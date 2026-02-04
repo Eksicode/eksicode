@@ -4,7 +4,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Build argument for API URL (must be set at build time for Vite)
-ARG PUBLIC_API_URL=https://api-demo.eksicode.org
+ARG PUBLIC_API_URL=https://api.eksicode.org
 ENV PUBLIC_API_URL=${PUBLIC_API_URL}
 
 # Copy package files for better layer caching
