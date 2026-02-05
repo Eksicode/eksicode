@@ -5,10 +5,12 @@ import { HttpException } from "../exceptions/HttpException";
 class SourceService {
     private prisma = prisma;
 
-    public async getAllSources(skip?: number, limit?: number) {
+    public async getAllSources(skip?: number, limit?: number, approved?: boolean) {
         try {
-            const count = await this.prisma.source.count();
+            const whereClause = approved === undefined ? { approved: true } : { approved };
+            const count = await this.prisma.source.count({ where: whereClause });
             const sources = await this.prisma.source.findMany({
+                where: whereClause,
                 skip: skip || 0,
                 take: limit || undefined,
                 include: {
@@ -38,9 +40,11 @@ class SourceService {
         }
     };
 
-    public async searchSources(searchTerm: string, skip?: number, limit?: number) {
+    public async searchSources(searchTerm: string, skip?: number, limit?: number, approved?: boolean) {
         try {
+            const approvedFilter = approved === undefined ? { approved: true } : { approved };
             const whereClause = {
+                ...approvedFilter,
                 OR: [
                     {
                         title: {
