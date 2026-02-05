@@ -85,7 +85,7 @@ async function processResources(ids: string[]): Promise<void> {
     await Promise.all([
       // Approve sources
       toApprove.length > 0 ? query(
-        `UPDATE sources SET approved = true WHERE id = ANY($1::int[])`,
+        `UPDATE sources SET approved = true, "updatedAt" = NOW() WHERE id = ANY($1::int[])`,
         [toApprove]
       ) : Promise.resolve(),
       

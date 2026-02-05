@@ -116,8 +116,8 @@ async function saveSourcesToDatabase(sources: SourceData[]): Promise<void> {
   try {
     await Promise.all(sources.map(async source => {
       await query(
-        `INSERT INTO sources (title, url, "tgChannel", "tgUser", approved, active)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
+        `INSERT INTO sources (title, url, "tgChannel", "tgUser", approved, active, "createdAt", "updatedAt")
+         VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())`,
         [
           source.title || source.url,
           source.url,
