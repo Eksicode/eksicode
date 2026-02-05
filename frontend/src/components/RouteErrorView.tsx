@@ -95,7 +95,7 @@ export default function RouteErrorView({
   );
 
   const wrapperClass = sidebar
-    ? "flex py-5 basis-3/4 min-h-screen"
+    ? "flex py-5 basis-full xl:basis-3/4 min-h-screen"
     : "flex flex-wrap w-full justify-center text-center";
 
   return (

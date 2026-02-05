@@ -182,7 +182,7 @@ const sanitizedContent = DOMPurify.sanitize(postData.content || "");
 
 ### Container
 ```jsx
-<div className="flex py-5 basis-3/4">
+<div className="flex py-5 basis-full xl:basis-3/4">
   <SideMenu />
   <div className="flex flex-wrap w-full max-w-4xl mx-2">
     {/* Content */}

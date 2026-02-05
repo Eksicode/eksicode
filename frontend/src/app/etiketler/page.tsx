@@ -30,13 +30,13 @@ export default async function Tags({ searchParams }: TagsPageProps) {
   const hashtagsResponse = searchQuery
     ? await searchHashtags(searchQuery, page, limit)
     : await getAllHashtags(page, limit, {
-        next: { revalidate: 43200 }, // 12 hours cache
-      });
+      next: { revalidate: 43200 }, // 12 hours cache
+    });
 
   // Show error state if no data
   if (!hashtagsResponse.data || hashtagsResponse.data.length === 0) {
     return (
-      <div className="flex py-5 basis-3/4">
+      <div className="flex py-5 basis-full xl:basis-3/4">
         <div className="flex">
           <SideMenu />
         </div>
@@ -54,7 +54,7 @@ export default async function Tags({ searchParams }: TagsPageProps) {
   }
 
   return (
-    <div className="flex py-5 basis-3/4">
+    <div className="flex py-5 basis-full xl:basis-3/4">
       <div className="flex">
         <SideMenu />
       </div>

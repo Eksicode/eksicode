@@ -26,7 +26,7 @@ export default function Loading() {
   ));
 
   return (
-    <div className="flex py-5 basis-3/4">
+    <div className="flex py-5 basis-full xl:basis-3/4">
       <div className="flex">
         <SideMenu />
       </div>

@@ -134,7 +134,7 @@ export default async function PostDetailPage({ params }: PostPageParams) {
   };
 
   return (
-    <div className="flex py-5 basis-3/4">
+    <div className="flex py-5 basis-full xl:basis-3/4">
       {/* Left Sidebar - Menu */}
       <div className="flex">
         <SideMenu />
@@ -218,8 +218,8 @@ export default async function PostDetailPage({ params }: PostPageParams) {
               <div className="mb-6 rounded-lg overflow-hidden">
                 <Image
                   src={headerImageUrl}
-                  alt={postData.headerImage && typeof postData.headerImage === 'object' 
-                    ? postData.headerImage.altText || postData.title 
+                  alt={postData.headerImage && typeof postData.headerImage === 'object'
+                    ? postData.headerImage.altText || postData.title
                     : postData.title}
                   width={1200}
                   height={630}

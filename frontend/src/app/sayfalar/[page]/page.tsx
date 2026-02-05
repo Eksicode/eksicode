@@ -24,7 +24,7 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<{ page: string }> }) {
   const { page } = await params;
-  
+
   let response: Response;
   try {
     response = await fetch(
@@ -54,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ page: string 
 
   const sanitizedContent = DOMPurify.sanitize(pageData.content);
   return (
-    <div className="flex py-5 basis-3/4">
+    <div className="flex py-5 basis-full xl:basis-3/4">
       <div className="flex">
         <SideMenu />
       </div>

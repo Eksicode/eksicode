@@ -10,7 +10,7 @@ export const metadata = {
 };
 
 interface SearchPageProps {
-  searchParams: Promise<{ 
+  searchParams: Promise<{
     q?: string;
     page?: string;
   }>;
@@ -20,11 +20,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const resolvedSearchParams = await searchParams;
   const searchTerm = resolvedSearchParams.q || '';
   const page = resolvedSearchParams.page ? parseInt(resolvedSearchParams.page, 10) : 1;
-  
+
   // If no search term, show search interface
   if (!searchTerm.trim()) {
     return (
-      <div className="flex py-5 basis-3/4 min-h-screen">
+      <div className="flex py-5 basis-full xl:basis-3/4 min-h-screen">
         <div className="flex">
           <SideMenu />
         </div>
@@ -34,7 +34,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               Gönderi Arama
             </h1>
             <div className="w-full max-w-2xl">
-              <SearchInput 
+              <SearchInput
                 placeholder="Başlık, içerik, yazar, kategori veya etiketlerde ara..."
                 className="w-full"
               />
@@ -54,7 +54,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   });
 
   return (
-    <div className="flex py-5 basis-3/4 min-h-screen">
+    <div className="flex py-5 basis-full xl:basis-3/4 min-h-screen">
       <div className="flex">
         <SideMenu />
       </div>
@@ -73,19 +73,19 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </p>
             )}
           </div>
-          
+
           {/* Search Input for refining search */}
           <div className="w-full max-w-2xl">
-            <SearchInput 
+            <SearchInput
               placeholder="Başlık, içerik, yazar, kategori veya etiketlerde ara..."
               className="w-full"
               defaultValue={searchTerm}
             />
           </div>
         </div>
-        
+
         <div className="mt-8">
-          <SearchResults 
+          <SearchResults
             searchResults={searchResults}
             searchTerm={searchTerm}
             currentPage={page}

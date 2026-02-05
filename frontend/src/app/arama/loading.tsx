@@ -16,17 +16,17 @@ export default function Loading() {
           <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/6"></div>
         </div>
       </div>
-      
+
       {/* Post title skeleton */}
       <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-3"></div>
-      
+
       {/* Post content skeleton */}
       <div className="space-y-2 mb-4">
         <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
         <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-5/6"></div>
         <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-4/6"></div>
       </div>
-      
+
       {/* Post footer skeleton */}
       <div className="flex items-center space-x-6">
         <div className="h-8 bg-gray-300 dark:bg-gray-600 rounded w-16"></div>
@@ -37,7 +37,7 @@ export default function Loading() {
   ));
 
   return (
-    <div className="flex py-5 basis-3/4 min-h-screen">
+    <div className="flex py-5 basis-full xl:basis-3/4 min-h-screen">
       <div className="flex">
         <SideMenu />
       </div>
@@ -51,18 +51,18 @@ export default function Loading() {
             <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-32 mx-auto animate-pulse"></div>
           </div>
         </div>
-        
+
         <div className="mt-8 space-y-6">
           {/* Results info skeleton */}
           <div className="bg-white dark:bg-DarkerGrey border border-gray-300 dark:border-DarkLightGrey rounded-lg p-4">
             <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-64 animate-pulse"></div>
           </div>
-          
+
           {/* Posts skeleton */}
           <div className="space-y-4">
             {skeletonPosts}
           </div>
-          
+
           {/* Pagination skeleton */}
           <div className="flex justify-center">
             <div className="flex space-x-2">

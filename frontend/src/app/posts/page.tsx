@@ -46,7 +46,7 @@ function PostsLoading() {
  */
 export default function PostsPage() {
   return (
-    <div className="flex py-5 basis-3/4">
+    <div className="flex py-5 basis-full xl:basis-3/4">
       {/* Left Sidebar - Menu */}
       <div className="flex">
         <SideMenu />

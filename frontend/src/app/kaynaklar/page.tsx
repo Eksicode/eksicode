@@ -27,8 +27,8 @@ export default async function Sources({ searchParams }: SourcesPageProps) {
   const sourcesData = searchQuery
     ? await searchSources(searchQuery, page, limit)
     : await getAllSources(page, limit, {
-        next: { revalidate: 43200 }, // 12 hours cache
-      });
+      next: { revalidate: 43200 }, // 12 hours cache
+    });
 
   const formatHashtags = (tags: Hashtag[]): string => {
     return tags.map(hashtag => "#" + hashtag.name).join(", ");
@@ -44,13 +44,13 @@ export default async function Sources({ searchParams }: SourcesPageProps) {
   // Show error state if no data
   if (!sourcesData.data || sourcesData.data.length === 0) {
     return (
-      <div className="flex py-5 basis-3/4">
+      <div className="flex py-5 basis-full xl:basis-3/4">
         <SideMenu />
         <div className="flex flex-wrap w-full justify-center text-center">
           <div className="flex flex-col items-center justify-center w-full bg-white mx-2 p-8 rounded-lg border-gray-300 border text-gray-600 dark:bg-DarkerGrey dark:border-DarkLightGrey dark:text-white">
             <h2 className="text-2xl font-bold mb-4">Kaynak Bulunamadı</h2>
             <p className="text-gray-500">
-              {searchQuery 
+              {searchQuery
                 ? `"${searchQuery}" araması için sonuç bulunamadı.`
                 : "Henüz hiç kaynak eklenmemiş veya veriler yüklenirken bir hata oluştu."
               }
@@ -62,7 +62,7 @@ export default async function Sources({ searchParams }: SourcesPageProps) {
   }
 
   return (
-    <div className="flex py-5 basis-3/4">
+    <div className="flex py-5 basis-full xl:basis-3/4">
       <SideMenu />
       <div className="flex flex-wrap w-full justify-center text-left">
         <div className="flex flex-wrap items-center justify-center md:justify-between w-full bg-white dark:bg-DarkerGrey dark:border-DarkLightGrey mx-2 p-4 rounded-lg border-gray-300 border text-gray-600 dark:text-white">
@@ -90,7 +90,7 @@ export default async function Sources({ searchParams }: SourcesPageProps) {
           onEdit={false}
           onDelete={false}
         />
-        
+
         {/* Pagination */}
         {sourcesData.meta && (
           <Pagination meta={sourcesData.meta} baseUrl="/kaynaklar" />

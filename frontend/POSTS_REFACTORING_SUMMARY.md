@@ -153,7 +153,7 @@ const response = await fetch(
 // After: Full posts listing page
 export default function PostsPage() {
   return (
-    <div className="flex py-5 basis-3/4">
+    <div className="flex py-5 basis-full xl:basis-3/4">
       <SideMenu />
       <div className="flex flex-wrap lg:w-7/12 w-full mx-2">
         <h1>Tüm Gönderiler</h1>

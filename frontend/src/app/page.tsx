@@ -27,7 +27,7 @@ const PostsErrorBoundary = ({ error }: { error: string }) => (
 
 const Page = () => {
   return (
-    <div className="flex py-5 basis-3/4">
+    <div className="flex py-5 basis-full xl:basis-3/4">
       {/* Left Sidebar - Menu */}
       <div className="flex">
         <ErrorBoundary>

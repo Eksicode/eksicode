@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  
+  output: 'standalone',
+
   // Image optimization
   images: {
     unoptimized: true,
@@ -13,20 +14,20 @@ const nextConfig = {
     ],
     formats: ['image/webp', 'image/avif'],
   },
-  
+
   // Compiler optimizations
   compiler: {
     removeConsole:
       process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
   },
-  
+
   // Performance optimizations
   experimental: {
     optimizePackageImports: ['react-icons'],
     // Avoid CSS being emitted as script (prevents "MIME type 'text/css' not executable" in strict mode)
     inlineCss: false,
   },
-  
+
   // Headers for better caching and security
   async headers() {
     return [
@@ -76,7 +77,7 @@ const nextConfig = {
       },
     ];
   },
-  
+
   // Redirects for common issues
   async redirects() {
     return [
@@ -87,7 +88,7 @@ const nextConfig = {
       },
     ];
   },
-  
+
   // Use webpack instead of Turbopack for compatibility with Tailwind v3
   // Turbopack is the default in Next.js 16, but we keep webpack for stability
   webpack: (config, { dev, isServer }) => {
@@ -104,7 +105,7 @@ const nextConfig = {
         },
       };
     }
-    
+
     return config;
   },
 };

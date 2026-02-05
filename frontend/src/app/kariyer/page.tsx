@@ -58,7 +58,7 @@ export default function JobsPage() {
           <LoadingAnimation style="text" />
         </div>
       ) : (
-        <div className="flex py-5 basis-3/4">
+        <div className="flex py-5 basis-full xl:basis-3/4">
           <div className="flex flex-nowrap w-1/3">
             <div className="flex flex-col md:flex-row ">
               <section className="flex flex-col">
@@ -77,11 +77,10 @@ export default function JobsPage() {
                     <button
                       key={i + 1}
                       onClick={() => setPage(i + 1)}
-                      className={`px-3 py-1 rounded ${
-                        page === i + 1
+                      className={`px-3 py-1 rounded ${page === i + 1
                           ? "bg-eksiCodeMedium text-white"
                           : "bg-gray-200 hover:bg-gray-300"
-                      }`}
+                        }`}
                     >
                       {i + 1}
                     </button>

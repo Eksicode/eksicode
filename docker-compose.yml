@@ -5,15 +5,7 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     command: >
-      sh -c "redis-server
-      --requirepass $${REDIS_PASSWORD:-changeme}
-      --appendonly yes
-      --appendfsync everysec
-      --maxmemory 2gb
-      --maxmemory-policy allkeys-lru
-      --save 900 1
-      --save 300 10
-      --save 60 10000"
+      sh -c "redis-server --requirepass $${REDIS_PASSWORD:-changeme} --appendonly yes --appendfsync everysec --maxmemory 2gb --maxmemory-policy allkeys-lru --save 900 1 --save 300 10 --save 60 10000"
     ports:
       - "6379:6379"
     volumes:
@@ -81,7 +73,11 @@ services:
 
   frontend:
     container_name: eksicodeFrontend
-    build: 
+    deploy:
+    resources:
+      limits:
+        memory: 256M
+    build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
@@ -106,6 +102,7 @@ services:
       - PORT=3000
       - NEXT_TELEMETRY_DISABLED=1
       - NODE_ENV=production
+      - NEXT_SHARP_PATH=/tmp/node_modules/sharp
     volumes:
       - ./frontend:/app/
       - /app/node_modules
@@ -176,31 +173,31 @@ services:
       # Node environment
       - NODE_ENV=production
       - NODE_OPTIONS=--max-old-space-size=1536
-      
+
       # Redis configuration
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
       - REDIS_DB=0
-      
+
       # Queue configuration
       - ENABLE_QUEUE=true
       - QUEUE_CONCURRENCY=10
       - MAX_QUEUE_SIZE=1000
       - QUEUE_RETRY_ATTEMPTS=3
       - QUEUE_RETRY_DELAY=5000
-      
+
       # Worker configuration
       - WORKER_THREADS=2
       - PM2_INSTANCES=1
-      
+
       # Timezone
       - TZ=Europe/Istanbul
-      
+
       # Backend API
       - BACKEND_URL=http://backend:9000
       - API_TIMEOUT=30000
-      
+
       # Logging
       - LOG_LEVEL=info
       - LOG_MAX_FILES=7
@@ -286,4 +283,3 @@ volumes:
 networks:
   eksicode_nw:
     driver: bridge
-  
