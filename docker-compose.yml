@@ -74,9 +74,9 @@ services:
   frontend:
     container_name: eksicodeFrontend
     deploy:
-    resources:
-      limits:
-        memory: 256M
+      resources:
+        limits:
+          memory: 256M
     build:
       context: ./frontend
       dockerfile: Dockerfile
