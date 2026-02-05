@@ -8,73 +8,26 @@ dotenv.config({
 import { Telegraf } from 'telegraf';
 import * as cron from 'node-cron';
 import { query, queryMany } from './src/utils/db-client';
-
-interface TelegramGroup {
-  id: number;
-  name: string;
-  channelId: string | null;
-  members: number;
-}
-
-const sleep = (ms: number): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
+import {
+  runUserCountUpdate,
+  USER_COUNT_CRON_SCHEDULE,
+  type TelegramGroup
+} from './src/userCountJob';
 
 /**
- * Update group member count in database
- */
-async function updateMembers(id: number, members: number): Promise<void> {
-  try {
-    await query(
-      `UPDATE telegram_groups SET members = $1, "updatedAt" = NOW() WHERE id = $2`,
-      [members, id]
-    );
-  } catch (err) {
-    console.error(`Error updating members for group ${id}:`, err);
-  }
-}
-
-/**
- * Cron Job
+ * Cron Job (eksicodeBot-user)
  *
- * Run cron job everyday at 01:00
+ * Runs 2 times per day at 01:00 and 13:00 to update group member counts in the database.
  */
-cron.schedule('00 01 * * *', async () => {
-  console.log('Eksicode User Counts Checking Started');
-  console.log('-----------------------------------------');
+const bot = new Telegraf(process.env.BOT_TOKEN!);
 
+cron.schedule(USER_COUNT_CRON_SCHEDULE, async () => {
   try {
-    // Get all active groups from database
-    const allGroups = await queryMany<TelegramGroup>(
-      `SELECT id, name, "channelId", members
-       FROM telegram_groups
-       WHERE active = true AND "channelId" IS NOT NULL
-       ORDER BY "listOrder" ASC`
-    );
-
-    console.log('total groups: ' + allGroups.length);
-
-    const bot = new Telegraf(process.env.BOT_TOKEN!);
-
-    // Get group member count from Telegram and update database
-    for (const group of allGroups) {
-      try {
-        const memberCount = await bot.telegram.getChatMembersCount(group.channelId!);
-
-        console.log(group.name, memberCount + ' user');
-        await updateMembers(group.id, memberCount);
-        console.log(group.name + ' Updated...');
-        console.log('-------------------------');
-
-        await sleep(2000);
-      } catch (err) {
-        console.log(`${group.name} wasn't respond any data.`);
-        console.error(err);
-      }
-    }
-
-    console.log('Eksicode User Counts Checking finished');
-    console.log('-----------------------------------------');
+    await runUserCountUpdate({
+      query,
+      queryMany: (text, params) => queryMany<TelegramGroup>(text, params),
+      getChatMembersCount: (chatId) => bot.telegram.getChatMembersCount(chatId)
+    });
   } catch (err) {
     console.error('Error in user count cron job:', err);
   }

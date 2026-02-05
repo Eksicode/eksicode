@@ -5,36 +5,14 @@
 import { Worker, Job } from 'bullmq';
 import { getRedisConnection } from '../utils/redisClient';
 import { CronJobData, JobResult } from '../queues/types';
-import { Telegraf } from 'telegraf';
 import { query, queryMany } from '../utils/db-client';
 
 const redisConnection = getRedisConnection();
-
-interface TelegramGroup {
-  id: number;
-  name: string;
-  channelId: string | null;
-  members: number;
-}
 
 interface Source {
   id: number;
   url: string;
   approved: boolean;
-}
-
-/**
- * Update group member count in database
- */
-async function updateMembers(id: number, members: number): Promise<void> {
-  try {
-    await query(
-      `UPDATE telegram_groups SET members = $1, "updatedAt" = NOW() WHERE id = $2`,
-      [members, id]
-    );
-  } catch (err) {
-    console.error(`Error updating members for group ${id}:`, err);
-  }
 }
 
 /**
@@ -88,60 +66,6 @@ async function checkUrlStatus(url: string): Promise<boolean> {
     } catch {
       return false;
     }
-  }
-}
-
-/**
- * Process member count update job
- */
-async function processMemberCountJob(job: Job<CronJobData>): Promise<JobResult> {
-  try {
-    console.log('Eksicode User Counts Checking Started');
-    console.log('-----------------------------------------');
-
-    const bot = job.data.data.bot as Telegraf;
-
-    // Get all active groups from database
-    const allGroups = await queryMany<TelegramGroup>(
-      `SELECT id, name, "channelId", members
-       FROM telegram_groups
-       WHERE active = true AND "channelId" IS NOT NULL
-       ORDER BY "listOrder" ASC`
-    );
-
-    console.log('total groups: ' + allGroups.length);
-
-    // Process groups sequentially with delay
-    for (const group of allGroups) {
-      try {
-        const memberCount = await bot.telegram.getChatMembersCount(group.channelId!);
-
-        console.log(group.name, memberCount + ' user');
-        await updateMembers(group.id, memberCount);
-        console.log(group.name + ' Updated...');
-        console.log('-------------------------');
-
-        // Rate limiting: 2 second delay between groups
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (err: any) {
-        console.log(`${group.name} wasn't respond any data.`);
-        console.error(err);
-      }
-    }
-
-    console.log('Eksicode User Counts Checking finished');
-    console.log('-----------------------------------------');
-
-    return {
-      success: true,
-      message: `Processed ${allGroups.length} groups`
-    };
-  } catch (error: any) {
-    console.error('Member count job error:', error);
-    return {
-      success: false,
-      error: error.message || 'Unknown error'
-    };
   }
 }
 
@@ -215,8 +139,6 @@ async function processCronJob(job: Job<CronJobData>): Promise<JobResult> {
   const { type } = job.data;
 
   switch (type) {
-    case 'member_count':
-      return processMemberCountJob(job);
     case 'source_validation':
       return processSourceValidationJob();
     case 'cleanup':

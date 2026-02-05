@@ -20,7 +20,7 @@ export interface CommandJobData {
 }
 
 export interface CronJobData {
-  type: 'member_count' | 'source_validation' | 'cleanup';
+  type: 'source_validation' | 'cleanup';
   data: any;
   retries?: number;
   timeout?: number;

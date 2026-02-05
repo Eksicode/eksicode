@@ -7,7 +7,8 @@
         "build": "tsc",
         "start": "node dist/telegram_func.js",
         "dev": "ts-node telegram_func.ts",
-        "watch": "tsc --watch"
+        "watch": "tsc --watch",
+        "test": "node -r ts-node/register --test test/userCountJob.test.ts"
     },
     "keywords": [
         "eksicode",
