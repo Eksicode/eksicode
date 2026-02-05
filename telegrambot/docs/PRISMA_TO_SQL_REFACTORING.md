@@ -55,7 +55,7 @@ This document summarizes the refactoring of the telegrambot project from Prisma 
 - `expiresAt` → `expires_at` (TIMESTAMP)
 
 #### Table: `telegram_groups`
-- `channelId` → `channel_id` (VARCHAR)
+- `channelId` remains `"channelId"` in DB (use double quotes in raw SQL; no snake_case)
 - `name` → `name` (VARCHAR)
 - `link` → `link` (VARCHAR)
 - `active` → `active` (BOOLEAN)

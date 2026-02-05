@@ -35,12 +35,12 @@ function readPinIgnore(): string[] {
  */
 async function fetchActiveGroups(): Promise<Array<{ channelId: string; name: string }>> {
   try {
-    const groups = await queryMany<{ channel_id: string | null; name: string }>(
-      `SELECT channel_id, name FROM telegram_groups WHERE active = true AND channel_id IS NOT NULL`
+    const groups = await queryMany<{ channelId: string | null; name: string }>(
+      `SELECT "channelId", name FROM telegram_groups WHERE active = true AND "channelId" IS NOT NULL`
     );
     return groups
-      .filter((g) => g.channel_id !== null)
-      .map((g) => ({ channelId: g.channel_id!, name: g.name }));
+      .filter((g) => g.channelId !== null)
+      .map((g) => ({ channelId: g.channelId!, name: g.name }));
   } catch (error) {
     console.error('Error fetching active groups:', error);
     throw error;

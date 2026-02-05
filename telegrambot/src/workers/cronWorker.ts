@@ -13,7 +13,7 @@ const redisConnection = getRedisConnection();
 interface TelegramGroup {
   id: number;
   name: string;
-  channel_id: string | null;
+  channelId: string | null;
   members: number;
 }
 
@@ -103,9 +103,9 @@ async function processMemberCountJob(job: Job<CronJobData>): Promise<JobResult> 
 
     // Get all active groups from database
     const allGroups = await queryMany<TelegramGroup>(
-      `SELECT id, name, channel_id, members
+      `SELECT id, name, "channelId", members
        FROM telegram_groups
-       WHERE active = true AND channel_id IS NOT NULL
+       WHERE active = true AND "channelId" IS NOT NULL
        ORDER BY "listOrder" ASC`
     );
 
@@ -114,7 +114,7 @@ async function processMemberCountJob(job: Job<CronJobData>): Promise<JobResult> 
     // Process groups sequentially with delay
     for (const group of allGroups) {
       try {
-        const memberCount = await bot.telegram.getChatMembersCount(group.channel_id!);
+        const memberCount = await bot.telegram.getChatMembersCount(group.channelId!);
 
         console.log(group.name, memberCount + ' user');
         await updateMembers(group.id, memberCount);

@@ -12,7 +12,7 @@ import { query, queryMany } from './src/utils/db-client';
 interface TelegramGroup {
   id: number;
   name: string;
-  channel_id: string | null;
+  channelId: string | null;
   members: number;
 }
 
@@ -46,9 +46,9 @@ cron.schedule('00 01 * * *', async () => {
   try {
     // Get all active groups from database
     const allGroups = await queryMany<TelegramGroup>(
-      `SELECT id, name, channel_id, members
+      `SELECT id, name, "channelId", members
        FROM telegram_groups
-       WHERE active = true AND channel_id IS NOT NULL
+       WHERE active = true AND "channelId" IS NOT NULL
        ORDER BY "listOrder" ASC`
     );
 
@@ -59,7 +59,7 @@ cron.schedule('00 01 * * *', async () => {
     // Get group member count from Telegram and update database
     for (const group of allGroups) {
       try {
-        const memberCount = await bot.telegram.getChatMembersCount(group.channel_id!);
+        const memberCount = await bot.telegram.getChatMembersCount(group.channelId!);
 
         console.log(group.name, memberCount + ' user');
         await updateMembers(group.id, memberCount);

@@ -36,12 +36,12 @@ function generateUnbanMessage(ctx: Context, userId: string): string {
  */
 async function fetchActiveGroups(): Promise<Array<{ channelId: string }>> {
   try {
-    const groups = await queryMany<{ channel_id: string | null }>(
-      `SELECT channel_id FROM telegram_groups WHERE active = true AND channel_id IS NOT NULL`
+    const groups = await queryMany<{ channelId: string | null }>(
+      `SELECT "channelId" FROM telegram_groups WHERE active = true AND "channelId" IS NOT NULL`
     );
     return groups
-      .filter((g) => g.channel_id !== null)
-      .map((g) => ({ channelId: g.channel_id! }));
+      .filter((g) => g.channelId !== null)
+      .map((g) => ({ channelId: g.channelId! }));
   } catch (error) {
     console.error('Error fetching active groups:', error);
     throw error;
