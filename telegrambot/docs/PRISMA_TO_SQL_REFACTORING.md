@@ -45,30 +45,29 @@ This document summarizes the refactoring of the telegrambot project from Prisma 
 ### 4. Database Schema Mapping
 
 #### Table: `telegram_verifications`
-- `userId` (BigInt) → `user_id` (TEXT/VARCHAR, stored as string)
-- `chatId` (BigInt) → `chat_id` (TEXT/VARCHAR, stored as string)
-- `messageId` → `message_id` (INTEGER)
-- `firstName` → `first_name` (VARCHAR)
-- `lastName` → `last_name` (VARCHAR)
-- `username` → `username` (VARCHAR)
-- `createdAt` → `created_at` (TIMESTAMP)
-- `expiresAt` → `expires_at` (TIMESTAMP)
+Prisma uses camelCase; use double-quoted identifiers in raw SQL:
+- `userId` → `"userId"` (BIGINT)
+- `chatId` → `"chatId"` (BIGINT)
+- `messageId` → `"messageId"` (INTEGER)
+- `firstName` → `"firstName"` (VARCHAR)
+- `lastName` → `"lastName"` (VARCHAR)
+- `username` → `username` (VARCHAR, lowercase)
+- `createdAt` → `"createdAt"` (TIMESTAMP)
+- `expiresAt` → `"expiresAt"` (TIMESTAMP)
 
 #### Table: `telegram_groups`
-- `channelId` remains `"channelId"` in DB (use double quotes in raw SQL; no snake_case)
-- `name` → `name` (VARCHAR)
-- `link` → `link` (VARCHAR)
-- `active` → `active` (BOOLEAN)
+- `channelId` → `"channelId"` (use double quotes in raw SQL)
+- `listOrder` → `"listOrder"`
+- `updatedAt` → `"updatedAt"`
+- `name`, `link`, `active` → lowercase (unquoted in SQL)
 
 #### Table: `sources`
-- `id` → `id` (INTEGER)
-- `title` → `title` (VARCHAR)
-- `url` → `url` (VARCHAR)
-- `tgChannel` → `tg_channel` (VARCHAR)
-- `tgUser` → `tg_user` (VARCHAR)
-- `approved` → `approved` (BOOLEAN)
-- `active` → `active` (BOOLEAN)
-- `createdAt` → `created_at` (TIMESTAMP)
+Prisma uses camelCase; use double-quoted identifiers in raw SQL:
+- `tgChannel` → `"tgChannel"` (VARCHAR) — do not use `tg_channel`
+- `tgUser` → `"tgUser"` (VARCHAR) — do not use `tg_user`
+- `createdAt` → `"createdAt"` (TIMESTAMP) — do not use `created_at`
+- `updatedAt` → `"updatedAt"` (TIMESTAMP)
+- `id`, `title`, `url`, `approved`, `active` → lowercase (unquoted in SQL)
 
 ### 5. Docker Configuration
 **Updated**: `Dockerfile`

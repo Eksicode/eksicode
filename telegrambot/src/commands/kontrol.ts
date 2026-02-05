@@ -37,7 +37,7 @@ async function fetchUnapprovedSources(): Promise<Source[]> {
       `SELECT id, title, url, approved 
        FROM sources 
        WHERE approved = false AND active = true 
-       ORDER BY created_at DESC`
+       ORDER BY "createdAt" DESC`
     );
     return sources;
   } catch (error) {
