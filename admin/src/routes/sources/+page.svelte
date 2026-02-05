@@ -12,12 +12,15 @@
 	const pageTitle = 'Kaynak Yönetimi | Admin Panel';
 
 	interface Source {
-		id: string;
-		name: string;
+		id: number;
+		title: string;
 		url: string;
-		description?: string;
-		isActive: boolean;
-		postCount?: number;
+		description?: string | null;
+		active: boolean;
+		approved: boolean;
+		tgChannel?: string | null;
+		tgUser?: string | null;
+		tags?: { name: string }[];
 		createdAt: string;
 		updatedAt: string;
 	}
@@ -35,17 +38,18 @@
 
 	// Form data
 	let formData = {
-		name: '',
+		title: '',
 		url: '',
 		description: '',
-		isActive: true
+		active: true,
+		approved: false
 	};
 
 	const columns = [
-		{ key: 'name', label: 'Kaynak Adı' },
+		{ key: 'title', label: 'Kaynak Adı' },
 		{ key: 'url', label: 'URL' },
-		{ key: 'postCount', label: 'Gönderi Sayısı' },
-		{ key: 'isActive', label: 'Aktif' },
+		{ key: 'active', label: 'Aktif' },
+		{ key: 'approved', label: 'Onaylı' },
 		{ key: 'createdAt', label: 'Oluşturulma' }
 	];
 
@@ -56,7 +60,14 @@
 	async function loadSources() {
 		loading = true;
 		try {
-			const response = await getData<Source>('sources', false, itemsPerPage, currentPage);
+			const response = await getData<Source>(
+				'sources',
+				false,
+				itemsPerPage,
+				currentPage,
+				undefined,
+				{ all: 'true' }
+			);
 			sources = response.data || [];
 			totalItems = (response.meta as any)?.total || sources.length;
 			totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -70,10 +81,11 @@
 	function openAddModal() {
 		editingSource = null;
 		formData = {
-			name: '',
+			title: '',
 			url: '',
 			description: '',
-			isActive: true
+			active: true,
+			approved: false
 		};
 		isModalOpen = true;
 	}
@@ -81,10 +93,11 @@
 	function openEditModal(source: Source) {
 		editingSource = source;
 		formData = {
-			name: source.name,
+			title: source.title,
 			url: source.url,
 			description: source.description || '',
-			isActive: source.isActive
+			active: source.active,
+			approved: source.approved
 		};
 		isModalOpen = true;
 	}
@@ -109,8 +122,15 @@
 		loading = true;
 
 		try {
+			const payload = {
+				title: formData.title,
+				url: formData.url,
+				description: formData.description || undefined,
+				active: formData.active,
+				approved: formData.approved
+			};
 			if (editingSource) {
-				const result = await updateData('sources', editingSource.id, formData);
+				const result = await updateData('sources', editingSource.id, payload);
 				if (result.success) {
 					toastStore.add('success', 'Kaynak başarıyla güncellendi');
 					closeModal();
@@ -119,7 +139,7 @@
 					toastStore.add('error', result.message || 'Güncelleme başarısız');
 				}
 			} else {
-				const result = await addData('sources', formData);
+				const result = await addData('sources', payload);
 				if (result.success) {
 					toastStore.add('success', 'Kaynak başarıyla eklendi');
 					closeModal();
@@ -140,7 +160,7 @@
 
 		loading = true;
 		try {
-			const result = await deleteData('sources', deletingSource.id);
+			const result = await deleteData('sources', String(deletingSource.id));
 			if (result.success) {
 				toastStore.add('success', 'Kaynak başarıyla silindi');
 				closeDeleteModal();
@@ -214,9 +234,9 @@
 		<form on:submit={handleSubmit} class="space-y-4">
 			<Input
 				type="text"
-				name="name"
+				name="title"
 				label="Kaynak Adı"
-				bind:value={formData.name}
+				bind:value={formData.title}
 				required
 				placeholder="GitHub, Stack Overflow, vb."
 			/>
@@ -241,10 +261,18 @@
 
 			<Input
 				type="checkbox"
-				name="isActive"
-				label=""
-				bind:value={formData.isActive}
+				name="active"
+				label="Aktif"
+				bind:value={formData.active}
 				placeholder="Kaynağı aktif et"
+			/>
+
+			<Input
+				type="checkbox"
+				name="approved"
+				label="Onaylı"
+				bind:value={formData.approved}
+				placeholder="Kaynağı onayla"
 			/>
 
 			<div
@@ -262,7 +290,7 @@
 	<Modal isOpen={isDeleteModalOpen} title="Kaynağı Sil" onClose={closeDeleteModal} size="sm">
 		<div class="space-y-4">
 			<p class="text-sm text-gray-600 dark:text-gray-300">
-				<strong>{deletingSource?.name}</strong> kaynağını silmek istediğinizden emin misiniz? Bu
+				<strong>{deletingSource?.title}</strong> kaynağını silmek istediğinizden emin misiniz? Bu
 				işlem geri alınamaz.
 			</p>
 			<div

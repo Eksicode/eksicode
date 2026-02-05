@@ -12,6 +12,7 @@ class SourceController {
     ): Promise<void> => {
         try {
             const { page, limit, skip } = getPaginationParams(req.query);
+            const all = req.query.all === "true";
             const approved =
                 req.query.approved === undefined
                     ? undefined
@@ -19,7 +20,8 @@ class SourceController {
             const { sources, count } = await this.sourceService.getAllSources(
                 skip,
                 limit,
-                approved
+                approved,
+                all
             );
 
             // const meta = getPaginationMeta(count, page, limit);
