@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -19,12 +19,19 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Nav = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Memoize auth state to prevent unnecessary re-renders
   const authState = useMemo(() => ({
     isAuthenticated,
     isLoading
   }), [isAuthenticated, isLoading]);
+
+  const showAuth = mounted && !authState.isLoading;
 
   return (
     <nav className="flex flex-wrap w-full justify-center z-50 sticky top-0 nav-shadow bg-white dark:bg-DarkerGrey">
@@ -64,7 +71,7 @@ const Nav = () => {
               <ThemeSwitch />
             </div>
 
-            {!authState.isLoading && !authState.isAuthenticated && (
+            {showAuth && !authState.isAuthenticated && (
               <>
                 <Navlink
                   variant="quaternary"
@@ -89,7 +96,7 @@ const Nav = () => {
               </>
             )}
 
-            {!authState.isLoading && authState.isAuthenticated && (
+            {showAuth && authState.isAuthenticated && (
               <>
                 <Navlink
                   variant="secondary"
@@ -106,7 +113,7 @@ const Nav = () => {
               </>
             )}
           </div>
-          {!authState.isLoading && !authState.isAuthenticated && (
+          {showAuth && !authState.isAuthenticated && (
             <>
               <Navlink
                 variant="quaternary"

@@ -64,7 +64,7 @@ export default function ProfilePosts() {
           Gönderilerim
         </h1>
         <Link
-          href="/posts/create"
+          href="/profile/posts/create"
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
         >
           Yeni Gönderi
@@ -78,8 +78,16 @@ export default function ProfilePosts() {
       ) : posts.length > 0 ? (
         <div className="grid gap-4">
           {posts.map((post) => (
-            <div key={post.id} className="w-full">
+            <div key={post.id} className="w-full relative">
               <PostCard post={post} />
+              <div className="absolute top-4 right-4">
+                <Link
+                  href={`/profile/posts/${post.slug}/edit`}
+                  className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md transition-colors"
+                >
+                  Düzenle
+                </Link>
+              </div>
             </div>
           ))}
         </div>

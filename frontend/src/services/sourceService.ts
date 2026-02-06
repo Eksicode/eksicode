@@ -96,7 +96,7 @@ export const searchSources = async (
       headers: {
         'Content-Type': 'application/json',
       },
-      next: { revalidate: 300 } // 5 minutes cache for search results
+      cache: "no-store"
     });
 
     if (!response.ok) {

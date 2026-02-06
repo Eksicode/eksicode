@@ -125,7 +125,7 @@ const DataTable: React.FC<DataTableProps> = ({
               <tr key={index} className="bg-white dark:text-white dark:bg-DarkerGrey border-b hover:bg-gray-50 dark:hover:bg-DarkLightGrey">
                 {columns?.map((column) => (
                   <td key={column} className={` ${isUrl(DataParam[column]) === true ? "hover:underline underline-offset-1" : "underline-none"} px-6 py-4 text-wrap whitespace-nowrap`}>
-                    {isUrl(DataParam[column]) ? <Link href={DataParam[column]}>{DataParam[column]}</Link> : DataParam[column]}
+                    {isUrl(DataParam[column]) ? <Link href={DataParam[column]} target="_blank">{DataParam[column]}</Link> : DataParam[column]}
                   </td>
                 ))}
                 {renderActionCell(DataParam.id)}

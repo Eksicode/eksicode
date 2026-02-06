@@ -8,6 +8,14 @@ interface CreatePostData {
     headerImage?: File;
 }
 
+interface UpdatePostData {
+    title?: string;
+    content?: string;
+    categories?: number[];
+    tags?: number[];
+    status?: string;
+}
+
 interface GetPostsParams {
     page?: number;
     limit?: number;
@@ -119,6 +127,68 @@ class PostService {
             return {
                 success: false,
                 message: "Gönderiler alınırken bir hata oluştu"
+            };
+        }
+    }
+
+    async getPostBySlug(slug: string): Promise<PostServiceResponse<IPost>> {
+        try {
+            const response = await fetch(`${this.baseUrl}/posts/${slug}`, {
+                cache: 'no-store'
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: result.message || "Gönderi bulunamadı",
+                };
+            }
+
+            return {
+                success: true,
+                data: result.data,
+            };
+        } catch (error) {
+            console.error("Get post by slug error:", error);
+            return {
+                success: false,
+                message: "Sunucu hatası oluştu",
+            };
+        }
+    }
+
+    async updatePost(id: number, data: UpdatePostData, token: string): Promise<PostServiceResponse<IPost>> {
+        try {
+            const response = await fetch(`${this.baseUrl}/posts/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: result.message || "Gönderi güncellenirken bir hata oluştu",
+                };
+            }
+
+            return {
+                success: true,
+                message: "Gönderi başarıyla güncellendi",
+                data: result.data,
+            };
+        } catch (error) {
+            console.error("Update post error:", error);
+            return {
+                success: false,
+                message: "Sunucu hatası oluştu",
             };
         }
     }

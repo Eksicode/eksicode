@@ -6,6 +6,8 @@ import SourcesSearch from "@/components/SourcesSearch";
 import { getAllSources, searchSources } from "@/services/sourceService";
 import type { Source, Hashtag } from "@/services/sourceService";
 
+export const dynamic = "force-dynamic";
+
 interface SearchParams {
   page?: string;
   limit?: string;
@@ -27,7 +29,7 @@ export default async function Sources({ searchParams }: SourcesPageProps) {
   const sourcesData = searchQuery
     ? await searchSources(searchQuery, page, limit)
     : await getAllSources(page, limit, {
-      next: { revalidate: 43200 }, // 12 hours cache
+      cache: "no-store",
     });
 
   const formatHashtags = (tags: Hashtag[]): string => {
