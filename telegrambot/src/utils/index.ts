@@ -7,6 +7,7 @@ import rateLimiter from './rateLimiter';
 import commandLogger from './commandLogger';
 import { verificationManager } from './verificationManager';
 import { getRedisClient, closeRedisClient, getRedisConnection, setRedisShuttingDown } from './redisClient';
+import { startHealthServer } from './healthServer';
 
 export {
   errorMessage,
@@ -21,5 +22,6 @@ export {
   getRedisClient,
   closeRedisClient,
   getRedisConnection,
-  setRedisShuttingDown
+  setRedisShuttingDown,
+  startHealthServer
 };

@@ -115,8 +115,17 @@ class VerificationManager {
         return false;
       }
 
-      // Check if user is already pending verification
+      // Check if user is already pending verification (in memory)
       if (this.pendingVerifications.has(userId)) {
+        return false;
+      }
+
+      // Check if user already has a pending verification in database (handles race conditions)
+      const existingVerification = await queryOne<{ id: number }>(
+        `SELECT id FROM telegram_verifications WHERE "userId" = $1 AND "expiresAt" > NOW()`,
+        [userId.toString()]
+      );
+      if (existingVerification) {
         return false;
       }
 
@@ -157,10 +166,18 @@ class VerificationManager {
 
       const expiresAt = new Date(Date.now() + this.verificationTimeout);
 
-      // Store in database
+      // Store in database (upsert to handle race conditions and existing records)
       await query(
         `INSERT INTO telegram_verifications ("userId", "chatId", "messageId", "firstName", "lastName", username, "expiresAt")
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         ON CONFLICT ("userId") DO UPDATE SET
+           "chatId" = EXCLUDED."chatId",
+           "messageId" = EXCLUDED."messageId",
+           "firstName" = EXCLUDED."firstName",
+           "lastName" = EXCLUDED."lastName",
+           username = EXCLUDED.username,
+           "expiresAt" = EXCLUDED."expiresAt",
+           "createdAt" = NOW()`,
         [
           userId.toString(),
           chatId.toString(),

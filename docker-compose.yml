@@ -4,12 +4,12 @@ services:
     container_name: eksicodeRedis
     image: redis:7-alpine
     restart: unless-stopped
-    command: >
-      sh -c "redis-server --requirepass $${REDIS_PASSWORD:-changeme} --appendonly yes --appendfsync everysec --maxmemory 2gb --maxmemory-policy allkeys-lru --save 900 1 --save 300 10 --save 60 10000"
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD:-changeme}
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
     networks:
       - eksicode_nw
     environment:
@@ -201,6 +201,9 @@ services:
       # Logging
       - LOG_LEVEL=info
       - LOG_MAX_FILES=7
+
+      # Health check
+      - HEALTH_PORT=8080
     volumes:
       - ./telegrambot:/var/bot
       - /var/bot/node_modules
@@ -226,12 +229,12 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-    # healthcheck:
-    #   test: ["CMD-SHELL", "pm2 ping || exit 1"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   start_period: 60s
-    #   retries: 3
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     logging:
       driver: "json-file"
       options:

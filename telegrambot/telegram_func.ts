@@ -7,7 +7,7 @@ dotenv.config({
 });
 
 import { Telegraf } from 'telegraf';
-import { verificationManager } from './src/utils';
+import { verificationManager, startHealthServer } from './src/utils';
 import { addCommandJob } from './src/queues';
 import { createCommandWorker, createCronWorker } from './src/workers';
 import { getRedisClient, closeRedisClient, setRedisShuttingDown } from './src/utils/redisClient';
@@ -117,6 +117,9 @@ bot.on('callback_query', handlers.callbackHandler);
 // Launch bot
 bot.launch();
 
+// Start health server for Docker healthchecks
+const healthServer = startHealthServer();
+
 console.log('🤖 EksiCode Bot started successfully!');
 
 // Enable graceful stop
@@ -124,9 +127,12 @@ async function gracefulShutdown(signal: string) {
   console.log(`\n${signal} received, shutting down gracefully...`);
   setRedisShuttingDown();
 
+  // Stop health server
+  healthServer.close();
+
   // Stop bot
   await bot.stop(signal);
-  
+
   // Close workers
   if (commandWorker) {
     await commandWorker.close();
@@ -134,10 +140,10 @@ async function gracefulShutdown(signal: string) {
   if (cronWorker) {
     await cronWorker.close();
   }
-  
+
   // Close Redis connection
   await closeRedisClient();
-  
+
   process.exit(0);
 }
 
