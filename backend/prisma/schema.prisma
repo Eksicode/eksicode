@@ -449,10 +449,12 @@ model Source {
   title       String   @unique @db.VarChar(255)
   description String?  @db.Text
   url         String   @db.VarChar(500)
-  tgChannel   String?  @db.VarChar(255)
-  tgUser      String?  @db.VarChar(255)
+  groupName   String?  @db.VarChar(255) // Telegram group name where source was submitted
+  tgChannel   String?  @db.VarChar(255) // Telegram chat ID
+  tgUser      String?  @db.VarChar(255) // Telegram user ID who submitted
+  tgUsername  String?  @db.VarChar(255) // Telegram username who submitted
   approved    Boolean  @default(false)
-  active      Boolean  @default(true) // Add active status
+  active      Boolean  @default(true)
   tags        Tag[]    @relation("SourceTags")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -462,6 +464,7 @@ model Source {
   @@index([approved])
   @@index([active])
   @@index([tgChannel])
+  @@index([tgUser])
   @@index([createdAt])
   @@map("sources")
 }
