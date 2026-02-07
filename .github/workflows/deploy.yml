@@ -11,14 +11,14 @@ jobs:
     steps:
       - name: Pull latest changes
         run: |
-          cd ~/eksicode
+          cd /home/eksicode
           git pull origin main
       
       - name: Rebuild and restart containers
         run: |
-          cd ~/eksicode
+          cd /home/eksicode
           docker-compose down
-          docker-compose -f docker-compose.yml up --build
+          docker-compose up -d --build
       
       - name: Clean up unused images
         run: docker image prune -af
