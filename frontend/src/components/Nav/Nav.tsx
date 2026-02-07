@@ -41,7 +41,7 @@ const Nav = () => {
           <Link className="flex content-center" href="/" aria-label="Ana Sayfa">
             <Image
               src={"/images/eksi-code-logo.png"}
-              alt="eksi-code-logo"
+              alt="ekşi Code logo"
               width="53"
               height="30"
               priority
@@ -51,6 +51,7 @@ const Nav = () => {
                 e.currentTarget.style.display = "none";
               }}
             />
+            <span className="text-xl ml-2 font-bold text-gradient bg-gradient-to-r from-eksiCodeMedium to-eksiCode bg-clip-text text-transparent">Ekşi Code</span>
           </Link>
         </div>
 
@@ -100,7 +101,7 @@ const Nav = () => {
               <>
                 <Navlink
                   variant="secondary"
-                  href="/profile/posts/yeni"
+                  href="/profile/posts/create"
                   style="hidden lg:flex"
                 >
                   <div className="flex items-center">

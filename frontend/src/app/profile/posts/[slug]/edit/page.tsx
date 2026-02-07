@@ -108,7 +108,7 @@ export default function EditPostPage() {
 
     if (loading || authLoading) {
         return (
-            <div className="container mx-auto px-4 py-8 max-w-4xl">
+            <div className="w-full">
                 <div className="flex justify-center py-16">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                 </div>
@@ -118,7 +118,7 @@ export default function EditPostPage() {
 
     if (error) {
         return (
-            <div className="container mx-auto px-4 py-8 max-w-4xl">
+            <div className="w-full">
                 <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg">
                     {error}
                 </div>
@@ -138,7 +138,7 @@ export default function EditPostPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="w-full">
             <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Gönderiyi Düzenle</h1>
             <PostForm
                 mode="edit"
