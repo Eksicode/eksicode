@@ -103,7 +103,7 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto mx-0 lg:mx-2 flex w-[250px] hover:bg-gray-50 dark:hover:bg-DarkLightGrey dark:border-DarkLightGrey mt-2 rounded-lg lg:w-full">
+    <div className="overflow-x-auto mx-0 lg:mx-2 flex w-full lg:w-[250px] hover:bg-gray-50 dark:hover:bg-DarkLightGrey dark:border-DarkLightGrey mt-2 rounded-lg lg:w-full">
       <table className="text-sm w-full text-left rtl:text-right text-gray-500 bg-white dark:bg-DarkerGrey">
         <thead className="text-xs dark:text-white">
           <tr>

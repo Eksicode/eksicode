@@ -12,11 +12,11 @@ interface RoleGuardProps {
   showLoading?: boolean;
 }
 
-export function RoleGuard({ 
-  children, 
-  allowedRoles, 
-  fallbackRoute = '/dashboard', 
-  showLoading = true 
+export function RoleGuard({
+  children,
+  allowedRoles,
+  fallbackRoute = '/',
+  showLoading = true
 }: RoleGuardProps) {
   const { user, isLoading, isAuthenticated } = useAuth();
 
@@ -29,7 +29,7 @@ export function RoleGuard({
       }
 
       // Check if user has required role
-      const hasRequiredRole = user?.roles?.some((role: string) => 
+      const hasRequiredRole = user?.roles?.some((role: string) =>
         allowedRoles.includes(role as UserRole)
       );
 
