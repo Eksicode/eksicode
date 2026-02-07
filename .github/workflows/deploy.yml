@@ -1,51 +1,27 @@
-name: Deploy on Main Branch
+name: Deploy to Production
 
 on:
-  pull_request:
-    branches: [ "main" ]
   push:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: SSH Deploy to Server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        # key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        timeout: 60s
-        command_timeout: 10m
-        script: |
-          # Navigate to project directory
-          cd /home/eksicode
-          
-          # Backup any local changes and update code
-          git stash
-          git checkout main
+      - name: Pull latest changes
+        run: |
+          cd ~/eksicode
           git pull origin main
-          
-          # Clean up Docker resources
-          sudo docker compose down --volumes --remove-orphans || true
-          sudo docker system prune -af --volumes
-          
-          # Build and deploy
-          sudo docker compose -f docker-compose.yml up --build -d
-          
-          # Show deployment status
-          echo "=== Container Status ==="
-          sudo docker compose ps
-          
-          echo "=== Recent Logs ==="
-          sudo docker compose logs --tail=50
-          
-          echo "=== System Status ==="
-          sudo docker ps -a
+      
+      - name: Rebuild and restart containers
+        run: |
+          cd ~/eksicode
+          docker-compose down
+          docker-compose -f docker-compose.yml up --build
+      
+      - name: Clean up unused images
+        run: docker image prune -af
+      
+      - name: Show running containers
+        run: docker ps
