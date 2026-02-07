@@ -8,14 +8,11 @@ const Footer = () => {
                 <a href="https://twitter.com/eksicode" target="_blank" ><FaTwitter className="mr-6 ml-6 text-white text-3xl" /></a>
                 <a href="https://discord.com/invite/cZRhbuJ" target="_blank"><FaDiscord className="text-white text-3xl" /> </a>
             </div>
-            <div className="w-full pb-5 pt-5  bg-eksiCodeMedium text-eksiCodeLight dark:bg-DarkerGrey border-t dark:border-DarkLightGrey">
-                <div className='flex justify-center mb-5'>
+            <div className="w-full px-5 bg-eksiCodeMedium text-eksiCodeLight dark:bg-DarkerGrey border-t dark:border-DarkLightGrey">
+                <div className='flex flex-col justify-center text-center mb-5 no-wrap md:flex-row md:gap-8'>
                     <a href="/sayfalar/kurallar" className="hover:underline hover:underline-offset-0">Grup Kuralları </a>
-                    &#160; | &#160;
                     <a href="/sayfalar/kullanici-sozlesmesi" className="hover:underline hover:underline-offset-0">Kullanıcı Sözleşmesi</a>
-                    &#160; | &#160;
                     <a className="hover:underline hover:underline-offset-0" href="/sayfalar/gizlilik">Gizlilik Politakası</a>
-                    &#160; | &#160;
                     <a className="hover:underline hover:underline-offset-0" href="/kunye">Künye</a>
                 </div>
                 <div className="flex justify-center mb-5">
