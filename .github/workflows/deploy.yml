@@ -1,8 +1,7 @@
 name: Deploy to Production
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [ main ]
 
 concurrency:
@@ -12,13 +11,18 @@ concurrency:
 jobs:
   deploy:
     runs-on: self-hosted
-    # Sadece merge edilen PR'lar için çalış
-    if: github.event.pull_request.merged == true
+    # Son 5 saniyede başka bir workflow başladıysa bu iptal edilir
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: /home/eksicode
     
     steps:
+      # Kısa bir bekleme - eğer hemen ardından başka push varsa
+      # concurrency sayesinde bu iptal olur
+      - name: Wait for concurrent pushes
+        run: sleep 3
+        
       - name: Pull latest changes
         run: git pull origin main
       
