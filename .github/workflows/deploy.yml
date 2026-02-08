@@ -10,29 +10,43 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: self-hosted
-    # Son 5 saniyede başka bir workflow başladıysa bu iptal edilir
-    timeout-minutes: 30
-    defaults:
-      run:
-        working-directory: /home/eksicode
+    runs-on: ubuntu-latest
     
     steps:
-      # Kısa bir bekleme - eğer hemen ardından başka push varsa
-      # concurrency sayesinde bu iptal olur
-      - name: Wait for concurrent pushes
-        run: sleep 3
-        
-      - name: Pull latest changes
-        run: git pull origin main
-      
-      - name: Rebuild and restart containers
-        run: |
-          docker-compose down
-          docker-compose up -d --build
-      
-      - name: Clean up unused images
-        run: docker image prune -af
-      
-      - name: Show running containers
-        run: docker ps
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        timeout: 60s
+        command_timeout: 20m
+        script: |
+          # Navigate to project directory
+          cd /home/eksicode
+          
+          # Fetch latest changes
+          git fetch origin main
+          
+          # Hard reset to remote main (sunucudaki değişiklikleri sil)
+          git reset --hard origin/main
+          
+          # Clean untracked files
+          git clean -fd
+          
+          # Stop containers
+          docker compose down || true
+          
+          # Build and start
+          docker compose up -d --build
+          
+          # Clean up
+          docker image prune -af
+          
+          # Show status
+          echo "=== Container Status ==="
+          docker compose ps
+          
+          echo "=== Running Containers ==="
+          docker ps
