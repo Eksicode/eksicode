@@ -7,6 +7,7 @@ export interface HashtagBase {
 
 // Backend API response from hashtag service
 export interface HashtagApiResponse extends HashtagBase {
+  slug?: string;
   postCount?: number;
 }
 

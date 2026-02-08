@@ -79,8 +79,8 @@ export default async function Tags({ searchParams }: TagsPageProps) {
             <div className="w-full mx-2 mb-4">
               <EtiketlerSearch className="max-w-md" />
             </div>
-            <Button variant="secondary" children="Takipteki Etiketler" />
-            <Button variant="secondary" children="Gizli Etiketler" />
+            <Button variant="secondary" children="Takipteki" />
+            <Button variant="secondary" children="Gizli" />
           </div>
         </div>
 
@@ -92,7 +92,11 @@ export default async function Tags({ searchParams }: TagsPageProps) {
 
         {/* Pagination */}
         {hashtagsResponse.meta && (
-          <Pagination meta={hashtagsResponse.meta} baseUrl="/etiketler" />
+          <Pagination
+            meta={hashtagsResponse.meta}
+            baseUrl="/etiketler"
+            queryParams={searchQuery ? { search: searchQuery } : undefined}
+          />
         )}
       </div>
     </div>
