@@ -17,9 +17,7 @@ export const errorMiddleware = (error: HttpException, req: Request, res: Respons
     "http://localhost:3000",
     "https://eksicode.org",
     "https://www.eksicode.org",
-    "https://demo.eksicode.org",
     "https://api.eksicode.org",
-    "https://api-demo.eksicode.org"
   ];
 
   const origin = req.headers.origin;

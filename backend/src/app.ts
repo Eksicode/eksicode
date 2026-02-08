@@ -94,9 +94,7 @@ class App {
       "https://eksicode.org",
       "http://localhost:5194",
       "https://www.eksicode.org",
-      "https://demo.eksicode.org",
-      "https://api.eksicode.org",
-      "https://api-demo.eksicode.org"
+      "https://api.eksicode.org"
     ];
     
     this.app.use(morgan("dev"));

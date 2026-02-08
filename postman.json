@@ -4079,7 +4079,7 @@
 	"variable": [
 		{
 			"key": "API_URL",
-			"value": "https://demo-api.eksicode.org/api",
+			"value": "https://api.eksicode.org/api",
 			"type": "string",
 			"disabled": true
 		},

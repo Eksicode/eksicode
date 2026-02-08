@@ -51,18 +51,16 @@ const Nav = () => {
                 e.currentTarget.style.display = "none";
               }}
             />
-            <span className="text-xl ml-2 font-bold text-gradient bg-gradient-to-r from-eksiCodeMedium to-eksiCode bg-clip-text text-transparent">EkşiCode</span>
+            <span className="text-xl ml-2 font-bold text-gradient bg-gradient-to-r from-eksiCodeMedium to-eksiCode bg-clip-text text-transparent" aria-label="EkşiCode">
+              EkşiCode
+            </span>
           </Link>
         </div>
 
         <div className="hidden md:flex justify-center lg:w-1/4 w-1/2">
           <Search />
         </div>
-        <div className="flex md:hidden items-center mr-2">
-          <Link href="/arama" aria-label="Arama">
-            <AiOutlineSearch className="h-6 w-6" />
-          </Link>
-        </div>
+
 
         <div className="flex items-center justify-end">
           {/* Desktop menu */}
@@ -71,6 +69,11 @@ const Nav = () => {
             <div className="mr-4 mt-1 hidden lg:block">
               <ThemeSwitch />
             </div>
+            <div className="flex md:hidden items-center ">
+          <Link href="/arama" aria-label="Arama">
+            <AiOutlineSearch className="h-6 w-6" />
+          </Link>
+        </div>
 
             {showAuth && !authState.isAuthenticated && (
               <>
@@ -84,16 +87,7 @@ const Nav = () => {
                     <span> Üye Girişi</span>
                   </div>
                 </Navlink>
-                <Navlink
-                  variant="primary"
-                  style="ml-3 hidden lg:flex"
-                  href="/auth/uye-ol"
-                >
-                  <div className="flex items-center">
-                    <AiOutlineUserAdd className="h-5 w-5 mr-1" aria-hidden="true" />
-                    <span className="">Üye Ol</span>
-                  </div>
-                </Navlink>
+
               </>
             )}
 
@@ -125,15 +119,7 @@ const Nav = () => {
                   <AiOutlineLogin className="h-5 w-5 mr-1" aria-hidden="true" />
                 </div>
               </Navlink>
-              <Navlink
-                variant="primary"
-                style="ml-3 flex lg:hidden"
-                href="/auth/uye-ol"
-              >
-                <div className="flex items-center">
-                  <AiOutlineUserAdd className="h-5 w-5 mr-1" aria-hidden="true" />
-                </div>
-              </Navlink>
+
             </>
           )}
           <MobileMenu />
