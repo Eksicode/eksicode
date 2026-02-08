@@ -1,7 +1,8 @@
 name: Deploy to Production
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches: [ main ]
 
 concurrency:
@@ -11,7 +12,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: self-hosted
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    # Sadece merge edilen PR'lar için çalış
+    if: github.event.pull_request.merged == true
     defaults:
       run:
         working-directory: /home/eksicode
