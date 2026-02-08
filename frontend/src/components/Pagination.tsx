@@ -5,9 +5,11 @@ import type { PaginationMeta } from "@/types/hashtag.types";
 interface PaginationProps {
   meta: PaginationMeta;
   baseUrl?: string;
+  /** Optional query params to preserve in page links (e.g. { search: "foo" }) */
+  queryParams?: Record<string, string>;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ meta, baseUrl = "/etiketler" }) => {
+const Pagination: React.FC<PaginationProps> = ({ meta, baseUrl = "/etiketler", queryParams }) => {
   const { page, totalPages } = meta;
 
   if (totalPages <= 1) {
@@ -16,6 +18,11 @@ const Pagination: React.FC<PaginationProps> = ({ meta, baseUrl = "/etiketler" })
 
   const getPageUrl = (pageNum: number) => {
     const params = new URLSearchParams();
+    if (queryParams) {
+      Object.entries(queryParams).forEach(([key, value]) => {
+        if (value != null && value !== '') params.set(key, value);
+      });
+    }
     params.set('page', pageNum.toString());
     return `${baseUrl}?${params.toString()}`;
   };
