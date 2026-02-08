@@ -51,7 +51,7 @@ const Nav = () => {
                 e.currentTarget.style.display = "none";
               }}
             />
-            <span className="text-xl ml-2 font-bold text-gradient bg-gradient-to-r from-eksiCodeMedium to-eksiCode bg-clip-text text-transparent">Ekşi Code</span>
+            <span className="text-xl ml-2 font-bold text-gradient bg-gradient-to-r from-eksiCodeMedium to-eksiCode bg-clip-text text-transparent">EkşiCode</span>
           </Link>
         </div>
 
