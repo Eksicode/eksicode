@@ -161,7 +161,7 @@ export const searchHashtags = async (
       limit: String(limit),
     });
     const url = `${apiUrl}/hashtags/search?${params.toString()}`;
-    const response = await fetch(url, { next: { revalidate: 60 } });
+    const response = await fetch(url, { cache: "no-store" });
     const json = await response.json();
 
     if (!response.ok) {

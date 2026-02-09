@@ -11,20 +11,26 @@
 
 	const pageTitle = 'Menü Yönetimi | Admin Panel';
 
-	interface Menu {
-		id: string;
+	// Backend Menu model: id, name, link, subMenu, icon, active, order, categories[], createdAt, updatedAt
+	interface MenuCategory {
+		id: number;
 		name: string;
-		slug: string;
-		url: string;
+	}
+	interface Menu {
+		id: number;
+		name: string;
+		link: string;
+		subMenu: number;
+		icon?: string | null;
+		active: boolean;
 		order: number;
-		isActive: boolean;
-		parentId?: string;
-		categoryId?: string;
+		categories?: MenuCategory[];
 		createdAt: string;
 		updatedAt: string;
 	}
 
 	let menus: Menu[] = [];
+	let menuCategories: MenuCategory[] = [];
 	let loading = false;
 	let isModalOpen = false;
 	let isDeleteModalOpen = false;
@@ -35,28 +41,28 @@
 	let totalItems = 0;
 	const itemsPerPage = 10;
 
-	// Form data
+	// Form data (backend field names)
 	let formData = {
 		name: '',
-		slug: '',
-		url: '',
+		link: '',
 		order: 0,
-		isActive: true,
-		parentId: '',
-		categoryId: ''
+		active: true,
+		subMenu: 0,
+		icon: '',
+		categoryIds: [] as number[]
 	};
 
 	const columns = [
 		{ key: 'name', label: 'Menü Adı' },
-		{ key: 'slug', label: 'Slug' },
-		{ key: 'url', label: 'URL' },
+		{ key: 'link', label: 'URL' },
 		{ key: 'order', label: 'Sıra' },
-		{ key: 'isActive', label: 'Aktif' },
+		{ key: 'active', label: 'Aktif' },
 		{ key: 'createdAt', label: 'Oluşturulma' }
 	];
 
 	onMount(() => {
 		loadMenus();
+		loadMenuCategories();
 	});
 
 	async function loadMenus() {
@@ -64,8 +70,8 @@
 		try {
 			const response = await getData<Menu>('menus', false, itemsPerPage, currentPage);
 			menus = response.data || [];
-			totalItems = (response.meta as any)?.total || menus.length;
-			totalPages = Math.ceil(totalItems / itemsPerPage);
+			totalItems = (response.meta as any)?.total ?? menus.length;
+			totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
 		} catch (error) {
 			toastStore.add('error', 'Menüler yüklenirken hata oluştu');
 		} finally {
@@ -73,16 +79,25 @@
 		}
 	}
 
+	async function loadMenuCategories() {
+		try {
+			const response = await getData<MenuCategory>('menu-categories', false, 100, 1);
+			menuCategories = response.data || [];
+		} catch {
+			menuCategories = [];
+		}
+	}
+
 	function openAddModal() {
 		editingMenu = null;
 		formData = {
 			name: '',
-			slug: '',
-			url: '',
+			link: '',
 			order: 0,
-			isActive: true,
-			parentId: '',
-			categoryId: ''
+			active: true,
+			subMenu: 0,
+			icon: '',
+			categoryIds: []
 		};
 		isModalOpen = true;
 	}
@@ -91,12 +106,12 @@
 		editingMenu = menu;
 		formData = {
 			name: menu.name,
-			slug: menu.slug,
-			url: menu.url,
+			link: menu.link,
 			order: menu.order,
-			isActive: menu.isActive,
-			parentId: menu.parentId || '',
-			categoryId: menu.categoryId || ''
+			active: menu.active,
+			subMenu: menu.subMenu ?? 0,
+			icon: menu.icon || '',
+			categoryIds: menu.categories?.map((c) => c.id) ?? []
 		};
 		isModalOpen = true;
 	}
@@ -116,18 +131,32 @@
 		deletingMenu = null;
 	}
 
+	function toggleCategory(id: number) {
+		const idx = formData.categoryIds.indexOf(id);
+		if (idx === -1) {
+			formData.categoryIds = [...formData.categoryIds, id];
+		} else {
+			formData.categoryIds = formData.categoryIds.filter((x) => x !== id);
+		}
+	}
+
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
 		loading = true;
 
 		try {
-			const data: any = { ...formData };
-			// Remove empty optional fields
-			if (!data.parentId) delete data.parentId;
-			if (!data.categoryId) delete data.categoryId;
+			const payload = {
+				name: formData.name.trim(),
+				link: formData.link.trim(),
+				order: Number(formData.order) || 0,
+				active: formData.active,
+				subMenu: Number(formData.subMenu) || 0,
+				icon: formData.icon.trim() || null,
+				categoryIds: formData.categoryIds
+			};
 
 			if (editingMenu) {
-				const result = await updateData('menus', editingMenu.id, data);
+				const result = await updateData('menus', editingMenu.id, payload);
 				if (result.success) {
 					toastStore.add('success', 'Menü başarıyla güncellendi');
 					closeModal();
@@ -136,7 +165,7 @@
 					toastStore.add('error', result.message || 'Güncelleme başarısız');
 				}
 			} else {
-				const result = await addData('menus', data);
+				const result = await addData('menus', payload);
 				if (result.success) {
 					toastStore.add('success', 'Menü başarıyla eklendi');
 					closeModal();
@@ -175,21 +204,6 @@
 	function handlePageChange(page: number) {
 		currentPage = page;
 		loadMenus();
-	}
-
-	function generateSlug() {
-		if (formData.name) {
-			formData.slug = formData.name
-				.toLowerCase()
-				.replace(/ğ/g, 'g')
-				.replace(/ü/g, 'u')
-				.replace(/ş/g, 's')
-				.replace(/ı/g, 'i')
-				.replace(/ö/g, 'o')
-				.replace(/ç/g, 'c')
-				.replace(/[^a-z0-9]+/g, '-')
-				.replace(/^-+|-+$/g, '');
-		}
 	}
 </script>
 
@@ -245,32 +259,15 @@
 				bind:value={formData.name}
 				required
 				placeholder="Ana Sayfa, Hakkımızda, vb."
-				on:blur={generateSlug}
 			/>
-
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-				<Input
-					type="text"
-					name="slug"
-					label="Slug"
-					bind:value={formData.slug}
-					required
-					placeholder="ana-sayfa"
-				/>
-				<div class="flex items-end">
-					<Button type="button" variant="secondary" on:click={generateSlug} fullWidth>
-						Slug Oluştur
-					</Button>
-				</div>
-			</div>
 
 			<Input
 				type="text"
-				name="url"
+				name="link"
 				label="URL"
-				bind:value={formData.url}
+				bind:value={formData.link}
 				required
-				placeholder="/home, /about, https://example.com"
+				placeholder="/, /etiketler, /kariyer"
 			/>
 
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -279,41 +276,57 @@
 					name="order"
 					label="Sıra"
 					bind:value={formData.order}
-					required
 					placeholder="0"
 				/>
-				<div class="flex items-end">
-					<Input
-						type="checkbox"
-						name="isActive"
-						label=""
-						bind:value={formData.isActive}
-						placeholder="Menüyü aktif et"
-					/>
+				<div class="flex items-end pb-1">
+					<label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+						<input
+							type="checkbox"
+							bind:checked={formData.active}
+							class="rounded border-gray-300 dark:border-DarkLightGrey"
+						/>
+						Aktif
+					</label>
 				</div>
 			</div>
 
-			<div class="bg-gray-50 dark:bg-DarkLightGrey p-4 rounded-md">
-				<h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-					İleri Düzey Ayarlar (Opsiyonel)
-				</h4>
-				<div class="space-y-4">
-					<Input
-						type="text"
-						name="parentId"
-						label="Üst Menü ID"
-						bind:value={formData.parentId}
-						placeholder="Alt menü için üst menünün ID'si"
-					/>
-					<Input
-						type="text"
-						name="categoryId"
-						label="Kategori ID"
-						bind:value={formData.categoryId}
-						placeholder="İlişkili kategori ID"
-					/>
-				</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<Input
+					type="number"
+					name="subMenu"
+					label="Üst Menü ID (0 = ana menü)"
+					bind:value={formData.subMenu}
+					placeholder="0"
+				/>
+				<Input
+					type="text"
+					name="icon"
+					label="İkon (opsiyonel)"
+					bind:value={formData.icon}
+					placeholder="AiOutlineHome"
+				/>
 			</div>
+
+			{#if menuCategories.length > 0}
+				<div class="bg-gray-50 dark:bg-DarkLightGrey p-4 rounded-md">
+					<h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Kategoriler</h4>
+					<div class="flex flex-wrap gap-2">
+						{#each menuCategories as cat}
+							<label
+								class="inline-flex items-center gap-2 px-3 py-1.5 rounded border border-gray-300 dark:border-DarkLightGrey cursor-pointer"
+							>
+								<input
+									type="checkbox"
+									checked={formData.categoryIds.includes(cat.id)}
+									on:change={() => toggleCategory(cat.id)}
+									class="rounded"
+								/>
+								<span class="text-sm">{cat.name}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+			{/if}
 
 			<div
 				class="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-DarkLightGrey"

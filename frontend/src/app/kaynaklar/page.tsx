@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import SideMenu from "@/components/Nav/SideMenu";
 import DataTable from "@/components/Ui/DataTable";
 import Pagination from "@/components/Pagination";
@@ -6,6 +7,7 @@ import SourcesSearch from "@/components/SourcesSearch";
 import { getAllSources, searchSources } from "@/services/sourceService";
 import type { Source, Hashtag } from "@/services/sourceService";
 
+/** Always render on the server per request; no static generation or cache. */
 export const dynamic = "force-dynamic";
 
 interface SearchParams {
@@ -18,6 +20,23 @@ interface SourcesPageProps {
   searchParams: Promise<SearchParams>;
 }
 
+export async function generateMetadata({
+  searchParams,
+}: SourcesPageProps): Promise<Metadata> {
+  const resolved = await searchParams;
+  const searchQuery = resolved.search?.trim() || "";
+  const title = searchQuery
+    ? `Kaynaklar - "${searchQuery}" araması`
+    : "Kaynaklar";
+  const description = searchQuery
+    ? `"${searchQuery}" için kaynak arama sonuçları.`
+    : "Onaylı içerik kaynakları listesi.";
+  return {
+    title,
+    description,
+  };
+}
+
 export default async function Sources({ searchParams }: SourcesPageProps) {
   // Extract pagination parameters from search params
   const resolvedSearchParams = await searchParams;
@@ -25,12 +44,10 @@ export default async function Sources({ searchParams }: SourcesPageProps) {
   const limit = resolvedSearchParams.limit ? parseInt(resolvedSearchParams.limit, 10) : 10;
   const searchQuery = resolvedSearchParams.search || "";
 
-  // Fetch sources using the service
+  // SSR: fetch from backend on every request (no static/cache)
   const sourcesData = searchQuery
     ? await searchSources(searchQuery, page, limit)
-    : await getAllSources(page, limit, {
-      cache: "no-store",
-    });
+    : await getAllSources(page, limit, { cache: "no-store" });
 
   const formatHashtags = (tags: Hashtag[]): string => {
     return tags.map(hashtag => "#" + hashtag.name).join(", ");
@@ -93,9 +110,13 @@ export default async function Sources({ searchParams }: SourcesPageProps) {
           onDelete={false}
         />
 
-        {/* Pagination */}
+        {/* Pagination — preserve search in page links for SSR */}
         {sourcesData.meta && (
-          <Pagination meta={sourcesData.meta} baseUrl="/kaynaklar" />
+          <Pagination
+            meta={sourcesData.meta}
+            baseUrl="/kaynaklar"
+            queryParams={searchQuery ? { search: searchQuery } : undefined}
+          />
         )}
       </div>
     </div>

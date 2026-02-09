@@ -23,10 +23,10 @@ const TelegramGroupCard = (group: Group) => {
         height="80"
       />
       <div className="text-center">
-        <h4 className="mb-2 font-sans text-lg antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
+        <h4 className="mb-2 font-sans text-sm antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
           {group.name}
         </h4>
-        <p className="block font-sans antialiased text-sm leading-relaxed text-black dark:text-white">
+        <p className="block font-sans antialiased text-xs leading-relaxed text-black dark:text-white">
           {group.members} Üye
         </p>
       </div>
