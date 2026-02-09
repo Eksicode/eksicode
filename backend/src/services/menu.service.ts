@@ -19,10 +19,7 @@ class MenuService {
             }
           } : true,
         },
-        orderBy: {
-          // order by id in ascending order
-          id: 'asc',
-        },
+        orderBy: [{ order: "asc" }, { id: "asc" }],
       });
 
       return { menus, count };
@@ -52,12 +49,20 @@ class MenuService {
 
   public async createMenu(menuData: any): Promise<Menu> {
     try {
+      const categoryIds = Array.isArray(menuData.categoryIds)
+        ? menuData.categoryIds.filter((id: number) => Number.isInteger(id))
+        : [];
       const menu = await this.prisma.menu.create({
         data: {
           name: menuData.name,
           link: menuData.link,
-          subMenu: menuData.subMenu || 0,
-          icon: menuData.icon,
+          subMenu: menuData.subMenu ?? 0,
+          icon: menuData.icon ?? null,
+          active: menuData.active !== false,
+          order: typeof menuData.order === "number" ? menuData.order : 0,
+          ...(categoryIds.length > 0 && {
+            categories: { connect: categoryIds.map((id: number) => ({ id })) },
+          }),
         },
       });
 
@@ -69,14 +74,23 @@ class MenuService {
 
   public async updateMenu(id: number, menuData: any): Promise<Menu> {
     try {
+      const categoryIds = Array.isArray(menuData.categoryIds)
+        ? menuData.categoryIds.filter((id: number) => Number.isInteger(id))
+        : undefined;
+      const data: any = {
+        name: menuData.name,
+        link: menuData.link,
+        subMenu: menuData.subMenu ?? 0,
+        icon: menuData.icon ?? null,
+        active: menuData.active !== false,
+        order: typeof menuData.order === "number" ? menuData.order : 0,
+      };
+      if (categoryIds !== undefined) {
+        data.categories = { set: categoryIds.map((id: number) => ({ id })) };
+      }
       const menu = await this.prisma.menu.update({
         where: { id },
-        data: {
-          name: menuData.name,
-          link: menuData.link,
-          subMenu: menuData.subMenu,
-          icon: menuData.icon,
-        },
+        data,
       });
 
       return menu;

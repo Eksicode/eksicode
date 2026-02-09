@@ -6,10 +6,12 @@ import type { Metadata } from "next";
 import DOMPurify from "isomorphic-dompurify";
 import { IPost, IComment } from "@/types/types";
 import { formatDate } from "@/utils/utils";
+import { plainTextExcerpt } from "@/utils/seo";
 import { AiOutlineLike, AiOutlineMessage } from "react-icons/ai";
 import { BiBookmarkAltPlus } from "react-icons/bi";
 import { BsEye } from "react-icons/bs";
 import ppImage from "../../../../public/images/pp-image.png";
+import Link from "next/link";
 
 // API response wrapper type
 interface PostResponse {
@@ -22,8 +24,11 @@ interface PostPageParams {
   params: Promise<{ post: string }>;
 }
 
+/** Always render on the server per request; fresh data for SEO and view count. */
+export const dynamic = "force-dynamic";
+
 /**
- * Generate metadata for SEO
+ * Generate metadata for SEO (fresh fetch, plain-text description, canonical, OG)
  */
 export async function generateMetadata({ params }: PostPageParams): Promise<Metadata> {
   const { post: slug } = await params;
@@ -31,7 +36,7 @@ export async function generateMetadata({ params }: PostPageParams): Promise<Meta
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}`,
-      { cache: "force-cache" }
+      { cache: "no-store" }
     );
 
     if (!response.ok) {
@@ -42,29 +47,33 @@ export async function generateMetadata({ params }: PostPageParams): Promise<Meta
 
     const { data: postData }: PostResponse = await response.json();
 
-    // Get header image URL if available
-    const imageUrl = postData.headerImage && typeof postData.headerImage === 'object'
-      ? postData.headerImage.url
-      : undefined;
+    const description = plainTextExcerpt(postData.content, 160);
+    const imageUrl =
+      postData.headerImage && typeof postData.headerImage === "object"
+        ? postData.headerImage.url
+        : undefined;
 
     return {
       title: `${postData.title} - EksiCode`,
-      description: postData.content?.substring(0, 160) || "",
+      description: description || postData.title,
+      alternates: { canonical: `/posts/${slug}` },
       openGraph: {
         title: postData.title,
-        description: postData.content?.substring(0, 160) || "",
+        description: description || postData.title,
         type: "article",
+        url: `/posts/${slug}`,
         publishedTime: postData.publishedAt || postData.createdAt,
-        authors: [postData.author.username],
-        tags: postData.tags?.map(tag => tag.name) || [],
+        authors: postData.author?.username ? [postData.author.username] : undefined,
+        tags: postData.tags?.map((tag) => tag.name) || [],
         images: imageUrl ? [{ url: imageUrl }] : [],
       },
       twitter: {
         card: "summary_large_image",
         title: postData.title,
-        description: postData.content?.substring(0, 160) || "",
+        description: description || postData.title,
         images: imageUrl ? [imageUrl] : [],
       },
+      robots: "index, follow",
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
@@ -83,13 +92,9 @@ export default async function PostDetailPage({ params }: PostPageParams) {
   let postData: IPost;
 
   try {
-    // Fetch post data with view count increment
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}?incrementView=true`,
-      {
-        cache: "no-store", // Don't cache to ensure view count updates
-        next: { revalidate: 60 }, // Revalidate every minute for fresh data
-      }
+      { cache: "no-store" }
     );
 
     if (response.status === 404) {
@@ -142,7 +147,7 @@ export default async function PostDetailPage({ params }: PostPageParams) {
 
       {/* Main Content */}
       <div className="flex flex-wrap w-full sm:w-full md:w-full justify-center">
-        <div className="flex flex-wrap justify-start w-full max-w-4xl mx-2">
+        <div className="flex flex-wrap justify-start w-full w-full mx-2">
           {/* Post Card */}
           <article className="w-full p-6 mb-4 rounded-lg border bg-white text-black dark:text-white border-gray-300 dark:bg-DarkerGrey dark:border-DarkLightGrey">
             {/* Author Info */}
@@ -189,12 +194,13 @@ export default async function PostDetailPage({ params }: PostPageParams) {
             {postData.categories && postData.categories.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {postData.categories.map((category) => (
-                  <span
+                  <Link
+                    href={`/arama?q=${category.name}`}
                     key={category.id}
                     className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"
                   >
                     {category.name}
-                  </span>
+                  </Link>
                 ))}
               </div>
             )}
@@ -203,12 +209,13 @@ export default async function PostDetailPage({ params }: PostPageParams) {
             {postData.tags && postData.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 {postData.tags.map((tag) => (
-                  <span
+                  <Link
+                    href={`/arama?q=${tag.name}`}
                     key={tag.id}
                     className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded"
                   >
                     #{tag.name}
-                  </span>
+                  </Link>
                 ))}
               </div>
             )}

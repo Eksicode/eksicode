@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import SideMenu from "@/components/Nav/SideMenu";
 import TagsCard from "@/components/TagsCard";
@@ -8,6 +9,9 @@ import Pagination from "@/components/Pagination";
 import EtiketlerSearch from "@/components/EtiketlerSearch";
 import { getAllHashtags, searchHashtags } from "@/services/hashtagService";
 import type { Hashtag } from "@/types/hashtag.types";
+
+/** Always render on the server per request; no static generation or cache. */
+export const dynamic = "force-dynamic";
 
 interface SearchParams {
   page?: string;
@@ -19,6 +23,23 @@ interface TagsPageProps {
   searchParams: Promise<SearchParams>;
 }
 
+export async function generateMetadata({
+  searchParams,
+}: TagsPageProps): Promise<Metadata> {
+  const resolved = await searchParams;
+  const searchQuery = resolved.search?.trim() || "";
+  const title = searchQuery
+    ? `Etiketler - "${searchQuery}" araması`
+    : "Etiketler";
+  const description = searchQuery
+    ? `"${searchQuery}" için etiket arama sonuçları.`
+    : "Tüm etiketler listesi.";
+  return {
+    title,
+    description,
+  };
+}
+
 export default async function Tags({ searchParams }: TagsPageProps) {
   // Extract pagination parameters from search params
   const resolvedSearchParams = await searchParams;
@@ -26,12 +47,10 @@ export default async function Tags({ searchParams }: TagsPageProps) {
   const limit = resolvedSearchParams.limit ? parseInt(resolvedSearchParams.limit, 10) : 50;
   const searchQuery = resolvedSearchParams.search || "";
 
-  // Fetch hashtags using the service
+  // SSR: fetch from backend on every request (no static/cache)
   const hashtagsResponse = searchQuery
     ? await searchHashtags(searchQuery, page, limit)
-    : await getAllHashtags(page, limit, {
-      next: { revalidate: 43200 }, // 12 hours cache
-    });
+    : await getAllHashtags(page, limit, { cache: "no-store" });
 
   // Show error state if no data
   if (!hashtagsResponse.data || hashtagsResponse.data.length === 0) {
@@ -44,8 +63,9 @@ export default async function Tags({ searchParams }: TagsPageProps) {
           <div className="flex flex-col items-center justify-center w-full bg-white mx-2 p-8 rounded-lg border-gray-300 border text-gray-600 dark:bg-DarkerGrey dark:border-DarkLightGrey dark:text-white">
             <h2 className="text-2xl font-bold mb-4">Etiket Bulunamadı</h2>
             <p className="text-gray-500">
-              Henüz hiç etiket eklenmemiş veya veriler yüklenirken bir hata
-              oluştu.
+              {searchQuery
+                ? `"${searchQuery}" araması için sonuç bulunamadı.`
+                : "Henüz hiç etiket eklenmemiş veya veriler yüklenirken bir hata oluştu."}
             </p>
           </div>
         </div>
@@ -90,7 +110,7 @@ export default async function Tags({ searchParams }: TagsPageProps) {
           ))}
         </div>
 
-        {/* Pagination */}
+        {/* Pagination — preserve search in page links for SSR */}
         {hashtagsResponse.meta && (
           <Pagination
             meta={hashtagsResponse.meta}

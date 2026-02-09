@@ -14,7 +14,10 @@ const roboto = Roboto({
   display: "swap", // Optimize font loading
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_URL || "https://eksicode.org";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Ekşicode - Yazılımcı Geliştirme Platformu",
   description:
     "Telegram grupları üzerinden her seviyeden yazılım geliştiricinin ve yazılım öğrenmek isteyen kişilerin bir araya geldiği platform.",

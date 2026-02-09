@@ -69,9 +69,10 @@ export function SearchResults({ searchResults, searchTerm, currentPage }: Search
 
         {/* Pagination */}
         {meta.totalPages > 1 && (
-          <Pagination 
-            meta={meta} 
-            baseUrl={`/arama?q=${encodeURIComponent(searchTerm)}`}
+          <Pagination
+            meta={meta}
+            baseUrl="/arama"
+            queryParams={{ q: searchTerm }}
           />
         )}
       </div>

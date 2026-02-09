@@ -8,6 +8,8 @@ import { getUserFacingMessage, getErrorFromStatus } from "@/utils/errors";
 
 interface PostsProps {
   initialPosts?: IPost[];
+  /** When using SSR, pass meta from initial fetch so total/hasMore are correct on first paint */
+  initialMeta?: { total: number; totalPages: number };
 }
 
 interface FetchPostsResponse {
@@ -23,12 +25,14 @@ interface FetchPostsResponse {
   message: string;
 }
 
-const Posts: React.FC<PostsProps> = ({ initialPosts = [] }) => {
+const Posts: React.FC<PostsProps> = ({ initialPosts = [], initialMeta }) => {
   const [postItems, setPostItems] = useState<IPost[]>(initialPosts);
   const [skip, setSkip] = useState<number>(initialPosts.length);
-  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [hasMore, setHasMore] = useState<boolean>(
+    initialMeta ? 1 < initialMeta.totalPages : true
+  );
   const [loading, setLoading] = useState<boolean>(false);
-  const [totalPosts, setTotalPosts] = useState<number>(0);
+  const [totalPosts, setTotalPosts] = useState<number>(initialMeta?.total ?? 0);
   const [error, setError] = useState<string>("");
   const [retryCount, setRetryCount] = useState<number>(0);
 
