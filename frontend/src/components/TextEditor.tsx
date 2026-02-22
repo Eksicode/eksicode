@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface TextEditorProps {
   value: string;
@@ -11,6 +12,7 @@ const TextEditor = ({
   onChange,
   placeholder = "Start writing...",
 }: TextEditorProps) => {
+  const { token } = useAuth();
   const editorRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<any>(null);
 
@@ -22,20 +24,56 @@ const TextEditor = ({
 
         // Configure Quill toolbar options
         const toolbarOptions = [
-          ["bold", "italic", "underline", "strike"],
-          ["blockquote", "code-block"],
-          [{ header: 1 }, { header: 2 }],
-          [{ list: "ordered" }, { list: "bullet" }],
-          [{ script: "sub" }, { script: "super" }],
-          [{ indent: "-1" }, { indent: "+1" }],
-          [{ direction: "rtl" }],
-          [{ size: ["small", false, "large", "huge"] }],
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ color: [] }, { background: [] }],
-          [{ font: [] }],
-          [{ align: [] }],
-          ["clean"],
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'script': 'sub' }, { 'script': 'super' }],
+          [{ 'indent': '-1' }, { 'indent': '+1' }],
+          [{ 'direction': 'rtl' }],
+          [{ 'size': ['small', false, 'large', 'huge'] }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+          ['clean'],
+          ['link', 'image', 'video']
         ];
+
+        const imageHandler = () => {
+          const input = document.createElement("input");
+          input.setAttribute("type", "file");
+          input.setAttribute("accept", "image/*");
+          input.click();
+
+          input.onchange = async () => {
+            const file = input.files ? input.files[0] : null;
+            if (file && token) {
+              try {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}/media/upload`, {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: formData,
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success && result.data?.url) {
+                  const range = quillRef.current.getSelection() || { index: quillRef.current.getLength() };
+                  quillRef.current.insertEmbed(range.index, "image", result.data.url);
+                } else {
+                  console.error("Image upload failed:", result.message);
+                }
+              } catch (error) {
+                console.error("Image upload error", error);
+              }
+            }
+          };
+        };
 
         // Initialize Quill
         if (editorRef.current && !quillRef.current) {
@@ -46,6 +84,9 @@ const TextEditor = ({
             placeholder: placeholder,
             theme: "snow",
           });
+
+          // Override the default image handler
+          quillRef.current.getModule("toolbar").addHandler("image", imageHandler);
 
           // Set initial content if provided and editor is empty
           if (value && quillRef.current.getText().trim().length === 0) {

@@ -52,7 +52,7 @@ export const searchPosts = async (
     }
 
     const { term, hashtag, page = 1, limit = 10 } = params;
-    
+
     // Validate that at least one search parameter is provided
     if (!term && !hashtag) {
       throw new Error("Search term or hashtag is required");
@@ -61,16 +61,16 @@ export const searchPosts = async (
     // Build query parameters
     const queryParams = new URLSearchParams();
     const skip = (page - 1) * limit;
-    
+
     queryParams.set('skip', skip.toString());
     queryParams.set('limit', limit.toString());
-    
+
     if (term) {
-      queryParams.set('term', encodeURIComponent(term));
+      queryParams.set('term', term);
     }
-    
+
     if (hashtag) {
-      queryParams.set('hashtag', encodeURIComponent(hashtag));
+      queryParams.set('hashtag', hashtag);
     }
 
     // Make the API call

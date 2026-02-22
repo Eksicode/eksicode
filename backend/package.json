@@ -37,6 +37,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.995.0",
     "@prisma/client": "^6.1.0",
     "bcrypt": "^6.0.0",
     "compression": "^1.8.1",

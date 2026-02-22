@@ -33,7 +33,7 @@ export default function CreatePostPage() {
                 content: data.content,
                 categoryId: data.categoryId,
                 tags: tagsArray,
-                headerImage: data.headerImage || undefined
+                headerImageId: data.headerImageId
             }, token);
 
             if (response.success) {

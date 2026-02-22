@@ -24,6 +24,7 @@ import RoleRoute from './routes/role.route';
 import AuthRoute from './routes/auth.route';
 import MediaRoute from './routes/media.route';
 import CompanyRoute from './routes/company.route';
+import CategoryRoute from './routes/category.route';
 
 // Production cluster configuration
 const numCPUs = os.cpus().length;
@@ -42,35 +43,35 @@ function createWorker(id?: number) {
     restarts: 0,
     lastRestart: Date.now()
   });
-  
+
   console.log(`🚀 Worker ${worker.process.pid} started (ID: ${worker.id})`);
-  
+
   worker.on('message', (message) => {
     if (message.type === 'shutdown') {
       console.log(`📤 Worker ${worker.process.pid} requesting shutdown`);
       worker.kill('SIGTERM');
     }
   });
-  
+
   return worker;
 }
 
 function restartWorker(workerId: number, exitCode: number, signal: string) {
   const workerInfo = workers.get(workerId);
   if (!workerInfo) return;
-  
+
   const { restarts, lastRestart } = workerInfo;
   const timeSinceLastRestart = Date.now() - lastRestart;
-  
+
   // Prevent rapid restart loops
   if (restarts >= 5 && timeSinceLastRestart < 60000) {
     console.log(`❌ Worker ${workerId} restarted too many times, not restarting`);
     workers.delete(workerId);
     return;
   }
-  
+
   console.log(`🔄 Restarting worker ${workerId} (restarts: ${restarts + 1})`);
-  
+
   setTimeout(() => {
     const newWorker = createWorker(workerId);
     workers.set(workerId, {
@@ -84,24 +85,24 @@ function restartWorker(workerId: number, exitCode: number, signal: string) {
 function gracefulShutdown() {
   console.log('🛑 Initiating graceful shutdown...');
   restartingWorkers = true;
-  
+
   const shutdownPromises = Array.from(workers.values()).map(({ worker }) => {
     return new Promise((resolve) => {
       worker.send({ type: 'shutdown' });
-      
+
       const timeout = setTimeout(() => {
         console.log(`⚡ Force killing worker ${worker.process.pid}`);
         worker.kill('SIGKILL');
         resolve(void 0);
       }, 10000); // 10 second timeout
-      
+
       worker.on('exit', () => {
         clearTimeout(timeout);
         resolve(void 0);
       });
     });
   });
-  
+
   Promise.all(shutdownPromises).then(() => {
     console.log('✅ All workers shut down gracefully');
     process.exit(0);
@@ -120,7 +121,7 @@ if (enableClustering && cluster.isPrimary) {
   // Handle worker exits
   cluster.on('exit', (worker, code, signal) => {
     console.log(`💀 Worker ${worker.process.pid} died (${signal || code})`);
-    
+
     if (!restartingWorkers) {
       restartWorker(worker.id, code, signal);
     }
@@ -129,7 +130,7 @@ if (enableClustering && cluster.isPrimary) {
   // Handle graceful shutdown
   process.on('SIGTERM', gracefulShutdown);
   process.on('SIGINT', gracefulShutdown);
-  
+
   // Health check endpoint for load balancer
   setInterval(() => {
     const activeWorkers = Array.from(workers.values()).filter(({ worker }) => !worker.isDead()).length;
@@ -139,74 +140,75 @@ if (enableClustering && cluster.isPrimary) {
   }, 30000);
 
 } else {
-    // Worker process
-    const workerId = process.env.WORKER_ID || 'unknown';
-    console.log(`👷 Worker ${process.pid} (ID: ${workerId}) starting...`);
-    
-    const app = new App((prisma: PrismaClient, emailService: EmailService) => {
-        // Initialize services with dependencies
-        const mediaService = new MediaService(prisma);
-        const userService = new UserService(prisma, emailService, mediaService);
-        const authService = new AuthService(prisma, emailService);
-        const rolePermissionService = new RolePermissionService(prisma);
-        
-        return [
-            new IndexRoute(),
-            new UserRoute(userService),
-            new TelegramRoute(),
-            new PageRoute(),
-            new MenuRoute(),
-            new MenuCategoryRoute(),
-            new HashtagRoute(),
-            new PostRoute(),
-            new JobRoute(),
-            new SourceRoute(),
-            new RoleRoute(rolePermissionService, userService),
-            new PermissionRoute(rolePermissionService, userService),
-            new AuthRoute(authService, userService),
-            new MediaRoute(),
-            new CompanyRoute()
-        ];
+  // Worker process
+  const workerId = process.env.WORKER_ID || 'unknown';
+  console.log(`👷 Worker ${process.pid} (ID: ${workerId}) starting...`);
+
+  const app = new App((prisma: PrismaClient, emailService: EmailService) => {
+    // Initialize services with dependencies
+    const mediaService = new MediaService(prisma);
+    const userService = new UserService(prisma, emailService, mediaService);
+    const authService = new AuthService(prisma, emailService);
+    const rolePermissionService = new RolePermissionService(prisma);
+
+    return [
+      new IndexRoute(),
+      new UserRoute(userService),
+      new TelegramRoute(),
+      new PageRoute(),
+      new MenuRoute(),
+      new MenuCategoryRoute(),
+      new HashtagRoute(),
+      new PostRoute(),
+      new JobRoute(),
+      new SourceRoute(),
+      new RoleRoute(rolePermissionService, userService),
+      new PermissionRoute(rolePermissionService, userService),
+      new AuthRoute(authService, userService),
+      new MediaRoute(),
+      new CompanyRoute(),
+      new CategoryRoute()
+    ];
+  });
+
+  const server = app.listen();
+
+  // Graceful shutdown for worker
+  function workerShutdown() {
+    console.log(`🛑 Worker ${process.pid} received shutdown signal`);
+
+    server.close((err) => {
+      if (err) {
+        console.error(`❌ Error during server close: ${err}`);
+        process.exit(1);
+      }
+
+      console.log(`✅ Worker ${process.pid} shut down gracefully`);
+      process.exit(0);
     });
 
-    const server = app.listen();
-    
-    // Graceful shutdown for worker
-    function workerShutdown() {
-        console.log(`🛑 Worker ${process.pid} received shutdown signal`);
-        
-        server.close((err) => {
-            if (err) {
-                console.error(`❌ Error during server close: ${err}`);
-                process.exit(1);
-            }
-            
-            console.log(`✅ Worker ${process.pid} shut down gracefully`);
-            process.exit(0);
-        });
-        
-        // Force exit if graceful shutdown takes too long
-        setTimeout(() => {
-            console.log(`⚡ Worker ${process.pid} force exit`);
-            process.exit(1);
-        }, 8000);
+    // Force exit if graceful shutdown takes too long
+    setTimeout(() => {
+      console.log(`⚡ Worker ${process.pid} force exit`);
+      process.exit(1);
+    }, 8000);
+  }
+
+  // Handle shutdown signals
+  process.on('SIGTERM', workerShutdown);
+  process.on('SIGINT', workerShutdown);
+
+  // Handle master shutdown requests
+  process.on('message', (message: any) => {
+    if (message && typeof message === 'object' && message.type === 'shutdown') {
+      workerShutdown();
     }
-    
-    // Handle shutdown signals
-    process.on('SIGTERM', workerShutdown);
-    process.on('SIGINT', workerShutdown);
-    
-    // Handle master shutdown requests
-    process.on('message', (message: any) => {
-        if (message && typeof message === 'object' && message.type === 'shutdown') {
-            workerShutdown();
-        }
-    });
-    
-    // Send ready signal to master
-    if (process.send) {
-        process.send({ type: 'ready', pid: process.pid });
-    }
-    
-    console.log(`✅ Worker ${process.pid} (ID: ${workerId}) ready`);
+  });
+
+  // Send ready signal to master
+  if (process.send) {
+    process.send({ type: 'ready', pid: process.pid });
+  }
+
+  console.log(`✅ Worker ${process.pid} (ID: ${workerId}) ready`);
 }

@@ -2,8 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import postService from '@/services/postService';
+import mediaService from '@/services/mediaService';
 import TextEditor from '@/components/TextEditor';
 import FileUpload from '@/components/FileUpload';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'react-hot-toast';
 
 export interface PostFormData {
     title: string;
@@ -12,6 +15,7 @@ export interface PostFormData {
     tags: string;
     status?: string;
     headerImage?: File | null;
+    headerImageId?: number;
 }
 
 interface PostFormProps {
@@ -23,19 +27,23 @@ interface PostFormProps {
         tags: string;
         status?: string;
         headerImageUrl?: string;
+        headerImageId?: number;
     };
     onSubmit: (data: PostFormData) => Promise<void>;
     loading: boolean;
 }
 
 export default function PostForm({ mode, initialData, onSubmit, loading }: PostFormProps) {
+    const { token } = useAuth();
     const [categories, setCategories] = useState<any[]>([]);
+    const [uploadingImage, setUploadingImage] = useState(false);
     const [formData, setFormData] = useState({
         title: initialData?.title || '',
         content: initialData?.content || '',
         categoryId: initialData?.categoryId || 0,
         tags: initialData?.tags || '',
         status: initialData?.status || '',
+        headerImageId: initialData?.headerImageId || undefined,
     });
     const [headerImage, setHeaderImage] = useState<File | null>(null);
     const [showImageUpload, setShowImageUpload] = useState(!initialData?.headerImageUrl);
@@ -58,6 +66,31 @@ export default function PostForm({ mode, initialData, onSubmit, loading }: PostF
 
     const handleContentChange = (content: string) => {
         setFormData(prev => ({ ...prev, content }));
+    };
+
+    const handleImageSelect = async (file: File) => {
+        setHeaderImage(file);
+        if (!token) {
+            toast.error('Lütfen giriş yapın');
+            return;
+        }
+
+        setUploadingImage(true);
+        try {
+            const response = await mediaService.uploadMedia(file, token);
+            if (response.success && response.data) {
+                setFormData(prev => ({ ...prev, headerImageId: response.data!.id }));
+                toast.success('Kapak görseli yüklendi');
+            } else {
+                toast.error(response.message || 'Görsel yüklenemedi');
+                setHeaderImage(null);
+            }
+        } catch (error) {
+            toast.error('Görsel yüklenirken bir hata oluştu');
+            setHeaderImage(null);
+        } finally {
+            setUploadingImage(false);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -121,7 +154,7 @@ export default function PostForm({ mode, initialData, onSubmit, loading }: PostF
                         <img
                             src={initialData.headerImageUrl}
                             alt="Kapak görseli"
-                            className="w-full max-h-64 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                            className="w-full max-h-12 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
                         />
                         <button
                             type="button"
@@ -133,11 +166,21 @@ export default function PostForm({ mode, initialData, onSubmit, loading }: PostF
                     </div>
                 ) : (
                     <>
-                        <FileUpload setFile={setHeaderImage} />
-                        {headerImage && (
-                            <p className="mt-2 text-sm text-green-600">
-                                Seçilen dosya: {headerImage.name}
-                            </p>
+                        <FileUpload setFile={handleImageSelect} accept="image/*" />
+                        {uploadingImage && <p className="mt-2 text-sm text-blue-600 animate-pulse">Görsel yükleniyor...</p>}
+                        {headerImage && !uploadingImage && (
+                            <div className="mt-4 flex flex-col items-center">
+                                <p className="text-sm text-gray-700 dark:text-gray-300 mb-3 self-start font-medium">
+                                    Seçilen dosya: <span className="text-green-600 font-normal">{headerImage.name}</span>
+                                </p>
+                                <div className="w-full mt-2 relative rounded-xl border border-gray-300 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-800 flex justify-center items-center p-4">
+                                    <img
+                                        src={URL.createObjectURL(headerImage)}
+                                        alt="Seçilen görsel"
+                                        className="h-auto max-h-64 w-auto object-contain rounded drop-shadow-md"
+                                    />
+                                </div>
+                            </div>
                         )}
                         {isEdit && initialData?.headerImageUrl && (
                             <button
@@ -145,6 +188,7 @@ export default function PostForm({ mode, initialData, onSubmit, loading }: PostF
                                 onClick={() => {
                                     setShowImageUpload(false);
                                     setHeaderImage(null);
+                                    setFormData(prev => ({ ...prev, headerImageId: initialData.headerImageId }));
                                 }}
                                 className="mt-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400"
                             >
@@ -209,13 +253,13 @@ export default function PostForm({ mode, initialData, onSubmit, loading }: PostF
             <div className="flex justify-end pt-4">
                 <button
                     type="submit"
-                    disabled={loading}
-                    className={`px-6 py-3 rounded-lg text-white font-medium transition-colors ${loading
+                    disabled={loading || uploadingImage}
+                    className={`px-6 py-3 rounded-lg text-white font-medium transition-colors ${loading || uploadingImage
                         ? 'bg-blue-400 cursor-not-allowed'
                         : 'bg-blue-600 hover:bg-blue-700'
-                    }`}
+                        }`}
                 >
-                    {loading
+                    {loading || uploadingImage
                         ? (isEdit ? 'Güncelleniyor...' : 'Yayınlanıyor...')
                         : (isEdit ? 'Güncelle' : 'Yayınla')
                     }

@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import PostService from "../services/post.service";
 import { HttpException } from "../exceptions/HttpException";
-import { 
-  PostListParams, 
-  PostSearchParams, 
-  CreatePostDTO, 
+import {
+  PostListParams,
+  PostSearchParams,
+  CreatePostDTO,
   UpdatePostDTO,
-  PostStatusEnum 
+  PostStatusEnum
 } from "../interfaces/post.interface";
 
 interface MulterRequest extends Request {
@@ -85,10 +85,10 @@ export class PostController {
     }
 
     if (tags !== undefined) {
-      if (!Array.isArray(tags) || !tags.every(id => typeof id === 'number' && id > 0)) {
-        throw new HttpException(400, "Tags must be an array of positive numbers");
+      if (!Array.isArray(tags) || !tags.every(tag => typeof tag === 'string' && tag.trim().length > 0)) {
+        throw new HttpException(400, "Tags must be an array of non-empty strings");
       }
-      validatedData.tags = tags;
+      validatedData.tags = tags.map(tag => tag.trim());
     }
 
     if (status !== undefined) {
@@ -158,10 +158,10 @@ export class PostController {
     }
 
     if (tags !== undefined) {
-      if (!Array.isArray(tags) || !tags.every(id => typeof id === 'number' && id > 0)) {
-        throw new HttpException(400, "Tags must be an array of positive numbers");
+      if (!Array.isArray(tags) || !tags.every(tag => typeof tag === 'string' && tag.trim().length > 0)) {
+        throw new HttpException(400, "Tags must be an array of non-empty strings");
       }
-      validatedData.tags = tags;
+      validatedData.tags = tags.map(tag => tag.trim());
     }
 
     if (status !== undefined) {
@@ -215,8 +215,8 @@ export class PostController {
         // Only set status if explicitly provided, otherwise don't filter by status
         status: req.query.status ? (req.query.status as PostStatusEnum) : undefined,
         // Only set approved if explicitly provided, otherwise don't filter by approval
-        approved: req.query.approved !== undefined 
-          ? req.query.approved === "true" 
+        approved: req.query.approved !== undefined
+          ? req.query.approved === "true"
           : undefined,
         authorId: req.query.authorId ? Number(req.query.authorId) : undefined,
         categoryId: req.query.categoryId ? Number(req.query.categoryId) : undefined,
@@ -228,11 +228,11 @@ export class PostController {
       res.status(200).json(result);
     } catch (error) {
       console.error('Error in getAllPosts:', error);
-      
+
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,
@@ -276,7 +276,7 @@ export class PostController {
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,
@@ -291,7 +291,7 @@ export class PostController {
       }
     }
   };
-  
+
   public getPostsBySearch = async (
     req: Request,
     res: Response,
@@ -320,7 +320,7 @@ export class PostController {
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,
@@ -343,7 +343,7 @@ export class PostController {
   ): Promise<void> => {
     try {
       const userId = req.userId;
-      
+
       if (!userId) {
         res.status(401).json({ message: "Authentication required" });
         return;
@@ -351,16 +351,16 @@ export class PostController {
 
       const validatedData = this.validateCreatePostData(req.body);
       const post = await this.postService.createPost(validatedData, userId);
-      
-      res.status(201).json({ 
-        data: post, 
-        message: "Post created successfully" 
+
+      res.status(201).json({
+        data: post,
+        message: "Post created successfully"
       });
     } catch (error) {
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,
@@ -408,16 +408,16 @@ export class PostController {
 
       const validatedData = this.validateUpdatePostData(req.body);
       const post = await this.postService.updatePost(id, validatedData, userId);
-      
-      res.status(200).json({ 
-        data: post, 
-        message: "Post updated successfully" 
+
+      res.status(200).json({
+        data: post,
+        message: "Post updated successfully"
       });
     } catch (error) {
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,
@@ -464,7 +464,7 @@ export class PostController {
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,
@@ -487,7 +487,7 @@ export class PostController {
   ): Promise<void> => {
     try {
       const stats = await this.postService.getPostStats();
-      
+
       res.status(200).json({
         data: stats,
         message: "Post statistics retrieved successfully"
@@ -496,7 +496,7 @@ export class PostController {
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,
@@ -516,7 +516,7 @@ export class PostController {
     try {
       const postId = parseInt(req.params.id, 10);
       const userId = req.userId;
-      
+
       if (!userId) {
         res.status(401).json({ message: 'Authentication required' });
         return;
@@ -541,7 +541,7 @@ export class PostController {
       };
 
       const post = await this.postService.updatePostHeaderImage(postId, mediaUpload, userId);
-      
+
       res.status(200).json({
         success: true,
         data: {
@@ -555,7 +555,7 @@ export class PostController {
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,
@@ -575,7 +575,7 @@ export class PostController {
     try {
       const postId = parseInt(req.params.id, 10);
       const userId = req.userId;
-      
+
       if (!userId) {
         res.status(401).json({ message: 'Authentication required' });
         return;
@@ -587,7 +587,7 @@ export class PostController {
       }
 
       const post = await this.postService.removePostHeaderImage(postId, userId);
-      
+
       res.status(200).json({
         success: true,
         data: {
@@ -601,7 +601,7 @@ export class PostController {
       if (res.headersSent) {
         return next(error);
       }
-      
+
       if (error instanceof HttpException) {
         res.status(error.status).json({
           success: false,

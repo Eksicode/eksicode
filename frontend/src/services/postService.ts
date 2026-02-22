@@ -5,7 +5,8 @@ interface CreatePostData {
     content: string;
     categoryId: number;
     tags?: string[];
-    headerImage?: File;
+    headerImage?: File; // Keep for backwards compatibility if needed
+    headerImageId?: number;
 }
 
 interface UpdatePostData {
@@ -14,6 +15,7 @@ interface UpdatePostData {
     categories?: number[];
     tags?: number[];
     status?: string;
+    headerImageId?: number;
 }
 
 interface GetPostsParams {
@@ -40,30 +42,24 @@ class PostService {
 
     async createPost(formData: CreatePostData, token: string): Promise<PostServiceResponse<IPost>> {
         try {
-            const data = new FormData();
-            data.append("title", formData.title);
-            data.append("content", formData.content);
-            data.append("categoryId", formData.categoryId.toString());
+            const payload: any = {
+                title: formData.title,
+                content: formData.content,
+                categories: [formData.categoryId],
+                tags: formData.tags || [],
+            };
 
-            if (formData.tags && formData.tags.length > 0) {
-                // Assuming backend expects tags as a JSON string or individual fields
-                // Adjust based on actual backend requirement. Usually for FormData multiple values:
-                // formData.tags.forEach(tag => data.append("tags[]", tag));
-                // Or if backend expects comma separated:
-                data.append("tags", formData.tags.join(","));
-            }
-
-            if (formData.headerImage) {
-                data.append("headerImage", formData.headerImage);
+            if (formData.headerImageId) {
+                payload.headerImageId = formData.headerImageId;
             }
 
             const response = await fetch(`${this.baseUrl}/posts`, {
                 method: "POST",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
-                    // Content-Type header is not set manually for FormData, browser sets it with boundary
                 },
-                body: data,
+                body: JSON.stringify(payload),
             });
 
             const result = await response.json();
@@ -74,6 +70,8 @@ class PostService {
                     message: result.message || "Gönderi oluşturulurken bir hata oluştu",
                 };
             }
+
+            // Note: Second request for image upload was removed in favor of using Media Service directly
 
             return {
                 success: true,
@@ -195,7 +193,7 @@ class PostService {
 
     async getCategories() {
         try {
-            const response = await fetch(`${this.baseUrl}/categories`, { cache: 'force-cache' });
+            const response = await fetch(`${this.baseUrl}/categories`, { cache: 'no-cache' });
             if (!response.ok) return [];
             const result = await response.json();
             return result.data || [];

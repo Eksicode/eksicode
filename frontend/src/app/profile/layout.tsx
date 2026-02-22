@@ -1,6 +1,14 @@
 import { UserGuard } from "@/components/Guards/RoleGuard";
 import SideMenu from "@/components/Profile/SideMenu";
 import NextBreadcrumb from "@/components/NextBreadcrumb";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function ProfileLayout({
   children,

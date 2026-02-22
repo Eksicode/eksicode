@@ -100,7 +100,7 @@ export interface CreatePostDTO {
   content: string;
   headerImageId?: number;
   categories?: number[]; // Array of category IDs
-  tags?: number[]; // Array of tag IDs
+  tags?: string[]; // Array of tag names
   status?: PostStatusEnum;
   slug?: string; // Optional, can be auto-generated
   approved?: boolean;

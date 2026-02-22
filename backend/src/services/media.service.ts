@@ -1,8 +1,6 @@
 import { PrismaClient, Media, MediaType } from '@prisma/client';
 import { HttpException } from '../exceptions/HttpException';
-import path from 'path';
-import fs from 'fs/promises';
-import { v4 as uuidv4 } from 'uuid';
+import { uploadToS3, deleteFromS3 } from '../utils/s3.utils';
 
 export interface MediaUpload {
   originalName: string;
@@ -24,7 +22,7 @@ class MediaService {
     this.maxFileSize = parseInt(process.env.MAX_FILE_SIZE || '5242880'); // 5MB default
     this.allowedMimeTypes = [
       'image/jpeg',
-      'image/png', 
+      'image/png',
       'image/gif',
       'image/webp',
       'image/svg+xml',
@@ -61,25 +59,7 @@ class MediaService {
     return MediaType.DOCUMENT;
   }
 
-  /**
-   * Generate unique filename
-   */
-  private generateFilename(originalName: string): string {
-    const ext = path.extname(originalName);
-    const uuid = uuidv4();
-    return `${uuid}${ext}`;
-  }
 
-  /**
-   * Ensure upload directory exists
-   */
-  private async ensureUploadDir(): Promise<void> {
-    try {
-      await fs.access(this.uploadDir);
-    } catch {
-      await fs.mkdir(this.uploadDir, { recursive: true });
-    }
-  }
 
   /**
    * Upload file and create media record
@@ -89,22 +69,15 @@ class MediaService {
       // Validate file
       this.validateFile(file);
 
-      // Ensure upload directory exists
-      await this.ensureUploadDir();
-
-      // Generate unique filename
-      const filename = this.generateFilename(file.originalName);
-      const filePath = path.join(this.uploadDir, filename);
-
-      // Write file to disk
-      await fs.writeFile(filePath, file.buffer);
+      // Upload file to S3
+      const { url, filename } = await uploadToS3(file.buffer, file.originalName, file.mimeType);
 
       // Create media record in database
       const media = await this.prisma.media.create({
         data: {
           originalName: file.originalName,
           filename: filename,
-          url: `/uploads/${filename}`, // Relative URL path
+          url: url, // S3 URL path
           mimeType: file.mimeType,
           size: file.size,
           altText: file.altText,
@@ -199,14 +172,8 @@ class MediaService {
         throw new HttpException(400, `Media is currently in use: ${usage.usedBy.join(', ')}`);
       }
 
-      // Delete file from disk
-      const filePath = path.join(this.uploadDir, media.filename);
-      try {
-        await fs.unlink(filePath);
-      } catch (error) {
-        console.warn(`Failed to delete file ${filePath}:`, error);
-        // Continue with database deletion even if file deletion fails
-      }
+      // Delete file from S3 disk
+      await deleteFromS3(media.filename);
 
       // Delete database record
       await this.prisma.media.delete({

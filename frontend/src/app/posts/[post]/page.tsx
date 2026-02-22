@@ -138,8 +138,28 @@ export default async function PostDetailPage({ params }: PostPageParams) {
     return ppImage;
   };
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": postData.title,
+    "image": headerImageUrl ? [headerImageUrl] : [],
+    "datePublished": postData.publishedAt || postData.createdAt,
+    "dateModified": postData.updatedAt || postData.createdAt,
+    "author": {
+      "@type": "Person",
+      "name": postData.author.firstName && postData.author.lastName
+        ? `${postData.author.firstName} ${postData.author.lastName}`
+        : postData.author.username,
+      "url": `${process.env.NEXT_PUBLIC_URL || "https://eksicode.org"}/profile/${postData.author.username}`
+    }
+  };
+
   return (
     <div className="flex py-5 basis-full xl:basis-3/4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Left Sidebar - Menu */}
       <div className="flex">
         <SideMenu />

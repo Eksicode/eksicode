@@ -3,13 +3,13 @@ import { FaGithub, FaTwitter, FaDiscord } from 'react-icons/fa'
 const Footer = () => {
     return (
         <footer className="flex flex-1 flex-col items-center justify-center w-full bg-eksiCode dark:bg-DarkerGrey">
-            <div className="flex h-20 justify-center pb-5 pt-5">
+            <div className="flex h-14 justify-center items-center">
                 <a href="https://github.com/Eksicode" target="_blank" ><FaGithub className="text-white text-3xl" /></a>
                 <a href="https://twitter.com/eksicode" target="_blank" ><FaTwitter className="mr-6 ml-6 text-white text-3xl" /></a>
                 <a href="https://discord.com/invite/cZRhbuJ" target="_blank"><FaDiscord className="text-white text-3xl" /> </a>
             </div>
             <div className="w-full px-5 bg-eksiCodeMedium text-eksiCodeLight dark:bg-DarkerGrey border-t dark:border-DarkLightGrey">
-                <div className='flex flex-col justify-center text-center mb-5 no-wrap md:flex-row md:gap-8'>
+                <div className='flex flex-col justify-center text-center mb-2 mt-2 no-wrap md:flex-row md:gap-8'>
                     <a href="/sayfalar/kurallar" className="hover:underline hover:underline-offset-0">Grup Kuralları </a>
                     <a href="/sayfalar/kullanici-sozlesmesi" className="hover:underline hover:underline-offset-0">Kullanıcı Sözleşmesi</a>
                     <a className="hover:underline hover:underline-offset-0" href="/sayfalar/gizlilik">Gizlilik Politakası</a>

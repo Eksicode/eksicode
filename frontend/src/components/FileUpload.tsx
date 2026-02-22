@@ -2,10 +2,12 @@ import React from "react";
 
 interface FileUploadProps {
   setFile: (file: File) => void;
+  accept?: string;
 }
 
 const FileUpload = ({
-  setFile
+  setFile,
+  accept,
 }: FileUploadProps) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,7 +32,7 @@ const FileUpload = ({
     <div className="flex items-center justify-center w-full">
       <label
         htmlFor="dropzone-file"
-        className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 hover:bg-gray-100"
+        className="flex flex-col items-center justify-center w-full h-22 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 hover:bg-gray-100"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
@@ -61,6 +63,7 @@ const FileUpload = ({
           id="dropzone-file"
           type="file"
           className="hidden"
+          accept={accept}
           onChange={handleFileChange}
         />
       </label>

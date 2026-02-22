@@ -90,6 +90,7 @@ export default function EditPostPage() {
                 categories: [data.categoryId],
                 tags: tagIds,
                 status: data.status,
+                headerImageId: data.headerImageId,
             }, token);
 
             if (response.success) {
@@ -135,6 +136,7 @@ export default function EditPostPage() {
         tags: post.tags?.map(t => t.name).join(', ') || '',
         status: typeof post.status === 'string' ? post.status : 'DRAFT',
         headerImageUrl: getHeaderImageUrl(post.headerImage),
+        headerImageId: typeof post.headerImage === 'object' && post.headerImage ? (post.headerImage as IMedia).id : undefined,
     };
 
     return (

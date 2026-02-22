@@ -1,12 +1,12 @@
 import { PrismaClient, Post, Prisma, PostStatus } from "@prisma/client";
 import { isEmpty } from "../utils/util";
 import { HttpException } from "../exceptions/HttpException";
-import { 
-  IPost, 
-  PostStatusEnum, 
-  CreatePostDTO, 
-  UpdatePostDTO, 
-  PostSearchParams, 
+import {
+  IPost,
+  PostStatusEnum,
+  CreatePostDTO,
+  UpdatePostDTO,
+  PostSearchParams,
   PostListParams,
   PostListResponse,
   PostSearchResponse,
@@ -151,89 +151,89 @@ class PostService {
 
     const selectFields = summaryOnly
       ? {
-          id: true,
-          title: true,
-          slug: true,
-          createdAt: true,
-          publishedAt: true,
-          viewCount: true,
-          author: {
-            select: this.safeAuthorSelect,
+        id: true,
+        title: true,
+        slug: true,
+        createdAt: true,
+        publishedAt: true,
+        viewCount: true,
+        author: {
+          select: this.safeAuthorSelect,
+        },
+        tags: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
           },
-          tags: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
+        },
+        categories: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
           },
-          categories: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-        }
+        },
+      }
       : {
-          id: true,
-          title: true,
-          content: true,
-          headerImageId: true,
-          headerImage: {
-            select: {
-              id: true,
-              url: true,
-              altText: true,
-              type: true,
-            }
-          },
-          authorId: true,
-          author: {
-            select: this.safeAuthorSelect,
-          },
-          postLikes: {
-            select: {
-              id: true,
-              userId: true,
-              createdAt: true,
-            }
-          },
-          comments: {
-            select: {
-              id: true,
-              content: true,
-              createdAt: true,
-              updatedAt: true,
-              author: {
-                select: this.safeAuthorSelect,
-              },
-            },
-            orderBy: { createdAt: 'desc' as const },
-            take: 10, // Limit comments for performance
-          },
-          categories: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
+        id: true,
+        title: true,
+        content: true,
+        headerImageId: true,
+        headerImage: {
+          select: {
+            id: true,
+            url: true,
+            altText: true,
+            type: true,
+          }
+        },
+        authorId: true,
+        author: {
+          select: this.safeAuthorSelect,
+        },
+        postLikes: {
+          select: {
+            id: true,
+            userId: true,
+            createdAt: true,
+          }
+        },
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            updatedAt: true,
+            author: {
+              select: this.safeAuthorSelect,
             },
           },
-          tags: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
+          orderBy: { createdAt: 'desc' as const },
+          take: 10, // Limit comments for performance
+        },
+        categories: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
           },
-          status: true,
-          slug: true,
-          approved: true,
-          publishedAt: true,
-          viewCount: true,
-          createdAt: true,
-          updatedAt: true,
-        };
+        },
+        tags: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        status: true,
+        slug: true,
+        approved: true,
+        publishedAt: true,
+        viewCount: true,
+        createdAt: true,
+        updatedAt: true,
+      };
 
     const [posts, count] = await Promise.all([
       this.prisma.post.findMany({
@@ -701,7 +701,13 @@ class PostService {
       // Add tags if provided
       if (data.tags && data.tags.length > 0) {
         postData.tags = {
-          connect: data.tags.map(id => ({ id }))
+          connectOrCreate: data.tags.map(tag => {
+            const slug = tag.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            return {
+              where: { name: tag },
+              create: { name: tag, slug }
+            };
+          })
         };
       }
 
@@ -786,7 +792,14 @@ class PostService {
       // Handle tags
       if (data.tags !== undefined) {
         updateData.tags = {
-          set: data.tags.map(id => ({ id }))
+          set: [],
+          connectOrCreate: data.tags.map(tag => {
+            const slug = tag.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            return {
+              where: { name: tag },
+              create: { name: tag, slug }
+            };
+          })
         };
       }
 

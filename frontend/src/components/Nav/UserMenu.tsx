@@ -98,11 +98,15 @@ const UserMenu = () => {
 
   const handleLogout = useCallback(async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
+    // Use current origin so redirect goes to the site the user is on (e.g. eksicode.org),
+    // not whatever NEXTAUTH_URL is set to (e.g. demo.eksicode.org).
+    const callbackUrl =
+      typeof window !== "undefined" ? `${window.location.origin}/` : "/";
     try {
       setLoading(true);
-      await signOut({ 
-        callbackUrl: "/",
-        redirect: true 
+      await signOut({
+        callbackUrl,
+        redirect: true,
       });
     } catch (error) {
       if (process.env.NODE_ENV === "development") {
@@ -110,9 +114,9 @@ const UserMenu = () => {
       }
       setError(getUserFacingMessage(error));
       // Still try to sign out even if there's an error
-      await signOut({ 
-        callbackUrl: "/",
-        redirect: true 
+      await signOut({
+        callbackUrl,
+        redirect: true,
       });
     } finally {
       setLoading(false);

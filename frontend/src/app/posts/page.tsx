@@ -107,8 +107,22 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
     );
     const { posts, meta } = searchResults;
 
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": posts.map((post: IPost, index: number) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "url": `${process.env.NEXT_PUBLIC_URL || "https://eksicode.org"}/posts/${post.slug}`
+      }))
+    };
+
     return (
       <div className="flex py-5 basis-full xl:basis-3/4">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <div className="flex">
           <SideMenu />
         </div>
@@ -190,8 +204,22 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
     // Fallback to client-side fetch only
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": initialPosts.map((post: IPost, index: number) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `${process.env.NEXT_PUBLIC_URL || "https://eksicode.org"}/posts/${post.slug}`
+    }))
+  };
+
   return (
     <div className="flex py-5 basis-full xl:basis-3/4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="flex">
         <SideMenu />
       </div>
