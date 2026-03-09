@@ -332,6 +332,13 @@ async function kaynakCommand(ctx: Context): Promise<void> {
       responseText
     );
 
+    // Auto-delete bot message after 5 minutes
+    setTimeout(async () => {
+      try {
+        await ctx.telegram.deleteMessage(message.chat.id, message.message_id);
+      } catch (_) {}
+    }, 5 * 60 * 1000);
+
     commandLogger.logCommand(ctx as any, 'kaynak', true);
   } catch (err) {
     console.error('Kaynak command error:', err);

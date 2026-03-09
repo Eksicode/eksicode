@@ -257,6 +257,14 @@ class VerificationManager {
         }
       );
 
+      // Auto-delete bot message after 5 minutes
+      const { chatId: vChatId, messageId: vMessageId } = verificationData;
+      setTimeout(async () => {
+        try {
+          await ctx.telegram.deleteMessage(vChatId, vMessageId);
+        } catch (_) {}
+      }, 5 * 60 * 1000);
+
       // Remove from database
       await query(
         `DELETE FROM telegram_verifications WHERE "userId" = $1`,
@@ -319,6 +327,13 @@ class VerificationManager {
                 }
               }
             );
+
+            // Auto-delete bot message after 5 minutes
+            setTimeout(async () => {
+              try {
+                await this.telegram!.deleteMessage(chatId, messageId);
+              } catch (_) {}
+            }, 5 * 60 * 1000);
           } catch (editError: any) {
             console.log('Could not edit message:', editError.message);
           }
@@ -352,6 +367,14 @@ class VerificationManager {
               }
             }
           );
+
+          // Auto-delete bot message after 5 minutes
+          const { chatId: tChatId, messageId: tMessageId } = verificationData;
+          setTimeout(async () => {
+            try {
+              await this.telegram!.deleteMessage(tChatId, tMessageId);
+            } catch (_) {}
+          }, 5 * 60 * 1000);
         } catch (editError: any) {
           console.log('Could not edit message:', editError.message);
         }
