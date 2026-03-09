@@ -169,6 +169,8 @@ services:
       - redis
     env_file:
       - ./telegrambot/.env
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
     environment:
       # Node environment
       - NODE_ENV=production
@@ -230,7 +232,7 @@ services:
         max_attempts: 3
         window: 120s
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1" ]
       interval: 30s
       timeout: 10s
       start_period: 60s
