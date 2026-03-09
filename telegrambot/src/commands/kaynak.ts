@@ -15,6 +15,7 @@ interface Context {
   telegram: {
     editMessageText: (chatId: number, messageId: number, inlineMessageId: any, text: string) => Promise<any>;
     getChat: (chatId: number) => Promise<{ title?: string; username?: string }>;
+    deleteMessage: (chatId: number, messageId: number) => Promise<any>;
   };
   from: {
     id: number;
