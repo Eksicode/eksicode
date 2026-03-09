@@ -106,12 +106,13 @@ const TextEditor = ({
       loadQuill();
     }
 
-    // Cleanup
-    // return () => {
-    //   if (quillRef.current) {
-    //     quillRef.current.off("text-change");
-    //   }
-    // };
+    // Cleanup — must reset quillRef so StrictMode remount reinitializes Quill on the new DOM node
+    return () => {
+      if (quillRef.current) {
+        quillRef.current.off("text-change");
+        quillRef.current = null;
+      }
+    };
   }, []);
 
   return (

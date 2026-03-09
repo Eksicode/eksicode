@@ -47,6 +47,8 @@ body.modal-active {
 /* Quill Editor Fixes */
 .ql-editor {
   min-height: 50vh;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 /* Fix Quill toolbar SVG icons - prevent Tailwind's preflight from breaking them */
@@ -136,6 +138,28 @@ body.modal-active {
 
 .dark .ql-toolbar button.ql-active .ql-fill {
   fill: #60a5fa !important;
+}
+
+/* Tooltip and Hidden State Fixes */
+.ql-snow .ql-tooltip.ql-hidden {
+  display: none !important;
+}
+
+.dark .ql-tooltip {
+  background-color: #374151 !important;
+  border-color: #4b5563 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .ql-tooltip input[type="text"] {
+  background-color: #1f2937 !important;
+  color: #fff !important;
+  border-color: #4b5563 !important;
+}
+
+.dark .ql-tooltip::before {
+  color: #d1d5db !important;
 }
 
 @layer utilities {
