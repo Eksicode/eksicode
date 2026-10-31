@@ -6,16 +6,16 @@ interface Context {
 }
 
 const clean = (piece: string): string => (piece
-    .replace(/((^|\n)(?:[^\/\\]|\/[^*\/]|\\.)*?)\s*\/\*(?:[^*]|\*[^\/])*(\*\/|)/g, '$1')
-    .replace(/((^|\n)(?:[^\/\\]|\/[^\/]|\\.)*?)\s*\/\/[^\n]*/g, '$1')
-    .replace(/\n\s*/g, '')
+  .replace(/((^|\n)(?:[^\/\\]|\/[^*\/]|\\.)*?)\s*\/\*(?:[^*]|\*[^\/])*(\*\/|)/g, '$1')
+  .replace(/((^|\n)(?:[^\/\\]|\/[^\/]|\\.)*?)\s*\/\/[^\n]*/g, '$1')
+  .replace(/\n\s*/g, '')
 );
 
 const regex = (template: TemplateStringsArray, ...interpolations: string[]): RegExp => (
-    new RegExp(interpolations.reduce(
-        (regex, insert, index) => (regex + insert + clean(template.raw[index + 1])),
-        clean(template.raw[0])
-    ), "gmi")
+  new RegExp(interpolations.reduce(
+    (regex, insert, index) => (regex + insert + clean(template.raw[index + 1])),
+    clean(template.raw[0])
+  ), "gmi")
 );
 
 const boomerRegex = regex`
@@ -29,12 +29,15 @@ const boomerRegex = regex`
 
 const jsSartmiRegex = regex`(js [sş]art m[ıi])`;
 
-const iHaveAQuestionRegex = regex`bi(rşey|şey| şey|r şey|şiy| şiy|şi| şi|' şey|'şey) sor(ucam|acağım|acam|cam|ucağım|abilirmiyim|abilir miyim|ammı|am mı|ayım mı|ayımmı)`;
+const iHaveAQuestionRegex = regex`bi(rşey|şey|şey|r şey|şiy| şiy|şi| şi|' şey|'şey) sor(ucam|acağım|acam|cam|ucağım|abilirmiyim|abilir miyim|ammı|am mı|ayım mı|ayımmı)`;
+
+const isinizRustGitsinRegex = regex`(rust)`
 
 function easterEggHandler(ctx: Context): void {
   const jsSartMiMatch = ctx.message.text.match(jsSartmiRegex);
   const iHaveAQuestionMatch = ctx.message.text.match(iHaveAQuestionRegex);
   const boomerMatch = ctx.message.text.match(boomerRegex);
+  const isinizRustGitsinMatch = ctx.message.text.match(isinizRustGitsinRegex);
 
   try {
     if (jsSartMiMatch) {
@@ -48,6 +51,8 @@ function easterEggHandler(ctx: Context): void {
       ctx.reply('Haydi, sor sor!');
     } else if (boomerMatch) {
       ctx.reply('Boomer babandır...');
+    } else if (isinizRustGitsinMatch) {
+      ctx.reply('İşiniz Rust gitsin.');
     }
   } catch (err) {
     console.log('unexpected error at easter egg handler.');

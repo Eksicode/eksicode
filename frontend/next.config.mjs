@@ -24,8 +24,7 @@ const nextConfig = {
   // Performance optimizations
   experimental: {
     optimizePackageImports: ['react-icons'],
-    // Avoid CSS being emitted as script (prevents "MIME type 'text/css' not executable" in strict mode)
-    inlineCss: false,
+    inlineCss: true,
   },
 
   // Headers for better caching and security
